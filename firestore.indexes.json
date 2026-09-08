@@ -1,0 +1,18 @@
+{
+  "indexes": [
+    { "collectionGroup": "events", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "seasonId", "order": "ASCENDING" },
+      { "fieldPath": "type", "order": "ASCENDING" },
+      { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "availability", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "eventId", "order": "ASCENDING" },
+      { "fieldPath": "status", "order": "ASCENDING" } ] },
+    { "collectionGroup": "callups", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "seasonId", "order": "ASCENDING" },
+      { "fieldPath": "matchDate", "order": "DESCENDING" } ] },
+    { "collectionGroup": "payments", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "playerId", "order": "ASCENDING" },
+      { "fieldPath": "dueDate", "order": "ASCENDING" } ] }
+  ],
+  "fieldOverrides": []
+}

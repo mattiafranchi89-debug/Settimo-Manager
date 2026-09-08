@@ -1,0 +1,35 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function role() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;
+    }
+    function isStaff() {
+      return signedIn() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager'];
+    }
+    function validImage() {
+      return request.resource.size < 3 * 1024 * 1024
+        && request.resource.contentType.matches('image/(png|jpeg|jpg|svg\\+xml|webp)');
+    }
+
+    match /club/{fileName} {
+      allow read: if true;                                   // logo is shown on the public confirmation page
+      allow write: if signedIn() && role() == 'admin' && validImage();
+    }
+    match /players/{playerId}/{fileName} {
+      allow read: if signedIn();
+      allow write: if isStaff() && validImage();
+    }
+    match /matches/{eventId}/{fileName} {
+      allow read: if isStaff();
+      allow write: if isStaff() && request.resource.size < 10 * 1024 * 1024;
+      allow delete: if isStaff();
+    }
+    match /documents/{playerId}/{fileName} {
+      allow read: if isStaff();
+      allow write: if isStaff() && request.resource.size < 10 * 1024 * 1024;
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

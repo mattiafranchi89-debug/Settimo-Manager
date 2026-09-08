@@ -1,0 +1,20 @@
+# Netlify builds the site from the sources in this repository.
+# The Firebase keys below are public client identifiers: they identify the
+# project, they do not grant access. Access is governed by firestore.rules.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  VITE_FB_API_KEY = "AIzaSyApujJK8UakFdrmRaU9EfiguA9swcw59Tg"
+  VITE_FB_AUTH_DOMAIN = "settimo-manager.firebaseapp.com"
+  VITE_FB_PROJECT_ID = "settimo-manager"
+  VITE_FB_STORAGE_BUCKET = "settimo-manager.firebasestorage.app"
+  VITE_FB_MESSAGING_SENDER_ID = "867618761122"
+  VITE_FB_APP_ID = "1:867618761122:web:277a96e15bf90abb6eeafb"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,163 @@
+rules_version = '2';
+
+// Settimo Milanese Team Manager — Firestore Security Rules
+// Model: role lives on users/{uid}.role and is written only by an Administrator
+// (or the Firebase console / seed script). Never trust a role sent by the client.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    // .get(field, default) never errors on a missing field: a user document
+    // without an explicit "active" flag counts as active.
+    function role() { return hasProfile() ? profile().get('role', 'player') : 'guest'; }
+    function active() { return hasProfile() && profile().get('active', true) != false; }
+
+    function isAdmin()   { return active() && role() == 'admin'; }
+    function isHead()    { return active() && role() == 'head_coach'; }
+    function isStaff()   { return active() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager']; }
+    function isCoach()   { return active() && role() in ['admin','head_coach','assistant_coach','gk_coach']; }
+    function isMedical() { return active() && role() in ['admin','head_coach','athletic_trainer']; }
+    function isFinance() { return active() && role() in ['admin','team_manager']; }
+
+    // uid of the player record linked to the signed-in user, if any
+    function myPlayerId() { return signedIn() ? profile().playerId : null; }
+    function isSelfPlayer(pid) { return active() && myPlayerId() == pid; }
+
+    function unchanged(keys) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(keys);
+    }
+    function onlyChanged(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // ---------- users ----------
+    match /users/{uid} {
+      allow read: if isStaff() || request.auth.uid == uid;
+      allow create: if isAdmin()
+                    || (request.auth.uid == uid
+                        && request.resource.data.role == 'player'
+                        && request.resource.data.active == false);
+      // A user may edit their own display fields but never their own role/active flag.
+      allow update: if isAdmin()
+                    || (request.auth.uid == uid && onlyChanged(['name','phone','photoUrl','updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // ---------- club configuration ----------
+    // config/branding holds only public identity (name, season, logo) so the
+    // confirmation page can be branded without exposing staff or defaults.
+    match /config/branding {
+      allow get: if true;
+      allow list, write: if isAdmin();
+    }
+    match /config/{docId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---------- players ----------
+    // Medical + financial fields are protected at write level here; the app also
+    // hides them at read level. For hard read-level isolation move medical data to
+    // players/{id}/medical/* (sub-collection rule below).
+    match /players/{playerId} {
+      allow read: if active();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || isHead()
+                    || (isStaff() && unchanged(['injury','medicalNotes','medicalCertExpiry']))
+                    || (isSelfPlayer(playerId) && onlyChanged(['phone','email','address','emergencyContact','emergencyPhone','photoUrl','updatedAt']));
+
+      match /medical/{docId} {
+        allow read, write: if isMedical();
+      }
+
+      // Identity document number: never readable by team-mates.
+      match /riservato/{docId} {
+        allow read, write: if isAdmin() || isHead() || role() == 'team_manager';
+      }
+    }
+
+    // ---------- events (matches + trainings) ----------
+    match /events/{eventId} {
+      allow read: if active();
+      allow create, update: if isStaff();
+      allow delete: if isAdmin() || isHead() || role() == 'team_manager';
+    }
+
+    // ---------- training attendance ----------
+    match /attendance/{docId} {
+      allow read: if active();
+      allow write: if isStaff();
+    }
+
+    // ---------- call-ups ----------
+    match /callups/{callupId} {
+      allow read: if active();
+      allow create, update: if isCoach() || (isStaff() && role() == 'team_manager');
+      allow delete: if isAdmin() || isHead();
+
+      match /versions/{versionId} {
+        allow read: if isStaff();
+        allow create: if isStaff();
+        allow update, delete: if false; // version history is append-only
+      }
+      match /confirmations/{playerId} {
+        allow read: if active();
+        allow write: if isStaff() || isSelfPlayer(playerId);
+      }
+    }
+
+    // ---------- match documents (referee report, team sheets) ----------
+    match /matchFiles/{docId} {
+      allow read: if active();
+      allow write: if isStaff();
+    }
+
+    // ---------- lineups & match data ----------
+    match /lineups/{eventId}      { allow read: if active(); allow write: if isCoach(); }
+    match /matchStats/{eventId}   { allow read: if active(); allow write: if isCoach(); }
+    match /ratings/{docId}        { allow read: if isStaff() || isSelfPlayer(resource.data.playerId); allow write: if isCoach(); }
+
+    // ---------- documents ----------
+    match /documents/{docId} {
+      allow read: if isStaff() || isSelfPlayer(resource.data.playerId);
+      allow write: if isAdmin() || role() == 'team_manager';
+    }
+
+    // ---------- fees, payments, fines ----------
+    match /payments/{docId} {
+      allow read: if isFinance() || isSelfPlayer(resource.data.playerId);
+      allow write: if isFinance();
+    }
+    match /fines/{docId} {
+      allow read: if isFinance() || isSelfPlayer(resource.data.playerId);
+      allow write: if isFinance();
+    }
+
+    // ---------- import batches (used to undo a bulk upload) ----------
+    match /imports/{batchId} {
+      allow read: if active();
+      allow create, delete: if isStaff();
+      allow update: if false;
+    }
+
+    // ---------- audit log ----------
+    // Append-only. Never editable, never deletable from the client.
+    match /auditLogs/{logId} {
+      allow read: if isAdmin() || isHead();
+      allow create: if active();
+      allow update, delete: if false;
+    }
+
+    // deny everything not matched above
+    match /{document=**} { allow read, write: if false; }
+  }
+}
