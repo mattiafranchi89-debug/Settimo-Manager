@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110" role="img" aria-label="Settimo Milanese">
+  <path d="M50 2 6 16v46c0 27 20 40 44 46 24-6 44-19 44-46V16z" fill="#D40000"/>
+  <path d="M50 10 14 21v41c0 22 16 33 36 38 20-5 36-16 36-38V21z" fill="#fff"/>
+  <path d="M50 18 22 27v35c0 18 13 27 28 31 15-4 28-13 28-31V27z" fill="#D40000"/>
+  <text x="50" y="62" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="30" font-weight="700" fill="#fff">SM</text>
+  <text x="50" y="80" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="12" fill="#fff">1919</text>
+</svg>
