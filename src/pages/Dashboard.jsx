@@ -63,7 +63,7 @@ export default function Dashboard() {
             {capitalize(fmtLong(nextMatch.date))} · {fmtTime(nextMatch.date)} · {nextMatch.competition}
           </div>
           <div style={{ fontSize: 13.5, marginTop: 6 }}>📍 {nextMatch.venue || club.homeStadium}</div>
-          {nextMatch.meetingTime && <div style={{ fontSize: 13.5 }}>⏰ Ritrovo {fmtTime(nextMatch.meetingTime)} · {nextMatch.meetingPoint}</div>}
+          {nextMatch.meetingTime && <div style={{ fontSize: 13.5 }}>⏰ Ritrovo {fmtTime(nextMatch.meetingTime)}</div>}
           {can(user?.role, 'callup.draft') && (
             <div className="btnrow" style={{ marginTop: 12 }}>
               <Button onClick={() => navigate(`/convocazioni/nuova?event=${nextMatch.id}`)}>Prepara convocazione</Button>

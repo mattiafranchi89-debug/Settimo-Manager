@@ -41,8 +41,6 @@ export default function Partite() {
       venue: form.venue,
       venueAddress: form.venueAddress,
       meetingTime: form.meetingTime ? new Date(form.meetingTime) : null,
-      meetingPoint: form.meetingPoint,
-      notes: form.notes,
       seasonId: club.season,
       updatedAt: serverTimestamp()
     };
@@ -135,7 +133,7 @@ export default function Partite() {
 const emptyForm = (club) => ({
   opponent: '', competition: club.competitions?.[0] || 'Prima Categoria', home: 'casa',
   date: toInputValue(new Date(Date.now() + 7 * 86400000)), venue: club.homeStadium, venueAddress: '',
-  meetingTime: '', meetingPoint: club.defaultMeetingPoint, notes: ''
+  meetingTime: ''
 });
 
 const toForm = (m) => ({
@@ -164,13 +162,13 @@ function MatchForm({ club, initial, onSave, onClose }) {
       </div>
       <Field label="Data e orario di inizio"><Input type="datetime-local" value={form.date} onChange={set('date')} /></Field>
       <Field label="Impianto"><Input value={form.venue} onChange={set('venue')} /></Field>
-      <Field label="Indirizzo"><Input value={form.venueAddress} onChange={set('venueAddress')} placeholder="Via, numero, città" /></Field>
+      <Field label="Indirizzo" hint="Genera il link a Google Maps nella convocazione: via, numero e città.">
+        <Input value={form.venueAddress} onChange={set('venueAddress')} placeholder="Via Gramsci SNC, Buccinasco" />
+      </Field>
       <Field label="Ritrovo" hint="Suggerimento: 75 minuti prima del fischio d'inizio.">
         <Input type="datetime-local" value={form.meetingTime} onChange={set('meetingTime')} />
       </Field>
       <Button size="sm" variant="ghost" onClick={suggestMeeting} style={{ marginBottom: 12 }}>Calcola ritrovo</Button>
-      <Field label="Luogo del ritrovo"><Input value={form.meetingPoint} onChange={set('meetingPoint')} /></Field>
-      <Field label="Note"><Textarea rows={2} value={form.notes} onChange={set('notes')} /></Field>
       <div className="btnrow">
         <Button onClick={() => onSave(form)} disabled={!form.opponent.trim() || !form.date}>Salva</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>

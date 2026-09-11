@@ -149,7 +149,6 @@ export default function Impostazioni() {
 
       <Card title="Default di gara">
         <Field label="Impianto di casa"><Input value={form.homeStadium} onChange={set('homeStadium')} /></Field>
-        <Field label="Luogo di ritrovo"><Input value={form.defaultMeetingPoint} onChange={set('defaultMeetingPoint')} /></Field>
         <div className="row2">
           <Field label="Massimo convocati"><Input type="number" min="11" max="30" value={form.maxCallup} onChange={set('maxCallup')} /></Field>
           <Field label="Ammonizioni per squalifica" hint="In Prima Categoria di norma 4.">

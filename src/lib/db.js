@@ -86,7 +86,6 @@ export const DEFAULT_CLUB = {
   logoUrl: '/logo-fallback.svg',
   colors: { primary: '#D40000', primaryDark: '#A80000' },
   homeStadium: 'Centro Sportivo Comunale, Settimo Milanese',
-  defaultMeetingPoint: 'Spogliatoi campo di casa',
   maxCallup: 20,
   cardsPerSuspension: 4,
   closingLine: 'Forza Settimo! 🔴⚪',

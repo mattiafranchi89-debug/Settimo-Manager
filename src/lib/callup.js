@@ -1,5 +1,14 @@
 import { GROUPS, groupOf, fmtLong, fmtTime, capitalize, sortPlayers } from './format';
 
+/**
+ * Google Maps search link. The address is more reliable than the pitch name,
+ * so it goes first when available.
+ */
+export function mapsLink(match) {
+  const query = match.venueAddress || match.venue || '';
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 /** Split selected players into the four message blocks. */
 export function byGroup(players) {
   const out = { portieri: [], difensori: [], centrocampisti: [], attaccanti: [] };
@@ -58,9 +67,11 @@ export function buildMessage({ club, match, selected, options = {} }) {
   L.push(`📅 ${capitalize(fmtLong(match.date))}`);
   L.push(`🕒 Inizio partita: ${fmtTime(match.date)}`);
   if (withLogistics) {
-    if (match.venue) L.push(`📍 Campo: ${match.venue}${match.venueAddress ? ` — ${match.venueAddress}` : ''}`);
+    if (match.venue) {
+      L.push(`📍 Campo: ${match.venue}`);
+      L.push(`🗺️ ${mapsLink(match)}`);
+    }
     if (match.meetingTime) L.push(`⏰ Ritrovo: ${fmtTime(match.meetingTime)}`);
-    if (match.meetingPoint) L.push(`📌 Luogo del ritrovo: ${match.meetingPoint}`);
   }
   L.push('');
   L.push('CONVOCATI');
@@ -75,11 +86,6 @@ export function buildMessage({ club, match, selected, options = {} }) {
   } else {
     L.push('');
     sortPlayers(selected).forEach((p, i) => L.push(`${i + 1}. ${p.fullName}`));
-  }
-
-  if (!short && match.notes) {
-    L.push('');
-    L.push(`Note: ${match.notes}`);
   }
 
   L.push('');

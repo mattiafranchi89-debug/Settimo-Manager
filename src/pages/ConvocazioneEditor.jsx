@@ -73,9 +73,7 @@ export default function ConvocazioneEditor() {
     setLogistics({
       venue: event.venue || club.homeStadium,
       venueAddress: event.venueAddress || '',
-      meetingTime: toInputValue(event.meetingTime),
-      meetingPoint: event.meetingPoint || club.defaultMeetingPoint,
-      notes: event.notes || ''
+      meetingTime: toInputValue(event.meetingTime)
     });
   }, [event, club, logistics]);
 
@@ -95,9 +93,7 @@ export default function ConvocazioneEditor() {
     date: event?.date,
     venue: logistics?.venue,
     venueAddress: logistics?.venueAddress,
-    meetingTime: logistics?.meetingTime ? new Date(logistics.meetingTime) : null,
-    meetingPoint: logistics?.meetingPoint,
-    notes: logistics?.notes
+    meetingTime: logistics?.meetingTime ? new Date(logistics.meetingTime) : null
   }), [event, logistics]);
 
   const generated = useMemo(
@@ -225,10 +221,7 @@ export default function ConvocazioneEditor() {
               <Field label="Impianto"><Input value={logistics.venue} onChange={(e) => setLogistics({ ...logistics, venue: e.target.value })} /></Field>
               <Field label="Indirizzo"><Input value={logistics.venueAddress} onChange={(e) => setLogistics({ ...logistics, venueAddress: e.target.value })} /></Field>
               <Field label="Ritrovo"><Input type="datetime-local" value={logistics.meetingTime} onChange={(e) => setLogistics({ ...logistics, meetingTime: e.target.value })} /></Field>
-              <Field label="Luogo del ritrovo"><Input value={logistics.meetingPoint} onChange={(e) => setLogistics({ ...logistics, meetingPoint: e.target.value })} /></Field>
-              <Field label="Note" hint="Compare nel messaggio come riga «Note: …». Lascia vuoto per ometterla.">
-                <Textarea rows={2} value={logistics.notes} onChange={(e) => setLogistics({ ...logistics, notes: e.target.value })} />
-              </Field>
+              <p><small>L'indirizzo genera il link a Google Maps nel messaggio: scrivilo completo di via e città.</small></p>
               <Button block onClick={() => setStep(1)}>Continua ai convocati</Button>
             </>
           )}

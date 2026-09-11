@@ -135,13 +135,13 @@ export const SCHEMAS = {
     label: 'Partite',
     file: 'template-partite.csv',
     collection: 'events',
-    help: 'Una riga per gara. campo = casa oppure trasferta. Orari in formato 24 ore (15:30). Ritrovo facoltativo.',
-    headers: ['avversario', 'competizione', 'campo', 'data', 'ora', 'impianto', 'indirizzo', 'ora_ritrovo', 'luogo_ritrovo', 'note'],
+    help: 'Una riga per gara. campo = casa oppure trasferta. Orari in formato 24 ore (15:30). L\'indirizzo genera il link a Google Maps nella convocazione.',
+    headers: ['avversario', 'competizione', 'campo', 'data', 'ora', 'impianto', 'indirizzo', 'ora_ritrovo'],
     required: ['avversario', 'data', 'ora'],
     example: [{
       avversario: 'Cornaredo', competizione: 'Prima Categoria', campo: 'casa', data: '13/09/2026', ora: '15:30',
       impianto: 'Centro Sportivo Comunale', indirizzo: 'Via Libertà 1, Settimo Milanese',
-      ora_ritrovo: '14:15', luogo_ritrovo: 'Spogliatoi campo di casa', note: ''
+      ora_ritrovo: '14:15'
     }],
     build(row, ctx) {
       const errors = [];
@@ -165,8 +165,6 @@ export const SCHEMAS = {
           venue: (row.impianto || (field === 'casa' ? ctx.club.homeStadium : '')).trim(),
           venueAddress: (row.indirizzo || '').trim(),
           meetingTime: meeting,
-          meetingPoint: (row.luogo_ritrovo || ctx.club.defaultMeetingPoint || '').trim(),
-          notes: (row.note || '').trim(),
           seasonId: ctx.club.season
         }
       };
