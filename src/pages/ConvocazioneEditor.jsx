@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { doc, collection, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
-import { useCollection, useDoc, useClub, where, orderBy, limit, audit } from '../lib/db';
+import { useCollection, useDoc, useClub, setDocument, where, orderBy, limit, audit } from '../lib/db';
 import {
   Card, Button, Field, Input, Select, Textarea, Badge, Sheet,
   Alert, Loading, useToast, ConfirmDialog
@@ -11,11 +11,13 @@ import {
 import {
   GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue
 } from '../lib/format';
-import { validateCallup, summarise, buildMessage, onlyNames, copyText, shareMessage } from '../lib/callup';
+import { validateCallup, summarise, buildMessage, buildLineupMessage, onlyNames, copyText, shareMessage } from '../lib/callup';
+import { MODULES } from '../lib/modules';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { can } from '../lib/permissions';
+import { errorText } from './Rosa';
 
-const STEPS = ['Partita', 'Convocati', 'Messaggio'];
+const STEPS = ['Partita', 'Convocati', 'Messaggio', 'Formazione'];
 
 export default function ConvocazioneEditor() {
   const { id } = useParams();
@@ -27,15 +29,45 @@ export default function ConvocazioneEditor() {
 
   const canPublish = can(user?.role, 'callup.publish');
   const canOverride = can(user?.role, 'callup.override');
+  const canSetLineup = can(user?.role, 'lineup.write');
 
   const { data: existing, loading: loadingCallup } = useDoc('callups', id, !!id);
   const eventsQ = useMemo(() => [orderBy('date', 'asc'), limit(200)], []);
   const { data: allEvents } = useCollection('events', eventsQ);
   const events = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
   const { data: players, loading: loadingPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
+  const { data: savedLineup } = useDoc('lineups', eventId, !!eventId);
   const { data: matchStats } = useCollection('matchStats');
   const { data: attendance } = useCollection('attendance');
   const { data: allEventsForTrainings } = useCollection('events', useMemo(() => [orderBy('date', 'desc'), limit(200)], []));
+
+  useEffect(() => {
+    if (!savedLineup) return;
+    setModule((m) => m || savedLineup.module);
+    setSlotMap((v) => (Object.keys(v).length ? v : savedLineup.slots || {}));
+    setCaptain((c) => c || savedLineup.captain || '');
+  }, [savedLineup]);
+
+  const activeModule = module || club.defaultModule || '4-3-1-2';
+  const slotList = MODULES[activeModule] || MODULES['4-3-1-2'];
+  const starterIds = Object.values(slotMap).filter(Boolean);
+  const benchPlayers = selectedPlayers.filter((p) => !starterIds.includes(p.id));
+  const byIdAll = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
+
+  const lineupMessage = useMemo(() => (event ? buildLineupMessage({
+    club, match, module: activeModule,
+    slots: slotList.map((s) => ({ label: s.label, playerId: slotMap[s.id] })),
+    byId: byIdAll, bench: benchPlayers, captain
+  }) : ''), [club, match, activeModule, slotList, slotMap, byIdAll, benchPlayers, captain, event]);
+
+  const saveLineup = async () => {
+    await setDocument('lineups', eventId, {
+      eventId, module: activeModule, slots: slotMap, captain,
+      starters: starterIds, bench: benchPlayers.map((p) => p.id),
+      updatedBy: user.uid, updatedAt: serverTimestamp()
+    });
+    await audit(user, 'lineup.save', eventId, { module: activeModule });
+  };
 
   const insights = useMemo(() => buildInsights({
     players, matchStats, attendance,
@@ -53,6 +85,9 @@ export default function ConvocazioneEditor() {
   const [customMessage, setCustomMessage] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [module, setModule] = useState(null);
+  const [slotMap, setSlotMap] = useState({});
+  const [captain, setCaptain] = useState('');
 
   const event = useMemo(() => events.find((e) => e.id === eventId), [events, eventId]);
 
@@ -372,8 +407,84 @@ export default function ConvocazioneEditor() {
           <div className="btnrow" style={{ marginTop: 16 }}>
             <Button onClick={tryPublish} disabled={busy || !canPublish}>Pubblica convocazione</Button>
             <Button variant="secondary" onClick={() => persist('bozza')} disabled={busy}>Salva bozza</Button>
+            {canSetLineup && <Button variant="ghost" onClick={() => setStep(3)}>Componi formazione</Button>}
 
           </div>
+        </>
+      )}
+
+      {/* ---------- step 4: starting eleven for the official team sheet ---------- */}
+      {step === 3 && event && (
+        <>
+          {!canSetLineup ? (
+            <Alert level="error">Solo l'allenatore e il suo vice possono comporre la formazione.</Alert>
+          ) : selected.length === 0 ? (
+            <Alert level="info">Seleziona prima i convocati: la formazione si compone fra loro.</Alert>
+          ) : (
+            <>
+              <Card title="Undici titolare" action={<Badge tone={starterIds.length === 11 ? 'green' : 'orange'}>{starterIds.length}/11</Badge>}>
+                <Field label="Modulo">
+                  <Select value={activeModule} onChange={(e) => { setModule(e.target.value); setSlotMap({}); }}
+                    options={Object.keys(MODULES)} />
+                </Field>
+                {slotList.map((s) => (
+                  <Field key={s.id} label={s.label}>
+                    <Select value={slotMap[s.id] || ''} onChange={(e) => setSlotMap((v) => ({ ...v, [s.id]: e.target.value }))}>
+                      <option value="">—</option>
+                      {sortPlayers(selectedPlayers).map((p) => (
+                        <option key={p.id} value={p.id} disabled={starterIds.includes(p.id) && slotMap[s.id] !== p.id}>
+                          {p.fullName}
+                        </option>
+                      ))}
+                    </Select>
+                  </Field>
+                ))}
+                <Field label="Capitano">
+                  <Select value={captain} onChange={(e) => setCaptain(e.target.value)}>
+                    <option value="">—</option>
+                    {sortPlayers(selectedPlayers).map((p) => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+                  </Select>
+                </Field>
+              </Card>
+
+              <Card title={`Panchina (${benchPlayers.length})`}>
+                {benchPlayers.length === 0
+                  ? <p><small>Tutti i convocati sono titolari.</small></p>
+                  : <div className="plist">{sortPlayers(benchPlayers).map((p) => (
+                      <div key={p.id} className="prow">
+                        <span className="prow__num">{p.position}</span>
+                        <span className="prow__body"><span className="prow__name">{p.fullName}</span></span>
+                      </div>
+                    ))}</div>}
+              </Card>
+
+              <Card title="Messaggio per la distinta">
+                <div className="msgbox">{lineupMessage}</div>
+                <div className="btnrow" style={{ marginTop: 12 }}>
+                  <Button disabled={busy || starterIds.length === 0}
+                    onClick={async () => {
+                      setBusy(true);
+                      try {
+                        await saveLineup();
+                        const phone = (club.distintaPhone || '').replace(/\D/g, '');
+                        if (phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(lineupMessage)}`, '_blank', 'noopener');
+                        else await shareMessage(lineupMessage, 'Formazione');
+                        toast('Formazione salvata');
+                      } catch (e) { toast(errorText(e), 'error'); }
+                      setBusy(false);
+                    }}>
+                    {club.distintaPhone ? `Invia a ${club.staff?.team_manager || 'chi compila la distinta'}` : 'Invia formazione'}
+                  </Button>
+                  <Button variant="secondary" onClick={async () => { await copyText(lineupMessage); toast('Messaggio copiato'); }}>Copia</Button>
+                  <Button variant="ghost" disabled={busy} onClick={async () => { await saveLineup(); toast('Formazione salvata'); }}>Salva soltanto</Button>
+                </div>
+                {!club.distintaPhone && (
+                  <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Distinta per mandarla direttamente alla persona giusta invece che al gruppo.</Alert>
+                )}
+                <Alert level="info">Il messaggio non contiene i numeri di documento: restano nell'app, dove li vede solo chi è autorizzato.</Alert>
+              </Card>
+            </>
+          )}
         </>
       )}
 

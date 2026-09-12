@@ -88,6 +88,7 @@ export const DEFAULT_CLUB = {
   homeStadium: 'Centro Sportivo Comunale, Settimo Milanese',
   maxCallup: 20,
   cardsPerSuspension: 4,
+  distintaPhone: '',
   closingLine: 'Forza Settimo! 🔴⚪',
   defaultModule: '4-3-1-2',
   tuttocampoId: 'bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa',

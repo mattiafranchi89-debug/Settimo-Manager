@@ -174,6 +174,13 @@ export default function Impostazioni() {
         <p><small>Chi non ha ancora un ruolo vede solo un avviso di attesa. Le password si cambiano da soli con "Password dimenticata" nella pagina di accesso.</small></p>
       </Card>
 
+      <Card title="Distinta">
+        <Field label="WhatsApp di chi compila la distinta"
+          hint="Solo cifre, con il prefisso internazionale e senza + o spazi: 393331234567. L'allenatore invierà qui la formazione.">
+          <Input value={form.distintaPhone || ''} onChange={set('distintaPhone')} placeholder="393331234567" inputMode="numeric" />
+        </Field>
+      </Card>
+
       <Card title="Campionato (Tuttocampo)">
         <Field label="Codice girone"
           hint="È la parte finale dell'indirizzo dei widget: .../WidgetV2/Classifica/CODICE. Cambia a ogni stagione.">

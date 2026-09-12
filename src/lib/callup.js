@@ -94,6 +94,35 @@ export function buildMessage({ club, match, selected, options = {} }) {
   return L.join('\n');
 }
 
+/**
+ * Message for whoever fills in the official team sheet. Deliberately does not
+ * include identity document numbers: those stay in the app, where access is
+ * restricted, rather than travelling through a chat.
+ */
+export function buildLineupMessage({ club, match, module, slots, byId, bench, captain }) {
+  const L = [];
+  L.push('📝 FORMAZIONE PER LA DISTINTA');
+  L.push('');
+  L.push(`⚽ ${club.clubName} vs ${match.opponent || '—'}${match.home === false ? ' (trasferta)' : ''}`);
+  L.push(`📅 ${capitalize(fmtLong(match.date))} · ${fmtTime(match.date)}`);
+  L.push(`🎯 Modulo: ${module}`);
+  L.push('');
+  L.push('TITOLARI');
+  (slots || []).forEach((s) => {
+    const p = byId[s.playerId];
+    if (!p) return;
+    L.push(`- ${s.label}: ${p.fullName}${captain === p.id ? ' (C)' : ''}`);
+  });
+  if (bench?.length) {
+    L.push('');
+    L.push('PANCHINA');
+    bench.forEach((p) => L.push(`- ${p.fullName}${captain === p.id ? ' (C)' : ''}`));
+  }
+  L.push('');
+  if (club.staff?.head_coach) L.push(`Allenatore: ${club.staff.head_coach}`);
+  return L.join('\n');
+}
+
 export function onlyNames(selected) {
   const g = byGroup(selected);
   return GROUPS.filter(({ key }) => g[key].length)
