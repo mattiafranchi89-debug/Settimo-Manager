@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
 import { Card, Button, Field, Select, Badge, Empty, Loading, useToast, Alert, Textarea } from '../components/ui';
+import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
+import { errorText } from './Rosa';
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName } from '../lib/format';
 import { MODULES } from '../lib/modules';
 import { readDocumentNumbers } from '../lib/players';
@@ -17,7 +20,8 @@ export default function Formazioni() {
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: callups } = useCollection('callups');
 
-  const [eventId, setEventId] = useState('');
+  const [params] = useSearchParams();
+  const [eventId, setEventId] = useState(params.get('event') || '');
   useEffect(() => {
     if (eventId || !matches.length) return;
     const upcoming = [...matches].reverse().find((m) => (m.date?.toDate?.() || new Date(m.date)) >= new Date());
@@ -52,6 +56,12 @@ export default function Formazioni() {
   const starters = Object.values(slots).filter(Boolean);
   const bench = pool.filter((p) => !starters.includes(p.id));
   const byId = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
+
+  const lineupMessage = useMemo(() => (match ? buildLineupMessage({
+    club, match, module,
+    slots: slotList.map((s) => ({ label: s.label, playerId: slots[s.id] })),
+    byId, bench, captain
+  }) : ''), [club, match, module, slotList, slots, byId, bench, captain]);
 
   const save = async () => {
     await setDocument('lineups', eventId, {
@@ -127,6 +137,28 @@ export default function Formazioni() {
           Carica numeri documento nella distinta
         </Button>
       </div>
+
+      <Card title="Messaggio per la distinta" className="noprint">
+        <p><small>Da mandare a chi compila la distinta, anche a distanza di giorni dalla convocazione. Non contiene i numeri di documento: quelli restano nell'app.</small></p>
+        <div className="msgbox">{lineupMessage}</div>
+        <div className="btnrow" style={{ marginTop: 12 }}>
+          <Button disabled={!starters.length}
+            onClick={async () => {
+              try {
+                await save();
+                const phone = (club.distintaPhone || '').replace(/\D/g, '');
+                if (phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(lineupMessage)}`, '_blank', 'noopener');
+                else await shareMessage(lineupMessage, 'Formazione');
+              } catch (e) { toast(errorText(e), 'error'); }
+            }}>
+            {club.distintaPhone ? `Invia a ${club.staff?.team_manager || 'chi compila la distinta'}` : 'Invia formazione'}
+          </Button>
+          <Button variant="secondary" onClick={async () => { await copyText(lineupMessage); toast('Messaggio copiato'); }}>Copia</Button>
+        </div>
+        {!club.distintaPhone && (
+          <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Distinta per inviarla alla persona giusta invece che al gruppo.</Alert>
+        )}
+      </Card>
 
       <Distinta docs={docs} club={club} match={match} slotList={slotList} slots={slots} byId={byId} bench={bench} captain={captain} module={module} notes={notes} />
     </>
