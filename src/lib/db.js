@@ -89,6 +89,7 @@ export const DEFAULT_CLUB = {
   maxCallup: 20,
   cardsPerSuspension: 4,
   distintaPhone: '',
+  groupLink: 'https://chat.whatsapp.com/JDptRinPVJ3G2SHYKQ6Ynd',
   closingLine: 'Forza Settimo! 🔴⚪',
   defaultModule: '4-3-1-2',
   tuttocampoId: 'bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa',

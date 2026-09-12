@@ -174,11 +174,16 @@ export default function Impostazioni() {
         <p><small>Chi non ha ancora un ruolo vede solo un avviso di attesa. Le password si cambiano da soli con "Password dimenticata" nella pagina di accesso.</small></p>
       </Card>
 
-      <Card title="Distinta">
+      <Card title="Invio dei messaggi">
+        <Field label="Gruppo WhatsApp della squadra"
+          hint="Il link di invito del gruppo. La convocazione viene copiata e il gruppo si apre: basta tenere premuto e incollare.">
+          <Input value={form.groupLink || ''} onChange={set('groupLink')} placeholder="https://chat.whatsapp.com/..." />
+        </Field>
         <Field label="WhatsApp di chi compila la distinta"
-          hint="Solo cifre, con il prefisso internazionale e senza + o spazi: 393331234567. L'allenatore invierà qui la formazione.">
+          hint="Solo cifre con prefisso, senza + né spazi: 393331234567. Qui arriva la formazione, in chat privata.">
           <Input value={form.distintaPhone || ''} onChange={set('distintaPhone')} placeholder="393331234567" inputMode="numeric" />
         </Field>
+        <p><small>WhatsApp non consente di precompilare un messaggio in un gruppo: per la convocazione il testo viene copiato negli appunti e il gruppo aperto. Per la distinta, che va a un numero singolo, il messaggio arriva già scritto.</small></p>
       </Card>
 
       <Card title="Campionato (Tuttocampo)">

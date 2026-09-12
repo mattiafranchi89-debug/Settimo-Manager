@@ -173,6 +173,17 @@ export default function ConvocazioneEditor() {
     }
   };
 
+  /**
+   * WhatsApp cannot prefill a message in a group, so the text goes to the
+   * clipboard and the group opens ready for a paste.
+   */
+  const shareToGroup = async () => {
+    await copyText(message);
+    await persist('condivisa');
+    toast('Messaggio copiato: tieni premuto nel gruppo e incolla');
+    window.open(club.groupLink, '_blank', 'noopener');
+  };
+
   const share = async () => {
     const res = await shareMessage(message, `Convocazione ${event.opponent}`);
     if (res !== 'cancelled') {
@@ -346,8 +357,17 @@ export default function ConvocazioneEditor() {
             <div className="msgbox">{message}</div>
 
             <div className="btnrow" style={{ marginTop: 12 }}>
-              <Button onClick={async () => { await copyText(message); toast('Messaggio copiato'); }}>Copia messaggio</Button>
-              <Button variant="secondary" onClick={share}>Apri WhatsApp</Button>
+              {club.groupLink ? (
+                <>
+                  <Button onClick={shareToGroup} disabled={busy}>Copia e apri il gruppo</Button>
+                  <Button variant="secondary" onClick={share}>Condividi altrove</Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={async () => { await copyText(message); toast('Messaggio copiato'); }}>Copia messaggio</Button>
+                  <Button variant="secondary" onClick={share}>Apri WhatsApp</Button>
+                </>
+              )}
               <Button variant="ghost" size="sm" onClick={async () => { await copyText(onlyNames(selectedPlayers)); toast('Elenco convocati copiato'); }}>Copia solo i convocati</Button>
               <Button variant="ghost" size="sm" onClick={() => window.print()}>Stampa / PDF</Button>
               <Button variant="ghost" size="sm" onClick={() => setCustomMessage(customMessage == null ? generated : null)}>
@@ -361,7 +381,11 @@ export default function ConvocazioneEditor() {
               </Field>
             )}
 
-            <Alert level="info">Il messaggio non parte da solo: viene copiato o aperto in WhatsApp e lo invii tu al gruppo.</Alert>
+            <Alert level="info">
+              {club.groupLink
+                ? 'Il messaggio viene copiato negli appunti e il gruppo si apre: tieni premuto nel campo di testo e incolla. WhatsApp non permette di precompilare un messaggio in un gruppo.'
+                : 'Il messaggio non parte da solo: lo invii tu. Imposta il link del gruppo in Impostazioni per aprirlo con un tocco.'}
+            </Alert>
           </Card>
 
           {blocking.length > 0 && (
