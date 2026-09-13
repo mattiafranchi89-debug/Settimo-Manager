@@ -26,7 +26,10 @@ service cloud.firestore {
     function isStaff()   { return active() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager']; }
     function isCoach()   { return active() && role() in ['admin','head_coach','assistant_coach','gk_coach']; }
     function isMedical() { return active() && role() in ['admin','head_coach','athletic_trainer']; }
-    function isFinance() { return active() && role() in ['admin','team_manager']; }
+    // Reading the ledger: the sporting director is included.
+    function isFinance() { return active() && role() in ['admin','team_manager','sporting_director']; }
+    // Writing it: only who actually collects the money.
+    function isTreasurer() { return active() && role() in ['admin','team_manager']; }
 
     // uid of the player record linked to the signed-in user, if any
     function myPlayerId() { return signedIn() ? profile().playerId : null; }
@@ -135,11 +138,11 @@ service cloud.firestore {
     // ---------- fees, payments, fines ----------
     match /payments/{docId} {
       allow read: if isFinance() || isSelfPlayer(resource.data.playerId);
-      allow write: if isFinance();
+      allow write: if isTreasurer();
     }
     match /fines/{docId} {
       allow read: if isFinance() || isSelfPlayer(resource.data.playerId);
-      allow write: if isFinance();
+      allow write: if isTreasurer();
     }
 
     // ---------- import batches (used to undo a bulk upload) ----------
