@@ -1,0 +1,12 @@
+{
+  // Configurazione esplicita per Cloudflare: senza questo file wrangler prova a
+  // dedurla da solo e si ferma perché il progetto usa Vite 5.
+  // Il sito è statico: Cloudflare serve la cartella dist e rimanda ogni
+  // indirizzo sconosciuto a index.html, come richiede una single page app.
+  "name": "settimo-manager",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
