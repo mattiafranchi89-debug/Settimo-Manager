@@ -50,7 +50,7 @@ export default function Impostazioni() {
       return v ?? '';
     };
     try {
-      for (const name of ['players', 'events', 'callups', 'attendance', 'matchStats', 'ratings', 'payments', 'fines', 'documents', 'lineups', 'users']) {
+      for (const name of ['players', 'events', 'callups', 'attendance', 'matchStats', 'payments', 'fines', 'documents', 'lineups', 'users']) {
         const snap = await getDocs(collection(db, name));
         if (snap.empty) continue;
         const rows = snap.docs.map((d) => {

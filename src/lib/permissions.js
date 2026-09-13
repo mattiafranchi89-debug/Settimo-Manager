@@ -45,7 +45,6 @@ const MATRIX = {
 
   'lineup.write': ['admin', 'head_coach', 'assistant_coach'],
   'matchstats.write': ['admin', 'head_coach', 'assistant_coach'],
-  'ratings.write': ['admin', 'head_coach', 'assistant_coach', 'gk_coach'],
 
   'documents.write': ['admin', 'team_manager'],
   'finance.read': ['admin', 'team_manager', 'sporting_director'],
@@ -68,11 +67,9 @@ export const NAV = [
   { to: '/allenamenti', label: 'Allenamenti', icon: '🏃', all: true },
   { to: '/convocazioni', label: 'Convocazioni', icon: '📋', all: true },
   { to: '/partite', label: 'Partite', icon: '⚽', all: true },
-  { to: '/formazioni', label: 'Formazioni', icon: '🎯', perm: 'lineup.write' },
   { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
-  { to: '/valutazioni', label: 'Valutazioni', icon: '⭐', perm: 'ratings.write' },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
   { to: '/quote', label: 'Quote e multe', icon: '💶', all: true },
   { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },

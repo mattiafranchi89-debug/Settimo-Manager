@@ -130,7 +130,6 @@ service cloud.firestore {
     // ---------- lineups & match data ----------
     match /lineups/{eventId}      { allow read: if active(); allow write: if isCoach(); }
     match /matchStats/{eventId}   { allow read: if active(); allow write: if isCoach(); }
-    match /ratings/{docId}        { allow read: if isStaff() || isSelfPlayer(resource.data.playerId); allow write: if isCoach(); }
 
     // ---------- documents ----------
     match /documents/{docId} {

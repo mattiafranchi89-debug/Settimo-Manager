@@ -86,8 +86,8 @@ export default function SchedaGara() {
       const { getDocs, collection } = await import('firebase/firestore');
       const { db } = await import('../lib/firebase');
       const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [matchStats, ratings, attendance, allCallups] = await Promise.all([read('matchStats'), read('ratings'), read('attendance'), read('callups')]);
-      const r = await recalculateAllStats({ players, matchStats, ratings, attendance, callups: allCallups });
+      const [matchStats, attendance, allCallups] = await Promise.all([read('matchStats'), read('attendance'), read('callups')]);
+      const r = await recalculateAllStats({ players, matchStats, attendance, callups: allCallups });
       await audit(user, 'stats.recalculate', 'players', r);
       toast(`Statistiche aggiornate: ${r.players} giocatori, ${r.matches} gare chiuse`);
     } catch (e) {

@@ -61,18 +61,17 @@ export async function refreshStats(players) {
   const { getDocs, collection } = await import('firebase/firestore');
   const { db } = await import('./firebase');
   const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-  const [matchStats, ratings, attendance, callups] = await Promise.all([
-    read('matchStats'), read('ratings'), read('attendance'), read('callups')
+  const [matchStats, attendance, callups] = await Promise.all([
+    read('matchStats'), read('attendance'), read('callups')
   ]);
-  return recalculateAllStats({ players, matchStats, ratings, attendance, callups });
+  return recalculateAllStats({ players, matchStats, attendance, callups });
 }
 
 /**
- * Rebuild `players.stats` from every closed match, all ratings and all
- * attendance rows. Reads everything, writes once per player, so running it
+ * Rebuild `players.stats` from every closed match and all attendance rows. Reads everything, writes once per player, so running it
  * twice gives the same result — no double counting, no drift.
  */
-export async function recalculateAllStats({ players, matchStats, ratings, attendance, callups }) {
+export async function recalculateAllStats({ players, matchStats, attendance, callups }) {
   const stats = {};
   const base = () => ({
     appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,
@@ -80,6 +79,8 @@ export async function recalculateAllStats({ players, matchStats, ratings, attend
     // Pre-computed so the squad pages only ever read /players.
     lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0
   });
+  // avgRating is kept in the shape for existing documents but no longer computed:
+  // post-match ratings were removed from the application.
   players.forEach((p) => { stats[p.id] = base(); });
 
   const closed = matchStats.filter((m) => m.closed && m.totals).sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
@@ -108,15 +109,6 @@ export async function recalculateAllStats({ players, matchStats, ratings, attend
     });
   });
   Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; });
-
-  const ratingSum = {};
-  ratings.forEach((r) => {
-    if (!stats[r.playerId] || !r.value) return;
-    ratingSum[r.playerId] ||= { sum: 0, n: 0 };
-    ratingSum[r.playerId].sum += Number(r.value);
-    ratingSum[r.playerId].n += 1;
-  });
-  Object.entries(ratingSum).forEach(([pid, { sum, n }]) => { stats[pid].avgRating = Math.round((sum / n) * 10) / 10; });
 
   const trainingIds = new Set(attendance.map((a) => a.eventId));
   attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });

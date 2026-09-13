@@ -24,8 +24,8 @@ export function Statistiche() {
     setBusy(true);
     try {
       const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [ms, ratings, att, callups] = await Promise.all([read('matchStats'), read('ratings'), read('attendance'), read('callups')]);
-      const r = await recalculateAllStats({ players, matchStats: ms, ratings, attendance: att, callups });
+      const [ms, att, callups] = await Promise.all([read('matchStats'), read('attendance'), read('callups')]);
+      const r = await recalculateAllStats({ players, matchStats: ms, attendance: att, callups });
       toast(`Aggiornate: ${r.players} giocatori su ${r.matches} gare chiuse`);
     } catch (e) { toast('Ricalcolo non riuscito', 'error'); }
     setBusy(false);
@@ -95,52 +95,6 @@ export function Statistiche() {
         </div>
       </Card>
       <p><small>Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita chiusa. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
-    </>
-  );
-}
-
-/* ============================== VALUTAZIONI ============================== */
-export function Valutazioni() {
-  const { user } = useAuth();
-  const toast = useToast();
-  const { data: allEvents, loading } = useCollection('events', useMemo(() => [orderBy('date', 'desc'), limit(60)], []));
-  const matches = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
-  const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: ratings } = useCollection('ratings');
-  const [eventId, setEventId] = useState('');
-
-  const played = useMemo(() => matches.filter((m) => (m.date?.toDate?.() || new Date(m.date)) < new Date()), [matches]);
-  const current = eventId || played[0]?.id || '';
-  const map = useMemo(() => Object.fromEntries(ratings.filter((r) => r.eventId === current).map((r) => [r.playerId, r])), [ratings, current]);
-
-  const save = (playerId, value, note) => setDocument('ratings', `${current}_${playerId}`, {
-    eventId: current, playerId, value: Number(value), note: note || '',
-    by: user.uid, byName: user.name, at: serverTimestamp()
-  });
-
-  if (loading) return <Loading />;
-  if (!played.length) return <Card><Empty title="Nessuna partita giocata">Le valutazioni si inseriscono dopo la gara.</Empty></Card>;
-
-  return (
-    <>
-      <div className="pagehead"><div><h1>Valutazioni</h1><p>Voti post-gara riservati allo staff tecnico</p></div></div>
-      <Field label="Partita">
-        <Select value={current} onChange={(e) => setEventId(e.target.value)}>
-          {played.map((m) => <option key={m.id} value={m.id}>{fmtShort(m.date)} — {m.opponent}</option>)}
-        </Select>
-      </Field>
-      <div className="plist">
-        {sortPlayers(players).map((p) => (
-          <div key={p.id} className="prow">
-            <span className="prow__body">
-              <span className="prow__name">{p.fullName}</span>
-              <span className="prow__meta"><span>{positionLabel(p.position)}</span></span>
-            </span>
-            <Input type="number" min="1" max="10" step="0.5" style={{ width: 84, minHeight: 38 }}
-              defaultValue={map[p.id]?.value ?? ''} onBlur={(e) => e.target.value && save(p.id, e.target.value, map[p.id]?.note).then(() => toast('Voto salvato'))} />
-          </div>
-        ))}
-      </div>
     </>
   );
 }

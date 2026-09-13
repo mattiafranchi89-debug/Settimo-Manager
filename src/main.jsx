@@ -26,7 +26,6 @@ const Impostazioni = lazy(() => import('./pages/Impostazioni'));
 const Importa = lazy(() => import('./pages/Importa'));
 const Diagnostica = lazy(() => import('./pages/Diagnostica'));
 const Statistiche = lazy(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
-const Valutazioni = lazy(() => import('./pages/registri').then((m) => ({ default: m.Valutazioni })));
 const Documenti = lazy(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
 const QuoteMulte = lazy(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
 
@@ -82,11 +81,11 @@ function App() {
         <Route path="convocazioni" element={<Convocazioni />} />
         <Route path="convocazioni/nuova" element={<Protected perm="callup.draft"><ConvocazioneEditor /></Protected>} />
         <Route path="convocazioni/:id" element={<ConvocazioneEditor />} />
+        {/* Raggiungibile solo dal pulsante della convocazione, non dal menu. */}
         <Route path="formazioni" element={<Protected perm="lineup.write"><Formazioni /></Protected>} />
         <Route path="calendario" element={<Calendario />} />
         <Route path="campionato" element={<Campionato />} />
         <Route path="statistiche" element={<Statistiche />} />
-        <Route path="valutazioni" element={<Protected perm="ratings.write"><Valutazioni /></Protected>} />
         <Route path="documenti" element={<Protected perm="documents.write"><Documenti /></Protected>} />
         <Route path="quote" element={<QuoteMulte />} />
         <Route path="importa" element={<Protected perm="players.write"><Importa /></Protected>} />
