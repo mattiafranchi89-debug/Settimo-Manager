@@ -222,7 +222,8 @@ export default function Impostazioni() {
           ))}
         </div>
         <Alert level="info">
-          <strong>Sola lettura</strong>: vede rosa, calendario, partite e convocazioni, senza poter modificare nulla — adatto a un dirigente in fase di prova.<br />
+          <strong>Sola lettura</strong>: vede rosa, calendario, partite e convocazioni, senza poter modificare nulla — adatto ai giocatori.<br />
+          <strong>Direttore sportivo</strong>: come sola lettura, più la visibilità su quote e multe.<br />
           <strong>Allenatore</strong>: unico ruolo che può pubblicare le convocazioni, oltre a formazioni, presenze e valutazioni.<br />
           <strong>Dirigente accompagnatore</strong>: come sola lettura ma può gestire logistica, documenti, quote e condividere le convocazioni.<br />
           I giocatori vanno collegati alla scheda della rosa per vedere i propri dati.

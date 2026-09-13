@@ -14,7 +14,7 @@ export default function Formazioni() {
   const { club } = useClub();
   const toast = useToast();
 
-  const eventsQ = useMemo(() => [orderBy('date', 'desc'), limit(200)], []);
+  const eventsQ = useMemo(() => [orderBy('date', 'desc'), limit(60)], []);
   const { data: allEvents, loading } = useCollection('events', eventsQ);
   const matches = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));

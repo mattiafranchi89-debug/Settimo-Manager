@@ -14,8 +14,8 @@ export default function Dashboard() {
   const staff = can(user?.role, 'players.read');
 
   const nowTs = useMemo(() => new Date(), []);
-  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(6)], [nowTs]);
-  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(20)], [nowTs]);
+  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(5)], [nowTs]);
+  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(8)], [nowTs]);
 
   const { data: upcoming, loading } = useCollection('events', upcomingQ);
   const { data: pastEvents } = useCollection('events', pastQ);
@@ -26,21 +26,19 @@ export default function Dashboard() {
   const nextTraining = upcoming.find((e) => e.type === 'training');
 
   const finesQ = useMemo(() => [where('status', '==', 'aperto')], []);
-  const { data: openFines } = useCollection('fines', finesQ, can(user?.role, 'finance.read'));
-  const { data: openPayments } = useCollection('payments', finesQ, can(user?.role, 'finance.read'));
+  const seesFinance = can(user?.role, 'finance.read');
+  const { data: openFines } = useCollection('fines', finesQ, seesFinance);
+  const { data: openPayments } = useCollection('payments', finesQ, seesFinance);
 
   const injured = players.filter((p) => p.injury?.active).length;
 
-  const { data: matchStats } = useCollection('matchStats', [], staff);
-  const { data: attendance } = useCollection('attendance', [], staff);
-  const insights = useMemo(() => buildInsights({
-    players, matchStats, attendance,
-    trainings: [...upcoming, ...pastEvents].filter((e) => e.type === 'training'),
-    cardsPerSuspension: club.cardsPerSuspension || 4
-  }), [players, matchStats, attendance, upcoming, pastEvents, club.cardsPerSuspension]);
+  const insights = useMemo(
+    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
+    [players, club.cardsPerSuspension]
+  );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
 
-  const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []));
+  const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
   const lastCallup = callups[0];
 
   if (loading) return <Loading />;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './styles.css';
@@ -10,19 +10,25 @@ import { configMissing } from './lib/firebase';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Rosa from './pages/Rosa';
-import Allenamenti from './pages/Allenamenti';
-import Partite from './pages/Partite';
-import SchedaGara from './pages/SchedaGara';
-import Convocazioni from './pages/Convocazioni';
-import ConvocazioneEditor from './pages/ConvocazioneEditor';
-import Formazioni from './pages/Formazioni';
-import Calendario from './pages/Calendario';
-import Campionato from './pages/Campionato';
-import Impostazioni from './pages/Impostazioni';
-import Importa from './pages/Importa';
-import Diagnostica from './pages/Diagnostica';
-import { Statistiche, Valutazioni, Documenti, QuoteMulte } from './pages/registri';
+
+// Loaded on demand: a player opening the calendar never downloads the
+// call-up editor, the import screen or the match sheet.
+const Rosa = lazy(() => import('./pages/Rosa'));
+const Allenamenti = lazy(() => import('./pages/Allenamenti'));
+const Partite = lazy(() => import('./pages/Partite'));
+const SchedaGara = lazy(() => import('./pages/SchedaGara'));
+const Convocazioni = lazy(() => import('./pages/Convocazioni'));
+const ConvocazioneEditor = lazy(() => import('./pages/ConvocazioneEditor'));
+const Formazioni = lazy(() => import('./pages/Formazioni'));
+const Calendario = lazy(() => import('./pages/Calendario'));
+const Campionato = lazy(() => import('./pages/Campionato'));
+const Impostazioni = lazy(() => import('./pages/Impostazioni'));
+const Importa = lazy(() => import('./pages/Importa'));
+const Diagnostica = lazy(() => import('./pages/Diagnostica'));
+const Statistiche = lazy(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
+const Valutazioni = lazy(() => import('./pages/registri').then((m) => ({ default: m.Valutazioni })));
+const Documenti = lazy(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
+const QuoteMulte = lazy(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
 
 function Protected({ perm, children }) {
   const { user, loading } = useAuth();
@@ -64,6 +70,7 @@ function App() {
     );
   }
   return (
+    <Suspense fallback={<Loading />}>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Protected><Shell /></Protected>}>
@@ -88,6 +95,7 @@ function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   );
 }
 

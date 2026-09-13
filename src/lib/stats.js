@@ -53,6 +53,21 @@ export function computeMatchTotals({ starters = [], bench = [], events = [], dur
 }
 
 /**
+ * Runs a full recalculation after a staff action that changes the figures.
+ * The cost falls on the one person recording data, so that everyone else
+ * only ever reads /players.
+ */
+export async function refreshStats(players) {
+  const { getDocs, collection } = await import('firebase/firestore');
+  const { db } = await import('./firebase');
+  const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
+  const [matchStats, ratings, attendance, callups] = await Promise.all([
+    read('matchStats'), read('ratings'), read('attendance'), read('callups')
+  ]);
+  return recalculateAllStats({ players, matchStats, ratings, attendance, callups });
+}
+
+/**
  * Rebuild `players.stats` from every closed match, all ratings and all
  * attendance rows. Reads everything, writes once per player, so running it
  * twice gives the same result — no double counting, no drift.
@@ -62,11 +77,15 @@ export async function recalculateAllStats({ players, matchStats, ratings, attend
   const base = () => ({
     appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,
     yellowCards: 0, redCards: 0, avgRating: null, callups: 0, trainingsAttended: 0,
-    lastMatchMinutes: 0
+    // Pre-computed so the squad pages only ever read /players.
+    lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0
   });
   players.forEach((p) => { stats[p.id] = base(); });
 
   const closed = matchStats.filter((m) => m.closed && m.totals).sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+  const lastThree = closed.slice(-3);
+  const toDate = (v) => (v?.toDate ? v.toDate() : v ? new Date(v) : null);
+
   closed.forEach((m) => {
     Object.entries(m.totals).forEach(([pid, s]) => {
       const acc = stats[pid];
@@ -79,8 +98,16 @@ export async function recalculateAllStats({ players, matchStats, ratings, attend
       acc.yellowCards += s.yellow || 0;
       acc.redCards += s.red || 0;
       acc.lastMatchMinutes = s.minutes || 0;
+      if (s.played) acc.lastPlayedAt = toDate(m.date);
     });
   });
+
+  lastThree.forEach((m) => {
+    Object.entries(m.totals).forEach(([pid, s]) => {
+      if (stats[pid]) stats[pid].minutesLast3 += s.minutes || 0;
+    });
+  });
+  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; });
 
   const ratingSum = {};
   ratings.forEach((r) => {
@@ -91,7 +118,9 @@ export async function recalculateAllStats({ players, matchStats, ratings, attend
   });
   Object.entries(ratingSum).forEach(([pid, { sum, n }]) => { stats[pid].avgRating = Math.round((sum / n) * 10) / 10; });
 
+  const trainingIds = new Set(attendance.map((a) => a.eventId));
   attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });
+  Object.values(stats).forEach((s) => { s.totalTrainings = trainingIds.size; });
 
   (callups || []).forEach((c) => {
     if (!['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'].includes(c.status)) return;

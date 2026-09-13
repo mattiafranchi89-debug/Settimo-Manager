@@ -8,6 +8,7 @@ import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useTo
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue } from '../lib/format';
 import { can } from '../lib/permissions';
 import { deleteEventCascade } from '../lib/remove';
+import { refreshStats } from '../lib/stats';
 import { errorText } from './Rosa';
 
 const MOTIVI = { assente: 'Assente', giustificato: 'Giustificato', infortunato: 'Infortunato' };
@@ -20,11 +21,11 @@ export default function Allenamenti() {
   const canWrite = can(user?.role, 'events.write');
   const canAttend = can(user?.role, 'attendance.write');
 
-  const q = useMemo(() => [orderBy('date', 'desc'), limit(200)], []);
+  const q = useMemo(() => [orderBy('date', 'desc'), limit(80)], []);
   const { data: events, loading, error } = useCollection('events', q);
   const sessions = useMemo(() => events.filter((e) => e.type === 'training'), [events]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: allAttendance } = useCollection('attendance');
+  const { data: allAttendance } = useCollection('attendance', [], canAttend);
 
   const [creating, setCreating] = useState(false);
   const [attendFor, setAttendFor] = useState(null);
@@ -193,6 +194,8 @@ function Attendance({ session, players, user, onClose }) {
       });
       await batch.commit();
       await audit(user, 'attendance.save', session.id, { presenti: presentCount, assenti: absentCount });
+      // Keeps every player's counters current without anyone pressing "Ricalcola".
+      refreshStats(players).catch((e) => console.warn('statistiche non aggiornate', e));
       toast(`Presenze salvate: ${presentCount} presenti, ${absentCount} assenti`);
       onClose();
     } catch (e) {

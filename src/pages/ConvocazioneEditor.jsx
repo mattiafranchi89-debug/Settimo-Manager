@@ -31,19 +31,14 @@ export default function ConvocazioneEditor() {
   const canSetLineup = can(user?.role, 'lineup.write');
 
   const { data: existing, loading: loadingCallup } = useDoc('callups', id, !!id);
-  const eventsQ = useMemo(() => [orderBy('date', 'asc'), limit(200)], []);
+  const eventsQ = useMemo(() => [where('date', '>=', new Date(Date.now() - 7 * 86400000)), orderBy('date', 'asc'), limit(40)], []);
   const { data: allEvents } = useCollection('events', eventsQ);
   const events = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
   const { data: players, loading: loadingPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: matchStats } = useCollection('matchStats');
-  const { data: attendance } = useCollection('attendance');
-  const { data: allEventsForTrainings } = useCollection('events', useMemo(() => [orderBy('date', 'desc'), limit(200)], []));
-
-  const insights = useMemo(() => buildInsights({
-    players, matchStats, attendance,
-    trainings: allEventsForTrainings.filter((e) => e.type === 'training'),
-    cardsPerSuspension: club.cardsPerSuspension || 4
-  }), [players, matchStats, attendance, allEventsForTrainings, club.cardsPerSuspension]);
+  const insights = useMemo(
+    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
+    [players, club.cardsPerSuspension]
+  );
 
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, setDocument, updateDocument, serverTimestamp, where, audit } from '../lib/db';
-import { computeMatchTotals, recalculateAllStats, EVENT_TYPES } from '../lib/stats';
+import { computeMatchTotals, recalculateAllStats, refreshStats, EVENT_TYPES } from '../lib/stats';
 import { Card, Button, Field, Input, Select, Badge, Sheet, Alert, Loading, useToast, ConfirmDialog, Kpi } from '../components/ui';
 import { SLOTS, uploadAttachment, saveAttachmentLink, removeAttachment, validateFile, uploadErrorText } from '../lib/attachments';
 import { errorText } from './Rosa';
@@ -71,8 +71,13 @@ export default function SchedaGara() {
     setBusy(true);
     await save(true);
     await audit(user, 'match.close', id, { opponent: match.opponent, goals: ourGoals });
+    try {
+      const r = await refreshStats(players);
+      toast(`Gara chiusa e statistiche aggiornate (${r.matches} gare)`);
+    } catch (e) {
+      toast('Gara chiusa. Premi «Ricalcola statistiche» per aggiornare i totali.', 'error');
+    }
     setBusy(false);
-    toast('Gara chiusa. Ricalcola le statistiche dalla pagina Statistiche o qui sotto.');
   };
 
   const recalc = async () => {

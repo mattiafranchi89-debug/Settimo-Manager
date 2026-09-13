@@ -21,15 +21,10 @@ export default function Rosa() {
   const navigate = useNavigate();
   const { data: players, loading } = useCollection('players');
   const { club } = useClub();
-  const { data: matchStats } = useCollection('matchStats');
-  const { data: attendance } = useCollection('attendance');
-  const { data: events } = useCollection('events');
-
-  const insights = useMemo(() => buildInsights({
-    players, matchStats, attendance,
-    trainings: events.filter((e) => e.type === 'training'),
-    cardsPerSuspension: club.cardsPerSuspension || 4
-  }), [players, matchStats, attendance, events, club.cardsPerSuspension]);
+  const insights = useMemo(
+    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
+    [players, club.cardsPerSuspension]
+  );
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState('tutti');
   const [showArchived, setShowArchived] = useState(false);

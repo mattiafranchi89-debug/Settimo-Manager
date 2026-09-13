@@ -19,7 +19,6 @@ export function Statistiche() {
   const [busy, setBusy] = useState(false);
   const canRecalc = can(user?.role, 'matchstats.write');
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: matchStats } = useCollection('matchStats');
 
   const recalc = async () => {
     setBusy(true);
@@ -31,23 +30,19 @@ export function Statistiche() {
     } catch (e) { toast('Ricalcolo non riuscito', 'error'); }
     setBusy(false);
   };
-  const { data: attendance } = useCollection('attendance');
-  const { data: allEvents } = useCollection('events');
-  const trainings = useMemo(() => allEvents.filter((e) => e.type === 'training'), [allEvents]);
+
   const [sortBy, setSortBy] = useState('goals');
 
-  const rows = useMemo(() => {
-    const totalTrainings = trainings.length || 1;
-    return players.map((p) => {
-      const att = attendance.filter((a) => a.playerId === p.id && a.status === 'presente').length;
-      return {
-        ...p,
-        att,
-        attPct: Math.round((att / totalTrainings) * 100),
-        ...(p.stats || {})
-      };
-    }).sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0));
-  }, [players, attendance, trainings, sortBy]);
+  // Everything here comes from the aggregated figures on each player: the page
+  // costs one read per player even when the whole squad opens it.
+  const rows = useMemo(() => players.map((p) => {
+    const s = p.stats || {};
+    return {
+      ...p, ...s,
+      att: s.trainingsAttended || 0,
+      attPct: s.totalTrainings ? Math.round(((s.trainingsAttended || 0) / s.totalTrainings) * 100) : 0
+    };
+  }).sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0)), [players, sortBy]);
 
   if (loading) return <Loading />;
 
@@ -59,7 +54,7 @@ export function Statistiche() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Statistiche</h1><p>{matchStats.filter((m) => m.closed).length} gare chiuse · {trainings.length} sedute</p></div>
+        <div><h1>Statistiche</h1><p>{rows[0]?.matchesPlayedTotal || 0} gare chiuse · {rows[0]?.totalTrainings || 0} sedute</p></div>
         {canRecalc && <Button size="sm" variant="secondary" onClick={recalc} disabled={busy}>↻ Ricalcola</Button>}
       </div>
 
@@ -108,7 +103,7 @@ export function Statistiche() {
 export function Valutazioni() {
   const { user } = useAuth();
   const toast = useToast();
-  const { data: allEvents, loading } = useCollection('events', useMemo(() => [orderBy('date', 'desc'), limit(200)], []));
+  const { data: allEvents, loading } = useCollection('events', useMemo(() => [orderBy('date', 'desc'), limit(60)], []));
   const matches = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: ratings } = useCollection('ratings');

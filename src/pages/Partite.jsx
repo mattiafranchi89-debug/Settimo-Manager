@@ -17,7 +17,7 @@ export default function Partite() {
 
   // Equality + orderBy on different fields would need a composite index:
   // the squad's data is small, so we sort in Firestore and filter here.
-  const q = useMemo(() => [orderBy('date', 'desc'), limit(200)], []);
+  const q = useMemo(() => [orderBy('date', 'desc'), limit(80)], []);
   const { data: events, loading, error } = useCollection('events', q);
   const matches = useMemo(() => events.filter((e) => e.type === 'match'), [events]);
   const [editing, setEditing] = useState(null);

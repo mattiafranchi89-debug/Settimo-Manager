@@ -9,6 +9,7 @@ export const ROLES = {
   athletic_trainer: 'Preparatore atletico',
   gk_coach: 'Preparatore portieri',
   team_manager: 'Dirigente accompagnatore',
+  sporting_director: 'Direttore sportivo',
   readonly: 'Sola lettura',
   player: 'Giocatore'
 };
@@ -22,7 +23,7 @@ const MATRIX = {
   'audit.read': ['admin', 'head_coach'],
 
   // 'readonly' can see everything the staff sees, but appears in no write list.
-  'players.read': [...STAFF_ROLES, 'readonly'],
+  'players.read': [...STAFF_ROLES, 'readonly', 'sporting_director'],
   'players.write': ['admin', 'head_coach', 'team_manager'],
   'players.archive': ['admin'],
   'players.delete': ['admin'],
@@ -47,7 +48,7 @@ const MATRIX = {
   'ratings.write': ['admin', 'head_coach', 'assistant_coach', 'gk_coach'],
 
   'documents.write': ['admin', 'team_manager'],
-  'finance.read': ['admin', 'team_manager'],
+  'finance.read': ['admin', 'team_manager', 'sporting_director'],
   'finance.write': ['admin', 'team_manager']
 };
 

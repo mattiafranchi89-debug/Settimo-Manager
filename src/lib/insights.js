@@ -1,57 +1,35 @@
-import { toDate } from './format';
-
 /**
- * Everything a coach needs next to a name while picking the squad, derived
- * from closed match sheets and training attendance. No extra data entry.
+ * Squad insights derived from the aggregated figures already stored on each
+ * player document. Reading /players alone keeps a page open by 25 people cheap:
+ * the heavy aggregation runs once, when an administrator recalculates.
  */
-export function buildInsights({ players, matchStats, attendance, trainings, cardsPerSuspension = 4 }) {
-  const closed = matchStats
-    .filter((m) => m.closed && m.totals)
-    .sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)); // most recent first
 
-  const trainingIds = new Set(trainings.map((t) => t.id));
-  const totalTrainings = trainingIds.size;
+export function playerInsight(player, cardsPerSuspension = 4) {
+  const s = player?.stats || {};
+  const yellow = s.yellowCards || 0;
+  const toSuspension = cardsPerSuspension - (yellow % cardsPerSuspension);
+  const lastPlayed = s.lastPlayedAt?.toDate ? s.lastPlayedAt.toDate() : s.lastPlayedAt ? new Date(s.lastPlayedAt) : null;
 
+  return {
+    yellow,
+    red: s.redCards || 0,
+    diffidato: yellow > 0 && toSuspension === 1,
+    toSuspension,
+    minutesLast3: s.minutesLast3 || 0,
+    matchesConsidered: Math.min(3, s.matchesPlayedTotal || 0),
+    lastPlayed,
+    lastMinutes: s.lastMatchMinutes || 0,
+    weeksSincePlayed: lastPlayed ? Math.floor((Date.now() - lastPlayed.getTime()) / 604800000) : null,
+    neverPlayed: !lastPlayed && (s.matchesPlayedTotal || 0) > 0,
+    attended: s.trainingsAttended || 0,
+    totalTrainings: s.totalTrainings || 0,
+    attendancePct: s.totalTrainings ? Math.round(((s.trainingsAttended || 0) / s.totalTrainings) * 100) : null
+  };
+}
+
+export function buildInsights({ players, cardsPerSuspension = 4 }) {
   const out = {};
-  players.forEach((p) => {
-    let yellow = 0, red = 0, lastRedAt = null;
-    const lastThree = [];
-    let lastPlayed = null, lastMinutes = 0;
-
-    closed.forEach((m, index) => {
-      const s = m.totals[p.id];
-      if (!s) return;
-      yellow += s.yellow || 0;
-      if (s.red) { red += s.red; if (!lastRedAt) lastRedAt = toDate(m.date); }
-      if (index < 3) lastThree.push(s.minutes || 0);
-      if (s.played && !lastPlayed) { lastPlayed = toDate(m.date); lastMinutes = s.minutes || 0; }
-    });
-
-    const attended = attendance.filter(
-      (a) => a.playerId === p.id && a.status === 'presente' && trainingIds.has(a.eventId)
-    ).length;
-
-    const toSuspension = cardsPerSuspension - (yellow % cardsPerSuspension);
-
-    out[p.id] = {
-      yellow,
-      red,
-      lastRedAt,
-      // One booking away from sitting out: this is what gets forgotten.
-      diffidato: yellow > 0 && toSuspension === 1,
-      toSuspension,
-      minutesLast3: lastThree.reduce((a, b) => a + b, 0),
-      matchesConsidered: Math.min(3, closed.length),
-      lastPlayed,
-      lastMinutes,
-      weeksSincePlayed: lastPlayed ? Math.floor((Date.now() - lastPlayed.getTime()) / 604800000) : null,
-      neverPlayed: !lastPlayed && closed.length > 0,
-      attended,
-      totalTrainings,
-      attendancePct: totalTrainings ? Math.round((attended / totalTrainings) * 100) : null
-    };
-  });
-
+  players.forEach((p) => { out[p.id] = playerInsight(p, cardsPerSuspension); });
   return out;
 }
 
@@ -60,10 +38,10 @@ export function insightLine(i) {
   if (!i) return '';
   const parts = [];
   if (i.totalTrainings) parts.push(`${i.attended}/${i.totalTrainings} allen.`);
-  if (i.matchesConsidered) parts.push(`${i.minutesLast3}′ nelle ultime ${i.matchesConsidered}`);
+  if (i.matchesConsidered) parts.push(`${i.minutesLast3}\u2032 nelle ultime ${i.matchesConsidered}`);
   if (i.neverPlayed) parts.push('mai sceso in campo');
   else if (i.weeksSincePlayed >= 3) parts.push(`non gioca da ${i.weeksSincePlayed} sett.`);
-  return parts.join(' · ');
+  return parts.join(' \u00b7 ');
 }
 
 /** Players who deserve a look before the squad is published. */
