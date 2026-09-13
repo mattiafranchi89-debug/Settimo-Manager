@@ -63,9 +63,17 @@ export function useDoc(path, id, enabled = true) {
   return { data, loading };
 }
 
+/**
+ * Staff read the full configuration; everyone else only gets the public
+ * branding document, so names and logo still render correctly for them.
+ */
 export function useClub() {
   const { data, loading } = useDoc('config', 'club');
-  const club = useMemo(() => ({ ...DEFAULT_CLUB, ...(data || {}) }), [data]);
+  const { data: branding } = useDoc('config', 'branding');
+  const club = useMemo(
+    () => ({ ...DEFAULT_CLUB, ...(branding || {}), ...(data || {}) }),
+    [data, branding]
+  );
   return { club, loading };
 }
 

@@ -58,12 +58,15 @@ service cloud.firestore {
     // ---------- club configuration ----------
     // config/branding holds only public identity (name, season, logo) so the
     // confirmation page can be branded without exposing staff or defaults.
+    // Public identity only: club name, season, logo. Safe for everyone.
     match /config/branding {
       allow get: if true;
       allow list, write: if isAdmin();
     }
+    // config/club holds the staff WhatsApp number and the group invite link,
+    // so it is not readable by players or read-only accounts.
     match /config/{docId} {
-      allow read: if signedIn();
+      allow read: if isStaff();
       allow write: if isAdmin();
     }
 

@@ -3,6 +3,9 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { writeBatch, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { SQUAD, slug, emptyStats } from '../lib/seedData';
+import { getDocs, collection } from 'firebase/firestore';
+import { downloadCsv } from '../lib/bulk';
+import { fmtDateTime, toDate } from '../lib/format';
 import { errorText } from './Rosa';
 import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
@@ -23,6 +26,50 @@ export default function Impostazioni() {
   const [form, setForm] = useState(club);
   const [uploading, setUploading] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [exporting, setExporting] = useState('');
+
+  const pending = users.filter((u) => u.active === false);
+
+  /** Gives every waiting account the same role in one go. */
+  const approveAll = async (role) => {
+    await Promise.all(pending.map((u) => updateDocument('users', u.id, { role, active: true })));
+    await audit(user, 'users.bulk_approve', role, { count: pending.length });
+    toast(`${pending.length} utenti abilitati come ${ROLES[role]}`);
+  };
+
+  /**
+   * Firestore has no automatic backups on the free plan: this writes the whole
+   * database to CSV files you can keep on Drive.
+   */
+  const exportAll = async () => {
+    setExporting('in corso');
+    const flat = (v) => {
+      const d = toDate(v);
+      if (d instanceof Date && !isNaN(d)) return fmtDateTime(d);
+      if (v && typeof v === 'object') return JSON.stringify(v);
+      return v ?? '';
+    };
+    try {
+      for (const name of ['players', 'events', 'callups', 'attendance', 'matchStats', 'ratings', 'payments', 'fines', 'documents', 'lineups', 'users']) {
+        const snap = await getDocs(collection(db, name));
+        if (snap.empty) continue;
+        const rows = snap.docs.map((d) => {
+          const data = d.data();
+          const out = { id: d.id };
+          Object.keys(data).forEach((k) => { out[k] = flat(data[k]); });
+          return out;
+        });
+        const headers = [...new Set(rows.flatMap((r) => Object.keys(r)))];
+        downloadCsv(`${name}-${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+        await new Promise((r) => setTimeout(r, 400)); // browsers throttle rapid downloads
+      }
+      await audit(user, 'backup.export', 'all', {});
+      toast('Esportazione completata: controlla i download');
+    } catch (e) {
+      toast(errorText(e), 'error');
+    }
+    setExporting('');
+  };
 
   // One-tap alternative to scripts/seed.mjs for people without a computer.
   const loadSquad = async () => {
@@ -192,6 +239,35 @@ export default function Impostazioni() {
           <Input value={form.tuttocampoId || ''} onChange={set('tuttocampoId')} placeholder="bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa" />
         </Field>
         <p><small>Lascia vuoto per nascondere la sezione Campionato.</small></p>
+      </Card>
+
+      {pending.length > 0 && (
+        <Card title={`In attesa di approvazione (${pending.length})`}>
+          <p>Chi si registra da solo resta inattivo finché non gli assegni un ruolo. Puoi abilitarli tutti insieme.</p>
+          <div className="plist" style={{ marginBottom: 12 }}>
+            {pending.map((u) => (
+              <div key={u.id} className="prow">
+                <span className="prow__body">
+                  <span className="prow__name">{u.name || u.email}</span>
+                  <span className="prow__meta"><span>{u.email}</span></span>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="btnrow">
+            <Button onClick={() => approveAll('readonly')}>Abilita tutti in sola lettura</Button>
+            <Button variant="secondary" onClick={() => approveAll('player')}>Abilita tutti come giocatori</Button>
+          </div>
+          <p><small>Per un ruolo diverso da questi due, assegnalo singolarmente qui sotto.</small></p>
+        </Card>
+      )}
+
+      <Card title="Backup dei dati">
+        <p>Firestore non fa copie automatiche sul piano gratuito. Questa esportazione scarica un file CSV per ogni raccolta: conservali su Drive una volta al mese.</p>
+        <Button variant="secondary" onClick={exportAll} disabled={!!exporting}>
+          {exporting ? 'Esporto…' : '⬇ Esporta tutto in CSV'}
+        </Button>
+        <p><small>Il browser chiederà di consentire download multipli: accetta.</small></p>
       </Card>
 
       <Card title="Utenti e ruoli">

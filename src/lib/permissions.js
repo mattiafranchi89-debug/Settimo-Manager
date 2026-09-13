@@ -77,7 +77,7 @@ export const NAV = [
   { to: '/quote', label: 'Quote e multe', icon: '💶', all: true },
   { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
   { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true },
-  { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', all: true }
+  { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage' }
 ];
 
 export function navFor(role) {

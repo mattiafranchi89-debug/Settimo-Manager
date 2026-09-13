@@ -90,7 +90,7 @@ function App() {
         <Route path="documenti" element={<Protected perm="documents.write"><Documenti /></Protected>} />
         <Route path="quote" element={<QuoteMulte />} />
         <Route path="importa" element={<Protected perm="players.write"><Importa /></Protected>} />
-        <Route path="diagnostica" element={<Diagnostica />} />
+        <Route path="diagnostica" element={<Protected perm="club.manage"><Diagnostica /></Protected>} />
         <Route path="impostazioni" element={<Impostazioni />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

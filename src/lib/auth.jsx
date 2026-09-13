@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail
+  onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
+  createUserWithEmailAndPassword, updateProfile
 } from 'firebase/auth';
 import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, configMissing } from './firebase';
@@ -67,6 +68,21 @@ export function AuthProvider({ children }) {
         return false;
       }
     },
+    /** Anyone can register; an administrator then assigns the role. */
+    register: async (name, email, password) => {
+      setAuthError(null);
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: name });
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          name, email, role: 'player', active: false, createdAt: serverTimestamp()
+        });
+        return true;
+      } catch (e) {
+        setAuthError(mapAuthError(e.code));
+        return false;
+      }
+    },
     resetPassword: async (email) => {
       try { await sendPasswordResetEmail(auth, email); return true; }
       catch (e) { setAuthError(mapAuthError(e.code)); return false; }
@@ -87,6 +103,9 @@ function mapAuthError(code) {
     case 'auth/wrong-password':
     case 'auth/invalid-credential': return 'Email o password non corretti.';
     case 'auth/too-many-requests': return 'Troppi tentativi. Riprova tra qualche minuto.';
+    case 'auth/email-already-in-use': return 'Esiste già un account con questa email: prova ad accedere.';
+    case 'auth/weak-password': return 'Password troppo debole: usa almeno 6 caratteri.';
+    case 'auth/operation-not-allowed': return 'Registrazione non abilitata sul progetto Firebase.';
     case 'auth/network-request-failed': return 'Connessione assente. Controlla la rete.';
     default: return 'Accesso non riuscito. Riprova.';
   }
