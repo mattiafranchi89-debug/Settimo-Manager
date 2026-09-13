@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, where, orderBy, limit, audit } from '../lib/db';
 import {
-  Card, Button, Field, Input, Select, Textarea, Badge, Sheet,
+  Card, Button, Field, Input, Select, Badge, Sheet,
   Alert, Loading, useToast, ConfirmDialog
 } from '../components/ui';
 import {
@@ -47,7 +47,6 @@ export default function ConvocazioneEditor() {
   const [selected, setSelected] = useState([]);
   const [logistics, setLogistics] = useState(null);
   const [options, setOptions] = useState({ short: false, withPositions: true, withLogistics: true });
-  const [customMessage, setCustomMessage] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -59,7 +58,6 @@ export default function ConvocazioneEditor() {
     setEventId(existing.eventId);
     setSelected(existing.players || []);
     setLogistics(existing.logistics || null);
-    if (existing.message) setCustomMessage(existing.message);
     if (existing.options) setOptions(existing.options);
     setStep(1);
   }, [existing]);
@@ -97,7 +95,9 @@ export default function ConvocazioneEditor() {
     () => (event ? buildMessage({ club, match, selected: selectedPlayers, options }) : ''),
     [club, match, selectedPlayers, options, event]
   );
-  const message = customMessage ?? generated;
+  // Always regenerated from the fixture and the selected players: a stored
+  // text would resurface outdated wording when an old call-up is reopened.
+  const message = generated;
 
   const toggle = (pid) => setSelected((s) => (s.includes(pid) ? s.filter((x) => x !== pid) : [...s, pid]));
 
@@ -343,7 +343,7 @@ export default function ConvocazioneEditor() {
                 ['withLogistics', 'Con logistica']
               ].map(([k, label]) => (
                 <button key={k} className={`chip ${options[k] ? 'chip--on' : ''}`}
-                  onClick={() => { setCustomMessage(null); setOptions((o) => ({ ...o, [k]: !o[k] })); }}>
+                  onClick={() => setOptions((o) => ({ ...o, [k]: !o[k] }))}>
                   {label}
                 </button>
               ))}
@@ -365,16 +365,7 @@ export default function ConvocazioneEditor() {
               )}
               <Button variant="ghost" size="sm" onClick={async () => { await copyText(onlyNames(selectedPlayers)); toast('Elenco convocati copiato'); }}>Copia solo i convocati</Button>
               <Button variant="ghost" size="sm" onClick={() => window.print()}>Stampa / PDF</Button>
-              <Button variant="ghost" size="sm" onClick={() => setCustomMessage(customMessage == null ? generated : null)}>
-                {customMessage == null ? 'Modifica testo' : 'Ripristina testo generato'}
-              </Button>
             </div>
-
-            {customMessage != null && (
-              <Field label="Testo personalizzato">
-                <Textarea rows={12} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} />
-              </Field>
-            )}
 
             <Alert level="info">
               {club.groupLink
