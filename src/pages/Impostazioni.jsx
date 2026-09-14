@@ -7,10 +7,9 @@ import { getDocs, collection } from 'firebase/firestore';
 import { downloadCsv } from '../lib/bulk';
 import { fmtDateTime, toDate } from '../lib/format';
 import { errorText } from './Rosa';
-import { copyText as copyToClipboard } from '../lib/callup';
 import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
-import { useClub, useCollection, useDoc, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
+import { useClub, useCollection, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Alert, Loading, useToast } from '../components/ui';
 import { ROLES } from '../lib/permissions';
 import { can } from '../lib/permissions';
@@ -95,9 +94,6 @@ export default function Impostazioni() {
   useEffect(() => { setForm(club); }, [club]);
 
   const { data: users } = useCollection('users', [], isAdmin);
-  const { data: registration } = useDoc('config', 'registration', isAdmin);
-  const [code, setCode] = useState('');
-  useEffect(() => { setCode(registration?.code || ''); }, [registration]);
   const { data: players } = useCollection('players', [], isAdmin);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -218,11 +214,11 @@ export default function Impostazioni() {
 
       <Card title="Come aggiungere una persona">
         <ol style={{ paddingLeft: 20, margin: '0 0 8px' }}>
-          <li>Manda alla persona l'indirizzo del sito e il <strong>codice società</strong> qui sotto.</li>
-          <li>Si registra da sola con nome, email e password.</li>
-          <li>Compare qui come <em>in attesa</em>: le assegni il ruolo e diventa operativa.</li>
+          <li>Console Firebase → Authentication → Users → <strong>Aggiungi utente</strong>: inserisci email e una password provvisoria.</li>
+          <li>Comunica email e password all'interessato e digli di fare un primo accesso al sito.</li>
+          <li>Dopo quell'accesso comparirà qui sotto come <em>in attesa</em>: assegnagli il ruolo e diventa operativo.</li>
         </ol>
-        <p><small>Senza il codice l'account non viene nemmeno creato. Chi non ha ancora un ruolo vede solo un avviso di attesa, nessun dato. Le password si recuperano da soli con "Password dimenticata".</small></p>
+        <p><small>Chi non ha ancora un ruolo vede solo un avviso di attesa. Le password si cambiano da soli con "Password dimenticata" nella pagina di accesso.</small></p>
       </Card>
 
       <Card title="Invio dei messaggi">
@@ -243,24 +239,6 @@ export default function Impostazioni() {
           <Input value={form.tuttocampoId || ''} onChange={set('tuttocampoId')} placeholder="bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa" />
         </Field>
         <p><small>Lascia vuoto per nascondere la sezione Campionato.</small></p>
-      </Card>
-
-      <Card title="Registrazione">
-        <p>Chi si registra deve inserire questo codice: senza, l'account non viene creato. Cambialo a fine stagione o se gira troppo.</p>
-        <Field label="Codice società" hint="Lascia vuoto per chiudere del tutto le registrazioni.">
-          <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SETTIMO2627" />
-        </Field>
-        <div className="btnrow">
-          <Button onClick={async () => {
-            try {
-              await setDocument('config', 'registration', { code: code.trim(), updatedBy: user.uid, updatedAt: serverTimestamp() });
-              await audit(user, 'registration.code', 'config/registration', {});
-              toast(code.trim() ? 'Codice aggiornato' : 'Registrazioni chiuse');
-            } catch (e) { toast(errorText(e), 'error'); }
-          }}>Salva codice</Button>
-          <Button variant="ghost" onClick={async () => { await copyToClipboard(code); toast('Codice copiato'); }}>Copia</Button>
-        </div>
-        <p><small>Il codice non è leggibile dall'app da nessun altro ruolo: viene verificato dalle regole di sicurezza, non dal browser.</small></p>
       </Card>
 
       {pending.length > 0 && (
