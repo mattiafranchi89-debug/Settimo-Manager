@@ -11,6 +11,7 @@ export default function Login() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [registered, setRegistered] = useState(false);
@@ -23,7 +24,7 @@ export default function Login() {
     setBusy(true);
     if (mode === 'login') {
       await login(email.trim(), password);
-    } else if (await register(name.trim(), email.trim(), password)) {
+    } else if (await register(name.trim(), email.trim(), password, code)) {
       setRegistered(true);
     }
     setBusy(false);
@@ -59,6 +60,12 @@ export default function Login() {
               <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 autoComplete={mode === 'register' ? 'new-password' : 'current-password'} required minLength={6} />
             </Field>
+            {mode === 'register' && (
+              <Field label="Codice società" hint="Te lo comunica un responsabile della squadra.">
+                <Input value={code} onChange={(e) => setCode(e.target.value)} required
+                  autoCapitalize="characters" placeholder="es. SETTIMO2627" />
+              </Field>
+            )}
 
             <Button type="submit" block disabled={busy}>
               {busy ? 'Attendi…' : mode === 'login' ? 'Accedi' : 'Crea account'}

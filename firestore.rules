@@ -16,10 +16,10 @@ service cloud.firestore {
     function profile() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
-    // .get(field, default) never errors on a missing field: a user document
-    // without an explicit "active" flag counts as active.
+    // A profile counts as active only when the flag says so: a document
+    // without it is treated as still waiting for approval.
     function role() { return hasProfile() ? profile().get('role', 'player') : 'guest'; }
-    function active() { return hasProfile() && profile().get('active', true) != false; }
+    function active() { return hasProfile() && profile().get('active', false) != false; }
 
     function isAdmin()   { return active() && role() == 'admin'; }
     function isHead()    { return active() && role() == 'head_coach'; }
@@ -45,10 +45,14 @@ service cloud.firestore {
     // ---------- users ----------
     match /users/{uid} {
       allow read: if isStaff() || request.auth.uid == uid;
+      // Self-registration: the club code must match, the account starts
+      // inactive and cannot grant itself a role.
       allow create: if isAdmin()
                     || (request.auth.uid == uid
                         && request.resource.data.role == 'player'
-                        && request.resource.data.active == false);
+                        && request.resource.data.active == false
+                        && registrationCode() != null
+                        && request.resource.data.inviteCode == registrationCode());
       // A user may edit their own display fields but never their own role/active flag.
       allow update: if isAdmin()
                     || (request.auth.uid == uid && onlyChanged(['name','phone','photoUrl','updatedAt']));
@@ -58,6 +62,19 @@ service cloud.firestore {
     // ---------- club configuration ----------
     // config/branding holds only public identity (name, season, logo) so the
     // confirmation page can be branded without exposing staff or defaults.
+    // The registration code is never readable by the client: rules can read it
+    // server-side with get(), which is enough to validate a sign-up.
+    function registrationCode() {
+      return exists(/databases/$(database)/documents/config/registration)
+        ? get(/databases/$(database)/documents/config/registration).data.code
+        : null;
+    }
+
+    match /config/registration {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
     // Public identity only: club name, season, logo. Safe for everyone.
     match /config/branding {
       allow get: if true;

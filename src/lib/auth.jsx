@@ -23,16 +23,6 @@ export function AuthProvider({ children }) {
       unsubProfile = onSnapshot(
         doc(db, 'users', fbUser.uid),
         async (snap) => {
-          // First access: register the user as pending so an administrator
-          // can see them in Impostazioni and assign a role.
-          if (!snap.exists()) {
-            try {
-              await setDoc(doc(db, 'users', fbUser.uid), {
-                name: fbUser.displayName || fbUser.email,
-                email: fbUser.email, role: 'player', active: false, createdAt: serverTimestamp()
-              });
-            } catch (e) { console.warn('profilo non creato', e); }
-          }
           const p = snap.data() || {};
           setUser({
             uid: fbUser.uid,
@@ -68,17 +58,28 @@ export function AuthProvider({ children }) {
         return false;
       }
     },
-    /** Anyone can register; an administrator then assigns the role. */
-    register: async (name, email, password) => {
+    /**
+     * Registration is gated by the club code, checked by the security rules.
+     * If the profile is refused the just-created login is removed, so a wrong
+     * code leaves nothing behind.
+     */
+    register: async (name, email, password, inviteCode) => {
       setAuthError(null);
+      let cred;
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        cred = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(cred.user, { displayName: name });
         await setDoc(doc(db, 'users', cred.user.uid), {
-          name, email, role: 'player', active: false, createdAt: serverTimestamp()
+          name, email, role: 'player', active: false,
+          inviteCode: inviteCode.trim(), createdAt: serverTimestamp()
         });
         return true;
       } catch (e) {
+        if (cred?.user && String(e.code || '').includes('permission-denied')) {
+          try { await cred.user.delete(); } catch { /* niente da ripulire */ }
+          setAuthError('Codice società non valido: chiedilo a un responsabile.');
+          return false;
+        }
         setAuthError(mapAuthError(e.code));
         return false;
       }
