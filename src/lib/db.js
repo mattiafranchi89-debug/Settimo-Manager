@@ -103,6 +103,8 @@ export const DEFAULT_CLUB = {
   tuttocampoId: 'bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa',
   competitions: ['Prima Categoria', 'Coppa Lombardia', 'Amichevole'],
   trainingLocations: ['Campo comunale — sintetico', 'Campo comunale — erba'],
+  trainingDays: [2, 3, 5], // martedì, mercoledì, venerdì
+  trainingTime: '19:15',
   staff: { head_coach: 'Mattia Franchi', assistant_coach: '', team_manager: '', athletic_trainer: '', gk_coach: '' }
 };
 

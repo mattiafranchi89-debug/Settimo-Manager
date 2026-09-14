@@ -207,6 +207,31 @@ export default function Impostazioni() {
           <Input value={(form.competitions || []).join(', ')}
             onChange={(e) => setForm((f) => ({ ...f, competitions: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) }))} />
         </Field>
+        <div className="row2">
+          <Field label="Giorni di allenamento" hint="Iniziali: Do Lu Ma Me Gi Ve Sa.">
+            <Input value={(form.trainingDays || []).map((d) => ['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa'][d]).join(' ')} readOnly />
+          </Field>
+          <Field label="Orario abituale">
+            <Input type="time" value={form.trainingTime || '19:15'} onChange={set('trainingTime')} />
+          </Field>
+        </div>
+        <div className="chiprow">
+          {['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa'].map((d, i) => {
+            const on = (form.trainingDays || []).includes(i);
+            return (
+              <button key={d} className={`chip ${on ? 'chip--on' : ''}`}
+                onClick={() => setForm((f) => ({
+                  ...f,
+                  trainingDays: on
+                    ? (f.trainingDays || []).filter((x) => x !== i)
+                    : [...(f.trainingDays || []), i].sort()
+                }))}>
+                {d}
+              </button>
+            );
+          })}
+        </div>
+
         <Field label="Campi di allenamento" hint="Separati da virgola.">
           <Input value={(form.trainingLocations || []).join(', ')}
             onChange={(e) => setForm((f) => ({ ...f, trainingLocations: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) }))} />

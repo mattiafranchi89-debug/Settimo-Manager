@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, setDocument, serverTimestamp, where, orderBy, limit, audit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
-import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue } from '../lib/format';
+import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue, toDate } from '../lib/format';
 import { can } from '../lib/permissions';
 import { deleteEventCascade } from '../lib/remove';
 import { refreshStats } from '../lib/stats';
 import { errorText } from './Rosa';
+import { collection, setDoc, serverTimestamp as ts } from 'firebase/firestore';
 
 const MOTIVI = { assente: 'Assente', giustificato: 'Giustificato', infortunato: 'Infortunato' };
 
@@ -30,6 +31,7 @@ export default function Allenamenti() {
   const [creating, setCreating] = useState(false);
   const [attendFor, setAttendFor] = useState(null);
   const [removing, setRemoving] = useState(null);
+  const [generating, setGenerating] = useState(false);
   const canDelete = can(user?.role, 'events.delete');
 
   const create = async (form) => {
@@ -61,6 +63,7 @@ export default function Allenamenti() {
         <div><h1>Allenamenti</h1><p>{upcoming.length} sedute in programma</p></div>
         <div className="btnrow">
           {canWrite && <Button size="sm" variant="secondary" onClick={() => navigate('/importa?tipo=allenamenti')}>⬆ Importa</Button>}
+          {canWrite && <Button size="sm" variant="secondary" onClick={() => setGenerating(true)}>🗓 Genera</Button>}
           {canWrite && <Button size="sm" onClick={() => setCreating(true)}>＋ Seduta</Button>}
         </div>
       </div>
@@ -99,6 +102,10 @@ export default function Allenamenti() {
           }}
           onClose={() => setRemoving(null)}
         />
+      )}
+
+      {generating && (
+        <GeneraSedute club={club} events={events} user={user} onClose={() => setGenerating(false)} />
       )}
 
       {creating && <SessionForm club={club} onSave={create} onClose={() => setCreating(false)} />}
@@ -252,6 +259,145 @@ function Attendance({ session, players, user, onClose }) {
         <Button onClick={save} disabled={busy}>{busy ? 'Salvo…' : `Salva (${presentCount} presenti)`}</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
+    </Sheet>
+  );
+}
+
+
+/* --------------------- generazione delle sedute ricorrenti --------------------- */
+
+const DAYS = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+const isoWeek = (d) => {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+  const start = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return `${t.getUTCFullYear()}-${Math.ceil(((t - start) / 86400000 + 1) / 7)}`;
+};
+
+function GeneraSedute({ club, events, user, onClose }) {
+  const toast = useToast();
+  const today = new Date();
+  const [from, setFrom] = useState(toInputValue(today).slice(0, 10));
+  const [to, setTo] = useState(toInputValue(new Date(today.getTime() + 90 * 86400000)).slice(0, 10));
+  const [days, setDays] = useState(club.trainingDays || [2, 3, 5]);
+  const [time, setTime] = useState(club.trainingTime || '19:15');
+  const [venue, setVenue] = useState(club.trainingLocations?.[0] || '');
+  const [onlyMatchWeeks, setOnlyMatchWeeks] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  // Weeks that actually contain a fixture, so an empty week produces no sessions.
+  const matchWeeks = useMemo(() => new Set(
+    events.filter((e) => e.type === 'match').map((e) => toDate(e.date)).filter(Boolean).map(isoWeek)
+  ), [events]);
+
+  const existing = useMemo(() => new Set(
+    events.filter((e) => e.type === 'training').map((e) => {
+      const d = toDate(e.date);
+      return d ? `${toInputValue(d).slice(0, 10)}T${toInputValue(d).slice(11, 16)}` : '';
+    })
+  ), [events]);
+
+  const planned = useMemo(() => {
+    if (!from || !to) return [];
+    const [h, m] = time.split(':').map(Number);
+    const out = [];
+    const cursor = new Date(`${from}T00:00:00`);
+    const end = new Date(`${to}T23:59:59`);
+    while (cursor <= end && out.length < 300) {
+      if (days.includes(cursor.getDay())) {
+        const d = new Date(cursor);
+        d.setHours(h || 0, m || 0, 0, 0);
+        const key = `${toInputValue(d).slice(0, 10)}T${toInputValue(d).slice(11, 16)}`;
+        const inMatchWeek = matchWeeks.has(isoWeek(d));
+        if ((!onlyMatchWeeks || inMatchWeek) && !existing.has(key) && d > new Date()) out.push(d);
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return out;
+  }, [from, to, days, time, onlyMatchWeeks, matchWeeks, existing]);
+
+  const create = async () => {
+    setBusy(true);
+    try {
+      const batchId = `gen_${Date.now()}`;
+      for (let i = 0; i < planned.length; i += 400) {
+        const batch = writeBatch(db);
+        planned.slice(i, i + 400).forEach((d) => {
+          batch.set(doc(collection(db, 'events')), {
+            type: 'training', date: d, venue, focus: '', notes: '',
+            seasonId: club.season, importBatchId: batchId,
+            createdBy: user.uid, createdAt: ts()
+          });
+        });
+        await batch.commit();
+      }
+      await setDoc(doc(db, 'imports', batchId), {
+        kind: 'allenamenti', label: 'Allenamenti', collection: 'events',
+        count: planned.length, file: 'generazione automatica', by: user.name, at: ts()
+      });
+      await audit(user, 'training.generate', batchId, { count: planned.length, days, time });
+      toast(`${planned.length} sedute create`);
+      onClose();
+    } catch (e) {
+      toast(errorText(e), 'error');
+    }
+    setBusy(false);
+  };
+
+  return (
+    <Sheet title="Genera sedute" onClose={onClose}>
+      <div className="row2">
+        <Field label="Dal"><Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></Field>
+        <Field label="Al"><Input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></Field>
+      </div>
+
+      <Field label="Giorni">
+        <div className="chiprow" style={{ marginBottom: 0 }}>
+          {DAYS.map((d, i) => (
+            <button key={d} className={`chip ${days.includes(i) ? 'chip--on' : ''}`}
+              onClick={() => setDays((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i].sort()))}>
+              {d.slice(0, 3)}
+            </button>
+          ))}
+        </div>
+      </Field>
+
+      <div className="row2">
+        <Field label="Orario"><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></Field>
+        <Field label="Campo"><Select value={venue} onChange={(e) => setVenue(e.target.value)} options={club.trainingLocations || []} /></Field>
+      </div>
+
+      <Field label="Quando allenarsi">
+        <div className="stack">
+          <button className={`prow ${onlyMatchWeeks ? 'prow--selected' : ''}`} onClick={() => setOnlyMatchWeeks(true)}>
+            <span className="prow__check">{onlyMatchWeeks ? '✓' : ''}</span>
+            <span className="prow__body">
+              <span className="prow__name">Solo nelle settimane con una partita</span>
+              <span className="prow__meta"><span>Le settimane di sosta restano libere</span></span>
+            </span>
+          </button>
+          <button className={`prow ${!onlyMatchWeeks ? 'prow--selected' : ''}`} onClick={() => setOnlyMatchWeeks(false)}>
+            <span className="prow__check">{!onlyMatchWeeks ? '✓' : ''}</span>
+            <span className="prow__body"><span className="prow__name">Tutte le settimane del periodo</span></span>
+          </button>
+        </div>
+      </Field>
+
+      {onlyMatchWeeks && matchWeeks.size === 0 && (
+        <Alert level="warn">Non ci sono partite in calendario: nessuna settimana risulta valida. Carica prima le gare o scegli «tutte le settimane».</Alert>
+      )}
+
+      <Alert level={planned.length ? 'ok' : 'info'}>
+        {planned.length
+          ? `${planned.length} sedute da creare, dalla prima del ${fmtShort(planned[0])}.`
+          : 'Nessuna seduta da creare con questi criteri: le date già presenti e quelle passate vengono saltate.'}
+      </Alert>
+
+      <div className="btnrow">
+        <Button disabled={busy || !planned.length} onClick={create}>{busy ? 'Creo…' : `Crea ${planned.length} sedute`}</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+      <p><small>Se sbagli, le trovi in Importazioni come blocco unico e le elimini tutte insieme.</small></p>
     </Sheet>
   );
 }
