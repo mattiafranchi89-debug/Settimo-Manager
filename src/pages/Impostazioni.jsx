@@ -28,7 +28,33 @@ export default function Impostazioni() {
   const [seeding, setSeeding] = useState(false);
   const [exporting, setExporting] = useState('');
 
+  // One-tap alternative to scripts/seed.mjs for people without a computer.
+  const loadSquad = async () => {
+    setSeeding(true);
+    try {
+      const batch = writeBatch(db);
+      batch.set(doc(db, 'config', 'club'), { ...DEFAULT_CLUB, updatedAt: serverTimestamp() }, { merge: true });
+      batch.set(doc(db, 'config', 'branding'), { clubName: DEFAULT_CLUB.clubName, season: DEFAULT_CLUB.season, logoUrl: DEFAULT_CLUB.logoUrl }, { merge: true });
+      SQUAD.forEach((p) => batch.set(doc(db, 'players', slug(p.fullName)), {
+        ...p, birthDate: new Date(p.birthDate), secondaryPosition: '', shirtNumber: null, preferredFoot: 'destro',
+        phone: '', email: '', active: true, registered: true, injury: { active: false }, stats: emptyStats(),
+        createdAt: serverTimestamp()
+      }, { merge: true }));
+      await batch.commit();
+      await audit(user, 'seed.squad', 'players', { count: SQUAD.length });
+      toast(`Caricati ${SQUAD.length} giocatori e la configurazione della società`);
+    } catch (e) {
+      toast(errorText(e), 'error');
+    }
+    setSeeding(false);
+  };
+  useEffect(() => { setForm(club); }, [club]);
+
+  const { data: users } = useCollection('users', [], isAdmin);
+  const { data: players } = useCollection('players', [], isAdmin);
+
   const pending = users.filter((u) => u.active === false);
+
 
   /** Gives every waiting account the same role in one go. */
   const approveAll = async (role) => {
@@ -70,31 +96,6 @@ export default function Impostazioni() {
     }
     setExporting('');
   };
-
-  // One-tap alternative to scripts/seed.mjs for people without a computer.
-  const loadSquad = async () => {
-    setSeeding(true);
-    try {
-      const batch = writeBatch(db);
-      batch.set(doc(db, 'config', 'club'), { ...DEFAULT_CLUB, updatedAt: serverTimestamp() }, { merge: true });
-      batch.set(doc(db, 'config', 'branding'), { clubName: DEFAULT_CLUB.clubName, season: DEFAULT_CLUB.season, logoUrl: DEFAULT_CLUB.logoUrl }, { merge: true });
-      SQUAD.forEach((p) => batch.set(doc(db, 'players', slug(p.fullName)), {
-        ...p, birthDate: new Date(p.birthDate), secondaryPosition: '', shirtNumber: null, preferredFoot: 'destro',
-        phone: '', email: '', active: true, registered: true, injury: { active: false }, stats: emptyStats(),
-        createdAt: serverTimestamp()
-      }, { merge: true }));
-      await batch.commit();
-      await audit(user, 'seed.squad', 'players', { count: SQUAD.length });
-      toast(`Caricati ${SQUAD.length} giocatori e la configurazione della società`);
-    } catch (e) {
-      toast(errorText(e), 'error');
-    }
-    setSeeding(false);
-  };
-  useEffect(() => { setForm(club); }, [club]);
-
-  const { data: users } = useCollection('users', [], isAdmin);
-  const { data: players } = useCollection('players', [], isAdmin);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const setStaff = (k) => (e) => setForm((f) => ({ ...f, staff: { ...f.staff, [k]: e.target.value } }));
