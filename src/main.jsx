@@ -25,6 +25,7 @@ const Campionato = lazy(() => import('./pages/Campionato'));
 const Impostazioni = lazy(() => import('./pages/Impostazioni'));
 const Importa = lazy(() => import('./pages/Importa'));
 const Diagnostica = lazy(() => import('./pages/Diagnostica'));
+const Registro = lazy(() => import('./pages/Registro'));
 const Statistiche = lazy(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
 const Documenti = lazy(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
 const QuoteMulte = lazy(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
@@ -89,6 +90,7 @@ function App() {
         <Route path="documenti" element={<Protected perm="documents.write"><Documenti /></Protected>} />
         <Route path="quote" element={<QuoteMulte />} />
         <Route path="importa" element={<Protected perm="players.write"><Importa /></Protected>} />
+        <Route path="registro" element={<Protected perm="audit.read"><Registro /></Protected>} />
         <Route path="diagnostica" element={<Protected perm="club.manage"><Diagnostica /></Protected>} />
         <Route path="impostazioni" element={<Impostazioni />} />
       </Route>

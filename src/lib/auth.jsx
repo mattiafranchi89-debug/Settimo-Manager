@@ -5,6 +5,7 @@ import {
 } from 'firebase/auth';
 import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, configMissing } from './firebase';
+import { trackVisit } from './usage';
 import { can } from './permissions';
 
 const Ctx = createContext(null);
@@ -34,15 +35,17 @@ export function AuthProvider({ children }) {
             } catch (e) { console.warn('profilo non creato', e); }
           }
           const p = snap.data() || {};
-          setUser({
+          const profile = {
             uid: fbUser.uid,
             email: fbUser.email,
             name: p.name || fbUser.email,
             role: p.role || 'player',
             playerId: p.playerId || null,
             active: p.active !== false
-          });
+          };
+          setUser(profile);
           setLoading(false);
+          trackVisit(profile);
         },
         () => {
           setUser({ uid: fbUser.uid, email: fbUser.email, name: fbUser.email, role: 'player', active: false });

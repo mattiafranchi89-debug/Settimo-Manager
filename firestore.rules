@@ -154,6 +154,14 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // ---------- usage counters ----------
+    // Everyone records their own visits; only the leadership reads them.
+    match /usage/{docId} {
+      allow read: if isAdmin() || isHead();
+      allow create, update: if active() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
     // ---------- audit log ----------
     // Append-only. Never editable, never deletable from the client.
     match /auditLogs/{logId} {
