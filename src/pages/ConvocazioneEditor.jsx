@@ -11,7 +11,7 @@ import {
 import {
   GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate
 } from '../lib/format';
-import { validateCallup, summarise, buildMessage, onlyNames, copyText, shareMessage } from '../lib/callup';
+import { validateCallup, summarise, buildMessage, copyText } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { can } from '../lib/permissions';
 import { errorText } from './Rosa';
@@ -153,42 +153,40 @@ export default function ConvocazioneEditor() {
       });
     }
     setBusy(false);
-    toast(status === 'bozza' ? 'Bozza salvata' : 'Convocazione pubblicata');
+    toast(status === 'bozza' ? 'Bozza salvata' : 'Convocazione registrata');
     if (!existing) navigate(`/convocazioni/${ref.id}`, { replace: true });
     return ref.id;
   };
 
-  const tryPublish = () => {
-    if (!canPublish) return toast('Solo l\'allenatore può pubblicare la convocazione', 'error');
-    if (blocking.length) {
+  /**
+   * WhatsApp non consente di precompilare un messaggio in un gruppo: il testo
+   * va negli appunti e il gruppo si apre pronto per incollare.
+   */
+  const shareToGroup = async (reason) => {
+    await copyText(message);
+    await persist('condivisa', reason);
+    toast(club.groupLink
+      ? 'Messaggio copiato: tieni premuto nel gruppo e incolla'
+      : 'Messaggio copiato');
+    if (club.groupLink) window.open(club.groupLink, '_blank', 'noopener');
+  };
+
+  /** Un solo gesto: condividere è anche pubblicare, avvisi compresi. */
+  const shareAndPublish = () => {
+    if (blocking.length && canOverride) {
       setConfirmDialog({
-        title: 'Pubblicare con avvisi aperti?',
+        title: 'Procedere con avvisi aperti?',
         message: `Ci sono ${blocking.length} avvisi bloccanti. Puoi procedere solo motivando la scelta: la motivazione resta nel log e la responsabilità della lista è dell'allenatore.`,
         requireReason: true,
-        onConfirm: (reason) => persist('pubblicata', reason)
+        onConfirm: (r) => shareToGroup(r)
       });
-    } else {
-      persist('pubblicata');
+      return;
     }
-  };
-
-  /**
-   * WhatsApp cannot prefill a message in a group, so the text goes to the
-   * clipboard and the group opens ready for a paste.
-   */
-  const shareToGroup = async () => {
-    await copyText(message);
-    await persist('condivisa');
-    toast('Messaggio copiato: tieni premuto nel gruppo e incolla');
-    window.open(club.groupLink, '_blank', 'noopener');
-  };
-
-  const share = async () => {
-    const res = await shareMessage(message, `Convocazione ${event.opponent}`);
-    if (res !== 'cancelled') {
-      await persist('condivisa');
-      toast('Segnata come condivisa');
+    if (blocking.length && !canOverride) {
+      toast("Ci sono avvisi bloccanti: serve l'allenatore per procedere", 'error');
+      return;
     }
+    shareToGroup();
   };
 
   if (loadingPlayers || (id && loadingCallup)) return <Loading />;
@@ -340,66 +338,37 @@ export default function ConvocazioneEditor() {
       {step === 2 && event && (
         <>
           <Card title="Messaggio WhatsApp" action={<Badge tone="grey">{message.length} caratteri</Badge>}>
-            <div className="chiprow">
-              {[
-                ['short', 'Versione breve'],
-                ['withPositions', 'Con i ruoli'],
-                ['withLogistics', 'Con logistica']
-              ].map(([k, label]) => (
-                <button key={k} className={`chip ${options[k] ? 'chip--on' : ''}`}
-                  onClick={() => setOptions((o) => ({ ...o, [k]: !o[k] }))}>
-                  {label}
-                </button>
-              ))}
-            </div>
-
             <div className="msgbox">{message}</div>
 
             <div className="btnrow" style={{ marginTop: 12 }}>
-              {club.groupLink ? (
-                <>
-                  <Button onClick={shareToGroup} disabled={busy}>Copia e apri il gruppo</Button>
-                  <Button variant="secondary" onClick={share}>Condividi altrove</Button>
-                </>
-              ) : (
-                <>
-                  <Button onClick={async () => { await copyText(message); toast('Messaggio copiato'); }}>Copia messaggio</Button>
-                  <Button variant="secondary" onClick={share}>Apri WhatsApp</Button>
-                </>
+              <Button onClick={shareAndPublish} disabled={busy}>
+                {club.groupLink ? 'Copia e apri il gruppo' : 'Copia messaggio'}
+              </Button>
+              {canSetLineup && (
+                <Button variant="secondary" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
+                  Formazione per la distinta
+                </Button>
               )}
-              <Button variant="ghost" size="sm" onClick={async () => { await copyText(onlyNames(selectedPlayers)); toast('Elenco convocati copiato'); }}>Copia solo i convocati</Button>
-              <Button variant="ghost" size="sm" onClick={() => window.print()}>Stampa / PDF</Button>
             </div>
 
             <Alert level="info">
               {club.groupLink
-                ? 'Il messaggio viene copiato negli appunti e il gruppo si apre: tieni premuto nel campo di testo e incolla. WhatsApp non permette di precompilare un messaggio in un gruppo.'
-                : 'Il messaggio non parte da solo: lo invii tu. Imposta il link del gruppo in Impostazioni per aprirlo con un tocco.'}
+                ? 'Il messaggio viene copiato negli appunti e il gruppo si apre: tieni premuto nel campo di testo e incolla. La convocazione viene salvata come condivisa.'
+                : 'Il messaggio viene copiato: incollalo nel gruppo. Imposta il link del gruppo in Impostazioni per aprirlo con un tocco.'}
             </Alert>
           </Card>
 
           {blocking.length > 0 && (
             <Card title="Avvisi bloccanti">
               {blocking.map((w, i) => <Alert key={i} level="error">{w.msg}</Alert>)}
-              {!canOverride && <p><small>Solo l'allenatore può forzare la pubblicazione motivando la scelta.</small></p>}
+              {!canOverride && <p><small>Solo l'allenatore può procedere motivando la scelta.</small></p>}
             </Card>
           )}
-
-          <div className="btnrow" style={{ marginTop: 16 }}>
-            <Button onClick={tryPublish} disabled={busy || !canPublish}>Pubblica convocazione</Button>
-            <Button variant="secondary" onClick={() => persist('bozza')} disabled={busy}>Salva bozza</Button>
-            {canSetLineup && (
-              <Button variant="ghost" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
-                Formazione per la distinta
-              </Button>
-            )}
-
-          </div>
         </>
       )}
 
       {confirmDialog && (
-        <ConfirmDialog {...confirmDialog} confirmLabel="Pubblica comunque" onClose={() => setConfirmDialog(null)} />
+        <ConfirmDialog {...confirmDialog} confirmLabel="Procedi comunque" onClose={() => setConfirmDialog(null)} />
       )}
     </>
   );
