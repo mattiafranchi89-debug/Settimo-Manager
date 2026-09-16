@@ -253,7 +253,7 @@ export default function Impostazioni() {
           <Input value={form.groupLink || ''} onChange={set('groupLink')} placeholder="https://chat.whatsapp.com/..." />
         </Field>
         <Field label="WhatsApp di chi compila la distinta"
-          hint="Solo cifre con prefisso, senza + né spazi: 393331234567. Qui arriva la formazione, in chat privata.">
+          hint="Solo cifre con prefisso, senza + né spazi: 393331234567. È questo numero a ricevere la formazione, non il nome indicato nello staff.">
           <Input value={form.distintaPhone || ''} onChange={set('distintaPhone')} placeholder="393331234567" inputMode="numeric" />
         </Field>
         <p><small>WhatsApp non consente di precompilare un messaggio in un gruppo: per la convocazione il testo viene copiato negli appunti e il gruppo aperto. Per la distinta, che va a un numero singolo, il messaggio arriva già scritto.</small></p>

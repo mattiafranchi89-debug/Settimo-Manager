@@ -9,7 +9,7 @@ import {
   Alert, Loading, useToast, ConfirmDialog
 } from '../components/ui';
 import {
-  GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue
+  GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate
 } from '../lib/format';
 import { validateCallup, summarise, buildMessage, onlyNames, copyText, shareMessage } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
@@ -31,9 +31,13 @@ export default function ConvocazioneEditor() {
   const canSetLineup = can(user?.role, 'lineup.write');
 
   const { data: existing, loading: loadingCallup } = useDoc('callups', id, !!id);
-  const eventsQ = useMemo(() => [where('date', '>=', new Date(Date.now() - 7 * 86400000)), orderBy('date', 'asc'), limit(40)], []);
+  const eventsQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
   const { data: allEvents } = useCollection('events', eventsQ);
-  const events = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
+  // Le più recenti in cima: si convoca quasi sempre per la gara imminente.
+  const events = useMemo(
+    () => [...allEvents].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)),
+    [allEvents]
+  );
   const { data: players, loading: loadingPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const insights = useMemo(
     () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),

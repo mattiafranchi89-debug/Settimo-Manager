@@ -22,11 +22,17 @@ export default function Allenamenti() {
   const canWrite = can(user?.role, 'events.write');
   const canAttend = can(user?.role, 'attendance.write');
 
-  const q = useMemo(() => [orderBy('date', 'desc'), limit(80)], []);
+  const q = useMemo(() => [where('type', '==', 'training'), limit(200)], []);
   const { data: events, loading, error } = useCollection('events', q);
-  const sessions = useMemo(() => events.filter((e) => e.type === 'training'), [events]);
+  const sessions = useMemo(
+    () => [...events].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)),
+    [events]
+  );
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: allAttendance } = useCollection('attendance', [], canAttend);
+  // Serve al generatore per sapere quali settimane hanno una gara.
+  const matchesQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
+  const { data: matches } = useCollection('events', matchesQ, canWrite);
 
   const [creating, setCreating] = useState(false);
   const [attendFor, setAttendFor] = useState(null);
@@ -105,7 +111,7 @@ export default function Allenamenti() {
       )}
 
       {generating && (
-        <GeneraSedute club={club} events={events} user={user} onClose={() => setGenerating(false)} />
+        <GeneraSedute club={club} sessions={sessions} matches={matches} user={user} onClose={() => setGenerating(false)} />
       )}
 
       {creating && <SessionForm club={club} onSave={create} onClose={() => setCreating(false)} />}
@@ -274,7 +280,7 @@ const isoWeek = (d) => {
   return `${t.getUTCFullYear()}-${Math.ceil(((t - start) / 86400000 + 1) / 7)}`;
 };
 
-function GeneraSedute({ club, events, user, onClose }) {
+function GeneraSedute({ club, sessions, matches, user, onClose }) {
   const toast = useToast();
   const today = new Date();
   const [from, setFrom] = useState(toInputValue(today).slice(0, 10));
@@ -287,15 +293,15 @@ function GeneraSedute({ club, events, user, onClose }) {
 
   // Weeks that actually contain a fixture, so an empty week produces no sessions.
   const matchWeeks = useMemo(() => new Set(
-    events.filter((e) => e.type === 'match').map((e) => toDate(e.date)).filter(Boolean).map(isoWeek)
-  ), [events]);
+    matches.map((e) => toDate(e.date)).filter(Boolean).map(isoWeek)
+  ), [matches]);
 
   const existing = useMemo(() => new Set(
-    events.filter((e) => e.type === 'training').map((e) => {
+    sessions.map((e) => {
       const d = toDate(e.date);
       return d ? `${toInputValue(d).slice(0, 10)}T${toInputValue(d).slice(11, 16)}` : '';
     })
-  ), [events]);
+  ), [sessions]);
 
   const planned = useMemo(() => {
     if (!from || !to) return [];

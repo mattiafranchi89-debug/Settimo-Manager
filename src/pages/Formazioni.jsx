@@ -5,8 +5,11 @@ import { useCollection, useClub, setDocument, serverTimestamp, where, orderBy, l
 import { Card, Button, Field, Select, Badge, Empty, Loading, useToast, Alert, Textarea } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
 import { errorText } from './Rosa';
-import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName } from '../lib/format';
+import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
+/** Ordinamento in memoria: la query filtra per tipo, senza indici da creare. */
+const byDateDesc = (list) => [...list].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
+
 import { readDocumentNumbers } from '../lib/players';
 
 export default function Formazioni() {
@@ -14,9 +17,10 @@ export default function Formazioni() {
   const { club } = useClub();
   const toast = useToast();
 
-  const eventsQ = useMemo(() => [orderBy('date', 'desc'), limit(60)], []);
+  // Filtrando per tipo, gli allenamenti non tolgono più spazio alle partite.
+  const eventsQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
   const { data: allEvents, loading } = useCollection('events', eventsQ);
-  const matches = useMemo(() => allEvents.filter((e) => e.type === 'match'), [allEvents]);
+  const matches = useMemo(() => byDateDesc(allEvents), [allEvents]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: callups } = useCollection('callups');
 
@@ -24,7 +28,7 @@ export default function Formazioni() {
   const [eventId, setEventId] = useState(params.get('event') || '');
   useEffect(() => {
     if (eventId || !matches.length) return;
-    const upcoming = [...matches].reverse().find((m) => (m.date?.toDate?.() || new Date(m.date)) >= new Date());
+    const upcoming = [...matches].reverse().find((m) => (toDate(m.date) || 0) >= new Date());
     setEventId((upcoming || matches[0]).id);
   }, [matches, eventId]);
 
@@ -151,12 +155,19 @@ export default function Formazioni() {
                 else await shareMessage(lineupMessage, 'Formazione');
               } catch (e) { toast(errorText(e), 'error'); }
             }}>
-            {club.distintaPhone ? `Invia a ${club.staff?.team_manager || 'chi compila la distinta'}` : 'Invia formazione'}
+            {club.distintaPhone
+              ? `Invia al ${club.distintaPhone}`
+              : 'Invia formazione'}
           </Button>
           <Button variant="secondary" onClick={async () => { await copyText(lineupMessage); toast('Messaggio copiato'); }}>Copia</Button>
         </div>
-        {!club.distintaPhone && (
-          <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Distinta per inviarla alla persona giusta invece che al gruppo.</Alert>
+        {club.distintaPhone ? (
+          <Alert level="info">
+            Il messaggio apre la chat con il numero {club.distintaPhone}, impostato in Impostazioni → Invio dei messaggi.
+            Se non è la persona giusta, correggilo lì: il nome dello staff non determina il destinatario.
+          </Alert>
+        ) : (
+          <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Invio dei messaggi per inviarla direttamente invece che dal menu di condivisione.</Alert>
         )}
       </Card>
 

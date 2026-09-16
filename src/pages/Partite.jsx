@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, updateDocument, serverTimestamp, where, orderBy, limit, audit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
-import { fmtShort, fmtTime, fmtLong, capitalize, toInputValue } from '../lib/format';
+import { fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate } from '../lib/format';
 import { can } from '../lib/permissions';
 import { deleteEventCascade, countEventDependencies } from '../lib/remove';
 import { errorText } from './Rosa';
@@ -15,11 +15,14 @@ export default function Partite() {
   const navigate = useNavigate();
   const canWrite = can(user?.role, 'events.write');
 
-  // Equality + orderBy on different fields would need a composite index:
-  // the squad's data is small, so we sort in Firestore and filter here.
-  const q = useMemo(() => [orderBy('date', 'desc'), limit(80)], []);
+  // Filtro per tipo e ordinamento in memoria: gli allenamenti generati non
+  // consumano più lo spazio della query, e non serve alcun indice composito.
+  const q = useMemo(() => [where('type', '==', 'match'), limit(150)], []);
   const { data: events, loading, error } = useCollection('events', q);
-  const matches = useMemo(() => events.filter((e) => e.type === 'match'), [events]);
+  const matches = useMemo(
+    () => [...events].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)),
+    [events]
+  );
   const [editing, setEditing] = useState(null);
   const [result, setResult] = useState(null);
   const [removing, setRemoving] = useState(null);
