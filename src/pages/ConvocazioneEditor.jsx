@@ -33,11 +33,17 @@ export default function ConvocazioneEditor() {
   const { data: existing, loading: loadingCallup } = useDoc('callups', id, !!id);
   const eventsQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
   const { data: allEvents } = useCollection('events', eventsQ);
-  // Le più recenti in cima: si convoca quasi sempre per la gara imminente.
-  const events = useMemo(
-    () => [...allEvents].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)),
-    [allEvents]
-  );
+  /**
+   * Prima le gare da giocare, dalla più vicina; poi quelle passate, dalla più
+   * recente. Si convoca per la prossima partita, non per quella di ieri.
+   */
+  const events = useMemo(() => {
+    const now = Date.now();
+    const ms = (e) => toDate(e.date)?.getTime() || 0;
+    const future = allEvents.filter((e) => ms(e) >= now).sort((x, y) => ms(x) - ms(y));
+    const past = allEvents.filter((e) => ms(e) < now).sort((x, y) => ms(y) - ms(x));
+    return [...future, ...past];
+  }, [allEvents]);
   const { data: players, loading: loadingPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const insights = useMemo(
     () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
