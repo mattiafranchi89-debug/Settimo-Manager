@@ -31,7 +31,23 @@ export function Statistiche() {
     setBusy(false);
   };
 
+  // Colonne ordinabili: si tocca l'intestazione, si ritocca per invertire.
+  const COLS = [
+    { key: 'fullName', label: 'Giocatore', text: true },
+    { key: 'appearances', label: 'Pres.' },
+    { key: 'minutes', label: 'Min.' },
+    { key: 'goals', label: 'Gol' },
+    { key: 'yellowCards', label: 'Amm.' },
+    { key: 'att', label: 'Allen.' }
+  ];
   const [sortBy, setSortBy] = useState('goals');
+  const [desc, setDesc] = useState(true);
+
+  const sortOn = (key) => {
+    if (key === sortBy) { setDesc((d) => !d); return; }
+    setSortBy(key);
+    setDesc(key !== 'fullName'); // i nomi partono dalla A, i numeri dal più alto
+  };
 
   // Everything here comes from the aggregated figures on each player: the page
   // costs one read per player even when the whole squad opens it.
@@ -42,14 +58,21 @@ export function Statistiche() {
       att: s.trainingsAttended || 0,
       attPct: s.totalTrainings ? Math.round(((s.trainingsAttended || 0) / s.totalTrainings) * 100) : 0
     };
-  }).sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0)), [players, sortBy]);
+  }).sort((a, b) => {
+    const col = COLS.find((c) => c.key === sortBy);
+    const av = a[sortBy], bv = b[sortBy];
+    const cmp = col?.text
+      ? String(av || '').localeCompare(String(bv || ''), 'it')
+      : (av || 0) - (bv || 0);
+    return desc ? -cmp : cmp;
+  }), [players, sortBy, desc]);
 
   if (loading) return <Loading />;
 
   const totals = rows.reduce((s, r) => ({
-    goals: s.goals + (r.goals || 0), assists: s.assists + (r.assists || 0),
+    goals: s.goals + (r.goals || 0), minutes: s.minutes + (r.minutes || 0),
     yellow: s.yellow + (r.yellowCards || 0), red: s.red + (r.redCards || 0)
-  }), { goals: 0, assists: 0, yellow: 0, red: 0 });
+  }), { goals: 0, minutes: 0, yellow: 0, red: 0 });
 
   return (
     <>
@@ -60,32 +83,31 @@ export function Statistiche() {
 
       <div className="grid grid--kpi">
         <Kpi value={totals.goals} label="Gol di squadra" accent />
-        <Kpi value={totals.assists} label="Assist" />
+        <Kpi value={totals.minutes} label="Minuti giocati" />
         <Kpi value={totals.yellow} label="Ammonizioni" />
         <Kpi value={totals.red} label="Espulsioni" />
-      </div>
-
-      <div className="chiprow" style={{ marginTop: 14 }}>
-        {[['goals', 'Gol'], ['assists', 'Assist'], ['minutes', 'Minuti'], ['appearances', 'Presenze'], ['att', 'Allenamenti']].map(([k, l]) => (
-          <button key={k} className={`chip ${sortBy === k ? 'chip--on' : ''}`} onClick={() => setSortBy(k)}>{l}</button>
-        ))}
       </div>
 
       <Card>
         <div className="tablewrap">
           <table className="data">
             <thead>
-              <tr><th>Giocatore</th><th>Ruolo</th><th>Pres.</th><th>Min.</th><th>Gol</th><th>Assist</th><th>Amm.</th><th>Allen.</th></tr>
+              <tr>
+                {COLS.map((c) => (
+                  <th key={c.key} onClick={() => sortOn(c.key)}
+                    style={{ cursor: 'pointer', color: sortBy === c.key ? 'var(--red)' : undefined, userSelect: 'none' }}>
+                    {c.label}{sortBy === c.key ? (desc ? ' ↓' : ' ↑') : ''}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td>{r.fullName}</td>
-                  <td>{r.position}</td>
                   <td>{r.appearances || 0}</td>
                   <td>{r.minutes || 0}</td>
                   <td>{r.goals || 0}</td>
-                  <td>{r.assists || 0}</td>
                   <td>{r.yellowCards || 0}</td>
                   <td>{r.att} <small>({r.attPct}%)</small></td>
                 </tr>
@@ -94,7 +116,7 @@ export function Statistiche() {
           </table>
         </div>
       </Card>
-      <p><small>Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita chiusa. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
+      <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita chiusa. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
     </>
   );
 }
