@@ -61,6 +61,41 @@ export default function Formazioni() {
   const bench = pool.filter((p) => !starters.includes(p.id));
   const byId = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
 
+  const [picking, setPicking] = useState(null);
+
+  /** Assegna il giocatore alla posizione scelta e passa alla prima libera. */
+  const assign = (playerId) => {
+    setSlots((v) => {
+      const next = { ...v };
+      // Se giocava altrove, libera quella posizione invece di duplicarlo.
+      Object.keys(next).forEach((k) => { if (next[k] === playerId) next[k] = ''; });
+      next[picking] = playerId;
+      return next;
+    });
+    const order = slotList.map((s) => s.id);
+    const from = order.indexOf(picking);
+    const nextFree = order.slice(from + 1).concat(order.slice(0, from))
+      .find((id) => !slots[id] && id !== picking);
+    setPicking(nextFree || null);
+  };
+
+  /** Riempie le posizioni libere con chi ha il ruolo corrispondente. */
+  const autoFill = () => {
+    const wanted = { POR: ['POR'], TD: ['TD'], TS: ['TS'], DC: ['DC'], MZ: ['CC', 'ES'], CC: ['CC'], TRQ: ['TRQ', 'CC'], ATT: ['ATT'], ED: ['ES', 'TD'], ES: ['ES', 'TS'], AD: ['ATT', 'ES'], AS: ['ATT', 'ES'], PC: ['ATT'] };
+    setSlots((v) => {
+      const next = { ...v };
+      const taken = new Set(Object.values(next).filter(Boolean));
+      slotList.forEach((s) => {
+        if (next[s.id]) return;
+        const roles = wanted[s.label] || [];
+        const pick = sortPlayers(pool).find((p) => !taken.has(p.id) && !p.injury?.active && roles.includes(p.position));
+        if (pick) { next[s.id] = pick.id; taken.add(pick.id); }
+      });
+      return next;
+    });
+    setPicking(null);
+  };
+
   const lineupMessage = useMemo(() => (match ? buildLineupMessage({
     club, match, module,
     slots: slotList.map((s) => ({ label: s.label, playerId: slots[s.id] })),
@@ -100,39 +135,92 @@ export default function Formazioni() {
         {!callup && <Alert level="info">Nessuna convocazione collegata: puoi scegliere fra tutti i giocatori in rosa.</Alert>}
       </div>
 
+      {/* Si tocca una posizione sul campo, poi il giocatore: niente menu a tendina. */}
       <div className="pitch noprint">
         <div className="pitch__line" /><div className="pitch__circle" />
         {slotList.map((s) => {
           const p = byId[slots[s.id]];
+          const active = picking === s.id;
           return (
-            <div className="slot" key={s.id} style={{ left: `${s.x}%`, top: `${s.y}%` }}>
-              <div className="slot__shirt">{p?.shirtNumber ?? s.label}</div>
-              <div className="slot__name">{p ? shortName(p.fullName) : s.label}</div>
-            </div>
+            <button className="slot" key={s.id} style={{ left: `${s.x}%`, top: `${s.y}%` }}
+              onClick={() => setPicking(active ? null : s.id)}
+              aria-label={p ? `${s.label}: ${p.fullName}` : `${s.label} libero`}>
+              <span className={`slot__shirt ${active ? 'slot__shirt--active' : ''} ${p ? '' : 'slot__shirt--empty'}`}>
+                {p ? s.label : '+'}
+              </span>
+              <span className="slot__name">{p ? shortName(p.fullName) : s.label}</span>
+            </button>
           );
         })}
       </div>
 
-      <Card title="Undici titolare" className="noprint">
-        {slotList.map((s) => (
-          <Field key={s.id} label={s.label}>
-            <Select value={slots[s.id] || ''} onChange={(e) => setSlots((v) => ({ ...v, [s.id]: e.target.value }))}>
-              <option value="">—</option>
-              {pool.map((p) => (
-                <option key={p.id} value={p.id} disabled={starters.includes(p.id) && slots[s.id] !== p.id}>
-                  {p.shirtNumber ? `${p.shirtNumber} · ` : ''}{p.fullName}
-                </option>
-              ))}
-            </Select>
-          </Field>
-        ))}
-        <Field label="Capitano">
-          <Select value={captain} onChange={(e) => setCaptain(e.target.value)}>
-            <option value="">—</option>
-            {pool.map((p) => <option key={p.id} value={p.id}>{p.fullName}</option>)}
-          </Select>
-        </Field>
-        <Field label="Note gara"><Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} /></Field>
+      <Card className="noprint" title={picking ? `Chi gioca in posizione ${slotList.find((s) => s.id === picking)?.label}?` : 'Undici titolare'}
+        action={<Badge tone={starters.length === 11 ? 'green' : 'orange'}>{starters.length}/11</Badge>}>
+
+        {!picking && (
+          <div className="btnrow" style={{ marginBottom: 12 }}>
+            <Button size="sm" variant="secondary" onClick={autoFill}>Compila per ruolo</Button>
+            <Button size="sm" variant="ghost" onClick={() => { setSlots({}); setPicking(null); }}>Svuota</Button>
+          </div>
+        )}
+
+        {picking ? (
+          <>
+            {slots[picking] && (
+              <Button size="sm" variant="ghost" block style={{ marginBottom: 10 }}
+                onClick={() => { setSlots((v) => ({ ...v, [picking]: '' })); setPicking(null); }}>
+                Libera la posizione
+              </Button>
+            )}
+            <div className="plist">
+              {sortPlayers(pool).map((p) => {
+                const usedIn = slotList.find((s) => slots[s.id] === p.id);
+                return (
+                  <button key={p.id} className={`prow ${usedIn ? 'prow--selected' : ''}`} onClick={() => assign(p.id)}>
+                    <span className="prow__num">{p.position}</span>
+                    <span className="prow__body">
+                      <span className="prow__name">{p.fullName}</span>
+                      {usedIn && <span className="prow__meta"><span>già schierato come {usedIn.label}</span></span>}
+                    </span>
+                    {p.injury?.active && <Badge tone="blue">Inf.</Badge>}
+                  </button>
+                );
+              })}
+            </div>
+            <Button variant="ghost" block style={{ marginTop: 10 }} onClick={() => setPicking(null)}>Annulla</Button>
+          </>
+        ) : (
+          <>
+            <p><small>Tocca una posizione sul campo per assegnarla. Il capitano si sceglie toccando la fascia.</small></p>
+            <div className="plist">
+              {slotList.map((s) => {
+                const p = byId[slots[s.id]];
+                return (
+                  <div key={s.id} className="prow" onClick={() => setPicking(s.id)} style={{ cursor: 'pointer' }}>
+                    <span className="prow__num">{s.label}</span>
+                    <span className="prow__body">
+                      <span className="prow__name" style={p ? undefined : { color: 'var(--muted)' }}>
+                        {p ? p.fullName : 'da assegnare'}
+                      </span>
+                    </span>
+                    {p && (
+                      <button className="iconbtn" aria-label="Capitano"
+                        onClick={(e) => { e.stopPropagation(); setCaptain(captain === p.id ? '' : p.id); }}
+                        style={captain === p.id ? { borderColor: 'var(--red)', color: 'var(--red)' } : undefined}>
+                        Ⓒ
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: 14 }}>
+              <Field label="Note gara">
+                <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
+              </Field>
+            </div>
+          </>
+        )}
       </Card>
 
       <div className="noprint btnrow" style={{ marginBottom: 12 }}>
