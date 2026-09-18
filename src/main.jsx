@@ -64,7 +64,7 @@ function App() {
     return (
       <div className="login">
         <div className="login__card">
-          <img className="login__logo" src="/logo-fallback.svg" alt="" />
+          <img className="login__logo" src="/logo.png" alt="" />
           <h1 className="login__title">Configurazione mancante</h1>
           <p className="login__sub">Copia <code>.env.example</code> in <code>.env</code> e inserisci le chiavi del progetto Firebase, poi riavvia <code>npm run dev</code>.</p>
         </div>

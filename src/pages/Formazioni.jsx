@@ -269,7 +269,7 @@ function Distinta({ docs = {}, club, match, slotList, slots, byId, bench, captai
   return (
     <Card title="Distinta gara" action={<span className="noprint"><Button size="sm" variant="secondary" onClick={() => window.print()}>Stampa / PDF</Button></span>}>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '3px solid var(--red)', paddingBottom: 10, marginBottom: 12 }}>
-        <img src={club.logoUrl} alt="" style={{ height: 48 }} onError={(e) => { e.currentTarget.src = '/logo-fallback.svg'; }} />
+        <img src={club.logoUrl} alt="" style={{ height: 48 }} onError={(e) => { e.currentTarget.src = '/logo.png'; }} />
         <div>
           <div style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 700, textTransform: 'uppercase' }}>{club.clubName}</div>
           <small>{club.teamName} · {club.season} · Modulo {module}</small>

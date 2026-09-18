@@ -168,7 +168,7 @@ export default function Impostazioni() {
 
       <Card title="Identità">
         <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14 }}>
-          <img src={form.logoUrl} alt="" style={{ height: 62 }} onError={(e) => { e.currentTarget.src = '/logo-fallback.svg'; }} />
+          <img src={form.logoUrl} alt="" style={{ height: 62 }} onError={(e) => { e.currentTarget.src = '/logo.png'; }} />
           <div>
             <label className="btn btn--secondary btn--sm" style={{ cursor: 'pointer' }}>
               {uploading ? 'Carico…' : 'Carica logo'}

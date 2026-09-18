@@ -107,7 +107,7 @@ export const DEFAULT_CLUB = {
   clubName: 'Settimo Milanese',
   teamName: 'Prima Squadra',
   season: '2026/2027',
-  logoUrl: '/logo-fallback.svg',
+  logoUrl: '/logo.png',
   colors: { primary: '#D40000', primaryDark: '#A80000' },
   homeStadium: 'Centro Sportivo Comunale, Settimo Milanese',
   maxCallup: 20,

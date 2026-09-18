@@ -25,7 +25,7 @@ export default function Layout({ theme, toggleTheme }) {
   return (
     <div className="app">
       <header className="topbar">
-        <img className="topbar__logo" src={club.logoUrl} alt="" onError={(e) => { e.currentTarget.src = '/logo-fallback.svg'; }} />
+        <img className="topbar__logo" src={club.logoUrl} alt="" onError={(e) => { e.currentTarget.src = '/logo.png'; }} />
         <div className="topbar__titles">
           <div className="topbar__club">{club.clubName}</div>
           <div className="topbar__meta">{club.teamName} · Stagione {club.season}</div>

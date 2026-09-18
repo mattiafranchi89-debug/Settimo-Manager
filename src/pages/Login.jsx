@@ -32,7 +32,7 @@ export default function Login() {
   return (
     <div className="login">
       <form className="login__card" onSubmit={submit}>
-        <img className="login__logo" src={club.logoUrl} alt="" onError={(e) => { e.currentTarget.src = '/logo-fallback.svg'; }} />
+        <img className="login__logo" src={club.logoUrl} alt="" onError={(e) => { e.currentTarget.src = '/logo.png'; }} />
         <h1 className="login__title">{club.clubName}</h1>
         <p className="login__sub">Team Manager · Stagione {club.season}</p>
 
