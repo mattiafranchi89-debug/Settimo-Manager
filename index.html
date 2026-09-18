@@ -17,6 +17,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <!-- Mostrato prima che l'applicazione sia pronta: l'ultimo logo usato viene
+         ricordato dal browser, così all'apertura compare lo stemma vero. -->
+    <div id="splash">
+      <img id="splash-logo" src="/logo-fallback.svg" alt="" />
+      <div id="splash-name">Settimo Milanese</div>
+      <div id="splash-bar"><span></span></div>
+    </div>
+    <script>
+      (function () {
+        try {
+          var url = localStorage.getItem('sm-logo');
+          if (url) document.getElementById('splash-logo').src = url;
+          var name = localStorage.getItem('sm-club');
+          if (name) document.getElementById('splash-name').textContent = name;
+          if (localStorage.getItem('sm-theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+        } catch (e) { /* niente di grave */ }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

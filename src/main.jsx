@@ -54,10 +54,12 @@ function Shell() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem('sm-theme', theme);
   }, [theme]);
+  useEffect(hideSplash, []);
   return <Layout theme={theme} toggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} />;
 }
 
 function App() {
+  useEffect(hideSplash, []);
   if (configMissing) {
     return (
       <div className="login">
@@ -98,6 +100,14 @@ function App() {
     </Routes>
     </Suspense>
   );
+}
+
+/** Toglie la schermata di apertura una volta che l'interfaccia è pronta. */
+function hideSplash() {
+  const el = document.getElementById('splash');
+  if (!el) return;
+  el.classList.add('is-hidden');
+  setTimeout(() => el.remove(), 300);
 }
 
 createRoot(document.getElementById('root')).render(

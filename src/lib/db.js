@@ -74,12 +74,28 @@ export function useClub() {
     () => ({ ...DEFAULT_CLUB, ...(branding || {}), ...(data || {}) }),
     [data, branding]
   );
+
+  // Ricordati per la schermata di apertura, che parte prima di Firestore.
+  useEffect(() => {
+    try {
+      if (club.logoUrl) localStorage.setItem('sm-logo', club.logoUrl);
+      if (club.clubName) localStorage.setItem('sm-club', club.clubName);
+    } catch { /* spazio esaurito: non è un problema */ }
+  }, [club.logoUrl, club.clubName]);
+
   return { club, loading };
 }
 
 /** Public subset of the club identity, readable without login. */
 export function useBranding() {
   const { data } = useDoc('config', 'branding');
+  useEffect(() => {
+    try {
+      if (data?.logoUrl) localStorage.setItem('sm-logo', data.logoUrl);
+      if (data?.clubName) localStorage.setItem('sm-club', data.clubName);
+    } catch { /* ignorabile */ }
+  }, [data?.logoUrl, data?.clubName]);
+
   return {
     clubName: data?.clubName || DEFAULT_CLUB.clubName,
     season: data?.season || DEFAULT_CLUB.season,
