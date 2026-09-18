@@ -113,6 +113,7 @@ export const DEFAULT_CLUB = {
   maxCallup: 20,
   cardsPerSuspension: 4,
   distintaPhone: '',
+  distintaNome: '',
   cassaScopo: 'Cena di fine stagione',
   cassaClassifica: true,
   mvpEnabled: true,

@@ -252,15 +252,14 @@ export default function Formazioni() {
               } catch (e) { toast(errorText(e), 'error'); }
             }}>
             {club.distintaPhone
-              ? `Invia al ${club.distintaPhone}`
+              ? `Invia a ${club.distintaNome || club.distintaPhone}`
               : 'Invia formazione'}
           </Button>
           <Button variant="secondary" onClick={async () => { await copyText(lineupMessage); toast('Messaggio copiato'); }}>Copia</Button>
         </div>
         {club.distintaPhone ? (
           <Alert level="info">
-            Il messaggio apre la chat con il numero {club.distintaPhone}, impostato in Impostazioni → Invio dei messaggi.
-            Se non è la persona giusta, correggilo lì: il nome dello staff non determina il destinatario.
+            Il messaggio apre la chat con il numero {club.distintaPhone}. Nome e numero si cambiano in Impostazioni → Invio dei messaggi.
           </Alert>
         ) : (
           <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Invio dei messaggi per inviarla direttamente invece che dal menu di condivisione.</Alert>
