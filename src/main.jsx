@@ -12,27 +12,47 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 
+/**
+ * Dopo un rilascio il browser può avere in cache la pagina vecchia, che punta
+ * a file non più esistenti. In quel caso ricarica una volta sola, così prende
+ * la versione nuova invece di mostrare un errore.
+ */
+const RELOAD_FLAG = 'sm-chunk-reload';
+const lazyPage = (factory) =>
+  lazy(() =>
+    factory()
+      .then((m) => { sessionStorage.removeItem(RELOAD_FLAG); return m; })
+      .catch((err) => {
+        if (!sessionStorage.getItem(RELOAD_FLAG)) {
+          sessionStorage.setItem(RELOAD_FLAG, '1');
+          window.location.reload();
+          return new Promise(() => {}); // la pagina si sta ricaricando
+        }
+        throw err;
+      })
+  );
+
 // Loaded on demand: a player opening the calendar never downloads the
 // call-up editor, the import screen or the match sheet.
-const Rosa = lazy(() => import('./pages/Rosa'));
-const Allenamenti = lazy(() => import('./pages/Allenamenti'));
-const Partite = lazy(() => import('./pages/Partite'));
-const SchedaGara = lazy(() => import('./pages/SchedaGara'));
-const Convocazioni = lazy(() => import('./pages/Convocazioni'));
-const ConvocazioneEditor = lazy(() => import('./pages/ConvocazioneEditor'));
-const Formazioni = lazy(() => import('./pages/Formazioni'));
-const Calendario = lazy(() => import('./pages/Calendario'));
-const Campionato = lazy(() => import('./pages/Campionato'));
-const Impostazioni = lazy(() => import('./pages/Impostazioni'));
-const Importa = lazy(() => import('./pages/Importa'));
-const Diagnostica = lazy(() => import('./pages/Diagnostica'));
-const Registro = lazy(() => import('./pages/Registro'));
-const Analisi = lazy(() => import('./pages/Analisi'));
-const MiaPagina = lazy(() => import('./pages/MiaPagina'));
-const Cassa = lazy(() => import('./pages/Cassa'));
-const Statistiche = lazy(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
-const Documenti = lazy(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
-const QuoteMulte = lazy(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
+const Rosa = lazyPage(() => import('./pages/Rosa'));
+const Allenamenti = lazyPage(() => import('./pages/Allenamenti'));
+const Partite = lazyPage(() => import('./pages/Partite'));
+const SchedaGara = lazyPage(() => import('./pages/SchedaGara'));
+const Convocazioni = lazyPage(() => import('./pages/Convocazioni'));
+const ConvocazioneEditor = lazyPage(() => import('./pages/ConvocazioneEditor'));
+const Formazioni = lazyPage(() => import('./pages/Formazioni'));
+const Calendario = lazyPage(() => import('./pages/Calendario'));
+const Campionato = lazyPage(() => import('./pages/Campionato'));
+const Impostazioni = lazyPage(() => import('./pages/Impostazioni'));
+const Importa = lazyPage(() => import('./pages/Importa'));
+const Diagnostica = lazyPage(() => import('./pages/Diagnostica'));
+const Registro = lazyPage(() => import('./pages/Registro'));
+const Analisi = lazyPage(() => import('./pages/Analisi'));
+const MiaPagina = lazyPage(() => import('./pages/MiaPagina'));
+const Cassa = lazyPage(() => import('./pages/Cassa'));
+const Statistiche = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
+const Documenti = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
+const QuoteMulte = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
 
 function Protected({ perm, children }) {
   const { user, loading } = useAuth();

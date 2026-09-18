@@ -1,0 +1,11 @@
+# L'indice non va mai servito dalla cache: contiene i riferimenti ai file
+# dell'ultima versione. Gli asset hanno il nome con l'impronta, quindi possono
+# restare in cache per sempre.
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
