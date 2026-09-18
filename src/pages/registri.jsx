@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, updateDocument, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
@@ -236,6 +236,26 @@ export function QuoteMulte() {
   const mine = (r) => !canManage && r.playerId === user?.playerId;
   const visiblePayments = canManage ? payments : payments.filter(mine);
   const visibleFines = canManage ? fines : fines.filter(mine);
+
+  // Aggregato per la pagina Cassa, visibile alla squadra: importi per persona, niente causali.
+  useEffect(() => {
+    if (!canManage || loading || !players.length) return;
+    const byPlayer = {};
+    fines.forEach((f) => {
+      const p = players.find((x) => x.id === f.playerId);
+      if (!p) return;
+      byPlayer[p.id] ||= { name: p.fullName, amount: 0 };
+      if (f.status === 'saldato') byPlayer[p.id].amount += f.amount || 0;
+    });
+    const summary = {
+      collected: fines.filter((f) => f.status === 'saldato').reduce((s, f) => s + (f.amount || 0), 0),
+      open: fines.filter((f) => f.status !== 'saldato').reduce((s, f) => s + (f.amount || 0), 0),
+      count: fines.length,
+      contributors: Object.values(byPlayer).filter((c) => c.amount > 0),
+      updatedAt: serverTimestamp()
+    };
+    setDocument('config', 'cassa', summary).catch(() => {});
+  }, [canManage, loading, fines, players]);
 
   const add = async (kind, form) => {
     await addDocument(kind, {

@@ -42,7 +42,11 @@ export default function Impostazioni() {
     try {
       await setDocument('config', 'club', { season: newSeason.trim(), updatedAt: serverTimestamp() });
       await setDocument('config', 'branding', { season: newSeason.trim() });
-      await Promise.all(players.filter((p) => p.suspended).map((p) => updateDocument('players', p.id, { suspended: false })));
+      // Storico: i numeri della stagione che chiude restano nella scheda di ognuno.
+      await Promise.all(players.map((p) => updateDocument('players', p.id, {
+        suspended: false,
+        [`seasonHistory.${club.season.replace('/', '-')}`]: p.stats || {}
+      })));
       await refreshStats(players, newSeason.trim());
       await audit(user, 'season.start', newSeason.trim(), { from: club.season, players: players.length });
       toast(`Stagione ${newSeason.trim()} avviata: contatori azzerati`);
@@ -280,6 +284,22 @@ export default function Impostazioni() {
           <Input value={form.distintaPhone || ''} onChange={set('distintaPhone')} placeholder="393331234567" inputMode="numeric" />
         </Field>
         <p><small>WhatsApp non consente di precompilare un messaggio in un gruppo: per la convocazione il testo viene copiato negli appunti e il gruppo aperto. Per la distinta, che va a un numero singolo, il messaggio arriva già scritto.</small></p>
+      </Card>
+
+      <Card title="Cassa multe e voto">
+        <Field label="A cosa serve la cassa multe" hint="Compare nella pagina Cassa visibile a tutta la squadra.">
+          <Input value={form.cassaScopo || ''} onChange={set('cassaScopo')} placeholder="Cena di fine stagione" />
+        </Field>
+        <div className="stack">
+          <button className={`prow ${form.cassaClassifica !== false ? 'prow--selected' : ''}`} onClick={() => setForm((f) => ({ ...f, cassaClassifica: !(f.cassaClassifica !== false) }))}>
+            <span className="prow__check">{form.cassaClassifica !== false ? '✓' : ''}</span>
+            <span className="prow__body"><span className="prow__name">Mostra chi ha contribuito di più</span><span className="prow__meta"><span>Solo importi, mai le causali</span></span></span>
+          </button>
+          <button className={`prow ${form.mvpEnabled !== false ? 'prow--selected' : ''}`} onClick={() => setForm((f) => ({ ...f, mvpEnabled: !(f.mvpEnabled !== false) }))}>
+            <span className="prow__check">{form.mvpEnabled !== false ? '✓' : ''}</span>
+            <span className="prow__body"><span className="prow__name">Voto del migliore in campo</span><span className="prow__meta"><span>Segreto; il risultato lo pubblica lo staff dalla scheda gara</span></span></span>
+          </button>
+        </div>
       </Card>
 
       <Card title="Campionato (Tuttocampo)">

@@ -22,6 +22,21 @@ export default function SchedaGara() {
   const { data: saved } = useDoc('matchStats', id);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: callups } = useCollection('callups', useMemo(() => [where('eventId', '==', id)], [id]));
+  const { data: votes } = useCollection('votes', useMemo(() => [where('eventId', '==', id)], [id]), canWrite);
+
+  const tally = useMemo(() => {
+    const t = {};
+    votes.forEach((v) => { t[v.playerId] = (t[v.playerId] || 0) + 1; });
+    return Object.entries(t).sort((a, b) => b[1] - a[1]);
+  }, [votes]);
+
+  const publishMvp = async () => {
+    if (!tally.length) return;
+    const [playerId, n] = tally[0];
+    await updateDocument('matchStats', id, { mvp: { playerId, votes: n, voters: votes.length, publishedAt: serverTimestamp() } });
+    await audit(user, 'mvp.publish', id, { playerId, votes: n });
+    toast('Migliore in campo pubblicato');
+  };
 
   const [events, setEvents] = useState([]);
   const [duration, setDuration] = useState(90);
@@ -154,6 +169,28 @@ export default function SchedaGara() {
           </div>
         )}
       </Card>
+
+      {canWrite && club.mvpEnabled !== false && closed && (
+        <Card title="Voto del migliore in campo" action={<Badge tone="grey">{votes.length} voti</Badge>}>
+          {tally.length === 0 ? <p><small>Nessun voto ancora. I giocatori votano dalla loro pagina nei tre giorni dopo la gara.</small></p> : (
+            <>
+              <div className="plist">
+                {tally.slice(0, 5).map(([pid, n]) => (
+                  <div key={pid} className="prow">
+                    <span className="prow__num">{n}</span>
+                    <span className="prow__body"><span className="prow__name">{byId[pid]?.fullName || '—'}</span></span>
+                    {saved?.mvp?.playerId === pid && <Badge tone="green">pubblicato</Badge>}
+                  </div>
+                ))}
+              </div>
+              <div className="btnrow" style={{ marginTop: 10 }}>
+                <Button size="sm" onClick={publishMvp}>{saved?.mvp ? 'Aggiorna il risultato' : 'Pubblica il risultato'}</Button>
+              </div>
+              <p><small>Finché non pubblichi, i giocatori non vedono nulla. In caso di parità vince chi è in cima all'elenco: decidi tu se pubblicare.</small></p>
+            </>
+          )}
+        </Card>
+      )}
 
       <Allegati eventId={id} user={user} canWrite={canWrite} />
 

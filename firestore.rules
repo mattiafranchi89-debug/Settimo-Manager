@@ -155,6 +155,29 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // ---------- cassa multe (aggregato pubblico, senza causali) ----------
+    match /config/cassa {
+      allow read: if active();
+      allow write: if isTreasurer();
+    }
+
+    // ---------- bacheca dello staff ----------
+    match /notices/{docId} {
+      allow read: if active();
+      allow create, update, delete: if isStaff();
+    }
+
+    // ---------- voto del migliore in campo ----------
+    // Ognuno scrive solo il proprio voto e non può votarsi; il conteggio lo
+    // pubblica lo staff, così il voto resta segreto.
+    match /votes/{docId} {
+      allow read: if isStaff() || (signedIn() && resource.data.voterUid == request.auth.uid);
+      allow create, update: if active()
+                            && request.resource.data.voterUid == request.auth.uid
+                            && request.resource.data.playerId != myPlayerId();
+      allow delete: if isStaff();
+    }
+
     // ---------- usage counters ----------
     // Everyone records their own visits; only the leadership reads them.
     match /usage/{docId} {

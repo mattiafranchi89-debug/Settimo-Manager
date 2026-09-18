@@ -74,6 +74,7 @@ export const NAV = [
   { to: '/io', label: 'La mia pagina', icon: '🙋', linked: true },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
   { to: '/quote', label: 'Quote e multe', icon: '💶', all: true },
+  { to: '/cassa', label: 'Cassa multe', icon: '🏺', all: true },
   { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
   { to: '/registro', label: 'Registro', icon: '📑', perm: 'audit.read' },
   { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true },
