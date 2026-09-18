@@ -4,6 +4,7 @@ import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
 import { navFor, ROLES, can } from '../lib/permissions';
 import { Sheet, Button } from './ui';
+import ErrorBoundary from './ErrorBoundary';
 
 const TABS = [
   { to: '/', label: 'Home', icon: '🏠' },
@@ -17,7 +18,7 @@ export default function Layout({ theme, toggleTheme }) {
   const { club } = useClub();
   const navigate = useNavigate();
   const [more, setMore] = useState(false);
-  const nav = navFor(user?.role);
+  const nav = navFor(user?.role, user);
   const canCallup = can(user?.role, 'callup.draft');
 
   const go = (to) => { setMore(false); navigate(to); };
@@ -53,7 +54,9 @@ export default function Layout({ theme, toggleTheme }) {
         </nav>
 
         <main className="main">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
 

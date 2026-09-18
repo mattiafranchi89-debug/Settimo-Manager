@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, setDocument, updateDocument, serverTimestamp, where, audit } from '../lib/db';
 import { computeMatchTotals, recalculateAllStats, refreshStats, EVENT_TYPES } from '../lib/stats';
-import { Card, Button, Field, Input, Select, Badge, Sheet, Alert, Loading, useToast, ConfirmDialog, Kpi } from '../components/ui';
+import { Card, Button, Field, Input, Select, Badge, Sheet, Alert, Loading, useToast, ConfirmDialog, Kpi, Textarea } from '../components/ui';
 import { SLOTS, uploadAttachment, saveAttachmentLink, removeAttachment, validateFile, uploadErrorText } from '../lib/attachments';
 import { errorText } from './Rosa';
 import { fmtLong, fmtTime, capitalize, sortPlayers, shortName } from '../lib/format';
@@ -29,11 +29,13 @@ export default function SchedaGara() {
   const [closing, setClosing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [postNote, setPostNote] = useState('');
 
   useEffect(() => {
     if (!saved) return;
     setEvents(saved.events || []);
     setDuration(saved.duration || 90);
+    setPostNote(saved.postNote || '');
     setDirty(false);
   }, [saved]);
 
@@ -51,6 +53,7 @@ export default function SchedaGara() {
   const onSheet = useMemo(() => sortPlayers([...starters, ...bench].map((pid) => byId[pid]).filter(Boolean)), [starters, bench, byId]);
   const totals = useMemo(() => computeMatchTotals({ starters, bench, events, duration }), [starters, bench, events, duration]);
   const ourGoals = events.filter((e) => e.type === 'gol').length;
+  const conceded = events.filter((e) => e.type === 'gol_subito').length;
 
   const addEvent = (e) => { setEvents((v) => [...v, { ...e, id: Math.random().toString(36).slice(2) }]); setDirty(true); setAdding(null); };
   const removeEvent = (eid) => { setEvents((v) => v.filter((e) => e.id !== eid)); setDirty(true); };
@@ -59,7 +62,8 @@ export default function SchedaGara() {
     setBusy(true);
     await setDocument('matchStats', id, {
       eventId: id, date: match.date, opponent: match.opponent,
-      starters, bench, events, duration, totals, closed,
+      starters, bench, events, duration, totals, closed, postNote,
+      conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
       updatedBy: user.uid, updatedAt: serverTimestamp()
     });
     setDirty(false);
@@ -72,7 +76,7 @@ export default function SchedaGara() {
     await save(true);
     await audit(user, 'match.close', id, { opponent: match.opponent, goals: ourGoals });
     try {
-      const r = await refreshStats(players);
+      const r = await refreshStats(players, club.season);
       toast(`Gara chiusa e statistiche aggiornate (${r.matches} gare)`);
     } catch (e) {
       toast('Gara chiusa. Premi «Ricalcola statistiche» per aggiornare i totali.', 'error');
@@ -86,8 +90,8 @@ export default function SchedaGara() {
       const { getDocs, collection } = await import('firebase/firestore');
       const { db } = await import('../lib/firebase');
       const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [matchStats, attendance, allCallups] = await Promise.all([read('matchStats'), read('attendance'), read('callups')]);
-      const r = await recalculateAllStats({ players, matchStats, attendance, callups: allCallups });
+      const [matchStats, attendance, allCallups, ev] = await Promise.all([read('matchStats'), read('attendance'), read('callups'), read('events')]);
+      const r = await recalculateAllStats({ players, matchStats, attendance, callups: allCallups, events: ev, season: club.season });
       await audit(user, 'stats.recalculate', 'players', r);
       toast(`Statistiche aggiornate: ${r.players} giocatori, ${r.matches} gare chiuse`);
     } catch (e) {
@@ -115,8 +119,8 @@ export default function SchedaGara() {
 
       <div className="grid grid--kpi">
         <Kpi value={ourGoals} label="Gol segnati" accent />
+        <Kpi value={conceded} label="Gol subiti" tone={conceded ? 'red' : undefined} />
         <Kpi value={events.filter((e) => e.type === 'gialla').length} label="Ammonizioni" />
-        <Kpi value={events.filter((e) => e.type === 'rossa').length} label="Espulsioni" tone="red" />
         <Kpi value={events.filter((e) => e.type === 'sostituzione').length} label="Cambi" />
       </div>
 
@@ -141,7 +145,7 @@ export default function SchedaGara() {
               <div key={e.id} className="prow">
                 <span className="prow__num">{e.minute}'</span>
                 <span className="prow__body">
-                  <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {byId[e.playerId]?.fullName || '—'}</span>
+                  <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : (byId[e.playerId]?.fullName || '—')}</span>
                   {e.type === 'sostituzione' && <span className="prow__meta"><span>entra {byId[e.playerInId]?.fullName || '—'}</span></span>}
                 </span>
                 {canWrite && <button className="iconbtn" aria-label="Rimuovi" onClick={() => removeEvent(e.id)}>✕</button>}
@@ -152,6 +156,14 @@ export default function SchedaGara() {
       </Card>
 
       <Allegati eventId={id} user={user} canWrite={canWrite} />
+
+      {canWrite && (
+        <Card title="Nota post-gara">
+          <Textarea rows={3} value={postNote} onChange={(e) => { setPostNote(e.target.value); setDirty(true); }}
+            placeholder="Tre righe: cosa ha funzionato, cosa no, su cosa lavorare in settimana." />
+          <p><small>Si salva con la scheda. Le note di tutta la stagione si rileggono in fila nella sezione Analisi.</small></p>
+        </Card>
+      )}
 
       <Card title="Minutaggio">
         <div className="tablewrap">
@@ -202,17 +214,20 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
   const [playerInId, setPlayerInId] = useState('');
   const onPitch = players.filter((p) => totals[p.id]?.played || totals[p.id]?.started);
   const canEnter = bench.map((pid) => byId[pid]).filter((p) => p && !(totals[p.id]?.minutes > 0));
-  const ok = minute !== '' && playerId && (type !== 'sostituzione' || playerInId);
+  const noPlayer = EVENT_TYPES[type]?.noPlayer;
+  const ok = minute !== '' && (noPlayer || playerId) && (type !== 'sostituzione' || playerInId);
 
   return (
     <Sheet title={`${EVENT_TYPES[type].emoji} ${EVENT_TYPES[type].label}`} onClose={onClose}>
       <Field label="Minuto"><Input type="number" min="0" max="120" inputMode="numeric" value={minute} onChange={(e) => setMinute(e.target.value)} autoFocus /></Field>
+      {!noPlayer && (
       <Field label={type === 'sostituzione' ? 'Esce' : 'Giocatore'}>
         <Select value={playerId} onChange={(e) => setPlayerId(e.target.value)}>
           <option value="">Seleziona…</option>
-          {(onPitch.length ? onPitch : players).map((p) => <option key={p.id} value={p.id}>{p.shirtNumber ? `${p.shirtNumber} · ` : ''}{p.fullName}</option>)}
+          {(onPitch.length ? onPitch : players).map((p) => <option key={p.id} value={p.id}>{p.fullName}</option>)}
         </Select>
       </Field>
+      )}
       {type === 'sostituzione' && (
         <Field label="Entra">
           <Select value={playerInId} onChange={(e) => setPlayerInId(e.target.value)}>
@@ -222,7 +237,7 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
         </Field>
       )}
       <div className="btnrow">
-        <Button disabled={!ok} onClick={() => onSave({ type, minute: Number(minute), playerId, playerInId: playerInId || null })}>Registra</Button>
+        <Button disabled={!ok} onClick={() => onSave({ type, minute: Number(minute), playerId: noPlayer ? null : playerId, playerInId: playerInId || null })}>Registra</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
     </Sheet>

@@ -8,6 +8,7 @@ import { can } from './lib/permissions';
 import { configMissing } from './lib/firebase';
 
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 
@@ -26,6 +27,8 @@ const Impostazioni = lazy(() => import('./pages/Impostazioni'));
 const Importa = lazy(() => import('./pages/Importa'));
 const Diagnostica = lazy(() => import('./pages/Diagnostica'));
 const Registro = lazy(() => import('./pages/Registro'));
+const Analisi = lazy(() => import('./pages/Analisi'));
+const MiaPagina = lazy(() => import('./pages/MiaPagina'));
 const Statistiche = lazy(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
 const Documenti = lazy(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
 const QuoteMulte = lazy(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
@@ -89,6 +92,8 @@ function App() {
         <Route path="calendario" element={<Calendario />} />
         <Route path="campionato" element={<Campionato />} />
         <Route path="statistiche" element={<Statistiche />} />
+        <Route path="analisi" element={<Analisi />} />
+        <Route path="io" element={<MiaPagina />} />
         <Route path="documenti" element={<Protected perm="documents.write"><Documenti /></Protected>} />
         <Route path="quote" element={<QuoteMulte />} />
         <Route path="importa" element={<Protected perm="players.write"><Importa /></Protected>} />
@@ -113,11 +118,13 @@ function hideSplash() {
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <App />
-        </ToastProvider>
-      </AuthProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </AuthProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   </React.StrictMode>
 );

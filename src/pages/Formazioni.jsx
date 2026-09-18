@@ -11,6 +11,7 @@ import { MODULES } from '../lib/modules';
 const byDateDesc = (list) => [...list].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
 
 import { readDocumentNumbers } from '../lib/players';
+import { renderDistintaImage, shareImage } from '../lib/distintaImage';
 
 export default function Formazioni() {
   const { user } = useAuth();
@@ -227,6 +228,20 @@ export default function Formazioni() {
         <Button size="sm" variant="ghost"
           onClick={async () => setDocs(await readDocumentNumbers([...starters, ...bench.map((p) => p.id)]))}>
           Carica numeri documento nella distinta
+        </Button>
+        <Button size="sm" variant="secondary" disabled={!starters.length}
+          onClick={async () => {
+            try {
+              const blob = await renderDistintaImage({
+                club, match, module, captain, docs,
+                starters: slotList.filter((s) => slots[s.id]).map((s) => ({ id: slots[s.id], role: s.label, name: byId[slots[s.id]]?.fullName || '' })),
+                bench, logoUrl: club.logoUrl
+              });
+              const r = await shareImage(blob, `distinta-${(match?.opponent || 'gara').replace(/\s+/g, '-')}.png`);
+              if (r !== 'cancelled') toast(r === 'shared' ? 'Distinta condivisa' : 'Distinta scaricata come immagine');
+            } catch (e) { toast('Immagine non generata: ' + (e.message || ''), 'error'); }
+          }}>
+          🖼 Distinta come immagine
         </Button>
       </div>
 

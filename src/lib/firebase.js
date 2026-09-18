@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, serverTimestamp } from 'firebase/firestore';
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, serverTimestamp } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const config = {
@@ -19,7 +19,11 @@ const app = initializeApp(
 );
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Cache persistente: l'app si apre anche senza campo con i dati già letti, e
+// le scritture fatte offline partono quando torna la linea.
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
 export const storage = getStorage(app);
 export const now = serverTimestamp;
 export default app;

@@ -7,7 +7,7 @@ import { deleteOne } from '../lib/remove';
 import { readDocumentNumber, saveDocumentNumber } from '../lib/players';
 import { buildInsights } from '../lib/insights';
 import { useClub } from '../lib/db';
-import { POSITIONS, GROUPS, groupOf, positionLabel, age, fmtDate, sortPlayers, toInputValue } from '../lib/format';
+import { POSITIONS, GROUPS, groupOf, positionLabel, age, fmtDate, sortPlayers, toInputValue, toDate } from '../lib/format';
 import { can } from '../lib/permissions';
 
 const EMPTY = {
@@ -32,6 +32,8 @@ export default function Rosa() {
   const [detail, setDetail] = useState(null);
   const [removing, setRemoving] = useState(null);
   const [detailDoc, setDetailDoc] = useState('');
+  const [injuryFor, setInjuryFor] = useState(null);
+  const canInjury = can(user?.role, 'medical.write') || can(user?.role, 'players.write');
 
   const writable = can(user?.role, 'players.write');
   const seeMedical = can(user?.role, 'medical.read');
@@ -161,6 +163,32 @@ export default function Rosa() {
               </Badge>
             </div>
             <div className="spread">
+              <span>Infortunio</span>
+              {detail.injury?.active ? (
+                <Badge tone="blue">{detail.injury.type || 'in corso'}{detail.injury.expectedReturn ? ` · rientro ${fmtDate(detail.injury.expectedReturn)}` : ''}</Badge>
+              ) : <Badge tone="grey">nessuno</Badge>}
+            </div>
+            {canInjury && (
+              <div className="btnrow">
+                <Button size="sm" variant={detail.injury?.active ? 'ghost' : 'secondary'} onClick={() => setInjuryFor(detail)}>
+                  {detail.injury?.active ? 'Aggiorna infortunio' : 'Segna infortunio'}
+                </Button>
+                {detail.injury?.active && (
+                  <Button size="sm" onClick={async () => {
+                    const days = detail.injury.date ? Math.max(1, Math.round((Date.now() - toDate(detail.injury.date).getTime()) / 86400000)) : null;
+                    await updateDocument('players', detail.id, {
+                      injury: { active: false, type: '', date: null, expectedReturn: null, closedAt: new Date() },
+                      injuryHistory: [...(detail.injuryHistory || []), { ...detail.injury, closedAt: new Date(), daysOut: days }],
+                      updatedAt: serverTimestamp()
+                    });
+                    await audit(user, 'injury.close', detail.id, { name: detail.fullName, days });
+                    setDetail({ ...detail, injury: { active: false } });
+                    toast('Rientro registrato');
+                  }}>Rientrato</Button>
+                )}
+              </div>
+            )}
+            <div className="spread">
               <span>Squalificato</span>
               {writable ? (
                 <Button size="sm" variant={detail.suspended ? 'danger' : 'ghost'}
@@ -210,6 +238,17 @@ export default function Rosa() {
       )}
 
       {editing && <PlayerForm initial={editing} onSave={save} onClose={() => setEditing(null)} />}
+
+      {injuryFor && (
+        <InjuryForm player={injuryFor} onClose={() => setInjuryFor(null)}
+          onSave={async (inj) => {
+            await updateDocument('players', injuryFor.id, { injury: { ...inj, active: true }, updatedAt: serverTimestamp() });
+            await audit(user, 'injury.open', injuryFor.id, { name: injuryFor.fullName, type: inj.type });
+            setDetail((d) => (d && d.id === injuryFor.id ? { ...d, injury: { ...inj, active: true } } : d));
+            setInjuryFor(null);
+            toast('Infortunio registrato');
+          }} />
+      )}
 
       {removing && (
         <ConfirmDialog title="Eliminare il giocatore?" destructive confirmLabel="Elimina definitivamente"
@@ -277,3 +316,30 @@ export const emptyStats = () => ({
   appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,
   yellowCards: 0, redCards: 0, avgRating: null, callups: 0, trainingsAttended: 0
 });
+
+
+function InjuryForm({ player, onSave, onClose }) {
+  const inj = player.injury || {};
+  const [type, setType] = useState(inj.type || 'Muscolare');
+  const [date, setDate] = useState(inj.date ? toInputValue(inj.date).slice(0, 10) : toInputValue(new Date()).slice(0, 10));
+  const [ret, setRet] = useState(inj.expectedReturn ? toInputValue(inj.expectedReturn).slice(0, 10) : '');
+  const [note, setNote] = useState(inj.note || '');
+  return (
+    <Sheet title={`Infortunio · ${player.fullName}`} onClose={onClose}>
+      <Field label="Tipo">
+        <Select value={type} onChange={(e) => setType(e.target.value)}
+          options={['Muscolare', 'Articolare', 'Trauma', 'Frattura', 'Malattia', 'Altro']} />
+      </Field>
+      <div className="row2">
+        <Field label="Dal"><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label="Rientro previsto"><Input type="date" value={ret} onChange={(e) => setRet(e.target.value)} /></Field>
+      </div>
+      <Field label="Nota" hint="Visibile solo allo staff autorizzato."><Input value={note} onChange={(e) => setNote(e.target.value)} /></Field>
+      <Alert level="info">Finché l'infortunio è aperto, il giocatore compare con il badge blu e fa scattare un avviso in convocazione.</Alert>
+      <div className="btnrow">
+        <Button onClick={() => onSave({ type, date: date ? new Date(date) : null, expectedReturn: ret ? new Date(ret) : null, note })}>Salva</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+    </Sheet>
+  );
+}

@@ -10,6 +10,7 @@ import { can } from '../lib/permissions';
 import { deleteEventCascade } from '../lib/remove';
 import { refreshStats } from '../lib/stats';
 import { errorText } from './Rosa';
+import { buildTrainingMessage, copyText } from '../lib/callup';
 import { collection, setDoc, serverTimestamp as ts } from 'firebase/firestore';
 
 const MOTIVI = { assente: 'Assente', giustificato: 'Giustificato', infortunato: 'Infortunato' };
@@ -38,6 +39,13 @@ export default function Allenamenti() {
   const [attendFor, setAttendFor] = useState(null);
   const [removing, setRemoving] = useState(null);
   const [generating, setGenerating] = useState(false);
+
+  /** Copia l'avviso e apre il gruppo: WhatsApp non precompila i messaggi di gruppo. */
+  const announce = async (s) => {
+    await copyText(buildTrainingMessage({ club, session: s }));
+    toast(club.groupLink ? 'Avviso copiato: incolla nel gruppo' : 'Avviso copiato');
+    if (club.groupLink) window.open(club.groupLink, '_blank', 'noopener');
+  };
   const canDelete = can(user?.role, 'events.delete');
 
   const create = async (form) => {
@@ -85,7 +93,7 @@ export default function Allenamenti() {
 
       {upcoming.length > 0 && <div className="grouphead">In programma</div>}
       <div className="plist">
-        {upcoming.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} />)}
+        {upcoming.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
       </div>
 
       {past.length > 0 && <div className="grouphead">Svolti</div>}
@@ -120,7 +128,7 @@ export default function Allenamenti() {
   );
 }
 
-const SessionRow = ({ s, rows = [], onAttend, onDelete, past }) => {
+const SessionRow = ({ s, rows = [], onAttend, onDelete, onAnnounce, past }) => {
   const mine = rows.filter((r) => r.eventId === s.id);
   const recorded = mine.length > 0;
   const absent = mine.filter((r) => r.status !== 'presente').length;
@@ -135,6 +143,7 @@ const SessionRow = ({ s, rows = [], onAttend, onDelete, past }) => {
           {recorded && <span>{mine.length - absent} presenti · {absent} assenti</span>}
         </span>
       </span>
+      {onAnnounce && !past && <button className="iconbtn" aria-label="Avvisa il gruppo" title="Avvisa il gruppo" onClick={onAnnounce}>💬</button>}
       {onAttend && <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>}
       {onDelete && <button className="iconbtn" aria-label="Elimina seduta" onClick={onDelete}>🗑</button>}
     </div>
@@ -208,7 +217,7 @@ function Attendance({ session, players, user, onClose }) {
       await batch.commit();
       await audit(user, 'attendance.save', session.id, { presenti: presentCount, assenti: absentCount });
       // Keeps every player's counters current without anyone pressing "Ricalcola".
-      refreshStats(players).catch((e) => console.warn('statistiche non aggiornate', e));
+      refreshStats(players, club.season).catch((e) => console.warn('statistiche non aggiornate', e));
       toast(`Presenze salvate: ${presentCount} presenti, ${absentCount} assenti`);
       onClose();
     } catch (e) {

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, addDocument, updateDocument, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
+import { useCollection, useClub, addDocument, updateDocument, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Alert, Textarea, Kpi, ConfirmDialog } from '../components/ui';
 import { sortPlayers, fmtDate, fmtShort, euro, positionLabel, capitalize } from '../lib/format';
 import { can } from '../lib/permissions';
@@ -15,6 +15,7 @@ import { db } from '../lib/firebase';
 /* ============================== STATISTICHE ============================== */
 export function Statistiche() {
   const { user } = useAuth();
+  const { club } = useClub();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const canRecalc = can(user?.role, 'matchstats.write');
@@ -24,8 +25,8 @@ export function Statistiche() {
     setBusy(true);
     try {
       const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [ms, att, callups] = await Promise.all([read('matchStats'), read('attendance'), read('callups')]);
-      const r = await recalculateAllStats({ players, matchStats: ms, attendance: att, callups });
+      const [ms, att, callups, ev] = await Promise.all([read('matchStats'), read('attendance'), read('callups'), read('events')]);
+      const r = await recalculateAllStats({ players, matchStats: ms, attendance: att, callups, events: ev, season: club.season });
       toast(`Aggiornate: ${r.players} giocatori su ${r.matches} gare chiuse`);
     } catch (e) { toast('Ricalcolo non riuscito', 'error'); }
     setBusy(false);

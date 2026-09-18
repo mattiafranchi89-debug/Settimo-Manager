@@ -123,6 +123,19 @@ export function buildLineupMessage({ club, match, module, slots, byId, bench, ca
   return L.join('\n');
 }
 
+/** Avviso di allenamento per il gruppo, stessa forma della convocazione. */
+export function buildTrainingMessage({ club, session }) {
+  const L = ['🏃 ALLENAMENTO', ''];
+  L.push(`📅 ${capitalize(fmtLong(session.date))}`);
+  L.push(`🕒 Ore ${fmtTime(session.date)}`);
+  if (session.venue) L.push(`📍 ${session.venue}`);
+  if (session.focus) L.push(`🎯 ${session.focus}`);
+  if (session.notes) { L.push(''); L.push(session.notes); }
+  L.push('');
+  L.push(club.closingLine || 'Forza Settimo! 🔴⚪');
+  return L.join('\n');
+}
+
 export function onlyNames(selected) {
   const g = byGroup(selected);
   return GROUPS.filter(({ key }) => g[key].length)

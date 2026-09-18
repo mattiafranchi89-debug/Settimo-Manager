@@ -1,11 +1,19 @@
 import { useMemo, useState } from 'react';
-import { useCollection, orderBy } from '../lib/db';
+import { useCollection, useClub, orderBy } from '../lib/db';
+import { buildIcs, downloadIcs } from '../lib/ics';
+import { Button } from '../components/ui';
 import { Card, Badge, Empty, Loading } from '../components/ui';
 import { fmtShort, fmtTime, toDate, capitalize } from '../lib/format';
 
 export default function Calendario() {
   const { data: events, loading } = useCollection('events', useMemo(() => [orderBy('date', 'asc')], []));
   const [filter, setFilter] = useState('tutti');
+  const { club } = useClub();
+
+  const exportCalendar = (onlyMatches) => {
+    const future = events.filter((e) => toDate(e.date) >= new Date() && (!onlyMatches || e.type === 'match'));
+    downloadIcs(`${onlyMatches ? 'partite' : 'calendario'}-settimo.ics`, buildIcs({ club, events: future }));
+  };
 
   const months = useMemo(() => {
     const map = new Map();
@@ -25,7 +33,14 @@ export default function Calendario() {
 
   return (
     <>
-      <div className="pagehead"><div><h1>Calendario</h1><p>{events.length} eventi in stagione</p></div></div>
+      <div className="pagehead">
+        <div><h1>Calendario</h1><p>{events.length} eventi in stagione</p></div>
+      </div>
+
+      <div className="btnrow" style={{ marginBottom: 12 }}>
+        <Button size="sm" variant="secondary" onClick={() => exportCalendar(true)}>📅 Partite sul telefono</Button>
+        <Button size="sm" variant="ghost" onClick={() => exportCalendar(false)}>Tutto, allenamenti compresi</Button>
+      </div>
 
       <div className="chiprow">
         {[['tutti', 'Tutto'], ['match', '⚽ Partite'], ['training', '🏃 Allenamenti']].map(([k, l]) => (

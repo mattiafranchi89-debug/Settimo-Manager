@@ -5,6 +5,8 @@ import { db } from '../lib/firebase';
 import { SQUAD, slug, emptyStats } from '../lib/seedData';
 import { getDocs, collection } from 'firebase/firestore';
 import { downloadCsv } from '../lib/bulk';
+import { refreshStats } from '../lib/stats';
+import { ConfirmDialog } from '../components/ui';
 import { fmtDateTime, toDate } from '../lib/format';
 import { errorText } from './Rosa';
 import { storage } from '../lib/firebase';
@@ -27,6 +29,27 @@ export default function Impostazioni() {
   const [uploading, setUploading] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [exporting, setExporting] = useState('');
+  const [newSeason, setNewSeason] = useState('');
+  const [rolling, setRolling] = useState(false);
+
+  /**
+   * Cambio stagione: aggiorna l'etichetta, azzera i contatori dei giocatori e
+   * chiude le squalifiche. Partite, presenze e schede gara restano dove sono,
+   * con la loro stagione, come archivio.
+   */
+  const startSeason = async () => {
+    setRolling(true);
+    try {
+      await setDocument('config', 'club', { season: newSeason.trim(), updatedAt: serverTimestamp() });
+      await setDocument('config', 'branding', { season: newSeason.trim() });
+      await Promise.all(players.filter((p) => p.suspended).map((p) => updateDocument('players', p.id, { suspended: false })));
+      await refreshStats(players, newSeason.trim());
+      await audit(user, 'season.start', newSeason.trim(), { from: club.season, players: players.length });
+      toast(`Stagione ${newSeason.trim()} avviata: contatori azzerati`);
+      setNewSeason('');
+    } catch (e) { toast(errorText(e), 'error'); }
+    setRolling(false);
+  };
 
   // One-tap alternative to scripts/seed.mjs for people without a computer.
   const loadSquad = async () => {
@@ -288,6 +311,20 @@ export default function Impostazioni() {
         </Card>
       )}
 
+      <Card title="Cambio stagione">
+        <p>A fine campionato: la nuova etichetta parte da zero con presenze, minuti e cartellini, mentre tutto lo storico resta consultabile. Prima fai un backup.</p>
+        <Field label="Nuova stagione" hint="Formato 2027/2028. Poi archivia dalla Rosa chi non resta e carica i nuovi."><Input value={newSeason} onChange={(e) => setNewSeason(e.target.value)} placeholder="2027/2028" /></Field>
+        <Button variant="danger" disabled={rolling || !/^\d{4}\/\d{4}$/.test(newSeason.trim()) || newSeason.trim() === club.season}
+          onClick={() => setRolling('ask')}>
+          {rolling === true ? 'Avvio…' : `Avvia la stagione ${newSeason.trim() || '…'}`}
+        </Button>
+        {rolling === 'ask' && (
+          <ConfirmDialog title={`Avviare la stagione ${newSeason.trim()}?`} destructive confirmLabel="Avvia"
+            message="I contatori di tutti i giocatori tornano a zero e le squalifiche vengono chiuse. Le partite e le presenze della stagione attuale non vengono toccate. Hai fatto il backup?"
+            onConfirm={startSeason} onClose={() => setRolling(false)} />
+        )}
+      </Card>
+
       <Card title="Backup dei dati">
         <p>Firestore non fa copie automatiche sul piano gratuito. Questa esportazione scarica un file CSV per ogni raccolta: conservali su Drive una volta al mese.</p>
         <Button variant="secondary" onClick={exportAll} disabled={!!exporting}>
@@ -312,7 +349,7 @@ export default function Impostazioni() {
                     toast('Ruolo aggiornato');
                   }}
                   options={Object.entries(ROLES).map(([v, l]) => ({ value: v, label: l }))} />
-                {u.role === 'player' && (
+                {['player', 'readonly'].includes(u.role) && (
                   <Select value={u.playerId || ''} style={{ minHeight: 38, width: 'auto' }}
                     onChange={(e) => updateDocument('users', u.id, { playerId: e.target.value })}>
                     <option value="">Collega a…</option>

@@ -6,7 +6,8 @@ export const EVENT_TYPES = {
   assist: { label: 'Assist', emoji: '🎯' },
   gialla: { label: 'Ammonizione', emoji: '🟨' },
   rossa: { label: 'Espulsione', emoji: '🟥' },
-  sostituzione: { label: 'Sostituzione', emoji: '🔁' }
+  sostituzione: { label: 'Sostituzione', emoji: '🔁' },
+  gol_subito: { label: 'Gol subito', emoji: '🥅', noPlayer: true }
 };
 
 /**
@@ -25,7 +26,7 @@ export function computeMatchTotals({ starters = [], bench = [], events = [], dur
   starters.forEach((pid) => { enteredAt[pid] = 0; ensure(pid).started = true; });
 
   [...events].sort((a, b) => a.minute - b.minute).forEach((e) => {
-    if (!e.playerId) return;
+    if (e.type === 'gol_subito' || !e.playerId) return;
     const s = ensure(e.playerId);
     switch (e.type) {
       case 'gol': s.goals += 1; break;
@@ -57,21 +58,28 @@ export function computeMatchTotals({ starters = [], bench = [], events = [], dur
  * The cost falls on the one person recording data, so that everyone else
  * only ever reads /players.
  */
-export async function refreshStats(players) {
+export async function refreshStats(players, season) {
   const { getDocs, collection } = await import('firebase/firestore');
   const { db } = await import('./firebase');
   const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-  const [matchStats, attendance, callups] = await Promise.all([
-    read('matchStats'), read('attendance'), read('callups')
+  const [matchStats, attendance, callups, events] = await Promise.all([
+    read('matchStats'), read('attendance'), read('callups'), read('events')
   ]);
-  return recalculateAllStats({ players, matchStats, attendance, callups });
+  return recalculateAllStats({ players, matchStats, attendance, callups, events, season });
 }
 
 /**
  * Rebuild `players.stats` from every closed match and all attendance rows. Reads everything, writes once per player, so running it
  * twice gives the same result — no double counting, no drift.
  */
-export async function recalculateAllStats({ players, matchStats, attendance, callups }) {
+export async function recalculateAllStats({ players, matchStats, attendance, callups, events = [], season = null }) {
+  // Conta solo la stagione corrente: al cambio stagione i totali ripartono da zero
+  // e lo storico resta intatto nelle schede gara.
+  const seasonOf = Object.fromEntries(events.map((e) => [e.id, e.seasonId]));
+  const inSeason = (docSeason, eventId) => !season || (docSeason || seasonOf[eventId] || season) === season;
+  matchStats = matchStats.filter((m) => inSeason(m.seasonId, m.eventId));
+  attendance = attendance.filter((a) => inSeason(null, a.eventId));
+  callups = (callups || []).filter((c) => inSeason(c.seasonId, c.eventId));
   const stats = {};
   const base = () => ({
     appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,

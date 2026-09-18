@@ -70,6 +70,8 @@ export const NAV = [
   { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
+  { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
+  { to: '/io', label: 'La mia pagina', icon: '🙋', linked: true },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
   { to: '/quote', label: 'Quote e multe', icon: '💶', all: true },
   { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
@@ -78,6 +80,6 @@ export const NAV = [
   { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage' }
 ];
 
-export function navFor(role) {
-  return NAV.filter((i) => i.all || can(role, i.perm));
+export function navFor(role, user) {
+  return NAV.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
 }

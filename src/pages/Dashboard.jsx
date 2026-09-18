@@ -38,6 +38,19 @@ export default function Dashboard() {
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
 
+  // Compleanni nei prossimi sette giorni: piccola cosa, fa gruppo.
+  const birthdays = useMemo(() => {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    return players.map((p) => {
+      const b = toDate(p.birthDate);
+      if (!b) return null;
+      const next = new Date(today.getFullYear(), b.getMonth(), b.getDate());
+      if (next < today) next.setFullYear(today.getFullYear() + 1);
+      const days = Math.round((next - today) / 86400000);
+      return days <= 7 ? { p, days, age: next.getFullYear() - b.getFullYear() } : null;
+    }).filter(Boolean).sort((a, b) => a.days - b.days);
+  }, [players]);
+
   const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
   const lastCallup = callups[0];
 
@@ -98,6 +111,21 @@ export default function Dashboard() {
             <Alert level="info">Si allenano ma non giocano da tempo: {alerts.dimenticati.map((p) => p.fullName).join(', ')}.</Alert>
           )}
         </>
+      )}
+
+      {birthdays.length > 0 && (
+        <Card title="🎂 Compleanni">
+          <div className="plist">
+            {birthdays.map(({ p, days, age }) => (
+              <div key={p.id} className="prow">
+                <span className="prow__body">
+                  <span className="prow__name">{p.fullName}</span>
+                  <span className="prow__meta"><span>{days === 0 ? 'Oggi' : days === 1 ? 'Domani' : `Fra ${days} giorni`} · compie {age} anni</span></span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
       )}
 
       <div className="grid grid--2" style={{ marginTop: 16 }}>
