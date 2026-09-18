@@ -114,6 +114,8 @@ export const DEFAULT_CLUB = {
   cardsPerSuspension: 4,
   distintaPhone: '',
   distintaNome: '',
+  convocazioneNome: '',
+  convocazionePhone: '',
   cassaScopo: 'Cena di fine stagione',
   cassaClassifica: true,
   mvpEnabled: true,

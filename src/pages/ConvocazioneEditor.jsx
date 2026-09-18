@@ -168,6 +168,17 @@ export default function ConvocazioneEditor() {
    * WhatsApp non consente di precompilare un messaggio in un gruppo: il testo
    * va negli appunti e il gruppo si apre pronto per incollare.
    */
+  // Destinatario singolo della convocazione: se non impostato, si usa quello
+  // della distinta, che di solito è la stessa persona.
+  const directPhone = (club.convocazionePhone || club.distintaPhone || '').replace(/\D/g, '');
+  const directName = club.convocazioneNome || club.distintaNome || directPhone;
+
+  const sendDirect = async (reason) => {
+    await persist('condivisa', reason);
+    window.open(`https://wa.me/${directPhone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    toast(`Convocazione inviata a ${directName}`);
+  };
+
   const shareToGroup = async (reason) => {
     await copyText(message);
     await persist('condivisa', reason);
@@ -178,13 +189,14 @@ export default function ConvocazioneEditor() {
   };
 
   /** Un solo gesto: condividere è anche pubblicare, avvisi compresi. */
-  const shareAndPublish = () => {
+  /** Ogni invio passa dagli stessi controlli, qualunque sia la destinazione. */
+  const withChecks = (action) => () => {
     if (blocking.length && canOverride) {
       setConfirmDialog({
         title: 'Procedere con avvisi aperti?',
         message: `Ci sono ${blocking.length} avvisi bloccanti. Puoi procedere solo motivando la scelta: la motivazione resta nel log e la responsabilità della lista è dell'allenatore.`,
         requireReason: true,
-        onConfirm: (r) => shareToGroup(r)
+        onConfirm: (r) => action(r)
       });
       return;
     }
@@ -192,8 +204,11 @@ export default function ConvocazioneEditor() {
       toast("Ci sono avvisi bloccanti: serve l'allenatore per procedere", 'error');
       return;
     }
-    shareToGroup();
+    action();
   };
+
+  const shareAndPublish = withChecks(shareToGroup);
+  const sendAndPublish = withChecks(sendDirect);
 
   if (loadingPlayers || (id && loadingCallup)) return <Loading />;
 
@@ -347,17 +362,23 @@ export default function ConvocazioneEditor() {
             <div className="msgbox">{message}</div>
 
             <div className="btnrow" style={{ marginTop: 12 }}>
-              <Button onClick={shareAndPublish} disabled={busy}>
+              {directPhone && (
+                <Button onClick={sendAndPublish} disabled={busy}>
+                  Invia a {directName}
+                </Button>
+              )}
+              <Button variant={directPhone ? 'secondary' : 'primary'} onClick={shareAndPublish} disabled={busy}>
                 {club.groupLink ? 'Copia e apri il gruppo' : 'Copia messaggio'}
               </Button>
               {canSetLineup && (
-                <Button variant="secondary" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
+                <Button variant="ghost" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
                   Formazione per la distinta
                 </Button>
               )}
             </div>
 
             <Alert level="info">
+              {directPhone && `Il primo pulsante apre la chat con ${directName} (${directPhone}) e il messaggio è già scritto. `}
               {club.groupLink
                 ? 'Il messaggio viene copiato negli appunti e il gruppo si apre: tieni premuto nel campo di testo e incolla. La convocazione viene salvata come condivisa.'
                 : 'Il messaggio viene copiato: incollalo nel gruppo. Imposta il link del gruppo in Impostazioni per aprirlo con un tocco.'}

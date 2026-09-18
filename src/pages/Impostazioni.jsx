@@ -279,6 +279,12 @@ export default function Impostazioni() {
           hint="Il link di invito del gruppo. La convocazione viene copiata e il gruppo si apre: basta tenere premuto e incollare.">
           <Input value={form.groupLink || ''} onChange={set('groupLink')} placeholder="https://chat.whatsapp.com/..." />
         </Field>
+        <Field label="Nome di chi riceve la convocazione" hint="Compare sul primo pulsante della convocazione. Vuoto: si usa il destinatario della distinta.">
+          <Input value={form.convocazioneNome || ''} onChange={set('convocazioneNome')} placeholder="Mattia" />
+        </Field>
+        <Field label="WhatsApp di chi riceve la convocazione" hint="Solo cifre con prefisso: 393333307032.">
+          <Input value={form.convocazionePhone || ''} onChange={set('convocazionePhone')} placeholder="393333307032" inputMode="numeric" />
+        </Field>
         <Field label="Nome di chi compila la distinta" hint="Compare sul pulsante di invio, così sai a chi stai mandando.">
           <Input value={form.distintaNome || ''} onChange={set('distintaNome')} placeholder="Mattia" />
         </Field>
