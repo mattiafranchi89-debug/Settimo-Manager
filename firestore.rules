@@ -161,12 +161,6 @@ service cloud.firestore {
       allow write: if isTreasurer();
     }
 
-    // ---------- bacheca dello staff ----------
-    match /notices/{docId} {
-      allow read: if active();
-      allow create, update, delete: if isStaff();
-    }
-
     // ---------- voto del migliore in campo ----------
     // Ognuno scrive solo il proprio voto e non può votarsi; il conteggio lo
     // pubblica lo staff, così il voto resta segreto.

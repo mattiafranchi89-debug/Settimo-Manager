@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
-import { Card, Kpi, Button, Badge, Empty, Loading, Alert, Textarea, useToast, ConfirmDialog } from '../components/ui';
-import { addDocument, removeDocument, serverTimestamp } from '../lib/db';
+import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
@@ -54,17 +53,6 @@ export default function Dashboard() {
 
   const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
 
-  // Bacheca: poche righe dallo staff, visibili a tutti, senza perdersi in chat.
-  const { data: notices } = useCollection('notices', useMemo(() => [orderBy('at', 'desc'), limit(5)], []));
-  const canPost = can(user?.role, 'events.write');
-  const toast = useToast();
-  const [draft, setDraft] = useState('');
-  const [removingNotice, setRemovingNotice] = useState(null);
-  const post = async () => {
-    if (draft.trim().length < 3) return;
-    await addDocument('notices', { text: draft.trim(), by: user.name, byId: user.uid, at: serverTimestamp() });
-    setDraft(''); toast('Avviso pubblicato');
-  };
   const lastCallup = callups[0];
 
   if (loading) return <Loading />;
@@ -124,34 +112,6 @@ export default function Dashboard() {
             <Alert level="info">Si allenano ma non giocano da tempo: {alerts.dimenticati.map((p) => p.fullName).join(', ')}.</Alert>
           )}
         </>
-      )}
-
-      {(notices.length > 0 || canPost) && (
-        <Card title="📌 Bacheca">
-          {notices.length === 0 && <p><small>Nessun avviso. Quello che scrivi qui resta in cima per tutti finché non lo togli.</small></p>}
-          <div className="stack">
-            {notices.map((n) => (
-              <div key={n.id} className="prow" style={{ alignItems: 'flex-start' }}>
-                <span className="prow__body">
-                  <span style={{ whiteSpace: 'pre-wrap', fontSize: 14.5 }}>{n.text}</span>
-                  <span className="prow__meta"><span>{n.by}</span><span>{fmtShort(n.at)}</span></span>
-                </span>
-                {canPost && <button className="iconbtn" aria-label="Rimuovi avviso" onClick={() => setRemovingNotice(n)}>🗑</button>}
-              </div>
-            ))}
-          </div>
-          {canPost && (
-            <div style={{ marginTop: 10 }}>
-              <Textarea rows={2} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Es. Mercoledì campo in erba, portare le scarpe da 13." />
-              <Button size="sm" style={{ marginTop: 8 }} onClick={post} disabled={draft.trim().length < 3}>Pubblica avviso</Button>
-            </div>
-          )}
-          {removingNotice && (
-            <ConfirmDialog title="Rimuovere l'avviso?" destructive confirmLabel="Rimuovi" message={removingNotice.text}
-              onConfirm={async () => { await removeDocument('notices', removingNotice.id); toast('Avviso rimosso'); }}
-              onClose={() => setRemovingNotice(null)} />
-          )}
-        </Card>
       )}
 
       {birthdays.length > 0 && (
