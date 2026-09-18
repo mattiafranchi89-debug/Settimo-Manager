@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
-import { Card, Button, Field, Select, Badge, Empty, Loading, useToast, Alert, Textarea } from '../components/ui';
+import { Card, Button, Field, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
 import { errorText } from './Rosa';
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
+import { GROUPS, groupOf } from '../lib/format';
 /** Ordinamento in memoria: la query filtra per tipo, senza indici da creare. */
 const byDateDesc = (list) => [...list].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
 
@@ -73,11 +74,7 @@ export default function Formazioni() {
       next[picking] = playerId;
       return next;
     });
-    const order = slotList.map((s) => s.id);
-    const from = order.indexOf(picking);
-    const nextFree = order.slice(from + 1).concat(order.slice(0, from))
-      .find((id) => !slots[id] && id !== picking);
-    setPicking(nextFree || null);
+    setPicking(null);
   };
 
   /** Riempie le posizioni libere con chi ha il ruolo corrispondente. */
@@ -155,44 +152,15 @@ export default function Formazioni() {
         })}
       </div>
 
-      <Card className="noprint" title={picking ? `Chi gioca in posizione ${slotList.find((s) => s.id === picking)?.label}?` : 'Undici titolare'}
+      <Card className="noprint" title="Undici titolare"
         action={<Badge tone={starters.length === 11 ? 'green' : 'orange'}>{starters.length}/11</Badge>}>
 
-        {!picking && (
-          <div className="btnrow" style={{ marginBottom: 12 }}>
-            <Button size="sm" variant="secondary" onClick={autoFill}>Compila per ruolo</Button>
-            <Button size="sm" variant="ghost" onClick={() => { setSlots({}); setPicking(null); }}>Svuota</Button>
-          </div>
-        )}
+        <div className="btnrow" style={{ marginBottom: 12 }}>
+          <Button size="sm" variant="secondary" onClick={autoFill}>Compila per ruolo</Button>
+          <Button size="sm" variant="ghost" onClick={() => { setSlots({}); setPicking(null); }}>Svuota</Button>
+        </div>
 
-        {picking ? (
-          <>
-            {slots[picking] && (
-              <Button size="sm" variant="ghost" block style={{ marginBottom: 10 }}
-                onClick={() => { setSlots((v) => ({ ...v, [picking]: '' })); setPicking(null); }}>
-                Libera la posizione
-              </Button>
-            )}
-            <div className="plist">
-              {sortPlayers(pool).map((p) => {
-                const usedIn = slotList.find((s) => slots[s.id] === p.id);
-                return (
-                  <button key={p.id} className={`prow ${usedIn ? 'prow--selected' : ''}`} onClick={() => assign(p.id)}>
-                    <span className="prow__num">{p.position}</span>
-                    <span className="prow__body">
-                      <span className="prow__name">{p.fullName}</span>
-                      {usedIn && <span className="prow__meta"><span>già schierato come {usedIn.label}</span></span>}
-                    </span>
-                    {p.injury?.active && <Badge tone="blue">Inf.</Badge>}
-                  </button>
-                );
-              })}
-            </div>
-            <Button variant="ghost" block style={{ marginTop: 10 }} onClick={() => setPicking(null)}>Annulla</Button>
-          </>
-        ) : (
-          <>
-            <p><small>Tocca una posizione sul campo per assegnarla. Il capitano si sceglie toccando la fascia.</small></p>
+        <p><small>Tocca una posizione sul campo per assegnarla. Il capitano si sceglie toccando la fascia.</small></p>
             <div className="plist">
               {slotList.map((s) => {
                 const p = byId[slots[s.id]];
@@ -220,8 +188,6 @@ export default function Formazioni() {
                 <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
               </Field>
             </div>
-          </>
-        )}
       </Card>
 
       <div className="noprint btnrow" style={{ marginBottom: 12 }}>
@@ -244,6 +210,33 @@ export default function Formazioni() {
           🖼 Distinta come immagine
         </Button>
       </div>
+
+      {picking && (
+        <Sheet title={`Posizione ${slotList.find((s) => s.id === picking)?.label}`} onClose={() => setPicking(null)}>
+          <Field label="Giocatore" hint="Chi è già schierato altrove viene spostato in questa posizione.">
+            <Select value={slots[picking] || ''} onChange={(e) => { if (e.target.value) assign(e.target.value); else { setSlots((v) => ({ ...v, [picking]: '' })); setPicking(null); } }}>
+              <option value="">— libera la posizione —</option>
+              {GROUPS.map((g) => {
+                const list = sortPlayers(pool.filter((p) => groupOf(p.position) === g.key));
+                if (!list.length) return null;
+                return (
+                  <optgroup key={g.key} label={`${g.emoji} ${g.label}`}>
+                    {list.map((p) => {
+                      const usedIn = slotList.find((x) => slots[x.id] === p.id && x.id !== picking);
+                      return (
+                        <option key={p.id} value={p.id}>
+                          {p.fullName}{usedIn ? ` — ora ${usedIn.label}` : ''}{p.injury?.active ? ' — infortunato' : ''}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                );
+              })}
+            </Select>
+          </Field>
+          <Button variant="ghost" block onClick={() => setPicking(null)}>Chiudi</Button>
+        </Sheet>
+      )}
 
       <Card title="Messaggio per la distinta" className="noprint">
         <p><small>Da mandare a chi compila la distinta, anche a distanza di giorni dalla convocazione. Non contiene i numeri di documento: quelli restano nell'app.</small></p>
