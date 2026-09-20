@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { ToastProvider, Loading, Alert, Card } from './components/ui';
-import { can } from './lib/permissions';
+import { can, isPlayerView } from './lib/permissions';
 import { configMissing } from './lib/firebase';
 
 import Layout from './components/Layout';
@@ -50,6 +50,8 @@ const Registro = lazyPage(() => import('./pages/Registro'));
 const Analisi = lazyPage(() => import('./pages/Analisi'));
 const MiaPagina = lazyPage(() => import('./pages/MiaPagina'));
 const Cassa = lazyPage(() => import('./pages/Cassa'));
+const HomeGiocatore = lazyPage(() => import('./pages/HomeGiocatore'));
+const Squadra = lazyPage(() => import('./pages/Squadra'));
 const Statistiche = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
 const Documenti = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
 const QuoteMulte = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
@@ -70,6 +72,12 @@ function Protected({ perm, children }) {
     return <Alert level="error">Non hai i permessi per questa sezione.</Alert>;
   }
   return children;
+}
+
+/** Staff e giocatori entrano dalla stessa porta ma in due stanze diverse. */
+function Home() {
+  const { user } = useAuth();
+  return isPlayerView(user?.role) ? <HomeGiocatore /> : <Dashboard />;
 }
 
 function Shell() {
@@ -100,24 +108,25 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Protected><Shell /></Protected>}>
-        <Route index element={<Dashboard />} />
+        <Route index element={<Home />} />
         <Route path="rosa" element={<Protected perm="players.read"><Rosa /></Protected>} />
-        <Route path="allenamenti" element={<Allenamenti />} />
-        <Route path="partite" element={<Partite />} />
-        <Route path="partite/:id" element={<SchedaGara />} />
-        <Route path="convocazioni" element={<Convocazioni />} />
+        <Route path="allenamenti" element={<Protected perm="players.read"><Allenamenti /></Protected>} />
+        <Route path="partite" element={<Protected perm="players.read"><Partite /></Protected>} />
+        <Route path="partite/:id" element={<Protected perm="players.read"><SchedaGara /></Protected>} />
+        <Route path="convocazioni" element={<Protected perm="players.read"><Convocazioni /></Protected>} />
         <Route path="convocazioni/nuova" element={<Protected perm="callup.draft"><ConvocazioneEditor /></Protected>} />
-        <Route path="convocazioni/:id" element={<ConvocazioneEditor />} />
+        <Route path="convocazioni/:id" element={<Protected perm="players.read"><ConvocazioneEditor /></Protected>} />
         {/* Raggiungibile solo dal pulsante della convocazione, non dal menu. */}
         <Route path="formazioni" element={<Protected perm="lineup.write"><Formazioni /></Protected>} />
         <Route path="calendario" element={<Calendario />} />
         <Route path="campionato" element={<Campionato />} />
-        <Route path="statistiche" element={<Statistiche />} />
-        <Route path="analisi" element={<Analisi />} />
+        <Route path="statistiche" element={<Protected perm="players.read"><Statistiche /></Protected>} />
+        <Route path="analisi" element={<Protected perm="players.read"><Analisi /></Protected>} />
         <Route path="io" element={<MiaPagina />} />
         <Route path="cassa" element={<Cassa />} />
+        <Route path="squadra" element={<Squadra />} />
         <Route path="documenti" element={<Protected perm="documents.write"><Documenti /></Protected>} />
-        <Route path="quote" element={<QuoteMulte />} />
+        <Route path="quote" element={<Protected perm="finance.read"><QuoteMulte /></Protected>} />
         <Route path="importa" element={<Protected perm="players.write"><Importa /></Protected>} />
         <Route path="registro" element={<Protected perm="audit.read"><Registro /></Protected>} />
         <Route path="diagnostica" element={<Protected perm="club.manage"><Diagnostica /></Protected>} />

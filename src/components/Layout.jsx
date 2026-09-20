@@ -2,16 +2,9 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
-import { navFor, ROLES, can } from '../lib/permissions';
+import { navFor, tabsFor, ROLES, can } from '../lib/permissions';
 import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
-
-const TABS = [
-  { to: '/', label: 'Home', icon: '🏠' },
-  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃' },
-  { to: '/convocazioni', label: 'Convocazioni', icon: '📋' },
-  { to: '/calendario', label: 'Calendario', icon: '📅' }
-];
 
 export default function Layout({ theme, toggleTheme }) {
   const { user, logout } = useAuth();
@@ -19,6 +12,7 @@ export default function Layout({ theme, toggleTheme }) {
   const navigate = useNavigate();
   const [more, setMore] = useState(false);
   const nav = navFor(user?.role, user);
+  const tabs = tabsFor(user?.role);
   const canCallup = can(user?.role, 'callup.draft');
 
   const go = (to) => { setMore(false); navigate(to); };
@@ -65,7 +59,7 @@ export default function Layout({ theme, toggleTheme }) {
       )}
 
       <nav className="tabbar" aria-label="Navigazione rapida">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.to === '/'}>
             <span aria-hidden="true">{t.icon}</span>{t.label}
           </NavLink>

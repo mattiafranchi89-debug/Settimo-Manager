@@ -59,7 +59,7 @@ Scelte da conoscere:
 
 | Ruolo | Cosa può fare in più rispetto al precedente |
 |---|---|
-| Giocatore | vede il proprio profilo, conferma la disponibilità, vede le proprie quote |
+| Giocatore / Sola lettura | vista dedicata: home con la propria convocazione, calendario, squadra, campionato, profilo personale e cassa. Nessuna sezione di gestione |
 | Dirigente accompagnatore | logistica, contatti, documenti, quote e multe, condivisione convocazioni |
 | Preparatore portieri | note e presenze dei portieri, valutazioni |
 | Preparatore atletico | infortuni, recuperi, idoneità fisica |

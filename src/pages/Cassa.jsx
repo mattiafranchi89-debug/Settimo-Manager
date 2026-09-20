@@ -1,33 +1,72 @@
 import { useMemo } from 'react';
-import { useClub, useDoc } from '../lib/db';
-import { Card, Kpi, Empty, Loading, Alert } from '../components/ui';
-import { euro, fmtDateTime } from '../lib/format';
+import { useAuth } from '../lib/auth';
+import { useClub, useDoc, useCollection, where } from '../lib/db';
+import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
+import { euro, fmtDateTime, fmtShort } from '../lib/format';
 
 /**
  * La cassa multe vista dalla squadra: totale, scopo e classifica dei
  * contributori. Legge un solo documento aggregato, senza causali.
  */
 export default function Cassa() {
+  const { user } = useAuth();
   const { club } = useClub();
   const { data, loading } = useDoc('config', 'cassa');
+  const pid = user?.playerId;
+
+  // Filtrata per giocatore: le regole non permettono di leggere le voci altrui.
+  const mineQ = useMemo(() => [where('playerId', '==', pid || '-')], [pid]);
+  const { data: myFines } = useCollection('fines', mineQ, !!pid);
+  const { data: myPayments } = useCollection('payments', mineQ, !!pid);
+  const mine = useMemo(
+    () => [...myPayments, ...myFines].sort((a, b) => (a.status === 'saldato' ? 1 : 0) - (b.status === 'saldato' ? 1 : 0)),
+    [myFines, myPayments]
+  );
+  const mineOpen = mine.filter((r) => r.status !== 'saldato');
   const rows = useMemo(() => [...(data?.contributors || [])].sort((a, b) => b.amount - a.amount), [data]);
 
   if (loading) return <Loading />;
-  if (!data) return <Card><Empty title="Cassa non ancora aggiornata">Il totale compare appena chi gestisce le multe apre la sezione Quote e multe.</Empty></Card>;
 
   const max = Math.max(1, ...rows.map((r) => r.amount));
+  const hasPot = !!data;
   return (
     <>
       <div className="pagehead">
         <div><h1>Cassa multe</h1><p>Obiettivo: {club.cassaScopo || 'da decidere'}</p></div>
       </div>
 
+      {!hasPot && (
+        <Card><Empty title="Cassa non ancora aggiornata">Il totale compare appena chi gestisce le multe apre la sezione Quote e multe.</Empty></Card>
+      )}
+
+      {hasPot && (
       <div className="grid grid--kpi">
         <Kpi value={euro(data.collected || 0)} label="Raccolti finora" accent />
         <Kpi value={euro(data.open || 0)} label="Ancora da versare" tone={data.open ? 'orange' : undefined} />
         <Kpi value={data.count || 0} label="Multe in stagione" />
         <Kpi value={rows.length} label="Contribuenti" />
       </div>
+      )}
+
+      {pid && mine.length > 0 && (
+        <Card title="Le tue quote e multe"
+          action={<Badge tone={mineOpen.length ? 'orange' : 'green'}>
+            {mineOpen.length ? `${euro(mineOpen.reduce((t, r) => t + (r.amount || 0), 0))} da versare` : 'tutto saldato'}
+          </Badge>}>
+          <div className="plist">
+            {mine.map((r) => (
+              <div key={r.id} className="prow">
+                <span className="prow__body">
+                  <span className="prow__name">{r.reason}</span>
+                  {r.dueDate && <span className="prow__meta"><span>entro {fmtShort(r.dueDate)}</span></span>}
+                </span>
+                <Badge tone={r.status === 'saldato' ? 'green' : 'orange'}>{euro(r.amount)}</Badge>
+              </div>
+            ))}
+          </div>
+          <p><small>Le vedi solo tu e chi gestisce la cassa.</small></p>
+        </Card>
+      )}
 
       {club.cassaClassifica !== false && rows.length > 0 && (
         <Card title="Chi ha alimentato la cassa">
@@ -49,7 +88,7 @@ export default function Cassa() {
         </Card>
       )}
 
-      <Alert level="info">Aggiornata il {fmtDateTime(data.updatedAt)}.</Alert>
+      {hasPot && <Alert level="info">Aggiornata il {fmtDateTime(data.updatedAt)}.</Alert>}
     </>
   );
 }
