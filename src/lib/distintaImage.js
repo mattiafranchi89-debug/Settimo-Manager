@@ -4,7 +4,7 @@ import { fmtLong, fmtTime, capitalize } from './format';
  * Disegna la distinta su un canvas e la restituisce come immagine PNG:
  * su WhatsApp arriva come foto, leggibile senza aprire nulla.
  */
-export async function renderDistintaImage({ club, match, module, starters, bench, captain, docs = {}, logoUrl }) {
+export async function renderDistintaImage({ club, match, module, starters, bench, captain, docs = {}, numbers = {}, logoUrl }) {
   const W = 1080;
   const rowH = 46;
   const H = 420 + (starters.length + bench.length) * rowH + 220;
@@ -40,19 +40,22 @@ export async function renderDistintaImage({ club, match, module, starters, bench
     g.fillStyle = '#D40000'; g.font = 'bold 30px "Barlow Condensed", "Arial Narrow", sans-serif';
     g.fillText(label.toUpperCase(), 60, y); g.fillRect(60, y + 10, W - 120, 3); y += 44;
   };
-  const line = (role, name, doc, isCaptain) => {
-    g.fillStyle = '#6B7280'; g.font = '22px Inter, Arial, sans-serif'; g.fillText(role, 60, y);
+  const line = (role, name, doc, isCaptain, number) => {
+    // Numero, ruolo e nome incolonnati: è l'ordine con cui si compila il modulo.
+    g.fillStyle = '#1F2937'; g.font = 'bold 26px Inter, Arial, sans-serif';
+    g.textAlign = 'right'; g.fillText(number ? String(number) : '', 100, y); g.textAlign = 'left';
+    g.fillStyle = '#6B7280'; g.font = '22px Inter, Arial, sans-serif'; g.fillText(role, 120, y);
     g.fillStyle = '#1F2937'; g.font = `${isCaptain ? 'bold ' : ''}26px Inter, Arial, sans-serif`;
-    g.fillText(`${name}${isCaptain ? '  (C)' : ''}`, 150, y);
+    g.fillText(`${name}${isCaptain ? '  (C)' : ''}`, 210, y);
     if (doc) { g.fillStyle = '#4B5563'; g.font = '22px Inter, Arial, sans-serif'; g.textAlign = 'right'; g.fillText(doc, W - 60, y); g.textAlign = 'left'; }
     y += rowH;
   };
 
   section('Titolari');
-  starters.forEach((s) => line(s.role, s.name, docs[s.id] || '', s.id === captain));
+  starters.forEach((s) => line(s.role, s.name, docs[s.id] || '', s.id === captain, numbers[s.id]));
   y += 16;
   section('Panchina');
-  bench.forEach((p) => line(p.position, p.fullName, docs[p.id] || '', p.id === captain));
+  bench.forEach((p) => line(p.position, p.fullName, docs[p.id] || '', p.id === captain, numbers[p.id]));
 
   y += 30;
   g.fillStyle = '#4B5563'; g.font = '24px Inter, Arial, sans-serif';

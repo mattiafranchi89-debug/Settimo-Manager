@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
-import { Card, Button, Field, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
+import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
 import { errorText } from './Rosa';
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName, toDate } from '../lib/format';
@@ -42,6 +42,8 @@ export default function Formazioni() {
   const [captain, setCaptain] = useState('');
   const [notes, setNotes] = useState('');
   const [docs, setDocs] = useState({});
+  // I numeri valgono per la singola gara: in Prima Categoria cambiano di domenica in domenica.
+  const [numbers, setNumbers] = useState({});
 
   useEffect(() => {
     if (!saved) { setSlots({}); return; }
@@ -49,6 +51,7 @@ export default function Formazioni() {
     setSlots(saved.slots || {});
     setCaptain(saved.captain || '');
     setNotes(saved.notes || '');
+    setNumbers(saved.numbers || {});
   }, [saved, club.defaultModule]);
 
   const match = matches.find((m) => m.id === eventId);
@@ -65,8 +68,51 @@ export default function Formazioni() {
 
   const [picking, setPicking] = useState(null);
 
-  /** Assegna il giocatore alla posizione scelta e passa alla prima libera. */
+  /** Primo numero libero, così non si devono ricordare quelli già dati. */
+  const freeNumber = (preferred) => {
+    const taken = new Set(Object.values(numbers).map(Number).filter(Boolean));
+    if (preferred && !taken.has(preferred)) return String(preferred);
+    for (let i = 1; i <= 99; i++) if (!taken.has(i)) return String(i);
+    return '';
+  };
+
+  const setNumber = (playerId, value) => {
+    const v = String(value).replace(/\D/g, '').slice(0, 2);
+    setNumbers((n) => {
+      const next = { ...n };
+      if (v === '' || v === '0') delete next[playerId]; else next[playerId] = v;
+      return next;
+    });
+  };
+
+  /** Numeri usati da più di un giocatore: la distinta verrebbe respinta. */
+  const duplicates = useMemo(() => {
+    const seen = {}, dup = new Set();
+    Object.entries(numbers).forEach(([id, n]) => { if (seen[n]) dup.add(n); seen[n] = id; });
+    return dup;
+  }, [numbers]);
+
+  /**
+   * Numerazione classica: 1 al portiere, poi i titolari nell'ordine del modulo
+   * e infine la panchina. Si corregge a mano dove serve.
+   */
+  const autoNumber = () => {
+    const result = {};
+    let next = 2;
+    const gkSlot = slotList.find((sl) => sl.label === 'POR' && slots[sl.id]);
+    if (gkSlot) result[slots[gkSlot.id]] = '1';
+    slotList.forEach((sl) => {
+      const id = slots[sl.id];
+      if (id && !result[id]) result[id] = String(next++);
+    });
+    bench.forEach((p) => { if (!result[p.id]) result[p.id] = String(next++); });
+    setNumbers(result);
+    toast('Numeri assegnati: correggi quelli che vuoi diversi');
+  };
+
+  /** Assegna il giocatore e propone subito un numero, se non ne ha già uno. */
   const assign = (playerId) => {
+    const slotLabel = slotList.find((x) => x.id === picking)?.label;
     setSlots((v) => {
       const next = { ...v };
       // Se giocava altrove, libera quella posizione invece di duplicarlo.
@@ -74,7 +120,9 @@ export default function Formazioni() {
       next[picking] = playerId;
       return next;
     });
-    setPicking(null);
+    if (!numbers[playerId]) {
+      setNumbers((n) => ({ ...n, [playerId]: freeNumber(slotLabel === 'POR' ? 1 : null) }));
+    }
   };
 
   /** Riempie le posizioni libere con chi ha il ruolo corrispondente. */
@@ -97,12 +145,12 @@ export default function Formazioni() {
   const lineupMessage = useMemo(() => (match ? buildLineupMessage({
     club, match, module,
     slots: slotList.map((s) => ({ label: s.label, playerId: slots[s.id] })),
-    byId, bench, captain
-  }) : ''), [club, match, module, slotList, slots, byId, bench, captain]);
+    byId, bench, captain, numbers
+  }) : ''), [club, match, module, slotList, slots, byId, bench, captain, numbers]);
 
   const save = async () => {
     await setDocument('lineups', eventId, {
-      eventId, module, slots, captain, notes,
+      eventId, module, slots, captain, notes, numbers,
       starters, bench: bench.map((p) => p.id),
       updatedBy: user.uid, updatedAt: serverTimestamp()
     });
@@ -144,7 +192,7 @@ export default function Formazioni() {
               onClick={() => setPicking(active ? null : s.id)}
               aria-label={p ? `${s.label}: ${p.fullName}` : `${s.label} libero`}>
               <span className={`slot__shirt ${active ? 'slot__shirt--active' : ''} ${p ? '' : 'slot__shirt--empty'}`}>
-                {p ? s.label : '+'}
+                {p ? (numbers[p.id] || s.label) : '+'}
               </span>
               <span className="slot__name">{p ? shortName(p.fullName) : s.label}</span>
             </button>
@@ -157,20 +205,36 @@ export default function Formazioni() {
 
         <div className="btnrow" style={{ marginBottom: 12 }}>
           <Button size="sm" variant="secondary" onClick={autoFill}>Compila per ruolo</Button>
-          <Button size="sm" variant="ghost" onClick={() => { setSlots({}); setPicking(null); }}>Svuota</Button>
+          <Button size="sm" variant="secondary" onClick={autoNumber} disabled={!starters.length}>Numera 1-11</Button>
+          <Button size="sm" variant="ghost" onClick={() => { setSlots({}); setNumbers({}); setPicking(null); }}>Svuota</Button>
         </div>
 
-        <p><small>Tocca una posizione sul campo per assegnarla. Il capitano si sceglie toccando la fascia.</small></p>
+        {duplicates.size > 0 && (
+          <Alert level="error">
+            Numero {[...duplicates].join(', ')} assegnato a più giocatori: la distinta va corretta prima di consegnarla.
+          </Alert>
+        )}
+
+        <p><small>Tocca una posizione sul campo o un nome per cambiare giocatore. Il numero si scrive nella casella a sinistra, la fascia da capitano con la Ⓒ.</small></p>
             <div className="plist">
               {slotList.map((s) => {
                 const p = byId[slots[s.id]];
                 return (
-                  <div key={s.id} className="prow" onClick={() => setPicking(s.id)} style={{ cursor: 'pointer' }}>
-                    <span className="prow__num">{s.label}</span>
-                    <span className="prow__body">
+                  <div key={s.id} className="prow">
+                    {p ? (
+                      <Input aria-label={`Numero di ${p.fullName}`} value={numbers[p.id] || ''}
+                        onChange={(e) => setNumber(p.id, e.target.value)}
+                        inputMode="numeric" placeholder="–"
+                        style={{
+                          width: 52, minHeight: 40, padding: '6px 4px', textAlign: 'center', fontWeight: 700,
+                          borderColor: duplicates.has(numbers[p.id]) ? 'var(--red)' : undefined
+                        }} />
+                    ) : <span className="prow__num">{s.label}</span>}
+                    <span className="prow__body" onClick={() => setPicking(s.id)} style={{ cursor: 'pointer' }}>
                       <span className="prow__name" style={p ? undefined : { color: 'var(--muted)' }}>
                         {p ? p.fullName : 'da assegnare'}
                       </span>
+                      {p && <span className="prow__meta"><span>{s.label}</span></span>}
                     </span>
                     {p && (
                       <button className="iconbtn" aria-label="Capitano"
@@ -183,6 +247,34 @@ export default function Formazioni() {
                 );
               })}
             </div>
+            {bench.length > 0 && (
+              <>
+                <div className="grouphead" style={{ marginTop: 16 }}>Panchina <small>{bench.length}</small></div>
+                <div className="plist">
+                  {bench.map((b) => (
+                    <div key={b.id} className="prow">
+                      <Input aria-label={`Numero di ${b.fullName}`} value={numbers[b.id] || ''}
+                        onChange={(e) => setNumber(b.id, e.target.value)}
+                        inputMode="numeric" placeholder="–"
+                        style={{
+                          width: 52, minHeight: 40, padding: '6px 4px', textAlign: 'center', fontWeight: 700,
+                          borderColor: duplicates.has(numbers[b.id]) ? 'var(--red)' : undefined
+                        }} />
+                      <span className="prow__body">
+                        <span className="prow__name">{b.fullName}</span>
+                        <span className="prow__meta"><span>{b.position}</span></span>
+                      </span>
+                      <button className="iconbtn" aria-label="Capitano"
+                        onClick={() => setCaptain(captain === b.id ? '' : b.id)}
+                        style={captain === b.id ? { borderColor: 'var(--red)', color: 'var(--red)' } : undefined}>
+                        Ⓒ
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div style={{ marginTop: 14 }}>
               <Field label="Note gara">
                 <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
@@ -199,7 +291,7 @@ export default function Formazioni() {
           onClick={async () => {
             try {
               const blob = await renderDistintaImage({
-                club, match, module, captain, docs,
+                club, match, module, captain, docs, numbers,
                 starters: slotList.filter((s) => slots[s.id]).map((s) => ({ id: slots[s.id], role: s.label, name: byId[slots[s.id]]?.fullName || '' })),
                 bench, logoUrl: club.logoUrl
               });
@@ -234,7 +326,16 @@ export default function Formazioni() {
               })}
             </Select>
           </Field>
-          <Button variant="ghost" block onClick={() => setPicking(null)}>Chiudi</Button>
+          {slots[picking] && (
+            <Field label="Numero di maglia" hint="Proposto il primo libero: cambialo se serve.">
+              <Input value={numbers[slots[picking]] || ''} onChange={(e) => setNumber(slots[picking], e.target.value)}
+                inputMode="numeric" placeholder="10" maxLength={2} />
+            </Field>
+          )}
+          {slots[picking] && duplicates.has(numbers[slots[picking]]) && (
+            <Alert level="error">Il numero {numbers[slots[picking]]} è già assegnato a un altro giocatore.</Alert>
+          )}
+          <Button block onClick={() => setPicking(null)}>Fatto</Button>
         </Sheet>
       )}
 
@@ -266,12 +367,12 @@ export default function Formazioni() {
         )}
       </Card>
 
-      <Distinta docs={docs} club={club} match={match} slotList={slotList} slots={slots} byId={byId} bench={bench} captain={captain} module={module} notes={notes} />
+      <Distinta docs={docs} numbers={numbers} club={club} match={match} slotList={slotList} slots={slots} byId={byId} bench={bench} captain={captain} module={module} notes={notes} />
     </>
   );
 }
 
-function Distinta({ docs = {}, club, match, slotList, slots, byId, bench, captain, module, notes }) {
+function Distinta({ docs = {}, numbers = {}, club, match, slotList, slots, byId, bench, captain, module, notes }) {
   if (!match) return null;
   return (
     <Card title="Distinta gara" action={<span className="noprint"><Button size="sm" variant="secondary" onClick={() => window.print()}>Stampa / PDF</Button></span>}>
@@ -294,12 +395,13 @@ function Distinta({ docs = {}, club, match, slotList, slots, byId, bench, captai
 
       <h3>Titolari</h3>
       <table className="data" style={{ minWidth: 0 }}>
-        <thead><tr><th>Ruolo</th><th>Giocatore</th><th>Documento</th></tr></thead>
+        <thead><tr><th>N.</th><th>Ruolo</th><th>Giocatore</th><th>Documento</th></tr></thead>
         <tbody>
           {slotList.map((s) => {
             const p = byId[slots[s.id]];
             return (
               <tr key={s.id}>
+                <td style={{ width: 36, fontWeight: 700 }}>{p ? (numbers[p.id] || '') : ''}</td>
                 <td>{s.label}</td>
                 <td>{p ? p.fullName : '—'} {captain && p?.id === captain ? <Badge tone="red">C</Badge> : null}</td>
                 <td>{p ? (docs[p.id] || '') : ''}</td>
@@ -311,7 +413,14 @@ function Distinta({ docs = {}, club, match, slotList, slots, byId, bench, captai
 
       <h3 style={{ marginTop: 14 }}>Panchina</h3>
       <table className="data" style={{ minWidth: 0 }}>
-        <tbody>{bench.map((p) => <tr key={p.id}><td style={{ width: 46 }}>{p.position}</td><td>{p.fullName}</td><td>{docs[p.id] || ''}</td></tr>)}</tbody>
+        <tbody>{bench.map((p) => (
+          <tr key={p.id}>
+            <td style={{ width: 36, fontWeight: 700 }}>{numbers[p.id] || ''}</td>
+            <td style={{ width: 46 }}>{p.position}</td>
+            <td>{p.fullName}{captain === p.id ? ' (C)' : ''}</td>
+            <td>{docs[p.id] || ''}</td>
+          </tr>
+        ))}</tbody>
       </table>
 
       <table className="data" style={{ minWidth: 0, marginTop: 14 }}>

@@ -99,7 +99,8 @@ export function buildMessage({ club, match, selected, options = {} }) {
  * include identity document numbers: those stay in the app, where access is
  * restricted, rather than travelling through a chat.
  */
-export function buildLineupMessage({ club, match, module, slots, byId, bench, captain }) {
+export function buildLineupMessage({ club, match, module, slots, byId, bench, captain, numbers = {} }) {
+  const n = (id) => (numbers[id] ? `${numbers[id]}. ` : '');
   const L = [];
   L.push('📝 FORMAZIONE PER LA DISTINTA');
   L.push('');
@@ -111,12 +112,12 @@ export function buildLineupMessage({ club, match, module, slots, byId, bench, ca
   (slots || []).forEach((s) => {
     const p = byId[s.playerId];
     if (!p) return;
-    L.push(`- ${s.label}: ${p.fullName}${captain === p.id ? ' (C)' : ''}`);
+    L.push(`- ${n(p.id)}${p.fullName} (${s.label})${captain === p.id ? ' — C' : ''}`);
   });
   if (bench?.length) {
     L.push('');
     L.push('PANCHINA');
-    bench.forEach((p) => L.push(`- ${p.fullName}${captain === p.id ? ' (C)' : ''}`));
+    bench.forEach((p) => L.push(`- ${n(p.id)}${p.fullName}${captain === p.id ? ' — C' : ''}`));
   }
   L.push('');
   if (club.staff?.head_coach) L.push(`Allenatore: ${club.staff.head_coach}`);
