@@ -19,9 +19,13 @@ export default function HomeGiocatore() {
   const pid = user?.playerId;
 
   const now = useMemo(() => new Date(), []);
-  const nextQ = useMemo(() => [where('date', '>=', now), orderBy('date', 'asc'), limit(8)], [now]);
+  // Partita e allenamento sono interrogati separatamente: altrimenti tante
+  // sedute vicine potrebbero riempire il limite e far sparire la prossima gara.
+  const nextMatchQ = useMemo(() => [where('type', '==', 'match'), where('date', '>=', now), orderBy('date', 'asc'), limit(1)], [now]);
+  const nextTrainingQ = useMemo(() => [where('type', '==', 'training'), where('date', '>=', now), orderBy('date', 'asc'), limit(1)], [now]);
   const pastQ = useMemo(() => [where('date', '<', now), orderBy('date', 'desc'), limit(6)], [now]);
-  const { data: upcoming, loading } = useCollection('events', nextQ);
+  const { data: nextMatches, loading } = useCollection('events', nextMatchQ);
+  const { data: nextTrainings } = useCollection('events', nextTrainingQ);
   const { data: past } = useCollection('events', pastQ);
 
   const { data: me } = useDoc('players', pid, !!pid);
@@ -34,8 +38,8 @@ export default function HomeGiocatore() {
   const { data: myFines } = useCollection('fines', minesQ, !!pid);
   const { data: myPayments } = useCollection('payments', minesQ, !!pid);
 
-  const nextMatch = upcoming.find((e) => e.type === 'match');
-  const nextTraining = upcoming.find((e) => e.type === 'training');
+  const nextMatch = nextMatches[0];
+  const nextTraining = nextTrainings[0];
   const lastMatch = past.find((e) => e.type === 'match' && e.scoreHome != null);
 
   // Convocazione pubblicata per la prossima gara: una bozza non conta.

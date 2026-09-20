@@ -46,7 +46,7 @@ export default function Formazioni() {
   const [numbers, setNumbers] = useState({});
 
   useEffect(() => {
-    if (!saved) { setSlots({}); return; }
+    if (!saved) { setSlots({}); setNumbers({}); return; }
     setModule(saved.module || club.defaultModule);
     setSlots(saved.slots || {});
     setCaptain(saved.captain || '');

@@ -96,8 +96,6 @@ export default function Squadra() {
                     </span>
                     <span className="prow__meta"><span>{positionLabel(p.position)}</span></span>
                   </span>
-                  {p.injury?.active && <Badge tone="blue">Infortunato</Badge>}
-                  {p.suspended && <Badge tone="purple">Squalificato</Badge>}
                 </div>
               ))}
             </div>
