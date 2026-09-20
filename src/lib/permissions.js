@@ -22,8 +22,8 @@ const MATRIX = {
   'users.manage': ['admin'],
   'audit.read': ['admin', 'head_coach'],
 
-  // 'readonly' can see everything the staff sees, but appears in no write list.
-  'players.read': [...STAFF_ROLES, 'readonly', 'sporting_director'],
+  // La rosa completa, con infortuni e scadenze, resta allo staff.
+  'players.read': [...STAFF_ROLES, 'sporting_director'],
   'players.write': ['admin', 'head_coach', 'team_manager'],
   'players.archive': ['admin'],
   'players.delete': ['admin'],
@@ -60,8 +60,15 @@ export function isStaff(role) {
   return STAFF_ROLES.includes(role);
 }
 
-// Navigation is derived from permissions so a Player never sees staff sections.
-export const NAV = [
+/**
+ * Due esperienze distinte. Lo staff gestisce la squadra; il giocatore deve
+ * sapere se è convocato, quando si gioca e come sta andando lui: tutto il
+ * resto è rumore che allontana dall'app.
+ */
+const PLAYER_VIEW_ROLES = ['player', 'readonly'];
+export const isPlayerView = (role) => PLAYER_VIEW_ROLES.includes(role);
+
+const NAV_STAFF = [
   { to: '/', label: 'Dashboard', icon: '🏠', all: true },
   { to: '/rosa', label: 'Rosa', icon: '👥', perm: 'players.read' },
   { to: '/allenamenti', label: 'Allenamenti', icon: '🏃', all: true },
@@ -71,9 +78,8 @@ export const NAV = [
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
   { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
-  { to: '/io', label: 'La mia pagina', icon: '🙋', linked: true },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
-  { to: '/quote', label: 'Quote e multe', icon: '💶', all: true },
+  { to: '/quote', label: 'Quote e multe', icon: '💶', perm: 'finance.read' },
   { to: '/cassa', label: 'Cassa multe', icon: '🏺', all: true },
   { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
   { to: '/registro', label: 'Registro', icon: '📑', perm: 'audit.read' },
@@ -81,6 +87,36 @@ export const NAV = [
   { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage' }
 ];
 
+const NAV_PLAYER = [
+  { to: '/', label: 'Home', icon: '🏠', all: true },
+  { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
+  { to: '/squadra', label: 'Squadra', icon: '👥', all: true },
+  { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
+  { to: '/io', label: 'Il mio profilo', icon: '🙋', linked: true },
+  { to: '/cassa', label: 'Cassa e quote', icon: '🏺', all: true },
+  { to: '/impostazioni', label: 'Il mio account', icon: '⚙️', all: true }
+];
+
+/** Le cinque voci in fondo allo schermo: le prime quattro più «Altro». */
+export const TABS_STAFF = [
+  { to: '/', label: 'Home', icon: '🏠' },
+  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃' },
+  { to: '/convocazioni', label: 'Convocazioni', icon: '📋' },
+  { to: '/calendario', label: 'Calendario', icon: '📅' }
+];
+
+export const TABS_PLAYER = [
+  { to: '/', label: 'Home', icon: '🏠' },
+  { to: '/calendario', label: 'Calendario', icon: '📅' },
+  { to: '/squadra', label: 'Squadra', icon: '👥' },
+  { to: '/io', label: 'Profilo', icon: '🙋' }
+];
+
+export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : TABS_STAFF);
+
+export const NAV = NAV_STAFF;
+
 export function navFor(role, user) {
-  return NAV.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
+  const list = isPlayerView(role) ? NAV_PLAYER : NAV_STAFF;
+  return list.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
 }
