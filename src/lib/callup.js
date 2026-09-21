@@ -95,12 +95,36 @@ export function buildMessage({ club, match, selected, options = {} }) {
 }
 
 /**
+ * Ordina per numero di maglia crescente; chi non ha ancora un numero finisce
+ * in fondo, in ordine alfabetico, così non sparisce dalla lista senza avvisare.
+ */
+function byShirtNumber(rows) {
+  return [...rows].sort((a, b) => {
+    const na = Number(a.number) || Infinity;
+    const nb = Number(b.number) || Infinity;
+    if (na !== nb) return na - nb;
+    return a.name.localeCompare(b.name, 'it');
+  });
+}
+
+/**
  * Message for whoever fills in the official team sheet. Deliberately does not
  * include identity document numbers: those stay in the app, where access is
  * restricted, rather than travelling through a chat.
+ *
+ * L'ordine è quello del portale LND, che chiede i tesserati per numero di
+ * maglia crescente: si compila leggendo dall'alto in basso, senza cercare.
  */
 export function buildLineupMessage({ club, match, module, slots, byId, bench, captain, numbers = {} }) {
-  const n = (id) => (numbers[id] ? `${numbers[id]}. ` : '');
+  const row = (p, label) => ({ id: p.id, name: p.fullName, label, number: numbers[p.id] || '' });
+  const line = (r) => `${r.number || '–'}. ${r.name}${r.label ? ` (${r.label})` : ''}${captain === r.id ? ' — C' : ''}`;
+
+  const starters = byShirtNumber(
+    (slots || []).map((s) => (byId[s.playerId] ? row(byId[s.playerId], s.label) : null)).filter(Boolean)
+  );
+  const reserves = byShirtNumber((bench || []).map((p) => row(p, p.position)));
+  const cap = [...starters, ...reserves].find((r) => r.id === captain);
+
   const L = [];
   L.push('📝 FORMAZIONE PER LA DISTINTA');
   L.push('');
@@ -108,18 +132,15 @@ export function buildLineupMessage({ club, match, module, slots, byId, bench, ca
   L.push(`📅 ${capitalize(fmtLong(match.date))} · ${fmtTime(match.date)}`);
   L.push(`🎯 Modulo: ${module}`);
   L.push('');
-  L.push('TITOLARI');
-  (slots || []).forEach((s) => {
-    const p = byId[s.playerId];
-    if (!p) return;
-    L.push(`- ${n(p.id)}${p.fullName} (${s.label})${captain === p.id ? ' — C' : ''}`);
-  });
-  if (bench?.length) {
+  L.push('TITOLARI (in ordine di numero)');
+  starters.forEach((r) => L.push(line(r)));
+  if (reserves.length) {
     L.push('');
-    L.push('PANCHINA');
-    bench.forEach((p) => L.push(`- ${n(p.id)}${p.fullName}${captain === p.id ? ' — C' : ''}`));
+    L.push('PANCHINA (in ordine di numero)');
+    reserves.forEach((r) => L.push(line(r)));
   }
   L.push('');
+  if (cap) L.push(`Capitano: ${cap.number ? `${cap.number}. ` : ''}${cap.name}`);
   if (club.staff?.head_coach) L.push(`Allenatore: ${club.staff.head_coach}`);
   return L.join('\n');
 }
