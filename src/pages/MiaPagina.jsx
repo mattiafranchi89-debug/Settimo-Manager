@@ -96,10 +96,47 @@ export default function MiaPagina() {
             <tr><th>Da titolare</th><td>{s.starts || 0}</td></tr>
             <tr><th>Subentrato</th><td>{s.subs || 0}</td></tr>
             <tr><th>Ultima partita</th><td>{i.lastPlayed ? `${fmtDate(i.lastPlayed)} · ${i.lastMinutes}′` : 'nessuna'}</td></tr>
-            <tr><th>Ammonizioni</th><td>{i.yellow}{i.diffidato ? ' — alla prossima salti una gara' : ''}</td></tr>
             <tr><th>Presenza agli allenamenti</th><td>{i.attendancePct != null ? `${i.attendancePct}%` : '—'}</td></tr>
           </tbody>
         </table>
+      </Card>
+
+      {(i.trainingStreak >= 2 || i.startStreak >= 2) && (
+        <Card title="Strisce aperte">
+          <div className="plist">
+            {i.trainingStreak >= 2 && (
+              <div className="prow">
+                <span className="prow__num">🔥</span>
+                <span className="prow__body">
+                  <span className="prow__name">{i.trainingStreak} allenamenti di fila</span>
+                  <span className="prow__meta"><span>l'ultima assenza è più indietro di così</span></span>
+                </span>
+              </div>
+            )}
+            {i.startStreak >= 2 && (
+              <div className="prow">
+                <span className="prow__num">⚡</span>
+                <span className="prow__body">
+                  <span className="prow__name">{i.startStreak} partite consecutive da titolare</span>
+                  <span className="prow__meta"><span>dall'ultima volta che sei partito dalla panchina</span></span>
+                </span>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
+      <Card title="Disciplina">
+        <div className="grid grid--kpi">
+          <Kpi value={i.yellow} label="Ammonizioni" />
+          <Kpi value={i.red} label="Espulsioni" />
+          <Kpi value={i.toSuspension} label="Gialli alla squalifica" accent={i.diffidato} />
+        </div>
+        {me.suspended && <Alert level="error">Risulti squalificato: non puoi essere convocato.</Alert>}
+        {!me.suspended && i.diffidato && (
+          <Alert level="warn">Sei in diffida: alla prossima ammonizione salti una partita.</Alert>
+        )}
+        <p><small>La squalifica scatta ogni {club.cardsPerSuspension || 4} ammonizioni. I conteggi seguono le gare chiuse dallo staff, non il comunicato ufficiale.</small></p>
       </Card>
 
       {club.mvpEnabled !== false && lastClosed && onSheet.length > 0 && (

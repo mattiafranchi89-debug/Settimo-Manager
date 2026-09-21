@@ -85,7 +85,9 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,
     yellowCards: 0, redCards: 0, avgRating: null, callups: 0, trainingsAttended: 0,
     // Pre-computed so the squad pages only ever read /players.
-    lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0
+    lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0,
+    // Strisce in corso, contate dall'ultimo evento all'indietro.
+    trainingStreak: 0, startStreak: 0
   });
   // avgRating is kept in the shape for existing documents but no longer computed:
   // post-match ratings were removed from the application.
@@ -121,6 +123,36 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
   const trainingIds = new Set(attendance.map((a) => a.eventId));
   attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });
   Object.values(stats).forEach((s) => { s.totalTrainings = trainingIds.size; });
+
+  /**
+   * Strisce in corso. Si contano a ritroso dall'ultimo evento e si fermano alla
+   * prima interruzione. Una seduta senza riga di presenza per quel giocatore
+   * (entrato in rosa dopo) non spezza la striscia: viene semplicemente saltata,
+   * perché "assente" non è mai stato registrato.
+   */
+  const dateOf = (id) => toDate(events.find((e) => e.id === id)?.date)?.getTime() || 0;
+  const sessionsDesc = [...trainingIds].sort((a, b) => dateOf(b) - dateOf(a));
+  const statusBy = {};
+  attendance.forEach((a) => { (statusBy[a.playerId] ||= {})[a.eventId] = a.status; });
+
+  Object.entries(stats).forEach(([pid, s]) => {
+    let run = 0;
+    for (const eventId of sessionsDesc) {
+      const status = statusBy[pid]?.[eventId];
+      if (status === undefined) continue;
+      if (status !== 'presente') break;
+      run += 1;
+    }
+    s.trainingStreak = run;
+
+    // Partite consecutive da titolare: si interrompe anche quando non è in distinta.
+    let starts = 0;
+    for (let k = closed.length - 1; k >= 0; k--) {
+      if (!closed[k].totals?.[pid]?.started) break;
+      starts += 1;
+    }
+    s.startStreak = starts;
+  });
 
   (callups || []).forEach((c) => {
     if (!['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'].includes(c.status)) return;

@@ -21,6 +21,8 @@ export function playerInsight(player, cardsPerSuspension = 4) {
     lastMinutes: s.lastMatchMinutes || 0,
     weeksSincePlayed: lastPlayed ? Math.floor((Date.now() - lastPlayed.getTime()) / 604800000) : null,
     neverPlayed: !lastPlayed && (s.matchesPlayedTotal || 0) > 0,
+    trainingStreak: s.trainingStreak || 0,
+    startStreak: s.startStreak || 0,
     attended: s.trainingsAttended || 0,
     totalTrainings: s.totalTrainings || 0,
     attendancePct: s.totalTrainings ? Math.round(((s.trainingsAttended || 0) / s.totalTrainings) * 100) : null
