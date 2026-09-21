@@ -37,6 +37,8 @@ export default function Formazioni() {
   const [module, setModule] = useState(club.defaultModule || '4-3-1-2');
   const [slots, setSlots] = useState({});
   const [captain, setCaptain] = useState('');
+  // Il portale LND chiede capitano e vice come due campi distinti.
+  const [vice, setVice] = useState('');
   const [notes, setNotes] = useState('');
   // I numeri valgono per la singola gara: in Prima Categoria cambiano di domenica in domenica.
   const [numbers, setNumbers] = useState({});
@@ -46,6 +48,7 @@ export default function Formazioni() {
     setModule(saved.module || club.defaultModule);
     setSlots(saved.slots || {});
     setCaptain(saved.captain || '');
+    setVice(saved.vice || '');
     setNotes(saved.notes || '');
     setNumbers(saved.numbers || {});
   }, [saved, club.defaultModule]);
@@ -106,6 +109,35 @@ export default function Formazioni() {
     toast('Numeri assegnati: correggi quelli che vuoi diversi');
   };
 
+  /**
+   * Le due fasce si escludono a vicenda: dare la Ⓒ a chi era vice libera la Ⓥ,
+   * così non si arriva al portale con lo stesso nome nei due campi.
+   */
+  const toggleCaptain = (id) => {
+    setCaptain((c) => (c === id ? '' : id));
+    setVice((v) => (v === id ? '' : v));
+  };
+  const toggleVice = (id) => {
+    setVice((v) => (v === id ? '' : id));
+    setCaptain((c) => (c === id ? '' : c));
+  };
+
+  /** Le due fasce, accanto al nome: stessa riga in campo e in panchina. */
+  const fasce = (id) => (
+    <>
+      <button className="iconbtn" aria-label="Capitano" aria-pressed={captain === id}
+        onClick={(e) => { e.stopPropagation(); toggleCaptain(id); }}
+        style={captain === id ? { borderColor: 'var(--red)', color: 'var(--red)' } : undefined}>
+        Ⓒ
+      </button>
+      <button className="iconbtn" aria-label="Vice capitano" aria-pressed={vice === id}
+        onClick={(e) => { e.stopPropagation(); toggleVice(id); }}
+        style={vice === id ? { borderColor: 'var(--blue)', color: 'var(--blue)' } : undefined}>
+        Ⓥ
+      </button>
+    </>
+  );
+
   /** Assegna il giocatore e propone subito un numero, se non ne ha già uno. */
   const assign = (playerId) => {
     const slotLabel = slotList.find((x) => x.id === picking)?.label;
@@ -141,12 +173,12 @@ export default function Formazioni() {
   const lineupMessage = useMemo(() => (match ? buildLineupMessage({
     club, match, module,
     slots: slotList.map((s) => ({ label: s.label, playerId: slots[s.id] })),
-    byId, bench, captain, numbers
-  }) : ''), [club, match, module, slotList, slots, byId, bench, captain, numbers]);
+    byId, bench, captain, vice, numbers
+  }) : ''), [club, match, module, slotList, slots, byId, bench, captain, vice, numbers]);
 
   const save = async () => {
     await setDocument('lineups', eventId, {
-      eventId, module, slots, captain, notes, numbers,
+      eventId, module, slots, captain, vice, notes, numbers,
       starters, bench: bench.map((p) => p.id),
       updatedBy: user.uid, updatedAt: serverTimestamp()
     });
@@ -211,7 +243,7 @@ export default function Formazioni() {
           </Alert>
         )}
 
-        <p><small>Tocca una posizione sul campo o un nome per cambiare giocatore. Il numero si scrive nella casella a sinistra, la fascia da capitano con la Ⓒ.</small></p>
+        <p><small>Tocca una posizione sul campo o un nome per cambiare giocatore. Il numero si scrive nella casella a sinistra, la fascia da capitano con la Ⓒ, quella da vice con la Ⓥ.</small></p>
             <div className="plist">
               {slotList.map((s) => {
                 const p = byId[slots[s.id]];
@@ -232,13 +264,7 @@ export default function Formazioni() {
                       </span>
                       {p && <span className="prow__meta"><span>{s.label}</span></span>}
                     </span>
-                    {p && (
-                      <button className="iconbtn" aria-label="Capitano"
-                        onClick={(e) => { e.stopPropagation(); setCaptain(captain === p.id ? '' : p.id); }}
-                        style={captain === p.id ? { borderColor: 'var(--red)', color: 'var(--red)' } : undefined}>
-                        Ⓒ
-                      </button>
-                    )}
+                    {p && fasce(p.id)}
                   </div>
                 );
               })}
@@ -260,11 +286,7 @@ export default function Formazioni() {
                         <span className="prow__name">{b.fullName}</span>
                         <span className="prow__meta"><span>{b.position}</span></span>
                       </span>
-                      <button className="iconbtn" aria-label="Capitano"
-                        onClick={() => setCaptain(captain === b.id ? '' : b.id)}
-                        style={captain === b.id ? { borderColor: 'var(--red)', color: 'var(--red)' } : undefined}>
-                        Ⓒ
-                      </button>
+                      {fasce(b.id)}
                     </div>
                   ))}
                 </div>

@@ -115,15 +115,20 @@ function byShirtNumber(rows) {
  * L'ordine è quello del portale LND, che chiede i tesserati per numero di
  * maglia crescente: si compila leggendo dall'alto in basso, senza cercare.
  */
-export function buildLineupMessage({ club, match, module, slots, byId, bench, captain, numbers = {} }) {
+export function buildLineupMessage({ club, match, module, slots, byId, bench, captain, vice, numbers = {} }) {
   const row = (p, label) => ({ id: p.id, name: p.fullName, label, number: numbers[p.id] || '' });
-  const line = (r) => `${r.number || '–'}. ${r.name}${r.label ? ` (${r.label})` : ''}${captain === r.id ? ' — C' : ''}`;
+  const fascia = (id) => (captain === id ? ' — C' : vice === id ? ' — VC' : '');
+  const line = (r) => `${r.number || '–'}. ${r.name}${r.label ? ` (${r.label})` : ''}${fascia(r.id)}`;
 
   const starters = byShirtNumber(
     (slots || []).map((s) => (byId[s.playerId] ? row(byId[s.playerId], s.label) : null)).filter(Boolean)
   );
   const reserves = byShirtNumber((bench || []).map((p) => row(p, p.position)));
-  const cap = [...starters, ...reserves].find((r) => r.id === captain);
+  const all = [...starters, ...reserves];
+  const named = (id) => {
+    const r = all.find((x) => x.id === id);
+    return r ? `${r.number ? `${r.number}. ` : ''}${r.name}` : '';
+  };
 
   const L = [];
   L.push('📝 FORMAZIONE PER LA DISTINTA');
@@ -140,7 +145,8 @@ export function buildLineupMessage({ club, match, module, slots, byId, bench, ca
     reserves.forEach((r) => L.push(line(r)));
   }
   L.push('');
-  if (cap) L.push(`Capitano: ${cap.number ? `${cap.number}. ` : ''}${cap.name}`);
+  if (named(captain)) L.push(`Capitano: ${named(captain)}`);
+  if (named(vice)) L.push(`Vice capitano: ${named(vice)}`);
   if (club.staff?.head_coach) L.push(`Allenatore: ${club.staff.head_coach}`);
   return L.join('\n');
 }
