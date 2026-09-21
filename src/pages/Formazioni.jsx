@@ -1,18 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
+import { useCollection, useClub, setDocument, serverTimestamp, where, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
 import { errorText } from './Rosa';
-import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, shortName, toDate } from '../lib/format';
+import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
 import { GROUPS, groupOf } from '../lib/format';
 /** Ordinamento in memoria: la query filtra per tipo, senza indici da creare. */
 const byDateDesc = (list) => [...list].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
-
-import { readDocumentNumbers } from '../lib/players';
-import { renderDistintaImage, shareImage } from '../lib/distintaImage';
 
 export default function Formazioni() {
   const { user } = useAuth();
@@ -41,7 +38,6 @@ export default function Formazioni() {
   const [slots, setSlots] = useState({});
   const [captain, setCaptain] = useState('');
   const [notes, setNotes] = useState('');
-  const [docs, setDocs] = useState({});
   // I numeri valgono per la singola gara: in Prima Categoria cambiano di domenica in domenica.
   const [numbers, setNumbers] = useState({});
 
@@ -85,7 +81,7 @@ export default function Formazioni() {
     });
   };
 
-  /** Numeri usati da più di un giocatore: la distinta verrebbe respinta. */
+  /** Numeri usati da più di un giocatore: in distinta verrebbero respinti. */
   const duplicates = useMemo(() => {
     const seen = {}, dup = new Set();
     Object.entries(numbers).forEach(([id, n]) => { if (seen[n]) dup.add(n); seen[n] = id; });
@@ -211,7 +207,7 @@ export default function Formazioni() {
 
         {duplicates.size > 0 && (
           <Alert level="error">
-            Numero {[...duplicates].join(', ')} assegnato a più giocatori: la distinta va corretta prima di consegnarla.
+            Numero {[...duplicates].join(', ')} assegnato a più giocatori: correggilo prima di inviare la formazione.
           </Alert>
         )}
 
@@ -282,27 +278,6 @@ export default function Formazioni() {
             </div>
       </Card>
 
-      <div className="noprint btnrow" style={{ marginBottom: 12 }}>
-        <Button size="sm" variant="ghost"
-          onClick={async () => setDocs(await readDocumentNumbers([...starters, ...bench.map((p) => p.id)]))}>
-          Carica numeri documento nella distinta
-        </Button>
-        <Button size="sm" variant="secondary" disabled={!starters.length}
-          onClick={async () => {
-            try {
-              const blob = await renderDistintaImage({
-                club, match, module, captain, docs, numbers,
-                starters: slotList.filter((s) => slots[s.id]).map((s) => ({ id: slots[s.id], role: s.label, name: byId[slots[s.id]]?.fullName || '' })),
-                bench, logoUrl: club.logoUrl
-              });
-              const r = await shareImage(blob, `distinta-${(match?.opponent || 'gara').replace(/\s+/g, '-')}.png`);
-              if (r !== 'cancelled') toast(r === 'shared' ? 'Distinta condivisa' : 'Distinta scaricata come immagine');
-            } catch (e) { toast('Immagine non generata: ' + (e.message || ''), 'error'); }
-          }}>
-          🖼 Distinta come immagine
-        </Button>
-      </div>
-
       {picking && (
         <Sheet title={`Posizione ${slotList.find((s) => s.id === picking)?.label}`} onClose={() => setPicking(null)}>
           <Field label="Giocatore" hint="Chi è già schierato altrove viene spostato in questa posizione.">
@@ -340,7 +315,7 @@ export default function Formazioni() {
       )}
 
       <Card title="Messaggio per la distinta" className="noprint">
-        <p><small>Da mandare a chi compila la distinta, anche a distanza di giorni dalla convocazione. Non contiene i numeri di documento: quelli restano nell'app.</small></p>
+        <p><small>Da mandare a chi compila la distinta con il tool della società, anche a distanza di giorni dalla convocazione. Non contiene i numeri di documento: quelli restano nell'app, nella scheda del giocatore.</small></p>
         <div className="msgbox">{lineupMessage}</div>
         <div className="btnrow" style={{ marginTop: 12 }}>
           <Button disabled={!starters.length}
@@ -367,78 +342,6 @@ export default function Formazioni() {
         )}
       </Card>
 
-      <Distinta docs={docs} numbers={numbers} club={club} match={match} slotList={slotList} slots={slots} byId={byId} bench={bench} captain={captain} module={module} notes={notes} />
     </>
-  );
-}
-
-function Distinta({ docs = {}, numbers = {}, club, match, slotList, slots, byId, bench, captain, module, notes }) {
-  if (!match) return null;
-  return (
-    <Card title="Distinta gara" action={<span className="noprint"><Button size="sm" variant="secondary" onClick={() => window.print()}>Stampa / PDF</Button></span>}>
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '3px solid var(--red)', paddingBottom: 10, marginBottom: 12 }}>
-        <img src={club.logoUrl} alt="" style={{ height: 48 }} onError={(e) => { e.currentTarget.src = '/logo.png'; }} />
-        <div>
-          <div style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 700, textTransform: 'uppercase' }}>{club.clubName}</div>
-          <small>{club.teamName} · {club.season} · Modulo {module}</small>
-        </div>
-      </div>
-
-      <table className="data" style={{ minWidth: 0, marginBottom: 12 }}>
-        <tbody>
-          <tr><th>Gara</th><td>{match.home === false ? `${match.opponent} — ${club.clubName}` : `${club.clubName} — ${match.opponent}`}</td></tr>
-          <tr><th>Competizione</th><td>{match.competition}</td></tr>
-          <tr><th>Data e ora</th><td>{capitalize(fmtLong(match.date))} · {fmtTime(match.date)}</td></tr>
-          <tr><th>Campo</th><td>{match.venue}</td></tr>
-        </tbody>
-      </table>
-
-      <h3>Titolari</h3>
-      <table className="data" style={{ minWidth: 0 }}>
-        <thead><tr><th>N.</th><th>Ruolo</th><th>Giocatore</th><th>Documento</th></tr></thead>
-        <tbody>
-          {slotList.map((s) => {
-            const p = byId[slots[s.id]];
-            return (
-              <tr key={s.id}>
-                <td style={{ width: 36, fontWeight: 700 }}>{p ? (numbers[p.id] || '') : ''}</td>
-                <td>{s.label}</td>
-                <td>{p ? p.fullName : '—'} {captain && p?.id === captain ? <Badge tone="red">C</Badge> : null}</td>
-                <td>{p ? (docs[p.id] || '') : ''}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <h3 style={{ marginTop: 14 }}>Panchina</h3>
-      <table className="data" style={{ minWidth: 0 }}>
-        <tbody>{bench.map((p) => (
-          <tr key={p.id}>
-            <td style={{ width: 36, fontWeight: 700 }}>{numbers[p.id] || ''}</td>
-            <td style={{ width: 46 }}>{p.position}</td>
-            <td>{p.fullName}{captain === p.id ? ' (C)' : ''}</td>
-            <td>{docs[p.id] || ''}</td>
-          </tr>
-        ))}</tbody>
-      </table>
-
-      <table className="data" style={{ minWidth: 0, marginTop: 14 }}>
-        <tbody>
-          <tr><th>Allenatore</th><td>{club.staff?.head_coach || '—'}</td></tr>
-          <tr><th>Vice allenatore</th><td>{club.staff?.assistant_coach || '—'}</td></tr>
-          <tr><th>Dirigente accompagnatore</th><td>{club.staff?.team_manager || '—'}</td></tr>
-        </tbody>
-      </table>
-
-      {notes && <p style={{ marginTop: 10 }}><strong>Note:</strong> {notes}</p>}
-
-      <div style={{ display: 'flex', gap: 30, marginTop: 26 }}>
-        <div style={{ flex: 1, borderTop: '1px solid var(--line)', paddingTop: 6 }}><small>Firma dirigente</small></div>
-        <div style={{ flex: 1, borderTop: '1px solid var(--line)', paddingTop: 6 }}><small>Firma capitano</small></div>
-      </div>
-
-      <p style={{ marginTop: 14 }}><small>Documento interno di supporto. Non sostituisce la distinta ufficiale prevista dal regolamento della competizione.</small></p>
-    </Card>
   );
 }

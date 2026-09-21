@@ -76,20 +76,20 @@ Due regole non negoziabili: i dati sanitari sono visibili solo a chi è autorizz
 1. **Convocazione (il flusso centrale).** Partita → logistica precompilata dalla gara → selezione per reparto con la disponibilità accanto a ogni nome → controlli sulla lista → messaggio WhatsApp → pubblicazione → conferme.
 2. **Disponibilità senza account.** Lo staff genera un link personale, lo manda su WhatsApp, il giocatore risponde in due tap. Le risposte rientrano nella dashboard con «Importa risposte dai link».
 3. **Allenamento.** Crea la seduta → «Segna tutti presenti» → correggi le eccezioni. Tre tap per una seduta.
-4. **Giorno gara.** Formazione sul campo verticale → distinta stampabile → scheda gara con gol, cartellini e cambi in tempo reale → «Chiudi gara» → statistiche aggiornate. I minuti si calcolano da soli: i titolari giocano fino al cambio, all'espulsione (anche per doppia ammonizione) o al fischio finale; chi entra conta dal minuto del cambio.
+4. **Giorno gara.** Formazione sul campo verticale → messaggio con i titolari per chi compila la distinta → scheda gara con gol, cartellini e cambi in tempo reale → «Chiudi gara» → statistiche aggiornate. I minuti si calcolano da soli: i titolari giocano fino al cambio, all'espulsione (anche per doppia ammonizione) o al fischio finale; chi entra conta dal minuto del cambio.
 
 ---
 
 ## 5. Perimetro MVP
 
-Incluso e funzionante: autenticazione e ruoli, rosa precaricata, disponibilità (staff + link pubblici), allenamenti e presenze, convocazioni con controlli e versioning, messaggio WhatsApp, formazione e distinta stampabile, scheda gara con eventi e minutaggio, statistiche stagionali ricalcolabili, calendario, documenti, quote e multe, impostazioni con upload logo, dark mode, log delle azioni sensibili.
+Incluso e funzionante: autenticazione e ruoli, rosa precaricata, disponibilità (staff + link pubblici), allenamenti e presenze, convocazioni con controlli e versioning, messaggio WhatsApp, formazione con numeri di maglia e messaggio per la distinta, scheda gara con eventi e minutaggio, statistiche stagionali ricalcolabili, calendario, documenti, quote e multe, impostazioni con upload logo, dark mode, log delle azioni sensibili.
 
 Fuori perimetro, consapevolmente:
 
 | Fuori | Perché | Come arrivarci |
 |---|---|---|
 | Invio automatico su WhatsApp | serve WhatsApp Business API e numero verificato | l'app genera il testo e apre la chat: l'invio è tuo |
-| PDF nativi | `window.print()` copre distinta e convocazione | `jspdf` + `html2canvas`, oppure una Cloud Function con Puppeteer |
+| PDF nativi | `window.print()` copre convocazione e report | `jspdf` + `html2canvas`, oppure una Cloud Function con Puppeteer |
 | Notifiche push | richiede FCM e service worker | FCM + `messaging.getToken()` |
 | Riconciliazione risposte lato server | richiede il piano Blaze | già scritta in `functions/index.js`, si attiva quando vuoi (vedi §8) |
 

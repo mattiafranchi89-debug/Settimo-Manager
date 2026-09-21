@@ -291,7 +291,7 @@ function PlayerForm({ initial, onSave, onClose }) {
         </Field>
       </div>
       <Field label="Data di nascita"><Input type="date" value={form.birthDate || ''} onChange={set('birthDate')} /></Field>
-      <Field label="Numero carta d'identità" hint="Visibile solo ad amministratore, allenatore e dirigente. Serve per la distinta.">
+      <Field label="Numero carta d'identità" hint="Visibile solo ad amministratore, allenatore e dirigente. Serve per compilare la distinta.">
         <Input value={form.numeroDocumento || ''} onChange={set('numeroDocumento')} placeholder="CA12345AB" />
       </Field>
       <div className="btnrow">

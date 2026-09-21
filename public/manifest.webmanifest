@@ -1,7 +1,7 @@
 {
   "name": "Settimo Milanese Team Manager",
   "short_name": "Settimo",
-  "description": "Gestione della prima squadra: rosa, convocazioni, allenamenti e distinta.",
+  "description": "Gestione della prima squadra: rosa, convocazioni, allenamenti e formazione.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
