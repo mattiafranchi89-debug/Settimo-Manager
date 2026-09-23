@@ -177,20 +177,37 @@ function SessionForm({ club, onSave, onClose }) {
 
 function Attendance({ session, players, user, onClose }) {
   const toast = useToast();
+  const { club } = useClub();
   const q = useMemo(() => [where('eventId', '==', session.id)], [session.id]);
-  const { data: rows } = useCollection('attendance', q);
+  const { data: rows, loading: rowsLoading, error: rowsError } = useCollection('attendance', q);
 
   // Everyone is present unless listed here. Only absences get selected.
   const [absent, setAbsent] = useState(null);
   const [busy, setBusy] = useState(false);
 
+  /**
+   * Si parte dalle assenze già registrate, ma solo quando la lettura è finita:
+   * leggere una collezione ancora vuota farebbe ripartire ogni seduta da zero
+   * e il salvataggio successivo segnerebbe presenti tutti quanti.
+   */
   useEffect(() => {
-    if (absent !== null) return;
+    if (absent !== null || rowsLoading) return;
     const map = {};
     rows.filter((r) => r.status !== 'presente').forEach((r) => { map[r.playerId] = r.status; });
     setAbsent(map);
-  }, [rows, absent]);
+  }, [rows, rowsLoading, absent]);
 
+  if (rowsError) {
+    return (
+      <Sheet title="Presenze" onClose={onClose}>
+        <Alert level="error">
+          Non riesco a leggere le presenze già registrate ({errorText(rowsError)}). Non salvo nulla per non
+          sovrascrivere quelle esistenti: riprova fra poco.
+        </Alert>
+        <Button variant="ghost" onClick={onClose}>Chiudi</Button>
+      </Sheet>
+    );
+  }
   if (absent === null) return <Sheet title="Presenze" onClose={onClose}><Loading /></Sheet>;
 
   const toggle = (pid) => setAbsent((a) => {
@@ -215,11 +232,15 @@ function Attendance({ session, players, user, onClose }) {
         }, { merge: true });
       });
       await batch.commit();
-      await audit(user, 'attendance.save', session.id, { presenti: presentCount, assenti: absentCount });
-      // Keeps every player's counters current without anyone pressing "Ricalcola".
-      refreshStats(players, club.season).catch((e) => console.warn('statistiche non aggiornate', e));
       toast(`Presenze salvate: ${presentCount} presenti, ${absentCount} assenti`);
+      // Registro e statistiche vengono dopo la conferma: se falliscono, il
+      // salvataggio resta valido e non deve apparire come un errore.
+      audit(user, 'attendance.save', session.id, { presenti: presentCount, assenti: absentCount })
+        .catch((e) => console.warn('registro non aggiornato', e));
+      refreshStats(players, club?.season).catch((e) => console.warn('statistiche non aggiornate', e));
+      setBusy(false);
       onClose();
+      return;
     } catch (e) {
       toast(errorText(e), 'error');
     }
