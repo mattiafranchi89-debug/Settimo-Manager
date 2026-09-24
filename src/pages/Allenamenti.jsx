@@ -39,6 +39,8 @@ export default function Allenamenti() {
   const [attendFor, setAttendFor] = useState(null);
   const [removing, setRemoving] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [openPast, setOpenPast] = useState(true);
+  const [openUpcoming, setOpenUpcoming] = useState(true);
 
   /** Copia l'avviso e apre il gruppo: WhatsApp non precompila i messaggi di gruppo. */
   const announce = async (s) => {
@@ -91,15 +93,27 @@ export default function Allenamenti() {
         </Empty></Card>
       )}
 
-      {upcoming.length > 0 && <div className="grouphead">In programma</div>}
-      <div className="plist">
-        {upcoming.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
-      </div>
+      {past.length > 0 && (
+        <button className="grouphead grouphead--toggle" aria-expanded={openPast} onClick={() => setOpenPast((v) => !v)}>
+          <span>{openPast ? '▾' : '▸'} Svolti</span> <small>{past.length}</small>
+        </button>
+      )}
+      {openPast && (
+        <div className="plist">
+          {past.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past />)}
+        </div>
+      )}
 
-      {past.length > 0 && <div className="grouphead">Svolti</div>}
-      <div className="plist">
-        {past.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past />)}
-      </div>
+      {upcoming.length > 0 && (
+        <button className="grouphead grouphead--toggle" aria-expanded={openUpcoming} onClick={() => setOpenUpcoming((v) => !v)}>
+          <span>{openUpcoming ? '▾' : '▸'} In programma</span> <small>{upcoming.length}</small>
+        </button>
+      )}
+      {openUpcoming && (
+        <div className="plist">
+          {upcoming.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
+        </div>
+      )}
 
       {removing && (
         <ConfirmDialog
