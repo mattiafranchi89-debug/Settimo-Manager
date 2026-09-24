@@ -57,14 +57,22 @@ const Documenti = lazyPage(() => import('./pages/registri').then((m) => ({ defau
 const QuoteMulte = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
 
 function Protected({ perm, children }) {
-  const { user, loading } = useAuth();
+  const { user, loading, profileError } = useAuth();
   const location = useLocation();
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
   if (!user.active) {
     return (
       <Card title="Account in attesa di attivazione">
-        <p>Il tuo account non è ancora attivo. Chiedi a un amministratore di assegnarti un ruolo.</p>
+        {profileError ? (
+          <p>
+            Non riesco a leggere il tuo profilo ({profileError.code || profileError.message}): non è detto che
+            l'account non sia attivo, potrebbe essere un problema di Firestore (regole non pubblicate, quota
+            esaurita, rete assente). Riprova tra poco; se persiste, controlla la Console Firebase.
+          </p>
+        ) : (
+          <p>Il tuo account non è ancora attivo. Chiedi a un amministratore di assegnarti un ruolo.</p>
+        )}
       </Card>
     );
   }
