@@ -18,39 +18,50 @@ export function AuthProvider({ children }) {
   // mostrato come "account non attivo": senza questo, sembra un problema di
   // permessi anche quando in realtà Firestore non ha risposto.
   const [profileError, setProfileError] = useState(null);
+  // Da dove arriva il profilo letto: serve a distinguere "non attivato" da
+  // "server non raggiungibile", che a schermo sembrerebbero identici.
+  const [profileInfo, setProfileInfo] = useState(null);
 
   useEffect(() => {
     if (configMissing) { setLoading(false); return; }
     let unsubProfile = null;
     const unsub = onAuthStateChanged(auth, (fbUser) => {
       if (unsubProfile) { unsubProfile(); unsubProfile = null; }
-      if (!fbUser) { setUser(null); setLoading(false); return; }
+      if (!fbUser) { setUser(null); setProfileInfo(null); setLoading(false); return; }
+      const ref = doc(db, 'users', fbUser.uid);
       unsubProfile = onSnapshot(
-        doc(db, 'users', fbUser.uid),
+        ref,
+        // Serve sapere quando il server conferma il dato, non solo quando cambia.
+        { includeMetadataChanges: true },
         async (snap) => {
           setProfileError(null);
-          // First access: register the user as pending so an administrator
-          // can see them in Impostazioni and assign a role.
-          if (!snap.exists()) {
+          const fromCache = snap.metadata.fromCache;
+          const exists = snap.exists();
+          const p = snap.data() || {};
+          setProfileInfo({ fromCache, exists, active: p.active, role: p.role });
+
+          // Primo accesso: si registra il profilo in attesa solo quando è il
+          // server a confermare che non esiste. Dalla sola cache locale non si
+          // può saperlo, e scriverlo comunque bloccherebbe account già attivi.
+          if (!exists && !fromCache) {
             try {
-              await setDoc(doc(db, 'users', fbUser.uid), {
+              await setDoc(ref, {
                 name: fbUser.displayName || fbUser.email,
                 email: fbUser.email, role: 'player', active: false, createdAt: serverTimestamp()
               });
             } catch (e) { console.warn('profilo non creato', e); }
           }
-          const p = snap.data() || {};
           const profile = {
             uid: fbUser.uid,
             email: fbUser.email,
             name: p.name || fbUser.email,
             role: p.role || 'player',
             playerId: p.playerId || null,
-            active: p.active !== false
+            active: exists && p.active !== false
           };
           setUser(profile);
           setLoading(false);
-          trackVisit(profile);
+          if (!fromCache) trackVisit(profile);
         },
         (e) => {
           setProfileError(e);
@@ -67,6 +78,7 @@ export function AuthProvider({ children }) {
     loading,
     authError,
     profileError,
+    profileInfo,
     can: (perm) => can(user?.role, perm),
     login: async (email, password) => {
       setAuthError(null);
