@@ -57,11 +57,12 @@ const Documenti = lazyPage(() => import('./pages/registri').then((m) => ({ defau
 const QuoteMulte = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.QuoteMulte })));
 
 function Protected({ perm, children }) {
-  const { user, loading, profileError } = useAuth();
+  const { user, loading, profileError, profileInfo, logout } = useAuth();
   const location = useLocation();
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
   if (!user.active) {
+    const offline = profileInfo?.fromCache;
     return (
       <Card title="Account in attesa di attivazione">
         {profileError ? (
@@ -70,9 +71,23 @@ function Protected({ perm, children }) {
             l'account non sia attivo, potrebbe essere un problema di Firestore (regole non pubblicate, quota
             esaurita, rete assente). Riprova tra poco; se persiste, controlla la Console Firebase.
           </p>
+        ) : offline ? (
+          <p>
+            Il server non risponde: sto usando i dati salvati sul telefono, che non contengono il tuo profilo.
+            Non è detto che l'account non sia attivo. Controlla la connessione, oppure in Console Firebase
+            l'utilizzo di Firestore (quota del piano gratuito).
+          </p>
         ) : (
           <p>Il tuo account non è ancora attivo. Chiedi a un amministratore di assegnarti un ruolo.</p>
         )}
+        <div style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 10, wordBreak: 'break-all' }}>
+          <div>Email: {user.email}</div>
+          <div>UID: {user.uid}</div>
+          <div>Profilo letto da: {offline ? 'memoria del telefono' : 'server'}</div>
+          <div>Documento trovato: {profileInfo?.exists ? 'sì' : 'no'}</div>
+          <div>active: {JSON.stringify(profileInfo?.active ?? null)} · role: {JSON.stringify(profileInfo?.role ?? null)}</div>
+        </div>
+        <button className="chip" style={{ marginTop: 12 }} onClick={logout}>Esci e cambia account</button>
       </Card>
     );
   }
