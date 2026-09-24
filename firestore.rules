@@ -50,7 +50,11 @@ service cloud.firestore {
                         && request.resource.data.role == 'player'
                         && request.resource.data.active == false);
       // A user may edit their own display fields but never their own role/active flag.
-      allow update: if isAdmin()
+      // Admins included: a stale client once overwrote an admin's own profile as
+      // "player, inactive" and the rule let it through, locking the admin out.
+      allow update: if (isAdmin()
+                        && (request.auth.uid != uid
+                            || !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role','active'])))
                     || (request.auth.uid == uid && onlyChanged(['name','phone','photoUrl','updatedAt']));
       allow delete: if isAdmin();
     }
