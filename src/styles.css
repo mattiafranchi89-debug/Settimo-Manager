@@ -219,6 +219,11 @@ small { font-size: 12.5px; color: var(--muted); }
   padding-bottom: 5px; border-bottom: 2px solid var(--red);
 }
 .grouphead small { font-family: var(--sans); letter-spacing: 0; }
+button.grouphead.grouphead--toggle {
+  background: none; border: none; border-bottom: 2px solid var(--red);
+  width: 100%; padding: 0 0 5px; cursor: pointer; color: inherit; text-align: left;
+  -webkit-appearance: none; appearance: none;
+}
 
 .prow {
   display: flex; align-items: center; gap: 10px;
