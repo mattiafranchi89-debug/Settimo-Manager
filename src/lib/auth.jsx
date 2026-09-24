@@ -14,6 +14,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);       // { uid, email, name, role, playerId, active }
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
+  // Un guasto nella lettura del profilo (regole, quota, rete) viene comunque
+  // mostrato come "account non attivo": senza questo, sembra un problema di
+  // permessi anche quando in realtà Firestore non ha risposto.
+  const [profileError, setProfileError] = useState(null);
 
   useEffect(() => {
     if (configMissing) { setLoading(false); return; }
@@ -24,6 +28,7 @@ export function AuthProvider({ children }) {
       unsubProfile = onSnapshot(
         doc(db, 'users', fbUser.uid),
         async (snap) => {
+          setProfileError(null);
           // First access: register the user as pending so an administrator
           // can see them in Impostazioni and assign a role.
           if (!snap.exists()) {
@@ -47,7 +52,8 @@ export function AuthProvider({ children }) {
           setLoading(false);
           trackVisit(profile);
         },
-        () => {
+        (e) => {
+          setProfileError(e);
           setUser({ uid: fbUser.uid, email: fbUser.email, name: fbUser.email, role: 'player', active: false });
           setLoading(false);
         }
@@ -60,6 +66,7 @@ export function AuthProvider({ children }) {
     user,
     loading,
     authError,
+    profileError,
     can: (perm) => can(user?.role, perm),
     login: async (email, password) => {
       setAuthError(null);
