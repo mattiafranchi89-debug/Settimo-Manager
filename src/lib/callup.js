@@ -171,12 +171,21 @@ export function onlyNames(selected) {
     .join('\n\n');
 }
 
+/**
+ * Link che apre WhatsApp con il testo già scritto. Non passa da wa.me: il suo
+ * reindirizzamento rovina le emoji, che arrivano come punti di domanda.
+ */
+export function whatsappLink(phone, text) {
+  const p = String(phone || '').replace(/\D/g, '');
+  return `https://api.whatsapp.com/send?${p ? `phone=${p}&` : ''}text=${encodeURIComponent(text)}`;
+}
+
 export async function shareMessage(text, title = 'Convocazione') {
   if (navigator.share) {
     try { await navigator.share({ title, text }); return 'shared'; }
     catch (e) { if (e.name === 'AbortError') return 'cancelled'; }
   }
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+  window.open(whatsappLink('', text), '_blank', 'noopener');
   return 'whatsapp';
 }
 

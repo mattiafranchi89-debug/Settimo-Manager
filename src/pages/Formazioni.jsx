@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
-import { buildLineupMessage, copyText, shareMessage } from '../lib/callup';
+import { buildLineupMessage, copyText, shareMessage, whatsappLink } from '../lib/callup';
 import { errorText } from './Rosa';
 import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
@@ -345,7 +345,7 @@ export default function Formazioni() {
               try {
                 await save();
                 const phone = (club.distintaPhone || '').replace(/\D/g, '');
-                if (phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(lineupMessage)}`, '_blank', 'noopener');
+                if (phone) window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener');
                 else await shareMessage(lineupMessage, 'Formazione');
               } catch (e) { toast(errorText(e), 'error'); }
             }}>
