@@ -4,7 +4,7 @@ import { useAuth } from '../lib/auth';
 import { useCollection, useClub, useDoc, where, orderBy, limit } from '../lib/db';
 import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtTime, fmtLong, capitalize, toDate, countdown, euro } from '../lib/format';
-import { mapsLink } from '../lib/callup';
+import { mapsLink, callupFor } from '../lib/callup';
 import { playerInsight } from '../lib/insights';
 
 /**
@@ -39,9 +39,7 @@ export default function HomeGiocatore() {
   const lastMatch = past.find((e) => e.type === 'match' && e.scoreHome != null);
 
   // Convocazione pubblicata per la prossima gara: una bozza non conta.
-  const callup = useMemo(() => callups.find(
-    (c) => c.eventId === nextMatch?.id && c.status !== 'bozza' && c.status !== 'annullata'
-  ), [callups, nextMatch]);
+  const callup = useMemo(() => callupFor(callups, nextMatch?.id), [callups, nextMatch]);
   const called = !!(callup && pid && (callup.players || []).includes(pid));
 
   const insight = useMemo(() => (me ? playerInsight(me, club.cardsPerSuspension || 4) : null), [me, club]);

@@ -1,5 +1,6 @@
 import { writeBatch, doc } from 'firebase/firestore';
 import { db } from './firebase';
+import { callupFor } from './callup';
 
 export const EVENT_TYPES = {
   gol: { label: 'Gol', emoji: '⚽' },
@@ -154,9 +155,9 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     s.startStreak = starts;
   });
 
-  (callups || []).forEach((c) => {
-    if (!['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'].includes(c.status)) return;
-    (c.players || []).forEach((pid) => { if (stats[pid]) stats[pid].callups += 1; });
+  // Una sola convocazione per gara: se ne esistono più versioni conta l'ultima.
+  new Set((callups || []).map((c) => c.eventId)).forEach((eventId) => {
+    (callupFor(callups, eventId)?.players || []).forEach((pid) => { if (stats[pid]) stats[pid].callups += 1; });
   });
 
   // Firestore batches cap at 500 writes; the squad is 25, one batch is enough.

@@ -11,7 +11,7 @@ import {
 import {
   GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate
 } from '../lib/format';
-import { validateCallup, summarise, buildMessage, copyText } from '../lib/callup';
+import { validateCallup, summarise, buildMessage, copyText, whatsappLink } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { can } from '../lib/permissions';
 import { errorText } from './Rosa';
@@ -175,7 +175,7 @@ export default function ConvocazioneEditor() {
 
   const sendDirect = async (reason) => {
     await persist('condivisa', reason);
-    window.open(`https://wa.me/${directPhone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    window.open(whatsappLink(directPhone, message), '_blank', 'noopener');
     toast(`Convocazione inviata a ${directName}`);
   };
 
