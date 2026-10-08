@@ -5,7 +5,7 @@ import { playerInsight } from '../lib/insights';
 import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtTime, fmtDate, toDate, capitalize, positionLabel, sortPlayers } from '../lib/format';
 import { earned, nextMilestone } from '../lib/milestones';
-import { copyText } from '../lib/callup';
+import { copyText, callupFor } from '../lib/callup';
 import { Button, Kpi as K } from '../components/ui';
 import { setDocument, serverTimestamp } from '../lib/db';
 
@@ -35,9 +35,9 @@ export default function MiaPagina() {
   const i = playerInsight(me, club.cardsPerSuspension || 4);
   const s = me.stats || {};
   const byEvent = Object.fromEntries(matches.map((m) => [m.id, m]));
-  const myCallups = callups
-    .filter((c) => (c.players || []).includes(me.id) && byEvent[c.eventId])
-    .map((c) => byEvent[c.eventId])
+  const myCallups = Object.keys(byEvent)
+    .filter((eventId) => (callupFor(callups, eventId)?.players || []).includes(me.id))
+    .map((eventId) => byEvent[eventId])
     .sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
   const nextCallup = myCallups.find((m) => toDate(m.date) >= new Date());
 

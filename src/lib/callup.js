@@ -1,4 +1,21 @@
-import { GROUPS, groupOf, fmtLong, fmtTime, capitalize, sortPlayers } from './format';
+import { GROUPS, groupOf, fmtLong, fmtTime, capitalize, sortPlayers, toDate } from './format';
+
+const LIVE_STATUSES = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
+const touched = (c) => toDate(c.updatedAt || c.createdAt)?.getTime() || 0;
+
+/**
+ * La convocazione che vale per una gara. Ne possono esistere più d'una (una
+ * "Nuova convocazione" creata invece di modificare la precedente): conta
+ * l'ultima modificata, mai una annullata. Senza `drafts` contano solo quelle
+ * inviate, come per statistiche e giocatori.
+ */
+export function callupFor(callups, eventId, { drafts = false } = {}) {
+  if (!eventId) return null;
+  return (callups || [])
+    .filter((c) => c.eventId === eventId
+      && (drafts ? c.status !== 'annullata' : LIVE_STATUSES.includes(c.status)))
+    .sort((a, b) => touched(b) - touched(a))[0] || null;
+}
 
 /**
  * Google Maps search link. The address is more reliable than the pitch name,

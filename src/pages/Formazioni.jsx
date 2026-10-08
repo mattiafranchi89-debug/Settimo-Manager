@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
-import { buildLineupMessage, copyText, shareMessage, whatsappLink } from '../lib/callup';
+import { buildLineupMessage, copyText, shareMessage, whatsappLink, callupFor } from '../lib/callup';
 import { errorText } from './Rosa';
 import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
@@ -54,7 +54,7 @@ export default function Formazioni() {
   }, [saved, club.defaultModule]);
 
   const match = matches.find((m) => m.id === eventId);
-  const callup = callups.find((c) => c.eventId === eventId);
+  const callup = useMemo(() => callupFor(callups, eventId, { drafts: true }), [callups, eventId]);
   const pool = useMemo(() => {
     const ids = callup?.players;
     return sortPlayers(ids ? players.filter((p) => ids.includes(p.id)) : players);
@@ -64,6 +64,9 @@ export default function Formazioni() {
   const starters = Object.values(slots).filter(Boolean);
   const bench = pool.filter((p) => !starters.includes(p.id));
   const byId = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
+  // Una formazione salvata prima di cambiare la convocazione può tenere in campo
+  // chi non è più convocato: va segnalato, non tolto in silenzio.
+  const notCalled = callup ? starters.filter((id) => !callup.players?.includes(id)).map((id) => byId[id]).filter(Boolean) : [];
 
   const [picking, setPicking] = useState(null);
 
@@ -207,6 +210,12 @@ export default function Formazioni() {
           <Select value={module} onChange={(e) => { setModule(e.target.value); setSlots({}); }} options={Object.keys(MODULES)} />
         </Field>
         {!callup && <Alert level="info">Nessuna convocazione collegata: puoi scegliere fra tutti i giocatori in rosa.</Alert>}
+        {notCalled.length > 0 && (
+          <Alert level="warn">
+            Non convocat{notCalled.length === 1 ? 'o' : 'i'} ma in formazione: {notCalled.map((p) => p.fullName).join(', ')}.
+            Tocca la posizione sul campo per sostituirl{notCalled.length === 1 ? 'o' : 'i'}.
+          </Alert>
+        )}
       </div>
 
       {/* Si tocca una posizione sul campo, poi il giocatore: niente menu a tendina. */}
