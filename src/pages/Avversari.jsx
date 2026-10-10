@@ -8,8 +8,9 @@ import { can } from '../lib/permissions';
 import {
   SCOUT_ROLES, scoutId, sameTeam, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
   outcome, formOf, rosterSummary, sortRoster, playerAge, birthYearOf, headToHead, buildScoutInsights,
-  shareText, fmtDay, autoVisible, applyAuto
+  shareText, fmtDay, autoVisible, applyAuto, buildSuggestions, ourForm
 } from '../lib/scouting';
+import { buildInsights, squadAlerts } from '../lib/insights';
 import { useAutoOpponent } from '../lib/crl';
 
 /**
@@ -69,6 +70,17 @@ export default function Avversari() {
   const h2h = useMemo(() => headToHead(matches, name), [matches, name]);
   const ref = match ? toDate(match.date) : now;
   const insights = useMemo(() => buildScoutInsights(scout, { match, ref, h2h }), [scout, match, ref, h2h]);
+
+  // I nostri numeri entrano nei suggerimenti: forma, diffidati e squalificati.
+  const { data: ourPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
+  const us = useMemo(() => {
+    const ins = buildInsights({ players: ourPlayers, cardsPerSuspension: club.cardsPerSuspension || 4 });
+    const al = squadAlerts(ourPlayers, ins);
+    const nm = (p) => p.fullName.split(' ').map((w) => w.charAt(0) + w.slice(1).toLowerCase()).slice(0, 2).join(' ');
+    return { form: ourForm(matches), diffidati: al.diffidati.map(nm), squalificati: al.squalificati.map(nm) };
+  }, [ourPlayers, matches, club.cardsPerSuspension]);
+  const tips = useMemo(() => buildSuggestions(scout, { match, us }), [scout, match, us]);
+  const [details, setDetails] = useState(false);
 
   const [adding, setAdding] = useState(false);
 
@@ -136,63 +148,71 @@ export default function Avversari() {
         </Card>
       ) : (
         <>
-          <Card title={scout.name || name} action={match && <Badge tone={match.home === false ? 'orange' : 'green'}>{match.home === false ? 'Trasferta' : 'Casa'}</Badge>}>
-            {match ? (
-              <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>
-                {capitalize(fmtLong(match.date))} · {fmtTime(match.date)} · {match.competition}
-                {match.venue && <div>📍 {match.venue}</div>}
-              </div>
-            ) : <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>Nessuna partita in calendario contro questa squadra.</div>}
-            <div className="btnrow" style={{ marginTop: 12 }}>
-              <Button size="sm" onClick={share} disabled={!insights.length}>📤 Condividi riepilogo</Button>
-              <Button size="sm" variant="secondary" as="a" target="_blank" rel="noopener noreferrer"
-                href={scout.tuttocampoUrl || `https://www.google.com/search?q=${encodeURIComponent(`tuttocampo ${scout.name || name} rosa`)}`}>
-                Apri su Tuttocampo ↗
-              </Button>
-            </div>
-            {scout.updatedAt && (
-              <small style={{ display: 'block', marginTop: 8, color: 'var(--muted)' }}>
-                Aggiornata {fmtShort(scout.updatedAt)}{scout.updatedBy ? ` da ${scout.updatedBy}` : ''}
-              </small>
-            )}
-          </Card>
+          <OpponentCard scout={scout} name={name} match={match} auto={autoHere} />
 
-          {autoHere && <AutoCard auto={autoHere} applied={autoApplied} canWrite={canWrite}
-            onApply={() => save({ standing: scout.standing || null, results: scout.results || [], suspended: scout.suspended || [], autoAppliedAt: autoHere.generatedAt }, 'Aggiornamento salvato nella scheda')} />}
+          <RecentCard scout={scout} />
 
-          <Card title="In sintesi">
-            {insights.length ? (
-              <div className="stack">
-                {insights.map((i, k) => <Alert key={k} level={i.tone}>{i.text}</Alert>)}
-              </div>
-            ) : (
-              <Empty title="Ancora nessun dato">
-                Inserisci classifica, ultimi risultati o rosa: la sintesi si compila da sola.
-              </Empty>
-            )}
-          </Card>
-
-          <StandingCard scout={scout} canWrite={canWrite} onSave={save} />
-          <FormCard scout={scout} canWrite={canWrite} onSave={save} refDate={now} />
-          <RosterCard scout={scout} canWrite={canWrite} onSave={save} refDate={ref} />
-          <AbsentCard scout={scout} canWrite={canWrite} onSave={save} />
-          <NotesCard key={docId} scout={scout} canWrite={canWrite} onSave={save} />
-
-          {h2h.length > 0 && (
-            <Card title="Precedenti">
-              <div className="plist">
-                {h2h.map((r) => (
-                  <div key={r.id} className="prow">
-                    <span className="prow__num">{r.us}-{r.them}</span>
-                    <span className="prow__body">
-                      <span className="prow__name">{r.home ? 'In casa' : 'In trasferta'}</span>
-                      <span className="prow__meta"><span>{fmtDate(r.date)}</span><span>{r.competition}</span></span>
-                    </span>
-                    <OutcomeBadge o={r.us > r.them ? 'V' : r.us === r.them ? 'N' : 'P'} />
+          <Card title="💡 Suggerimenti">
+            {tips.length ? (
+              <div className="stack" style={{ gap: 12 }}>
+                {tips.map((t, k) => (
+                  <div key={k} style={{ display: 'flex', gap: 10 }}>
+                    <span aria-hidden="true" style={{ fontSize: 20, lineHeight: '22px' }}>{t.icon}</span>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 14.5 }}>{t.title}</div>
+                      <div style={{ fontSize: 14, color: 'var(--ink-soft)' }}>{t.text}</div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </Card>
+            ) : (
+              <Empty title="Pochi dati per ora">Servono almeno classifica o un paio di risultati: arrivano da soli dai comunicati CRL, oppure si inseriscono in «Dettagli e modifica».</Empty>
+            )}
+            {tips.length > 0 && <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>Indicazioni ricavate dai numeri: la decisione resta al mister.</small>}
+          </Card>
+
+          <button className="grouphead grouphead--toggle" aria-expanded={details} onClick={() => setDetails((v) => !v)} style={{ marginTop: 8 }}>
+            <span>{details ? '▾' : '▸'} Dettagli e modifica</span> <small>rosa, note, dati</small>
+          </button>
+
+          {details && (
+            <>
+              <div className="btnrow" style={{ marginBottom: 12 }}>
+                <Button size="sm" onClick={share} disabled={!insights.length}>📤 Condividi riepilogo</Button>
+                <Button size="sm" variant="secondary" as="a" target="_blank" rel="noopener noreferrer"
+                  href={scout.tuttocampoUrl || `https://www.google.com/search?q=${encodeURIComponent(`tuttocampo ${scout.name || name} rosa`)}`}>
+                  Apri su Tuttocampo ↗
+                </Button>
+              </div>
+              {autoHere && <AutoCard auto={autoHere} applied={autoApplied} canWrite={canWrite}
+                onApply={() => save({ standing: scout.standing || null, results: scout.results || [], suspended: scout.suspended || [], autoAppliedAt: autoHere.generatedAt }, 'Aggiornamento salvato nella scheda')} />}
+              <StandingCard scout={scout} canWrite={canWrite} onSave={save} />
+              <FormCard scout={scout} canWrite={canWrite} onSave={save} refDate={now} />
+              <RosterCard scout={scout} canWrite={canWrite} onSave={save} refDate={ref} />
+              <AbsentCard scout={scout} canWrite={canWrite} onSave={save} />
+              <NotesCard key={docId} scout={scout} canWrite={canWrite} onSave={save} />
+            {h2h.length > 0 && (
+              <Card title="Precedenti">
+                <div className="plist">
+                  {h2h.map((r) => (
+                    <div key={r.id} className="prow">
+                      <span className="prow__num">{r.us}-{r.them}</span>
+                      <span className="prow__body">
+                        <span className="prow__name">{r.home ? 'In casa' : 'In trasferta'}</span>
+                        <span className="prow__meta"><span>{fmtDate(r.date)}</span><span>{r.competition}</span></span>
+                      </span>
+                      <OutcomeBadge o={r.us > r.them ? 'V' : r.us === r.them ? 'N' : 'P'} />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+              {scout.updatedAt && (
+                <small style={{ display: 'block', marginTop: 8, color: 'var(--muted)' }}>
+                  Scheda aggiornata {fmtShort(scout.updatedAt)}{scout.updatedBy ? ` da ${scout.updatedBy}` : ''}
+                </small>
+              )}
+            </>
           )}
         </>
       )}
@@ -205,6 +225,68 @@ export default function Avversari() {
 }
 
 /* ---------------- pezzi della pagina ---------------- */
+
+/** Chi è l'avversario, in un colpo d'occhio: partita, classifica, assenti. */
+function OpponentCard({ scout, name, match, auto }) {
+  const st = scout.standing || {};
+  const absent = (scout.suspended || []).filter(Boolean);
+  return (
+    <Card title={scout.name || name} action={match && <Badge tone={match.home === false ? 'orange' : 'green'}>{match.home === false ? 'Trasferta' : 'Casa'}</Badge>}>
+      {match ? (
+        <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>
+          {capitalize(fmtLong(match.date))} · {fmtTime(match.date)}
+          {match.venue && <div>📍 {match.venue}</div>}
+        </div>
+      ) : <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>Nessuna partita in calendario contro questa squadra.</div>}
+      {st.pos != null || st.pts != null ? (
+        <div className="grid grid--kpi" style={{ marginTop: 12, gridTemplateColumns: 'repeat(3, 1fr)' }}>
+          <Kpi value={st.pos != null ? `${st.pos}°` : '—'} label={st.of ? `su ${st.of}` : 'in classifica'} accent />
+          <Kpi value={st.pts ?? '—'} label={`punti · ${st.v ?? 0}-${st.n ?? 0}-${st.p ?? 0}`} />
+          <Kpi value={`${st.gf ?? 0}:${st.gs ?? 0}`} label="gol fatti:subiti" />
+        </div>
+      ) : null}
+      {absent.length > 0 && <div style={{ fontSize: 13.5, marginTop: 10 }}>🚫 Assenti: {absent.join(', ')}</div>}
+      {auto && (
+        <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>
+          🔄 Dati dai comunicati CRL, aggiornati il {fmtDay(auto.availableFrom)}
+        </small>
+      )}
+    </Card>
+  );
+}
+
+/** Ultime cinque partite, dalla più recente, con la forma in testa. */
+function RecentCard({ scout }) {
+  const list = sortResults(scout.results || []).slice(0, 5);
+  const f = formOf(list, 3);
+  return (
+    <Card title="Ultime partite" action={f.played > 0 && (
+      <div style={{ display: 'flex', gap: 4 }}>{f.list.map((r, i) => <OutcomeBadge key={i} o={outcome(r)} />)}</div>
+    )}>
+      {list.length ? (
+        <div className="plist">
+          {list.map((r, i) => (
+            <div key={i} className="prow" style={{ cursor: 'default', minHeight: 48 }}>
+              <span className="prow__num" style={{ width: 'auto', minWidth: 38, padding: '0 6px' }}>{r.gf}-{r.gs}</span>
+              <span className="prow__body">
+                <span className="prow__name">{r.home ? 'vs' : '@'} {r.against}</span>
+                <span className="prow__meta">
+                  <span>{r.date ? fmtDay(r.date) : 'data n.d.'}</span>
+                  <span>{r.home ? 'in casa' : 'fuori'}</span>
+                  {r.competition && <span>{r.competition}</span>}
+                </span>
+              </span>
+              <OutcomeBadge o={outcome(r)} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Empty title="Nessun risultato">I risultati arrivano dai comunicati CRL o si aggiungono in «Dettagli e modifica».</Empty>
+      )}
+    </Card>
+  );
+}
+
 
 function AutoCard({ auto, applied, canWrite, onApply }) {
   const lm = auto.lastMatch;

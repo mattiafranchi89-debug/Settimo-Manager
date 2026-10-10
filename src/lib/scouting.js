@@ -474,3 +474,92 @@ export function applyAuto(scout = {}, auto) {
   }
   return out;
 }
+
+/* ---------------- suggerimenti per la partita ---------------- */
+
+const n1 = (x) => x.toLocaleString('it-IT', { maximumFractionDigits: 1 });
+
+/** Rendimento del Settimo dalle partite con risultato (punti e gol a partita). */
+export function ourForm(events = []) {
+  const played = events.filter((e) => e.type === 'match' && e.scoreHome != null && e.scoreAway != null);
+  if (!played.length) return null;
+  let pts = 0, gf = 0, gs = 0;
+  played.forEach((e) => {
+    const us = e.home === false ? e.scoreAway : e.scoreHome;
+    const them = e.home === false ? e.scoreHome : e.scoreAway;
+    gf += us; gs += them; pts += us > them ? 3 : us === them ? 1 : 0;
+  });
+  return { g: played.length, ppg: pts / played.length, gf: gf / played.length, gs: gs / played.length };
+}
+
+/**
+ * Indicazioni pratiche ricavate dai numeri disponibili: non sostituiscono
+ * l'occhio del mister, mettono in fila ciò che i dati dicono.
+ * `us`: { form (ourForm), diffidati: [nomi], squalificati: [nomi] }.
+ */
+export function buildSuggestions(scout = {}, { match, us = {} } = {}) {
+  const out = [];
+  const st = scout.standing || {};
+  const results = sortResults(scout.results || []);
+  const g = Number(st.g) || results.length;
+  const gf = Number(st.g) ? Number(st.gf) || 0 : results.reduce((s, r) => s + r.gf, 0);
+  const gs = Number(st.g) ? Number(st.gs) || 0 : results.reduce((s, r) => s + r.gs, 0);
+  const few = g < 4 ? ` (su ${g} partite: dato ancora indicativo)` : '';
+
+  if (g >= 2) {
+    const conc = gs / g, scored = gf / g;
+    if (conc >= 1.8) out.push({ icon: '⚡', title: 'Attaccali da subito', text: `Subiscono ${n1(conc)} gol a partita${few}. Pressione alta nei primi minuti e tanti tiri: un gol presto li obbliga a scoprirsi.` });
+    else if (conc <= 0.8) out.push({ icon: '🧱', title: 'Serve pazienza in attacco', text: `Concedono solo ${n1(conc)} gol a partita${few}. Possesso paziente e palle inattive curate: lì si può fare la differenza.` });
+    if (scored >= 2) out.push({ icon: '🛡️', title: 'Occhio alle ripartenze', text: `Segnano ${n1(scored)} gol a partita. Proteggi le transizioni: un mediano sempre dietro la linea della palla.` });
+    else if (scored <= 1) out.push({ icon: '⬆️', title: 'Puoi alzare la squadra', text: `Segnano ${n1(scored)} gol a partita: rischio basso a spingere con i terzini e accorciare in avanti.` });
+  }
+
+  const f = formOf(results, 3);
+  const last = results[0];
+  if (last && last.gs - last.gf >= 3) {
+    out.push({ icon: '🔥', title: 'Attenzione alla reazione', text: `Vengono da un ${last.gf}-${last.gs} contro ${last.against}: aspettati intensità e orgoglio nei primi 20 minuti.` });
+  }
+  if (f.played >= 2 && f.v === 0) {
+    out.push({ icon: '🎯', title: 'Segnare per primi', text: `Nessuna vittoria nelle ultime ${f.played} (${f.list.map(outcome).join(' ')}). Una squadra senza fiducia crolla se va sotto: il primo gol pesa doppio.` });
+  } else if (f.played >= 2 && f.v === f.played) {
+    out.push({ icon: '📈', title: 'Arrivano in fiducia', text: `${f.v} vittorie di fila: partita da non sottovalutare, servono attenzione e ritmo dall'inizio.` });
+  }
+
+  if (match) {
+    const theyHome = match.home === false;
+    const split = formOf(results, 99, (r) => r.home === theyHome);
+    if (split.played >= 2) {
+      const ppg = (split.v * 3 + split.n) / split.played;
+      if (theyHome && ppg >= 2) out.push({ icon: '🏟️', title: 'Forti in casa', text: `In casa ${split.v}V ${split.n}N ${split.p}P: primo tempo ordinato, senza regalare nulla.` });
+      if (theyHome && ppg <= 0.7) out.push({ icon: '🏟️', title: 'Deboli in casa', text: `In casa ${split.v}V ${split.n}N ${split.p}P: il loro campo non li aiuta, si può fare la partita.` });
+      if (!theyHome && ppg <= 0.7) out.push({ icon: '🧳', title: 'Soffrono in trasferta', text: `Fuori casa ${split.v}V ${split.n}N ${split.p}P: imponi il ritmo da subito.` });
+    }
+  }
+
+  if (us.form && g >= 2) {
+    const theirPpg = (Number(st.pts) || results.reduce((s, r) => s + (outcome(r) === 'V' ? 3 : outcome(r) === 'N' ? 1 : 0), 0)) / g;
+    if (us.form.ppg - theirPpg >= 1.2) {
+      out.push({ icon: '⚖️', title: 'Favoriti sulla carta', text: `Noi ${n1(us.form.ppg)} punti a partita, loro ${n1(theirPpg)}. Il rischio è la sufficienza: concentrazione e gestione se non si sblocca presto.` });
+    } else if (theirPpg - us.form.ppg >= 0.8) {
+      out.push({ icon: '⚖️', title: 'Avversario più in forma', text: `Loro ${n1(theirPpg)} punti a partita, noi ${n1(us.form.ppg)}: partita da giocare corti e compatti.` });
+    }
+  }
+
+  const roster = rosterSummary(scout.players || []);
+  const teamGoals = Math.max(roster.goals, Number(st.gf) || 0);
+  const top = roster.scorers[0];
+  if (top && teamGoals >= 3 && top.goals / teamGoals >= 0.4) {
+    out.push({ icon: '👁️', title: `Marcatura su ${top.name}`, text: `Ha fatto ${top.goals} dei loro ${teamGoals} gol: limitarlo vuol dire spegnere il loro attacco.` });
+  }
+  const keys = (scout.players || []).filter((p) => p.key && p !== top).slice(0, 2);
+  if (keys.length) out.push({ icon: '⭐', title: 'Da tenere d\'occhio', text: keys.map((p) => `${p.name}${p.note ? ` (${p.note})` : ''}`).join('; ') + '.' });
+
+  // Al massimo cinque indicazioni sull'avversario, le più forti per prime;
+  // poi le nostre (gli assenti avversari sono già nella scheda in alto).
+  out.splice(5);
+
+  if (us.squalificati?.length) out.push({ icon: '🟥', title: 'Nostri indisponibili', text: `Squalificati: ${us.squalificati.join(', ')}.` });
+  if (us.diffidati?.length) out.push({ icon: '🟨', title: 'Diffidati in campo', text: `${us.diffidati.join(', ')}: con un'ammonizione saltano la prossima. Attenzione a proteste e falli tattici.` });
+
+  return out;
+}
