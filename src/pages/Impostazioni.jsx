@@ -132,7 +132,7 @@ export default function Impostazioni() {
 
   const save = async () => {
     try {
-    await setDocument('config', 'club', { ...form, maxCallup: Number(form.maxCallup) || 20, cardsPerSuspension: Number(form.cardsPerSuspension) || 4, updatedAt: serverTimestamp() });
+    await setDocument('config', 'club', { ...form, maxCallup: Number(form.maxCallup) || 20, cardsPerSuspension: Number(form.cardsPerSuspension) || 4, cupCardsPerSuspension: Number(form.cupCardsPerSuspension) || 2, updatedAt: serverTimestamp() });
     await setDocument('config', 'branding', { clubName: form.clubName, season: form.season, logoUrl: form.logoUrl });
     await audit(user, 'club.update', 'config/club');
     toast('Configurazione salvata');
@@ -234,8 +234,11 @@ export default function Impostazioni() {
         <Field label="Impianto di casa"><Input value={form.homeStadium} onChange={set('homeStadium')} /></Field>
         <div className="row2">
           <Field label="Massimo convocati"><Input type="number" min="11" max="30" value={form.maxCallup} onChange={set('maxCallup')} /></Field>
-          <Field label="Ammonizioni per squalifica" hint="In Prima Categoria di norma 4.">
-            <Input type="number" min="2" max="10" value={form.cardsPerSuspension ?? 4} onChange={set('cardsPerSuspension')} />
+          <Field label="Ammonizioni per squalifica · campionato" hint="Prima Categoria: 4. Un'espulsione squalifica sempre.">
+            <Input type="number" min="1" max="10" value={form.cardsPerSuspension ?? 4} onChange={set('cardsPerSuspension')} />
+          </Field>
+          <Field label="Ammonizioni per squalifica · Coppa Lombardia" hint="Coppa: 2. Non fa cumulo con il campionato.">
+            <Input type="number" min="1" max="10" value={form.cupCardsPerSuspension ?? 2} onChange={set('cupCardsPerSuspension')} />
           </Field>
         </div>
         <Field label="Competizioni" hint="Separate da virgola.">

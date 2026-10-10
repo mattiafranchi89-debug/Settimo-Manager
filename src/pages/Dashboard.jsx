@@ -9,6 +9,7 @@ import { buildInsights, squadAlerts } from '../lib/insights';
 import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
+import { suspendedIn, COMPS } from '../lib/discipline';
 
 const DAY = 86400000;
 const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -57,8 +58,8 @@ export default function Dashboard() {
   const { data: openPayments } = useCollection('payments', openQ, seesFinance);
 
   const insights = useMemo(
-    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
-    [players, club.cardsPerSuspension]
+    () => buildInsights({ players, club }),
+    [players, club]
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
@@ -135,8 +136,9 @@ export default function Dashboard() {
 
   const trainingFirst = nextTraining && (!nextMatch || toDate(nextTraining.date) < toDate(nextMatch.date));
   const watch = [
-    ...alerts.squalificati.map((p) => ({ id: `s-${p.id}`, tone: 'red', label: `🟥 ${short(p.fullName)}` })),
-    ...alerts.diffidati.map((p) => ({ id: `d-${p.id}`, tone: 'orange', label: `🟨 ${short(p.fullName)} · diffida` })),
+    // Campionato e coppa non fanno cumulo: l'etichetta dice dove vale.
+    ...alerts.squalificati.map((p) => ({ id: `s-${p.id}`, tone: 'red', label: `🟥 ${short(p.fullName)}${compTag([...new Set([...suspendedIn(p), ...(insights[p.id]?.autoSuspendedIn || [])])])}` })),
+    ...alerts.diffidati.map((p) => ({ id: `d-${p.id}`, tone: 'orange', label: `🟨 ${short(p.fullName)} · diffida${compTag(insights[p.id]?.diffidaIn || [], true)}` })),
     ...injured.map((p) => ({ id: `i-${p.id}`, tone: 'grey', label: `🩹 ${short(p.fullName)}` }))
   ];
 
@@ -253,6 +255,12 @@ export default function Dashboard() {
 }
 
 const titleName = (s = '') => s.toLowerCase().replace(/(^|\s)(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+
+/** « · coppa» / « · camp.»; vuoto se vale ovunque (squalifica) o se non serve. */
+function compTag(list = [], always = false) {
+  if (!list.length || (!always && list.length > 1)) return '';
+  return ` ${always ? '' : '· '}${list.map((b) => COMPS[b]?.short || b).join(' e ')}`;
+}
 
 /** «COGNOME NOME» → «Cognome N.»: sulle etichette serve spazio. */
 function short(fullName = '') {

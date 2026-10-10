@@ -11,6 +11,7 @@ import { audit } from '../lib/db';
 import { errorText } from './Rosa';
 import { getDocs, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { cardsOf } from '../lib/discipline';
 
 /* ============================== STATISTICHE ============================== */
 export function Statistiche() {
@@ -38,7 +39,8 @@ export function Statistiche() {
     { key: 'appearances', label: 'Pres.' },
     { key: 'minutes', label: 'Min.' },
     { key: 'goals', label: 'Gol' },
-    { key: 'yellowCards', label: 'Amm.' },
+    { key: 'ammTot', label: '🟨 Camp.·Coppa' },
+    { key: 'espTot', label: '🟥 Camp.·Coppa' },
     { key: 'att', label: 'Allen.' }
   ];
   const [sortBy, setSortBy] = useState('goals');
@@ -54,8 +56,12 @@ export function Statistiche() {
   // costs one read per player even when the whole squad opens it.
   const rows = useMemo(() => players.map((p) => {
     const s = p.stats || {};
+    const cd = cardsOf(s);
     return {
-      ...p, ...s,
+      ...p, ...s, cd,
+      // Campionato e coppa non fanno cumulo: due numeri, ordinati sulla somma.
+      ammTot: cd.campionato.y + cd.coppa.y,
+      espTot: cd.campionato.r + cd.coppa.r,
       att: s.trainingsAttended || 0,
       attPct: s.totalTrainings ? Math.round(((s.trainingsAttended || 0) / s.totalTrainings) * 100) : 0
     };
@@ -72,8 +78,9 @@ export function Statistiche() {
 
   const totals = rows.reduce((s, r) => ({
     goals: s.goals + (r.goals || 0), minutes: s.minutes + (r.minutes || 0),
-    yellow: s.yellow + (r.yellowCards || 0), red: s.red + (r.redCards || 0)
-  }), { goals: 0, minutes: 0, yellow: 0, red: 0 });
+    yellow: s.yellow + r.cd.campionato.y, red: s.red + r.cd.campionato.r,
+    yellowCup: s.yellowCup + r.cd.coppa.y, redCup: s.redCup + r.cd.coppa.r
+  }), { goals: 0, minutes: 0, yellow: 0, red: 0, yellowCup: 0, redCup: 0 });
 
   return (
     <>
@@ -85,8 +92,8 @@ export function Statistiche() {
       <div className="grid grid--kpi">
         <Kpi value={totals.goals} label="Gol di squadra" accent />
         <Kpi value={totals.minutes} label="Minuti giocati" />
-        <Kpi value={totals.yellow} label="Ammonizioni" />
-        <Kpi value={totals.red} label="Espulsioni" />
+        <Kpi value={`${totals.yellow} · ${totals.yellowCup}`} label="Ammonizioni camp. · coppa" />
+        <Kpi value={`${totals.red} · ${totals.redCup}`} label="Espulsioni camp. · coppa" />
       </div>
 
       <Card>
@@ -109,7 +116,8 @@ export function Statistiche() {
                   <td>{r.appearances || 0}</td>
                   <td>{r.minutes || 0}</td>
                   <td>{r.goals || 0}</td>
-                  <td>{r.yellowCards || 0}</td>
+                  <td>{r.cd.campionato.y} · {r.cd.coppa.y}</td>
+                  <td>{r.cd.campionato.r} · {r.cd.coppa.r}</td>
                   <td>{r.att} <small>({r.attPct}%)</small></td>
                 </tr>
               ))}

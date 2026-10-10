@@ -1,6 +1,7 @@
 import { writeBatch, doc } from 'firebase/firestore';
 import { db } from './firebase';
 import { callupFor } from './callup';
+import { compBucket } from './discipline';
 
 export const EVENT_TYPES = {
   gol: { label: 'Gol', emoji: '⚽' },
@@ -85,6 +86,10 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
   const base = () => ({
     appearances: 0, starts: 0, subs: 0, minutes: 0, goals: 0, assists: 0,
     yellowCards: 0, redCards: 0, avgRating: null, callups: 0, trainingsAttended: 0,
+    // Campionato e coppa non fanno cumulo: cartellini separati per competizione.
+    cards: { campionato: { y: 0, r: 0, hist: [] }, coppa: { y: 0, r: 0, hist: [] }, amichevole: { y: 0, r: 0, hist: [] } },
+    // Gare chiuse per competizione: servono a capire se una squalifica è già scontata.
+    compMatches: { campionato: 0, coppa: 0, amichevole: 0 },
     // Pre-computed so the squad pages only ever read /players.
     lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0,
     // Strisce in corso, contate dall'ultimo evento all'indietro.
@@ -98,7 +103,11 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
   const lastThree = closed.slice(-3);
   const toDate = (v) => (v?.toDate ? v.toDate() : v ? new Date(v) : null);
 
+  const competitionOf = Object.fromEntries(events.map((e) => [e.id, e.competition || '']));
+  const ordinal = { campionato: 0, coppa: 0, amichevole: 0 };
   closed.forEach((m) => {
+    const bucket = compBucket(m.competition || competitionOf[m.eventId || m.id] || '');
+    const n = ++ordinal[bucket];
     Object.entries(m.totals).forEach(([pid, s]) => {
       const acc = stats[pid];
       if (!acc) return;
@@ -109,6 +118,10 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
       acc.assists += s.assists || 0;
       acc.yellowCards += s.yellow || 0;
       acc.redCards += s.red || 0;
+      acc.cards[bucket].y += s.yellow || 0;
+      acc.cards[bucket].r += s.red || 0;
+      // Storico dei cartellini per gara (n = numero d'ordine della gara nella competizione).
+      if (s.yellow || s.red) acc.cards[bucket].hist.push({ n, y: s.yellow || 0, r: s.red || 0 });
       acc.lastMatchMinutes = s.minutes || 0;
       if (s.played) acc.lastPlayedAt = toDate(m.date);
     });
@@ -119,7 +132,7 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
       if (stats[pid]) stats[pid].minutesLast3 += s.minutes || 0;
     });
   });
-  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; });
+  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.compMatches = { ...ordinal }; });
 
   const trainingIds = new Set(attendance.map((a) => a.eventId));
   attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });

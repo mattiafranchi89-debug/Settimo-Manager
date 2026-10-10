@@ -43,7 +43,7 @@ export default function HomeGiocatore() {
   const callup = useMemo(() => callupFor(callups, nextMatch?.id), [callups, nextMatch]);
   const called = !!(callup && pid && (callup.players || []).includes(pid));
 
-  const insight = useMemo(() => (me ? playerInsight(me, club.cardsPerSuspension || 4) : null), [me, club]);
+  const insight = useMemo(() => (me ? playerInsight(me, club) : null), [me, club]);
   const s = me?.stats || {};
   const openMoney = [...myFines, ...myPayments].filter((r) => r.status !== 'saldato');
 
@@ -159,9 +159,9 @@ export default function HomeGiocatore() {
               Senti lo staff prima di riprendere.
             </Alert>
           )}
-          {me.suspended && <Alert level="warn">Risulti squalificato: non puoi essere convocato.</Alert>}
-          {!me.suspended && insight?.diffidato && (
-            <Alert level="warn">Sei in diffida: alla prossima ammonizione salti una partita.</Alert>
+          {(me.suspended || insight?.autoSuspendedIn?.length > 0) && <Alert level="warn">Risulti squalificato: i dettagli sono nel tuo profilo.</Alert>}
+          {insight?.diffidaIn?.length > 0 && (
+            <Alert level="warn">Sei in diffida in {insight.diffidaIn.map((k) => (k === 'coppa' ? 'Coppa Lombardia' : 'campionato')).join(' e ')}: alla prossima ammonizione salti una partita.</Alert>
           )}
         </>
       )}

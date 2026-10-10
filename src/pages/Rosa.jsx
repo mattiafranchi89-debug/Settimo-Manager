@@ -8,6 +8,8 @@ import { readDocumentNumber, saveDocumentNumber } from '../lib/players';
 import { buildInsights } from '../lib/insights';
 import { useClub } from '../lib/db';
 import { POSITIONS, GROUPS, groupOf, positionLabel, age, fmtDate, sortPlayers, toInputValue, toDate } from '../lib/format';
+import DisciplineRows from '../components/Discipline';
+import { suspendedIn, COMPS } from '../lib/discipline';
 import { can } from '../lib/permissions';
 
 const EMPTY = {
@@ -22,8 +24,8 @@ export default function Rosa() {
   const { data: players, loading } = useCollection('players');
   const { club } = useClub();
   const insights = useMemo(
-    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
-    [players, club.cardsPerSuspension]
+    () => buildInsights({ players, club }),
+    [players, club]
   );
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState('tutti');
@@ -150,12 +152,7 @@ export default function Rosa() {
           </div>
 
           <div className="stack" style={{ marginBottom: 12 }}>
-            <div className="spread">
-              <span>Ammonizioni in stagione</span>
-              <Badge tone={insights[detail.id]?.diffidato ? 'orange' : 'grey'}>
-                {insights[detail.id]?.yellow ?? 0}{insights[detail.id]?.diffidato ? ' — in diffida' : ''}
-              </Badge>
-            </div>
+            <DisciplineRows player={detail} insight={insights[detail.id]} />
             <div className="spread">
               <span>Ultima partita giocata</span>
               <Badge tone={insights[detail.id]?.weeksSincePlayed >= 4 ? 'orange' : 'grey'}>
@@ -189,19 +186,31 @@ export default function Rosa() {
               </div>
             )}
             <div className="spread">
-              <span>Squalificato</span>
+              <span>
+                Squalifica decisa dal Giudice Sportivo
+                <small style={{ display: 'block', color: 'var(--muted)' }}>Per squalifiche di più giornate: si toglie a mano quando è scontata.</small>
+              </span>
               {writable ? (
-                <Button size="sm" variant={detail.suspended ? 'danger' : 'ghost'}
-                  onClick={async () => {
-                    const next = !detail.suspended;
-                    await updateDocument('players', detail.id, { suspended: next, updatedAt: serverTimestamp() });
-                    await audit(user, next ? 'player.suspend' : 'player.unsuspend', detail.id, { name: detail.fullName });
-                    setDetail({ ...detail, suspended: next });
-                    toast(next ? 'Segnato come squalificato' : 'Squalifica rimossa');
-                  }}>
-                  {detail.suspended ? 'Sì — togli squalifica' : 'No — segna squalifica'}
-                </Button>
-              ) : <Badge tone={detail.suspended ? 'purple' : 'grey'}>{detail.suspended ? 'Sì' : 'No'}</Badge>}
+                <div className="btnrow" style={{ gap: 4, flexWrap: 'nowrap' }}>
+                  {Object.entries(COMPS).map(([key, c]) => {
+                    const on = suspendedIn(detail).includes(key);
+                    return (
+                      <button key={key} className={`chip ${on ? 'chip--on' : ''}`} style={{ minHeight: 36, padding: '6px 10px' }}
+                        onClick={async () => {
+                          const current = suspendedIn(detail);
+                          const list = on ? current.filter((k) => k !== key) : [...current, key];
+                          const patch = { suspended: list.length > 0, suspendedIn: list, updatedAt: serverTimestamp() };
+                          await updateDocument('players', detail.id, patch);
+                          await audit(user, list.length > current.length ? 'player.suspend' : 'player.unsuspend', detail.id, { name: detail.fullName, competizione: c.label });
+                          setDetail({ ...detail, ...patch });
+                          toast(on ? `Squalifica in ${c.label} rimossa` : `Squalificato in ${c.label}`);
+                        }}>
+                        {on ? '🟥 ' : ''}{c.short === 'camp.' ? 'Campionato' : 'Coppa'}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : <Badge tone={detail.suspended ? 'purple' : 'grey'}>{detail.suspended ? suspendedIn(detail).map((k) => COMPS[k].label).join(' e ') : 'No'}</Badge>}
             </div>
           </div>
 

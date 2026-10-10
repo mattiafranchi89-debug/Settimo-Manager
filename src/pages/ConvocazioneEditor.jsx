@@ -14,6 +14,7 @@ import {
 } from '../lib/format';
 import { validateCallup, summarise, buildMessage, copyText, whatsappLink } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
+import { compBucket, isSuspendedFor, COMPS } from '../lib/discipline';
 import { can } from '../lib/permissions';
 import { errorText } from './Rosa';
 
@@ -47,11 +48,9 @@ export default function ConvocazioneEditor() {
   }, [allEvents]);
   const { data: players, loading: loadingPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const insights = useMemo(
-    () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
-    [players, club.cardsPerSuspension]
+    () => buildInsights({ players, club }),
+    [players, club]
   );
-
-  const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
 
   const [step, setStep] = useState(0);
   const [eventId, setEventId] = useState(params.get('event') || '');
@@ -62,6 +61,9 @@ export default function ConvocazioneEditor() {
   const [busy, setBusy] = useState(false);
 
   const event = useMemo(() => events.find((e) => e.id === eventId), [events, eventId]);
+  // Diffide e squalifiche contano solo nella competizione della partita.
+  const bucket = event ? compBucket(event.competition) : null;
+  const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
 
   // hydrate from an existing call-up
   useEffect(() => {
@@ -86,8 +88,8 @@ export default function ConvocazioneEditor() {
 
   const selectedPlayers = useMemo(() => players.filter((p) => selected.includes(p.id)), [players, selected]);
   const warnings = useMemo(
-    () => validateCallup({ selected: selectedPlayers, maxCallup: club.maxCallup || 20 }),
-    [selectedPlayers, club.maxCallup]
+    () => validateCallup({ selected: selectedPlayers, maxCallup: club.maxCallup || 20, competition: event?.competition || '', insights }),
+    [selectedPlayers, club.maxCallup, event?.competition, insights]
   );
   const blocking = warnings.filter((w) => w.level === 'error');
   const stats = summarise(selectedPlayers);
@@ -287,12 +289,12 @@ export default function ConvocazioneEditor() {
             <Card title="Da tenere d'occhio">
               {alerts.squalificati.length > 0 && (
                 <Alert level="error">
-                  Squalificati: {alerts.squalificati.map((p) => p.fullName).join(', ')}. Non possono essere convocati.
+                  Squalificati{bucket && COMPS[bucket] ? ` in ${COMPS[bucket].label}` : ''}: {alerts.squalificati.map((p) => p.fullName).join(', ')}. Non possono essere convocati.
                 </Alert>
               )}
               {alerts.diffidati.length > 0 && (
                 <Alert level="warn">
-                  In diffida — alla prossima ammonizione saltano una gara: {alerts.diffidati.map((p) => p.fullName).join(', ')}.
+                  In diffida{bucket && COMPS[bucket] ? ` in ${COMPS[bucket].label}` : ''}: alla prossima ammonizione saltano una gara. {alerts.diffidati.map((p) => p.fullName).join(', ')}.
                 </Alert>
               )}
               {alerts.dimenticati.length > 0 && (
@@ -339,8 +341,8 @@ export default function ConvocazioneEditor() {
                             {insightLine(insights[p.id]) && <span>{insightLine(insights[p.id])}</span>}
                           </span>
                         </span>
-                        {p.suspended && <Badge tone="purple">Squalificato</Badge>}
-                        {!p.suspended && insights[p.id]?.diffidato && <Badge tone="orange">Diffidato</Badge>}
+                        {isSuspendedFor(p, bucket, insights[p.id]) && <Badge tone="purple">Squalificato</Badge>}
+                        {!isSuspendedFor(p, bucket, insights[p.id]) && (bucket ? insights[p.id]?.diffidaIn?.includes(bucket) : insights[p.id]?.diffidato) && <Badge tone="orange">Diffidato</Badge>}
                         {p.injury?.active && <Badge tone="blue">Infortunato</Badge>}
                       </button>
                     );

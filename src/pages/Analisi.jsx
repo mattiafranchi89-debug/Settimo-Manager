@@ -251,15 +251,19 @@ function Gol({ matchStats, matches }) {
 /* ------------------------------- disciplina ------------------------------- */
 
 function Disciplina({ players, club }) {
-  const rows = sortPlayers(players).map((p) => ({ p, i: playerInsight(p, club.cardsPerSuspension || 4) }))
-    .filter((r) => r.i.yellow || r.i.red || r.p.suspended).sort((a, b) => b.i.yellow - a.i.yellow);
+  const rows = sortPlayers(players).map((p) => ({ p, i: playerInsight(p, club) }))
+    .filter((r) => r.i.yellow || r.i.red || r.i.cup.yellow || r.i.cup.red || r.p.suspended || r.i.autoSuspendedIn.length).sort((a, b) => (b.i.yellow + b.i.cup.yellow) - (a.i.yellow + a.i.cup.yellow));
+  const where = (list) => list.map((k) => (k === 'coppa' ? 'coppa' : 'campionato')).join(' e ');
   if (!rows.length) return <Card><Empty title="Nessun cartellino" /></Card>;
   return (
-    <Card title="Cartellini in stagione">
-      <Bars rows={rows.map((r) => ({ label: r.p.fullName.split(' ')[0], value: r.i.yellow, color: r.i.diffidato ? 'var(--orange)' : r.p.suspended ? 'var(--purple)' : 'var(--ink-soft)' }))} />
+    <Card title="Ammonizioni in campionato">
+      <Bars rows={rows.map((r) => ({ label: r.p.fullName.split(' ')[0], value: r.i.yellow, color: r.i.diffidaIn.includes('campionato') ? 'var(--orange)' : 'var(--ink-soft)' }))} />
+      <small style={{ display: 'block', marginTop: 6, color: 'var(--muted)' }}>
+        Coppa Lombardia a parte (non fa cumulo): {rows.filter((r) => r.i.cup.yellow || r.i.cup.red).map((r) => `${r.p.fullName.split(' ')[0]} ${r.i.cup.yellow}🟨${r.i.cup.red ? ` ${r.i.cup.red}🟥` : ''}`).join(' · ') || 'nessun cartellino'}.
+      </small>
       <div className="btnrow" style={{ marginTop: 10 }}>
-        {rows.filter((r) => r.i.diffidato).map((r) => <Badge key={r.p.id} tone="orange">{r.p.fullName} in diffida</Badge>)}
-        {rows.filter((r) => r.p.suspended).map((r) => <Badge key={r.p.id} tone="purple">{r.p.fullName} squalificato</Badge>)}
+        {rows.filter((r) => r.i.diffidaIn.length).map((r) => <Badge key={`d${r.p.id}`} tone="orange">{r.p.fullName} in diffida ({where(r.i.diffidaIn)})</Badge>)}
+        {rows.filter((r) => r.p.suspended || r.i.autoSuspendedIn.length).map((r) => <Badge key={`s${r.p.id}`} tone="purple">{r.p.fullName} squalificato ({where([...new Set([...(r.p.suspendedIn?.length ? r.p.suspendedIn : r.p.suspended ? ['campionato', 'coppa'] : []), ...r.i.autoSuspendedIn])])})</Badge>)}
       </div>
     </Card>
   );
@@ -293,7 +297,7 @@ function Note({ matchStats, matches }) {
  */
 function Impiego({ players, club }) {
   const rows = sortPlayers(players).map((p) => {
-    const i = playerInsight(p, club.cardsPerSuspension || 4);
+    const i = playerInsight(p, club);
     const reason = p.injury?.active ? ['Infortunio', 'blue'] : p.suspended ? ['Squalifica', 'purple']
       : i.neverPlayed ? ['Mai impiegato', 'red'] : i.weeksSincePlayed >= 3 ? ['Scelta tecnica', 'orange'] : null;
     return { p, i, reason };

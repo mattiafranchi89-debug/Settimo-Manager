@@ -11,6 +11,7 @@ import {
   shareText, fmtDay, autoVisible, applyAuto, buildSuggestions, ourForm
 } from '../lib/scouting';
 import { buildInsights, squadAlerts } from '../lib/insights';
+import { compBucket } from '../lib/discipline';
 import { useAutoOpponent } from '../lib/crl';
 
 /**
@@ -74,11 +75,11 @@ export default function Avversari() {
   // I nostri numeri entrano nei suggerimenti: forma, diffidati e squalificati.
   const { data: ourPlayers } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const us = useMemo(() => {
-    const ins = buildInsights({ players: ourPlayers, cardsPerSuspension: club.cardsPerSuspension || 4 });
-    const al = squadAlerts(ourPlayers, ins);
+    const ins = buildInsights({ players: ourPlayers, club });
+    const al = squadAlerts(ourPlayers, ins, match ? compBucket(match.competition || '') : null);
     const nm = (p) => p.fullName.split(' ').map((w) => w.charAt(0) + w.slice(1).toLowerCase()).slice(0, 2).join(' ');
     return { form: ourForm(matches), diffidati: al.diffidati.map(nm), squalificati: al.squalificati.map(nm) };
-  }, [ourPlayers, matches, club.cardsPerSuspension]);
+  }, [ourPlayers, matches, club, match]);
   const tips = useMemo(() => buildSuggestions(scout, { match, us }), [scout, match, us]);
   const [details, setDetails] = useState(false);
 

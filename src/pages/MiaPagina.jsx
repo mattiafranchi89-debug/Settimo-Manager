@@ -7,6 +7,7 @@ import { fmtShort, fmtTime, fmtDate, toDate, capitalize, positionLabel, sortPlay
 import { earned, nextMilestone } from '../lib/milestones';
 import { copyText, callupFor } from '../lib/callup';
 import { Button, Kpi as K } from '../components/ui';
+import DisciplineRows from '../components/Discipline';
 import { setDocument, serverTimestamp } from '../lib/db';
 
 /** Cosa vede un giocatore di sé stesso: i suoi numeri, nient'altro. */
@@ -32,7 +33,7 @@ export default function MiaPagina() {
   if (loading) return <Loading />;
   if (!me) return <Card><Empty title="Scheda non trovata" /></Card>;
 
-  const i = playerInsight(me, club.cardsPerSuspension || 4);
+  const i = playerInsight(me, club);
   const s = me.stats || {};
   const byEvent = Object.fromEntries(matches.map((m) => [m.id, m]));
   const myCallups = Object.keys(byEvent)
@@ -127,16 +128,12 @@ export default function MiaPagina() {
       )}
 
       <Card title="Disciplina">
-        <div className="grid grid--kpi">
-          <Kpi value={i.yellow} label="Ammonizioni" />
-          <Kpi value={i.red} label="Espulsioni" />
-          <Kpi value={i.toSuspension} label="Gialli alla squalifica" accent={i.diffidato} />
-        </div>
-        {me.suspended && <Alert level="error">Risulti squalificato: non puoi essere convocato.</Alert>}
-        {!me.suspended && i.diffidato && (
-          <Alert level="warn">Sei in diffida: alla prossima ammonizione salti una partita.</Alert>
+        <DisciplineRows player={me} insight={i} />
+        {(me.suspended || i.autoSuspendedIn?.length > 0) && <Alert level="error">Risulti squalificato: controlla in quale competizione qui sopra.</Alert>}
+        {i.diffidaIn?.length > 0 && (
+          <Alert level="warn">Sei in diffida in {i.diffidaIn.map((k) => (k === 'coppa' ? 'Coppa Lombardia' : 'campionato')).join(' e ')}: alla prossima ammonizione salti una partita.</Alert>
         )}
-        <p><small>La squalifica scatta ogni {club.cardsPerSuspension || 4} ammonizioni. I conteggi seguono le gare chiuse dallo staff, non il comunicato ufficiale.</small></p>
+        <p><small>Campionato e Coppa Lombardia non fanno cumulo. I conteggi seguono le gare chiuse dallo staff: fa fede il comunicato ufficiale.</small></p>
       </Card>
 
       {club.mvpEnabled !== false && lastClosed && onSheet.length > 0 && (

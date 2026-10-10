@@ -113,6 +113,8 @@ export const DEFAULT_CLUB = {
   homeStadium: 'Centro Sportivo Comunale, Settimo Milanese',
   maxCallup: 20,
   cardsPerSuspension: 4,
+  // Coppa Lombardia: soglia propria, i cartellini non si sommano al campionato.
+  cupCardsPerSuspension: 2,
   distintaPhone: '',
   distintaNome: '',
   convocazioneNome: '',

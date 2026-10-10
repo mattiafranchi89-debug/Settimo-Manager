@@ -1,3 +1,4 @@
+import { compBucket, isSuspendedFor } from './discipline';
 import { GROUPS, groupOf, fmtLong, fmtTime, capitalize, sortPlayers, toDate } from './format';
 
 const LIVE_STATUSES = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -37,7 +38,8 @@ export function byGroup(players) {
  * Squad-balance checks. Every warning is blocking-by-default in the UI:
  * the coach can publish anyway, but only after typing a reason (audit-logged).
  */
-export function validateCallup({ selected, maxCallup }) {
+export function validateCallup({ selected, maxCallup, competition = '', insights = {} }) {
+  const bucket = compBucket(competition);
   const w = [];
   const g = byGroup(selected);
 
@@ -51,7 +53,7 @@ export function validateCallup({ selected, maxCallup }) {
 
   selected.forEach((p) => {
     if (p.injury?.active) w.push({ level: 'error', code: 'injured', msg: `${p.fullName} risulta infortunato.` });
-    if (p.suspended) w.push({ level: 'error', code: 'suspended', msg: `${p.fullName} risulta squalificato.` });
+    if (isSuspendedFor(p, bucket, insights[p.id])) w.push({ level: 'error', code: 'suspended', msg: `${p.fullName} risulta squalificato${bucket === 'coppa' ? ' in coppa' : bucket === 'campionato' ? ' in campionato' : ''}.` });
   });
 
   return w;
