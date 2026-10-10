@@ -374,7 +374,7 @@ export default function ConvocazioneEditor() {
               </Button>
               {canSetLineup && (
                 <Button variant="ghost" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
-                  Formazione per la distinta
+                  Titolari e numeri ›
                 </Button>
               )}
             </div>

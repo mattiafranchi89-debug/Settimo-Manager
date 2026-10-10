@@ -70,6 +70,14 @@ export default function Formazioni() {
 
   const [picking, setPicking] = useState(null);
 
+  // Due modi di fare la stessa formazione: «Rapida» (lista, per il mister dal
+  // telefono) e «Campo» (modulo e posizioni). Salvano lo stesso documento.
+  const [mode, setModeState] = useState(() => {
+    try { return localStorage.getItem('sm-lineup-mode') || (user?.role === 'head_coach' ? 'rapida' : 'campo'); }
+    catch { return 'rapida'; }
+  });
+  const setMode = (m) => { setModeState(m); try { localStorage.setItem('sm-lineup-mode', m); } catch { /* ignorabile */ } };
+
   /** Primo numero libero, così non si devono ricordare quelli già dati. */
   const freeNumber = (preferred) => {
     const taken = new Set(Object.values(numbers).map(Number).filter(Boolean));
@@ -206,9 +214,11 @@ export default function Formazioni() {
             ))}
           </Select>
         </Field>
-        <Field label="Modulo">
-          <Select value={module} onChange={(e) => { setModule(e.target.value); setSlots({}); }} options={Object.keys(MODULES)} />
-        </Field>
+        {mode === 'campo' && (
+          <Field label="Modulo">
+            <Select value={module} onChange={(e) => { setModule(e.target.value); setSlots({}); }} options={Object.keys(MODULES)} />
+          </Field>
+        )}
         {!callup && <Alert level="info">Nessuna convocazione collegata: puoi scegliere fra tutti i giocatori in rosa.</Alert>}
         {notCalled.length > 0 && (
           <Alert level="warn">
@@ -218,6 +228,21 @@ export default function Formazioni() {
         )}
       </div>
 
+      <div className="subtabs noprint" style={{ marginTop: 4 }}>
+        {[['rapida', 'Rapida'], ['campo', 'Campo e modulo']].map(([k, l]) => (
+          <button key={k} className={`subtab${mode === k ? ' subtab--on' : ''}`} onClick={() => setMode(k)}
+            style={{ border: 0, background: mode === k ? undefined : 'none', cursor: 'pointer' }}>{l}</button>
+        ))}
+      </div>
+
+      {mode === 'rapida' && match && (
+        <Rapida pool={pool} slots={slots} setSlots={setSlots} slotList={slotList}
+          numbers={numbers} setNumbers={setNumbers} captain={captain} vice={vice}
+          toggleCaptain={toggleCaptain} toggleVice={toggleVice}
+          club={club} match={match} lineupMessage={lineupMessage} save={save} toast={toast} />
+      )}
+
+      {mode === 'campo' && <>
       {/* Si tocca una posizione sul campo, poi il giocatore: niente menu a tendina. */}
       <div className="pitch noprint">
         <div className="pitch__line" /><div className="pitch__circle" />
@@ -345,7 +370,9 @@ export default function Formazioni() {
         </Sheet>
       )}
 
-      <Card title="Messaggio per la distinta" className="noprint">
+      </>}
+
+      {mode === 'campo' && <Card title="Messaggio per la distinta" className="noprint">
         <p><small>Da mandare a chi compila la distinta con il tool della società, anche a distanza di giorni dalla convocazione. Non contiene i numeri di documento: quelli restano nell'app, nella scheda del giocatore.</small></p>
         <div className="msgbox">{lineupMessage}</div>
         <div className="btnrow" style={{ marginTop: 12 }}>
@@ -371,8 +398,184 @@ export default function Formazioni() {
         ) : (
           <Alert level="info">Imposta il numero WhatsApp in Impostazioni → Invio dei messaggi per inviarla direttamente invece che dal menu di condivisione.</Alert>
         )}
-      </Card>
+      </Card>}
 
     </>
+  );
+}
+
+/* =====================================================================
+   Modalità rapida: lista dei convocati, un tocco per il titolare,
+   numeri automatici che si cambiano scambiandoli. Pensata per il telefono.
+   ===================================================================== */
+
+// Posizioni del modulo preferite per ogni ruolo: il titolare scelto dalla
+// lista finisce in un posto coerente, così la vista «Campo» resta sensata.
+const PREFERRED = {
+  POR: ['POR'], DC: ['DC'], TD: ['TD', 'DC'], TS: ['TS', 'DC'],
+  CC: ['CC', 'MZ', 'TRQ'], TRQ: ['TRQ', 'CC', 'MZ'], ES: ['ED', 'ES', 'MZ', 'AD', 'AS'],
+  ATT: ['ATT', 'PC', 'AD', 'AS', 'TRQ']
+};
+
+function Rapida({ pool, slots, setSlots, slotList, numbers, setNumbers, captain, vice, toggleCaptain, toggleVice, club, match, lineupMessage, save, toast }) {
+  const [editing, setEditing] = useState(null);
+  const [sending, setSending] = useState(false);
+  const starterIds = new Set(Object.values(slots).filter(Boolean));
+  const starters = sortPlayers(pool.filter((p) => starterIds.has(p.id)));
+  const bench = sortPlayers(pool.filter((p) => !starterIds.has(p.id)));
+  const hasGk = starters.some((p) => p.position === 'POR');
+
+  // Ogni convocato ha sempre un numero: titolari 1-11 (1 al portiere), panchina dal 12.
+  useEffect(() => {
+    const taken = new Set(Object.values(numbers).map(Number).filter(Boolean));
+    const next = { ...numbers };
+    let changed = false;
+    const free = (from, to) => { for (let i = from; i <= to; i++) if (!taken.has(i)) { taken.add(i); return String(i); } return ''; };
+    [...starters, ...bench].forEach((p) => {
+      if (next[p.id]) return;
+      const n = starterIds.has(p.id) ? (p.position === 'POR' ? free(1, 1) || free(2, 11) : free(2, 11) || free(1, 11)) : free(12, 40);
+      if (n) { next[p.id] = n; changed = true; }
+    });
+    if (changed) setNumbers(next);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, slots]);
+
+  const toggleStarter = (p) => {
+    if (starterIds.has(p.id)) {
+      setSlots((v) => Object.fromEntries(Object.entries(v).map(([k, id]) => [k, id === p.id ? '' : id])));
+      // Torna in panchina con un numero da panchina.
+      const n = Number(numbers[p.id]);
+      if (n && n <= 11) setNumbers((x) => { const y = { ...x }; delete y[p.id]; return y; });
+      return;
+    }
+    if (starterIds.size >= 11) { toast('Hai già 11 titolari: togline uno prima', 'error'); return; }
+    const empty = slotList.filter((sl) => !slots[sl.id]);
+    const prefs = PREFERRED[p.position] || [];
+    const slot = prefs.map((l) => empty.find((sl) => sl.label === l)).find(Boolean)
+      || empty.find((sl) => (p.position === 'POR') === (sl.label === 'POR'))
+      || empty[0];
+    if (!slot) return;
+    setSlots((v) => ({ ...v, [slot.id]: p.id }));
+    const n = Number(numbers[p.id]);
+    if (!n || n > 11) setNumbers((x) => { const y = { ...x }; delete y[p.id]; return y; });
+  };
+
+  /** Il numero scelto, se è già di un altro, passa a lui il numero vecchio: niente doppioni. */
+  const pickNumber = (p, n) => {
+    const value = String(n);
+    setNumbers((x) => {
+      const y = { ...x };
+      const other = Object.keys(y).find((id) => y[id] === value && id !== p.id);
+      if (other) y[other] = x[p.id] || '';
+      y[p.id] = value;
+      return y;
+    });
+  };
+
+  const renumber = () => {
+    const result = {};
+    let next = 2;
+    const gk = starters.find((p) => p.position === 'POR');
+    if (gk) result[gk.id] = '1'; else next = 1;
+    starters.filter((p) => p !== gk).forEach((p) => { result[p.id] = String(next++); });
+    let b = 12;
+    bench.forEach((p) => { result[p.id] = String(b++); });
+    setNumbers(result);
+    toast('Numerati per ruolo: titolari 1-11, panchina dal 12');
+  };
+
+  const send = async () => {
+    setSending(true);
+    try {
+      await save();
+      const phone = (club.distintaPhone || '').replace(/\D/g, '');
+      if (phone) window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener');
+      else await shareMessage(lineupMessage, 'Formazione');
+    } catch (e) { toast(errorText(e), 'error'); }
+    setSending(false);
+  };
+
+  const Row = ({ p, starter }) => (
+    <div className="prow" style={starter ? { borderColor: 'var(--red)', background: 'var(--red-soft)' } : undefined}>
+      <button onClick={() => setEditing(p)} aria-label={`Numero di ${p.fullName}: ${numbers[p.id] || 'nessuno'}`}
+        style={{ width: 44, height: 44, borderRadius: 10, border: 0, flex: '0 0 auto', cursor: 'pointer',
+          background: starter ? 'var(--red)' : 'var(--ink)', color: '#fff', fontFamily: 'var(--display)', fontSize: 19, fontWeight: 700 }}>
+        {numbers[p.id] || '–'}
+      </button>
+      <button onClick={() => toggleStarter(p)} style={{ flex: 1, minWidth: 0, textAlign: 'left', background: 'none', border: 0, padding: '6px 0', font: 'inherit', color: 'inherit', cursor: 'pointer' }}>
+        <span className="prow__name" style={{ display: 'block' }}>
+          {p.fullName}{captain === p.id ? ' Ⓒ' : vice === p.id ? ' Ⓥ' : ''}
+        </span>
+        <span className="prow__meta"><span>{p.position}</span>{p.injury?.active && <span>🩹 infortunato</span>}</span>
+      </button>
+      <button onClick={() => toggleStarter(p)} className="chip" style={{ minHeight: 36, padding: '6px 12px', ...(starter ? { background: 'var(--red)', color: '#fff', borderColor: 'var(--red)' } : {}) }}>
+        {starter ? 'Titolare' : '+ Titolare'}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="noprint">
+      <Alert level="info">
+        Tocca un nome per metterlo <b>titolare</b>. Il numero si assegna da solo: tocca il riquadro col numero per cambiarlo o dare la fascia.
+      </Alert>
+
+      <div className="grouphead">Titolari <small>{starters.length}/11</small></div>
+      {starters.length === 0
+        ? <p style={{ fontSize: 13.5, color: 'var(--muted)' }}>Nessun titolare ancora: scegli dalla lista dei convocati qui sotto.</p>
+        : <div className="plist">{[...starters].sort((a, b) => (Number(numbers[a.id]) || 99) - (Number(numbers[b.id]) || 99)).map((p) => <Row key={p.id} p={p} starter />)}</div>}
+
+      <div className="grouphead">{starters.length ? 'Panchina' : 'Convocati'} <small>{bench.length}</small></div>
+      <div className="plist">{bench.map((p) => <Row key={p.id} p={p} />)}</div>
+
+      <div className="btnrow" style={{ marginTop: 10 }}>
+        <Button size="sm" variant="ghost" onClick={renumber} disabled={!starters.length}>Rinumera per ruolo</Button>
+      </div>
+
+      {/* Barra fissa sopra le schede in basso: stato e invio sempre a portata di pollice. */}
+      <div style={{ position: 'sticky', bottom: 'calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom))', marginTop: 16, zIndex: 20 }}>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, boxShadow: 'var(--shadow-lg)' }}>
+          <div style={{ flex: 1, fontSize: 13.5 }}>
+            <b style={{ color: starters.length === 11 ? 'var(--green)' : 'var(--red)' }}>{starters.length}/11</b> titolari
+            {starters.length > 0 && !hasGk && <div style={{ color: 'var(--red)', fontSize: 12 }}>Manca il portiere</div>}
+            {starters.length === 11 && !captain && <div style={{ color: 'var(--muted)', fontSize: 12 }}>Capitano non indicato</div>}
+          </div>
+          <Button disabled={starters.length !== 11 || sending} onClick={send}>
+            {club.distintaPhone ? `Invia a ${club.distintaNome || 'distinta'}` : 'Invia formazione'}
+          </Button>
+        </div>
+      </div>
+
+      {editing && (
+        <Sheet title={editing.fullName} onClose={() => setEditing(null)}>
+          <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>
+            Scegli il numero. Se è già di un altro, i due numeri si scambiano.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+            {Array.from({ length: Math.max(25, pool.length + 5) }, (_, i) => String(i + 1)).map((n) => {
+              const owner = pool.find((p) => numbers[p.id] === n && p.id !== editing.id);
+              const mine = numbers[editing.id] === n;
+              return (
+                <button key={n} onClick={() => { pickNumber(editing, n); setEditing(null); }}
+                  style={{ minHeight: 48, borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 17,
+                    border: `2px solid ${mine ? 'var(--red)' : 'var(--line)'}`,
+                    background: mine ? 'var(--red)' : owner ? 'var(--grey-50, #f3f3f3)' : 'var(--surface)',
+                    color: mine ? '#fff' : owner ? 'var(--muted)' : 'var(--ink)' }}>
+                  {n}
+                  {owner && <span style={{ display: 'block', fontSize: 9.5, fontWeight: 600 }}>{owner.fullName.split(' ')[0].slice(0, 8)}</span>}
+                </button>
+              );
+            })}
+          </div>
+          <div className="btnrow" style={{ marginTop: 14 }}>
+            <Button variant={captain === editing.id ? 'primary' : 'secondary'} onClick={() => toggleCaptain(editing.id)}>Ⓒ Capitano</Button>
+            <Button variant={vice === editing.id ? 'primary' : 'secondary'} onClick={() => toggleVice(editing.id)}>Ⓥ Vice</Button>
+            <Button variant="ghost" onClick={() => { toggleStarter(editing); setEditing(null); }}>
+              {starterIds.has(editing.id) ? 'Metti in panchina' : 'Metti titolare'}
+            </Button>
+          </div>
+        </Sheet>
+      )}
+    </div>
   );
 }
