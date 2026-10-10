@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useCollection, orderBy, limit, where } from '../lib/db';
 import { summariseUsage, usageByDay } from '../lib/usage';
-import { Card, Kpi, Badge, Empty, Loading, Alert, Field, Select, Input } from '../components/ui';
+import { Card, Kpi, Badge, Empty, Loading, Alert, Field, Select, Input, Button, useToast } from '../components/ui';
+import { exportUserActivity, downloadJson } from '../lib/activityExport';
+import { slug } from '../lib/seedData';
 import { fmtDateTime, fmtDate, toDate } from '../lib/format';
 import { ROLES } from '../lib/permissions';
 
@@ -56,6 +58,7 @@ export default function Registro() {
         ))}
       </div>
       {tab === 'attivita' ? <Attivita /> : <Modifiche />}
+      <EsportaPersona />
     </>
   );
 }
@@ -210,4 +213,43 @@ function describe(details) {
     .filter(([, v]) => v !== null && v !== undefined && v !== '')
     .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
     .join(' · ');
+}
+
+/** Scarica l'attività di una persona in un file, per analizzarne l'uso. */
+function EsportaPersona() {
+  const toast = useToast();
+  const { data: users } = useCollection('users');
+  const [uid, setUid] = useState('');
+  const [busy, setBusy] = useState(false);
+  const people = useMemo(() => [...users].filter((u) => u.role && u.role !== 'player')
+    .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'it')), [users]);
+
+  const run = async () => {
+    const person = people.find((u) => u.id === uid);
+    if (!person) return;
+    setBusy(true);
+    try {
+      const data = await exportUserActivity(person);
+      const day = new Date().toISOString().slice(0, 10);
+      downloadJson(`attivita-${slug(person.name || person.email || 'utente')}-${day}.json`, data);
+      toast('File scaricato');
+    } catch (e) {
+      toast(`Esportazione non riuscita (${e.code || e.message})`, 'error');
+    }
+    setBusy(false);
+  };
+
+  return (
+    <Card title="Esporta l'attività di una persona">
+      <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>
+        Giorni di apertura, operazioni registrate, partite, convocazioni, presenze, formazioni e schede salvate da quella persona.
+        Solo conteggi e date: niente nomi dei giocatori, dati sanitari o importi.
+      </p>
+      <Field label="Persona">
+        <Select value={uid} onChange={(e) => setUid(e.target.value)}
+          options={[{ value: '', label: 'Scegli…' }, ...people.map((u) => ({ value: u.id, label: `${u.name || u.email} · ${ROLES[u.role] || u.role}` }))]} />
+      </Field>
+      <Button disabled={!uid || busy} onClick={run}>{busy ? 'Preparo il file…' : 'Scarica il file'}</Button>
+    </Card>
+  );
 }
