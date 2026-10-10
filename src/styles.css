@@ -231,6 +231,13 @@ button.grouphead.grouphead--toggle {
   min-height: 56px; border: 1px solid var(--line-soft); border-radius: var(--r);
   background: var(--surface); width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit;
 }
+/* Riga con pulsanti: contenuto in alto (toccabile), azioni sotto a tutta larghezza. */
+.prow--card { flex-wrap: wrap; cursor: default; padding: 10px 12px; gap: 8px; }
+.prow__main {
+  display: flex; align-items: center; gap: 10px; flex: 1 1 100%; min-width: 0;
+  background: none; border: 0; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.prow__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 100%; padding-left: 40px; }
 .prow--selected { border-color: var(--red); background: var(--red-soft); }
 .prow--selected [data-theme='dark'] { background: var(--red-soft); }
 .prow__check {

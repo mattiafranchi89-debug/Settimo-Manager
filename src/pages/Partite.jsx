@@ -64,24 +64,28 @@ export default function Partite() {
   const next = matches.filter((m) => (m.date?.toDate?.() || new Date(m.date)) >= now).reverse();
   const played = matches.filter((m) => (m.date?.toDate?.() || new Date(m.date)) < now);
 
+  // Sul telefono i pulsanti vanno su una riga a parte: affiancati al nome lo coprivano.
+  // Tutto il resto (avversario, formazione, migliore in campo) è nella scheda evento.
   const Row = ({ m, past }) => (
-    <div className="prow">
-      <span className="prow__num">{past ? (m.scoreHome != null ? `${m.scoreHome}-${m.scoreAway}` : '—') : '⚽'}</span>
-      <span className="prow__body">
-        <span className="prow__name">{m.home === false ? `${m.opponent} (T)` : m.opponent}</span>
-        <span className="prow__meta"><span>{capitalize(fmtShort(m.date))} {fmtTime(m.date)}</span><span>{m.competition}</span></span>
-      </span>
-      <div className="btnrow" style={{ gap: 4 }}>
-        <Button size="sm" variant={past ? 'primary' : 'ghost'} onClick={() => navigate(`/partite/${m.id}`)}>Scheda</Button>
-        {canWrite && past && <Button size="sm" variant="secondary" onClick={() => setResult(m)}>Risultato</Button>}
-        {canWrite && !past && <Button size="sm" variant="ghost" onClick={() => setEditing(toForm(m))}>Modifica</Button>}
-        {canDelete && <button className="iconbtn" aria-label="Elimina partita" onClick={() => askDelete(m)}>🗑</button>}
-        {!past && can(user?.role, 'scouting.read') && (
-          <Button size="sm" variant="ghost" aria-label="Scheda avversario" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(m.opponent)}`)}>🔍</Button>
-        )}
+    <div className="prow prow--card">
+      <button className="prow__main" onClick={() => navigate(`/evento/${m.id}`)}>
+        <span className="prow__num">{past ? (m.scoreHome != null ? `${m.scoreHome}-${m.scoreAway}` : '—') : '⚽'}</span>
+        <span className="prow__body">
+          <span className="prow__name">{m.home === false ? `${m.opponent} (T)` : m.opponent}</span>
+          <span className="prow__meta"><span>{capitalize(fmtShort(m.date))} · {fmtTime(m.date)}</span><span>{m.competition}</span></span>
+        </span>
+        <span aria-hidden="true" style={{ color: 'var(--muted)', fontSize: 18 }}>›</span>
+      </button>
+      <div className="prow__actions">
         {!past && can(user?.role, 'callup.draft') && (
           <Button size="sm" onClick={() => navigate(`/convocazioni/nuova?event=${m.id}`)}>Convoca</Button>
         )}
+        {canWrite && past && (
+          <Button size="sm" variant={m.scoreHome == null ? 'primary' : 'secondary'} onClick={() => setResult(m)}>Risultato</Button>
+        )}
+        {past && <Button size="sm" variant="ghost" onClick={() => navigate(`/partite/${m.id}`)}>Scheda gara</Button>}
+        {canWrite && !past && <Button size="sm" variant="ghost" onClick={() => setEditing(toForm(m))}>Modifica</Button>}
+        {canDelete && <button className="iconbtn" aria-label="Elimina partita" onClick={() => askDelete(m)} style={{ marginLeft: 'auto' }}>🗑</button>}
       </div>
     </div>
   );
