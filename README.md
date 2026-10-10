@@ -167,3 +167,14 @@ così Cloudflare ricompila il sito. Schema di ogni voce:
 ```
 
 Sono dati pubblici del CRL, per questo stanno in un file statico e non in Firestore.
+
+## Aggiornamento automatico dell'avversario
+
+`public/data/avversario.json` contiene classifica, ultimi risultati e
+squalificati del prossimo avversario, presi dai comunicati CRL. Lo prepara
+un'attività programmata giornaliera che lavora solo **due giorni dopo ogni
+partita** del Settimo (campionato o coppa) e lo rinfresca se esce un nuovo
+comunicato prima della gara. Il campo `availableFrom` fa comparire
+l'aggiornamento in Dashboard e nella scheda Avversari da quel giorno fino
+alla partita; i dati si sommano a quelli inseriti a mano e con «Salva nella
+scheda» diventano parte della scheda in Firestore.

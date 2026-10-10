@@ -56,3 +56,17 @@ export function CrlItem({ item, showDoc }) {
     </div>
   );
 }
+
+/** Aggiornamento automatico dell'avversario, preparato due giorni dopo ogni partita. */
+export function useAutoOpponent() {
+  const [state, setState] = useState({ data: null, loading: true });
+  useEffect(() => {
+    let alive = true;
+    fetch('/data/avversario.json', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null)
+      .then((data) => alive && setState({ data, loading: false }));
+    return () => { alive = false; };
+  }, []);
+  return state;
+}

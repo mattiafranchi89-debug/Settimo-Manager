@@ -8,8 +8,9 @@ import { can } from '../lib/permissions';
 import {
   SCOUT_ROLES, scoutId, sameTeam, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
   outcome, formOf, rosterSummary, sortRoster, playerAge, birthYearOf, headToHead, buildScoutInsights,
-  shareText, fmtDay
+  shareText, fmtDay, autoVisible, applyAuto
 } from '../lib/scouting';
+import { useAutoOpponent } from '../lib/crl';
 
 /**
  * Scheda dell'avversario: classifica, forma, rosa, squalificati e note per
@@ -28,6 +29,8 @@ export default function Avversari() {
   const { data: scouts, loading: loadingScouts, error } = useCollection('scouting');
 
   const now = useMemo(() => new Date(), []);
+  const { data: autoData } = useAutoOpponent();
+  const auto = autoVisible(autoData, now) ? autoData : null;
   const upcoming = useMemo(
     () => matches.filter((m) => toDate(m.date) >= now).sort((a, b) => toDate(a.date) - toDate(b.date)),
     [matches, now]
@@ -37,20 +40,32 @@ export default function Avversari() {
   const options = useMemo(() => {
     const names = [];
     const add = (n) => { if (n && !names.some((x) => sameTeam(x, n) || scoutId(x) === scoutId(n))) names.push(n); };
+    if (auto) add(auto.next.opponent);
     upcoming.slice(0, 4).forEach((m) => add(m.opponent));
     [...scouts].sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0)).forEach((s) => add(s.name));
     return names;
-  }, [upcoming, scouts]);
+  }, [upcoming, scouts, auto]);
 
   const name = params.get('nome') || options[0] || '';
   const id = name ? scoutId(name) : null;
-  const scout = useMemo(() => {
+  const saved = useMemo(() => {
     const found = scouts.find((s) => s.id === id) || scouts.find((s) => sameTeam(s.name, name));
     return found || { id, name };
   }, [scouts, id, name]);
-  const docId = scout.id || id;
+  const docId = saved.id || id;
+  // L'aggiornamento automatico si somma a quanto inserito a mano, già da subito.
+  const autoHere = auto && sameTeam(auto.next.opponent, name) ? auto : null;
+  // Una volta salvato (o modificato) nella scheda, l'aggiornamento non si risomma:
+  // così ciò che si toglie a mano resta tolto.
+  const autoApplied = !!autoHere && saved.autoAppliedAt === autoHere.generatedAt;
+  const scout = useMemo(() => (autoApplied ? saved : applyAuto(saved, autoHere)), [saved, autoHere, autoApplied]);
 
-  const match = useMemo(() => upcoming.find((m) => sameTeam(m.opponent || '', name)), [upcoming, name]);
+  const match = useMemo(() => {
+    const ev = upcoming.find((m) => sameTeam(m.opponent || '', name));
+    if (ev || !autoHere) return ev;
+    const n = autoHere.next;
+    return { home: n.home, date: new Date(`${n.date}T${n.time || '15:00'}:00`), competition: n.competition, venue: n.venue };
+  }, [upcoming, name, autoHere]);
   const h2h = useMemo(() => headToHead(matches, name), [matches, name]);
   const ref = match ? toDate(match.date) : now;
   const insights = useMemo(() => buildScoutInsights(scout, { match, ref, h2h }), [scout, match, ref, h2h]);
@@ -60,7 +75,10 @@ export default function Avversari() {
   const save = async (patch, message = 'Scheda aggiornata') => {
     try {
       await setDocument('scouting', docId, {
-        name: scout.name || name, ...patch, updatedAt: serverTimestamp(), updatedBy: user?.name || user?.email || ''
+        name: scout.name || name, ...patch,
+        // Le schede modificate partono dai dati già arricchiti: l'aggiornamento è ormai incluso.
+        ...(autoHere ? { autoAppliedAt: autoHere.generatedAt } : {}),
+        updatedAt: serverTimestamp(), updatedBy: user?.name || user?.email || ''
       });
       toast(message);
       return true;
@@ -139,6 +157,9 @@ export default function Avversari() {
             )}
           </Card>
 
+          {autoHere && <AutoCard auto={autoHere} applied={autoApplied} canWrite={canWrite}
+            onApply={() => save({ standing: scout.standing || null, results: scout.results || [], suspended: scout.suspended || [], autoAppliedAt: autoHere.generatedAt }, 'Aggiornamento salvato nella scheda')} />}
+
           <Card title="In sintesi">
             {insights.length ? (
               <div className="stack">
@@ -184,6 +205,35 @@ export default function Avversari() {
 }
 
 /* ---------------- pezzi della pagina ---------------- */
+
+function AutoCard({ auto, applied, canWrite, onApply }) {
+  const lm = auto.lastMatch;
+  return (
+    <Card title="🔄 Aggiornamento automatico" action={<Badge tone="blue">{fmtDay(auto.availableFrom)}</Badge>}>
+      <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>
+        Preparato due giorni dopo la nostra ultima partita{lm ? ` (${lm.score ? `${lm.score} ` : ''}${lm.home ? 'con' : 'a'} ${lm.opponent}, ${fmtDay(lm.date)})` : ''}
+        {' '}dai comunicati CRL. Classifica, risultati e squalificati sono già inclusi nella scheda qui sotto.
+      </p>
+      {auto.standing?.asOf && <small style={{ display: 'block', color: 'var(--muted)' }}>Classifica: {auto.standing.asOf}</small>}
+      {auto.notes && <Alert level="info">{auto.notes}</Alert>}
+      {auto.sources?.length > 0 && (
+        <div style={{ fontSize: 13, marginTop: 6 }}>
+          Fonti: {auto.sources.map((s, i) => (
+            <span key={s.url}>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></span>
+          ))}
+        </div>
+      )}
+      {canWrite && (
+        <div className="btnrow" style={{ marginTop: 10 }}>
+          {applied
+            ? <Badge tone="green">Salvato nella scheda</Badge>
+            : <Button size="sm" variant="secondary" onClick={onApply}>Salva nella scheda</Button>}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 
 const OutcomeBadge = ({ o }) => <Badge tone={o === 'V' ? 'green' : o === 'N' ? 'grey' : 'red'}>{o}</Badge>;
 const num = (v) => (v === '' || v == null ? null : Number(v));

@@ -360,7 +360,7 @@ export function buildScoutInsights(scout = {}, { match, ref = new Date(), h2h = 
   if (f.played) {
     out.push({
       tone: f.pts >= 7 ? 'warn' : f.v === 0 ? 'ok' : 'info',
-      text: `${f.played === 1 ? 'Ultima partita' : `Ultime ${f.played}`}: ${formString(f.list)}${f.played > 1 ? ' (dalla più recente)' : ''} — ${f.pts} punti su ${f.max}, ${f.gf} gol fatti e ${f.gs} subiti.`
+      text: `${f.played === 1 ? 'Ultima partita' : `Ultime ${f.played}`}: ${formString(f.list)}${f.played > 1 ? ' (dalla più recente)' : ''} — ${f.pts} ${f.pts === 1 ? 'punto' : 'punti'} su ${f.max}, ${f.gf} gol fatti e ${f.gs} subiti.`
     });
     if (f.played >= 3 && f.v === 0) out.push({ tone: 'ok', text: `Senza vittorie nelle ultime ${f.played}: squadra in difficoltà, ma anche affamata di punti.` });
     if (f.played >= 3 && f.v === f.played) out.push({ tone: 'warn', text: `${f.played} vittorie di fila: arrivano in fiducia.` });
@@ -439,4 +439,38 @@ export function shareText(scout = {}, { match, insights = [], ref = new Date(), 
     notes.forEach(([k, v]) => lines.push(`• ${k}: ${v.trim()}`));
   }
   return lines.join('\n');
+}
+
+/* ---------------- aggiornamento automatico (public/data/avversario.json) ---------------- */
+
+/**
+ * L'aggiornamento compare due giorni dopo l'ultima partita (`availableFrom`)
+ * e resta finché non si gioca contro quell'avversario.
+ */
+export function autoVisible(auto, today = new Date()) {
+  if (!auto?.next?.opponent || !auto.availableFrom) return false;
+  const day = isoDay(today);
+  return day >= auto.availableFrom && (!auto.next.date || day <= auto.next.date);
+}
+
+/** Scheda arricchita con i dati automatici, senza toccare quanto inserito a mano. */
+export function applyAuto(scout = {}, auto) {
+  if (!auto || !sameTeam(auto.next?.opponent || '', scout.name || '')) return scout;
+  const out = { ...scout };
+  const st = auto.standing;
+  if (st && st.pos != null) {
+    const mine = scout.standing || {};
+    // La classifica automatica vince se ha più partite (è più recente).
+    if (mine.pos == null || (Number(st.g) || 0) >= (Number(mine.g) || 0)) {
+      const { asOf, ...rest } = st;
+      out.standing = rest;
+    }
+  }
+  if (auto.results?.length) out.results = mergeResults(scout.results || [], auto.results);
+  if (auto.suspended?.length) {
+    const have = scout.suspended || [];
+    const extra = auto.suspended.filter((s) => !have.some((h) => sameTeam(h.split(/[–-]/)[0], s.split(/[–-]/)[0])));
+    out.suspended = [...have, ...extra];
+  }
+  return out;
 }

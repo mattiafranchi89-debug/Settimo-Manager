@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-10-10T12:45:00+02:00",
+  "availableFrom": "2026-10-10",
+  "lastMatch": {
+    "date": "2026-10-08",
+    "opponent": "Cassolese",
+    "home": true,
+    "score": "2-1",
+    "competition": "Coppa Lombardia Prima Categoria"
+  },
+  "next": {
+    "opponent": "Leone XIII Sport",
+    "date": "2026-10-11",
+    "time": "14:30",
+    "home": false,
+    "venue": "C.S. \"Leone XIII\" – Campo 1 (sintetico)",
+    "address": "Via Rossetti 4, Milano",
+    "competition": "Prima Categoria girone A – 5ª giornata"
+  },
+  "standing": { "pos": 14, "of": 16, "pts": 2, "g": 4, "v": 0, "n": 2, "p": 2, "gf": 6, "gs": 11, "asOf": "Comunicato Ufficiale n. 34 dell'08/10/2026" },
+  "results": [
+    { "date": "2026-10-04", "home": false, "against": "Pro Peschiera Borromeo", "gf": 0, "gs": 4, "competition": "" }
+  ],
+  "suspended": ["Borroni Edoardo Ambrogi – 1 giornata (gare del 4/10)"],
+  "notes": "Ancora senza vittorie dopo 4 giornate. I risultati delle prime tre giornate non sono nei comunicati controllati.",
+  "sources": [
+    { "label": "Comunicato Ufficiale n. 34", "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34" },
+    { "label": "Programma gare 9-12 ottobre", "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026" }
+  ]
+}

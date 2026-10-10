@@ -6,7 +6,8 @@ import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/u
 import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
-import { useCrl, sortCrl, CrlItem } from '../lib/crl';
+import { useCrl, sortCrl, CrlItem, useAutoOpponent } from '../lib/crl';
+import { autoVisible, formOf } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 
 export default function Dashboard() {
@@ -56,6 +57,10 @@ export default function Dashboard() {
   const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
 
   const lastCallup = callups[0];
+
+  // Aggiornamento automatico sul prossimo avversario: compare due giorni dopo l'ultima partita.
+  const { data: autoOpp } = useAutoOpponent();
+  const showAuto = can(user?.role, 'scouting.read') && autoVisible(autoOpp, new Date());
 
   // Ultime citazioni nei comunicati CRL (aggiornate ogni due giorni).
   const { data: crl } = useCrl();
@@ -171,6 +176,22 @@ export default function Dashboard() {
           ) : <Empty title="Nessuna partita giocata" />}
         </Card>
       </div>
+
+      {showAuto && (() => {
+        const st = autoOpp.standing || {};
+        const f = formOf(autoOpp.results || [], 3);
+        return (
+          <Card title={`🔍 Prossimo avversario: ${autoOpp.next.opponent}`}
+            action={<Button size="sm" variant="ghost" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(autoOpp.next.opponent)}`)}>Scheda</Button>}>
+            <div className="stack" style={{ fontSize: 14 }}>
+              {st.pos != null && <div>🏆 {st.pos}° con {st.pts} punti in {st.g} gare ({st.v}V {st.n}N {st.p}P), gol {st.gf}:{st.gs}</div>}
+              {f.played > 0 && <div>📈 Ultime {f.played}: {f.list.map((r) => (r.gf > r.gs ? 'V' : r.gf === r.gs ? 'N' : 'P')).join(' ')} — {f.gf} fatti, {f.gs} subiti</div>}
+              {(autoOpp.suspended || []).length > 0 && <div>🟥 Squalificati: {autoOpp.suspended.join(', ')}</div>}
+              {autoOpp.notes && <div style={{ color: 'var(--muted)' }}>{autoOpp.notes}</div>}
+            </div>
+          </Card>
+        );
+      })()}
 
       {can(user?.role, 'scouting.read') && crlRecent.length > 0 && (
         <Card title="📰 Dai comunicati CRL" action={<Button size="sm" variant="ghost" onClick={() => navigate('/comunicati')}>Tutti</Button>}>
