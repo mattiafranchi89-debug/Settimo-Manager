@@ -1,75 +1,144 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
-import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/ui';
-import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
+import { useCollection, useDoc, useClub, where, orderBy, limit } from '../lib/db';
+import { Card, Button, Badge, Empty, Loading } from '../components/ui';
+import { fmtShort, fmtTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
-import { useCrl, sortCrl, CrlItem, useAutoOpponent } from '../lib/crl';
-import { autoVisible, formOf } from '../lib/scouting';
+import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
+import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 
+const DAY = 86400000;
+const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
+
+/**
+ * La Home dello staff sul telefono risponde a tre domande, in uno schermo e
+ * mezzo: cosa c'è adesso (prossimo impegno), cosa devo fare (azioni in
+ * sospeso, solo se ce ne sono) e c'è qualche problema (squalificati, diffidati,
+ * infortunati). Il resto sta nelle sezioni.
+ */
 export default function Dashboard() {
   const { user } = useAuth();
   const { club } = useClub();
   const navigate = useNavigate();
-  const staff = can(user?.role, 'players.read');
+  const role = user?.role;
+  const staff = can(role, 'players.read');
 
   const nowTs = useMemo(() => new Date(), []);
-  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(5)], [nowTs]);
-  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(8)], [nowTs]);
-
+  const now = nowTs.getTime();
+  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(8)], [nowTs]);
+  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(10)], [nowTs]);
   const { data: upcoming, loading } = useCollection('events', upcomingQ);
   const { data: pastEvents } = useCollection('events', pastQ);
-  const lastMatch = useMemo(() => pastEvents.filter((e) => e.type === 'match').slice(0, 1), [pastEvents]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
 
   const nextMatch = upcoming.find((e) => e.type === 'match');
   const nextTraining = upcoming.find((e) => e.type === 'training');
+  const lastMatch = pastEvents.find((e) => e.type === 'match');
+  const lastTraining = pastEvents.find((e) => e.type === 'training');
 
-  const finesQ = useMemo(() => [where('status', '==', 'aperto')], []);
-  const seesFinance = can(user?.role, 'finance.read');
-  const { data: openFines } = useCollection('fines', finesQ, seesFinance);
-  const { data: openPayments } = useCollection('payments', finesQ, seesFinance);
+  // Convocazione della prossima partita, scheda dell'ultima, presenze dell'ultimo allenamento.
+  const callupQ = useMemo(() => [where('eventId', '==', nextMatch?.id || '-')], [nextMatch?.id]);
+  const { data: nextCallups } = useCollection('callups', callupQ, staff && !!nextMatch);
+  const callup = useMemo(
+    () => [...nextCallups].sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0))[0],
+    [nextCallups]
+  );
+  const { data: lastStats } = useDoc('matchStats', lastMatch?.id, staff && !!lastMatch);
+  const attQ = useMemo(() => [where('eventId', '==', lastTraining?.id || '-'), limit(1)], [lastTraining?.id]);
+  const canAttend = can(role, 'attendance.write');
+  const { data: lastAttendance, loading: attLoading } = useCollection('attendance', attQ, canAttend && !!lastTraining);
 
-  const injured = players.filter((p) => p.injury?.active).length;
+  const seesFinance = can(role, 'finance.read');
+  const openQ = useMemo(() => [where('status', '==', 'aperto')], []);
+  const { data: openFines } = useCollection('fines', openQ, seesFinance);
+  const { data: openPayments } = useCollection('payments', openQ, seesFinance);
 
   const insights = useMemo(
     () => buildInsights({ players, cardsPerSuspension: club.cardsPerSuspension || 4 }),
     [players, club.cardsPerSuspension]
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
+  const injured = players.filter((p) => p.injury?.active);
 
-  // Compleanni nei prossimi sette giorni: piccola cosa, fa gruppo.
-  const birthdays = useMemo(() => {
+  const { data: autoOpp } = useAutoOpponent();
+  const opp = nextMatch && can(role, 'scouting.read') && autoVisible(autoOpp, nowTs) && sameTeam(autoOpp.next.opponent, nextMatch.opponent || '')
+    ? autoOpp : null;
+  const { data: crl } = useCrl();
+
+  /* ---------- da fare: solo voci verificabili dai dati ---------- */
+  const todo = useMemo(() => {
+    const out = [];
+    if (lastMatch) {
+      const ago = now - toDate(lastMatch.date).getTime();
+      if (lastMatch.scoreHome == null && can(role, 'events.write')) {
+        out.push({ icon: '⚽', text: `Risultato con ${lastMatch.opponent}`, meta: capitalize(fmtShort(lastMatch.date)), to: '/partite' });
+      } else if (ago < 10 * DAY && !lastStats?.closed && can(role, 'matchstats.write')) {
+        out.push({ icon: '📝', text: `Scheda gara con ${lastMatch.opponent}`, meta: 'gol, cartellini e minuti da chiudere', to: `/partite/${lastMatch.id}` });
+      }
+    }
+    if (nextMatch && can(role, 'callup.draft')) {
+      const until = toDate(nextMatch.date).getTime() - now;
+      if (until < 4 * DAY) {
+        if (!callup) {
+          out.push({ icon: '📋', text: 'Convocazione da preparare', meta: `vs ${nextMatch.opponent} · ${countdown(nextMatch.date)}`, to: `/convocazioni/nuova?event=${nextMatch.id}`, urgent: until < 2 * DAY });
+        } else if (!PUBLISHED.includes(callup.status)) {
+          out.push({ icon: '📋', text: 'Convocazione da pubblicare', meta: `bozza · ${(callup.players || []).length} giocatori`, to: `/convocazioni/${callup.id}`, urgent: until < 2 * DAY });
+        }
+      }
+    }
+    if (lastTraining && canAttend && !attLoading && lastAttendance.length === 0 && now - toDate(lastTraining.date).getTime() < 7 * DAY) {
+      out.push({ icon: '🏃', text: 'Presenze da registrare', meta: `allenamento di ${fmtShort(lastTraining.date)}`, to: '/allenamenti' });
+    }
+    if (seesFinance && (openPayments.length || openFines.length)) {
+      const total = [...openPayments, ...openFines].reduce((s, x) => s + (x.amount || 0), 0);
+      const parts = [
+        openPayments.length && `${openPayments.length} ${openPayments.length === 1 ? 'quota' : 'quote'}`,
+        openFines.length && `${openFines.length} ${openFines.length === 1 ? 'multa' : 'multe'}`
+      ].filter(Boolean);
+      out.push({ icon: '💶', text: `${parts.join(' e ')} da incassare`, meta: euro(total), to: '/quote' });
+    }
+    return out;
+  }, [lastMatch, lastStats, nextMatch, callup, lastTraining, lastAttendance, attLoading, openPayments, openFines, role, canAttend, seesFinance, now]);
+
+  /* ---------- novità: massimo quattro righe ---------- */
+  const news = useMemo(() => {
+    const out = [];
+    if (lastMatch && lastMatch.scoreHome != null && now - toDate(lastMatch.date).getTime() < 7 * DAY) {
+      const us = lastMatch.home === false ? lastMatch.scoreAway : lastMatch.scoreHome;
+      const them = lastMatch.home === false ? lastMatch.scoreHome : lastMatch.scoreAway;
+      out.push({ key: 'res', icon: us > them ? '✅' : us === them ? '➖' : '❌', text: `${us > them ? 'Vinta' : us === them ? 'Pari' : 'Persa'} ${us}-${them} ${lastMatch.home === false ? 'a' : 'con'} ${lastMatch.opponent}`, to: `/partite/${lastMatch.id}` });
+    }
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    return players.map((p) => {
+    players.forEach((p) => {
       const b = toDate(p.birthDate);
-      if (!b) return null;
+      if (!b) return;
       const next = new Date(today.getFullYear(), b.getMonth(), b.getDate());
       if (next < today) next.setFullYear(today.getFullYear() + 1);
-      const days = Math.round((next - today) / 86400000);
-      return days <= 7 ? { p, days, age: next.getFullYear() - b.getFullYear() } : null;
-    }).filter(Boolean).sort((a, b) => a.days - b.days);
-  }, [players]);
-
-  const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
-
-  const lastCallup = callups[0];
-
-  // Aggiornamento automatico sul prossimo avversario: compare due giorni dopo l'ultima partita.
-  const { data: autoOpp } = useAutoOpponent();
-  const showAuto = can(user?.role, 'scouting.read') && autoVisible(autoOpp, new Date());
-
-  // Ultime citazioni nei comunicati CRL (aggiornate ogni due giorni).
-  const { data: crl } = useCrl();
-  const crlRecent = useMemo(() => {
-    const since = new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10);
-    return sortCrl(crl?.items || []).filter((i) => (i.date || '') >= since).slice(0, 4);
-  }, [crl]);
+      const days = Math.round((next - today) / DAY);
+      if (days <= 7) out.push({ key: `bd-${p.id}`, icon: '🎂', days, text: `${titleName(p.fullName)} compie ${next.getFullYear() - b.getFullYear()} anni ${days === 0 ? 'oggi' : days === 1 ? 'domani' : `fra ${days} giorni`}` });
+    });
+    if (can(role, 'scouting.read')) {
+      const since = new Date(now - 7 * DAY).toISOString().slice(0, 10);
+      sortCrl(crl?.items || [])
+        // Classifica e risultati del Settimo sono già altrove: dal CRL tengo il resto.
+        .filter((i) => (i.date || '') >= since && !['classifica', 'risultato'].includes(i.type))
+        .slice(0, 2)
+        .forEach((i) => out.push({ key: i.id, icon: CRL_TYPES[i.type]?.icon || '📰', text: i.text, to: '/comunicati' }));
+    }
+    return out.slice(0, 4);
+  }, [lastMatch, players, crl, role, now]);
 
   if (loading) return <Loading />;
+
+  const trainingFirst = nextTraining && (!nextMatch || toDate(nextTraining.date) < toDate(nextMatch.date));
+  const watch = [
+    ...alerts.squalificati.map((p) => ({ id: `s-${p.id}`, tone: 'red', label: `🟥 ${short(p.fullName)}` })),
+    ...alerts.diffidati.map((p) => ({ id: `d-${p.id}`, tone: 'orange', label: `🟨 ${short(p.fullName)} · diffida` })),
+    ...injured.map((p) => ({ id: `i-${p.id}`, tone: 'grey', label: `🩹 ${short(p.fullName)}` }))
+  ];
 
   return (
     <>
@@ -80,149 +149,146 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <PushCard compact />
-
+      {/* 1. Prossimo impegno */}
       {nextMatch ? (
-        <Card className="card" title="Prossima partita" action={<Badge tone="red">{countdown(nextMatch.date)}</Badge>}>
-          <div style={{ fontFamily: 'var(--display)', fontSize: 24, fontWeight: 700 }}>
+        <Card title="Prossima partita" action={<Badge tone="red">{countdown(nextMatch.date)}</Badge>}>
+          <div style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>
             {nextMatch.home === false ? `${nextMatch.opponent} — ${club.clubName}` : `${club.clubName} — ${nextMatch.opponent}`}
           </div>
-          <div style={{ color: 'var(--muted)', fontSize: 13.5, marginTop: 2 }}>
+          <div style={{ color: 'var(--muted)', fontSize: 13.5, marginTop: 4 }}>
             {capitalize(fmtLong(nextMatch.date))} · {fmtTime(nextMatch.date)} · {nextMatch.competition}
           </div>
-          <div style={{ fontSize: 13.5, marginTop: 6 }}>📍 {nextMatch.venue || club.homeStadium}</div>
-          {nextMatch.meetingTime && <div style={{ fontSize: 13.5 }}>⏰ Ritrovo {fmtTime(nextMatch.meetingTime)}</div>}
-          {can(user?.role, 'callup.draft') && (
-            <div className="btnrow" style={{ marginTop: 12 }}>
-              <Button onClick={() => navigate(`/convocazioni/nuova?event=${nextMatch.id}`)}>Prepara convocazione</Button>
-              <Button variant="secondary" onClick={() => navigate('/campionato')}>Campionato</Button>
-            </div>
+          <div style={{ fontSize: 13.5, marginTop: 4 }}>
+            📍 {nextMatch.venue || club.homeStadium}
+            {nextMatch.meetingTime && <> · ⏰ ritrovo {fmtTime(nextMatch.meetingTime)}</>}
+          </div>
+          {opp && <OpponentLine opp={opp} />}
+          <div className="btnrow" style={{ marginTop: 12 }}>
+            <HeroAction match={nextMatch} callup={callup} role={role} navigate={navigate} />
+            {can(role, 'scouting.read') && (
+              <Button variant="ghost" size="sm" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(nextMatch.opponent)}`)}>🔍 Avversario</Button>
+            )}
+          </div>
+          {trainingFirst && (
+            <button className="prow" onClick={() => navigate('/allenamenti')} style={{ width: '100%', textAlign: 'left', marginTop: 12 }}>
+              <span className="prow__num" aria-hidden="true">🏃</span>
+              <span className="prow__body">
+                <span className="prow__name">Prima: allenamento {fmtShort(nextTraining.date)} {fmtTime(nextTraining.date)}</span>
+                <span className="prow__meta"><span>{nextTraining.venue}</span>{nextTraining.focus && <span>🎯 {nextTraining.focus}</span>}</span>
+              </span>
+            </button>
           )}
-          {can(user?.role, 'scouting.read') && (
-            <div className="btnrow" style={{ marginTop: 8 }}>
-              <Button variant="ghost" size="sm" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(nextMatch.opponent)}`)}>🔍 Scheda avversario</Button>
+        </Card>
+      ) : nextTraining ? (
+        <Card title="Prossimo allenamento" action={<Badge tone="grey">{countdown(nextTraining.date)}</Badge>}>
+          <div style={{ fontWeight: 600 }}>{capitalize(fmtLong(nextTraining.date))} · {fmtTime(nextTraining.date)}</div>
+          <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>{nextTraining.venue}{nextTraining.focus ? ` · 🎯 ${nextTraining.focus}` : ''}</div>
+          {can(role, 'events.write') && (
+            <div className="btnrow" style={{ marginTop: 12 }}>
+              <Button variant="secondary" size="sm" onClick={() => navigate('/partite')}>＋ Partita in calendario</Button>
             </div>
           )}
         </Card>
       ) : (
         <Card>
-          <Empty title="Nessuna partita in calendario"
-            action={can(user?.role, 'events.write') && <Button onClick={() => navigate('/partite')}>Aggiungi partita</Button>}>
-            Inserisci il calendario per attivare le convocazioni.
+          <Empty title="Nessun impegno in calendario"
+            action={can(role, 'events.write') && <Button onClick={() => navigate('/partite')}>Aggiungi partita</Button>}>
+            Inserisci il calendario per attivare convocazioni e promemoria.
           </Empty>
         </Card>
       )}
 
+      {/* 2. Da fare */}
       {staff && (
-        <>
-          <h2 style={{ marginTop: 20 }}>Rosa</h2>
-          <div className="grid grid--kpi">
-            <Kpi value={players.length} label="Giocatori in rosa" accent />
-            <Kpi value={players.filter((p) => p.position === 'POR').length} label="Portieri" />
-            <Kpi value={injured} label="Infortunati" tone={injured ? 'red' : undefined} />
-            <Kpi value={upcoming.length} label="Impegni in programma" />
-          </div>
-          {injured > 0 && <Alert level="warn">{injured} giocatori risultano infortunati: verifica prima di convocarli.</Alert>}
-          {alerts.squalificati.length > 0 && (
-            <Alert level="error">Squalificati: {alerts.squalificati.map((p) => p.fullName).join(', ')}.</Alert>
+        <Card title="Da fare" action={todo.length > 0 && <Badge tone={todo.some((t) => t.urgent) ? 'red' : 'orange'}>{todo.length}</Badge>}>
+          {todo.length ? (
+            <div className="plist">
+              {todo.map((t) => (
+                <button key={t.text} className="prow" onClick={() => navigate(t.to)} style={{ width: '100%', textAlign: 'left' }}>
+                  <span className="prow__num" aria-hidden="true">{t.icon}</span>
+                  <span className="prow__body">
+                    <span className="prow__name">{t.text}</span>
+                    <span className="prow__meta"><span>{t.meta}</span></span>
+                  </span>
+                  <span aria-hidden="true" style={{ color: t.urgent ? 'var(--red)' : 'var(--muted)', fontSize: 18 }}>›</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: 14, color: 'var(--muted)' }}>✅ Tutto in ordine</div>
           )}
-          {alerts.diffidati.length > 0 && (
-            <Alert level="warn">In diffida: {alerts.diffidati.map((p) => p.fullName).join(', ')} — alla prossima ammonizione saltano una gara.</Alert>
-          )}
-          {alerts.dimenticati.length > 0 && (
-            <Alert level="info">Si allenano ma non giocano da tempo: {alerts.dimenticati.map((p) => p.fullName).join(', ')}.</Alert>
-          )}
-        </>
+          <div style={{ marginTop: todo.length ? 10 : 6 }}><PushCard compact /></div>
+        </Card>
       )}
 
-      {birthdays.length > 0 && (
-        <Card title="🎂 Compleanni">
-          <div className="plist">
-            {birthdays.map(({ p, days, age }) => (
-              <div key={p.id} className="prow">
-                <span className="prow__body">
-                  <span className="prow__name">{p.fullName}</span>
-                  <span className="prow__meta"><span>{days === 0 ? 'Oggi' : days === 1 ? 'Domani' : `Fra ${days} giorni`} · compie {age} anni</span></span>
-                </span>
+      {/* 3. Attenzione */}
+      {staff && (watch.length > 0 || alerts.dimenticati.length > 0) && (
+        <Card title="Attenzione" action={<Button size="sm" variant="ghost" onClick={() => navigate('/rosa')}>Rosa</Button>}>
+          {watch.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {watch.map((w) => <Badge key={w.id} tone={w.tone}>{w.label}</Badge>)}
+            </div>
+          )}
+          {alerts.dimenticati.length > 0 && (
+            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: watch.length ? 8 : 0 }}>
+              Si allenano ma non giocano da tempo: {alerts.dimenticati.map((p) => short(p.fullName)).join(', ')}.
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* 4. Novità */}
+      {news.length > 0 && (
+        <Card title="Novità" action={can(role, 'scouting.read') && <Button size="sm" variant="ghost" onClick={() => navigate('/comunicati')}>Comunicati</Button>}>
+          <div className="stack" style={{ gap: 8 }}>
+            {news.map((n) => (
+              <div key={n.key} onClick={n.to ? () => navigate(n.to) : undefined}
+                style={{ display: 'flex', gap: 10, fontSize: 14, cursor: n.to ? 'pointer' : 'default' }}>
+                <span aria-hidden="true">{n.icon}</span><span>{n.text}</span>
               </div>
             ))}
           </div>
         </Card>
       )}
-
-      <div className="grid grid--2" style={{ marginTop: 16 }}>
-        <Card title="Prossimo allenamento">
-          {nextTraining ? (
-            <>
-              <div style={{ fontWeight: 600 }}>{capitalize(fmtLong(nextTraining.date))}</div>
-              <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>{fmtTime(nextTraining.date)} · {nextTraining.venue}</div>
-              {nextTraining.focus && <div style={{ marginTop: 6, fontSize: 13.5 }}>🎯 {nextTraining.focus}</div>}
-              <div className="btnrow" style={{ marginTop: 10 }}>
-                <Button variant="secondary" size="sm" onClick={() => navigate('/allenamenti')}>Registra presenze</Button>
-              </div>
-            </>
-          ) : <Empty title="Nessuna seduta programmata">Il gruppo si allena tre volte a settimana: pianifica la prossima.</Empty>}
-        </Card>
-
-        <Card title="Ultimo risultato">
-          {lastMatch[0] ? (
-            <>
-              <div style={{ fontWeight: 600 }}>
-                {lastMatch[0].home === false ? lastMatch[0].opponent : club.clubName} {lastMatch[0].scoreHome ?? '-'} – {lastMatch[0].scoreAway ?? '-'} {lastMatch[0].home === false ? club.clubName : lastMatch[0].opponent}
-              </div>
-              <div style={{ color: 'var(--muted)', fontSize: 13.5 }}>{fmtShort(lastMatch[0].date)} · {lastMatch[0].competition}</div>
-              {lastMatch[0].scoreHome == null && <Alert level="info">Risultato non ancora registrato.</Alert>}
-            </>
-          ) : <Empty title="Nessuna partita giocata" />}
-        </Card>
-      </div>
-
-      {showAuto && (() => {
-        const st = autoOpp.standing || {};
-        const f = formOf(autoOpp.results || [], 3);
-        return (
-          <Card title={`🔍 Prossimo avversario: ${autoOpp.next.opponent}`}
-            action={<Button size="sm" variant="ghost" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(autoOpp.next.opponent)}`)}>Scheda</Button>}>
-            <div className="stack" style={{ fontSize: 14 }}>
-              {st.pos != null && <div>🏆 {st.pos}° con {st.pts} punti in {st.g} gare ({st.v}V {st.n}N {st.p}P), gol {st.gf}:{st.gs}</div>}
-              {f.played > 0 && <div>📈 Ultime {f.played}: {f.list.map((r) => (r.gf > r.gs ? 'V' : r.gf === r.gs ? 'N' : 'P')).join(' ')} — {f.gf} fatti, {f.gs} subiti</div>}
-              {(autoOpp.suspended || []).length > 0 && <div>🟥 Squalificati: {autoOpp.suspended.join(', ')}</div>}
-              {autoOpp.notes && <div style={{ color: 'var(--muted)' }}>{autoOpp.notes}</div>}
-            </div>
-          </Card>
-        );
-      })()}
-
-      {can(user?.role, 'scouting.read') && crlRecent.length > 0 && (
-        <Card title="📰 Dai comunicati CRL" action={<Button size="sm" variant="ghost" onClick={() => navigate('/comunicati')}>Tutti</Button>}>
-          <div className="stack">
-            {crlRecent.map((i) => <CrlItem key={i.id} item={i} showDoc />)}
-          </div>
-        </Card>
-      )}
-
-      {staff && lastCallup && (
-        <Card title="Ultima convocazione" className="card" action={<Badge tone={lastCallup.status === 'pubblicata' || lastCallup.status === 'condivisa' ? 'green' : 'grey'}>{lastCallup.status}</Badge>}>
-          <div className="spread">
-            <div>
-              <div style={{ fontWeight: 600 }}>vs {lastCallup.opponent}</div>
-              <small>{fmtDateTime(lastCallup.matchDate)} · {(lastCallup.players || []).length} convocati · {(lastCallup.confirmed || []).length} conferme</small>
-            </div>
-            <Button size="sm" variant="secondary" onClick={() => navigate(`/convocazioni/${lastCallup.id}`)}>Apri</Button>
-          </div>
-        </Card>
-      )}
-
-      {can(user?.role, 'finance.read') && (openFines.length > 0 || openPayments.length > 0) && (
-        <Card title="Quote e multe aperte">
-          <div className="grid grid--kpi">
-            <Kpi value={openPayments.length} label="Quote da incassare" />
-            <Kpi value={euro(openPayments.reduce((s, p) => s + (p.amount || 0), 0))} label="Totale quote" />
-            <Kpi value={openFines.length} label="Multe aperte" />
-            <Kpi value={euro(openFines.reduce((s, f) => s + (f.amount || 0), 0))} label="Totale multe" />
-          </div>
-        </Card>
-      )}
     </>
+  );
+}
+
+const titleName = (s = '') => s.toLowerCase().replace(/(^|\s)(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+
+/** «COGNOME NOME» → «Cognome N.»: sulle etichette serve spazio. */
+function short(fullName = '') {
+  const parts = fullName.trim().split(/\s+/);
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  if (parts.length < 2) return cap(fullName);
+  return `${cap(parts[0])} ${parts[1][0].toUpperCase()}.`;
+}
+
+function OpponentLine({ opp }) {
+  const st = opp.standing || {};
+  const f = formOf(opp.results || [], 3);
+  const parts = [];
+  if (st.pos != null) parts.push(`${st.pos}° · ${st.pts} pt`);
+  if (f.played) parts.push(`ultime ${f.list.map(outcome).join(' ')}`);
+  if (opp.suspended?.length) parts.push(`${opp.suspended.length} squalificat${opp.suspended.length === 1 ? 'o' : 'i'}`);
+  if (!parts.length) return null;
+  return (
+    <div style={{ fontSize: 13.5, marginTop: 8, padding: '6px 10px', borderRadius: 8, background: 'var(--red-soft)' }}>
+      🔍 {parts.join(' · ')}
+    </div>
+  );
+}
+
+/** Un solo pulsante principale, quello che serve adesso. */
+function HeroAction({ match, callup, role, navigate }) {
+  if (!can(role, 'callup.draft')) {
+    return callup ? <Button size="sm" onClick={() => navigate(`/convocazioni/${callup.id}`)}>Convocazione</Button> : null;
+  }
+  if (!callup) return <Button onClick={() => navigate(`/convocazioni/nuova?event=${match.id}`)}>Prepara convocazione</Button>;
+  if (!PUBLISHED.includes(callup.status)) return <Button onClick={() => navigate(`/convocazioni/${callup.id}`)}>Completa convocazione</Button>;
+  return (
+    <Button variant="secondary" onClick={() => navigate(`/convocazioni/${callup.id}`)}>
+      ✅ {(callup.players || []).length} convocati
+    </Button>
   );
 }

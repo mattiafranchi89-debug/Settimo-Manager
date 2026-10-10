@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
 import { navFor, tabsFor, ROLES, can } from '../lib/permissions';
@@ -12,6 +12,7 @@ export default function Layout({ theme, toggleTheme }) {
   const { user, logout } = useAuth();
   const { club } = useClub();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [more, setMore] = useState(false);
   const nav = navFor(user?.role, user);
   const tabs = tabsFor(user?.role);
@@ -60,7 +61,8 @@ export default function Layout({ theme, toggleTheme }) {
         </main>
       </div>
 
-      {canCallup && (
+      {/* In Home il pulsante principale è già nel riquadro della partita: niente doppione che copre i contenuti. */}
+      {canCallup && pathname !== '/' && (
         <button className="fab" onClick={() => navigate('/convocazioni/nuova')}>＋ NUOVA CONVOCAZIONE</button>
       )}
 
