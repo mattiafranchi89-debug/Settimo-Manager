@@ -82,6 +82,11 @@ export default function Dashboard() {
               <Button variant="secondary" onClick={() => navigate('/campionato')}>Campionato</Button>
             </div>
           )}
+          {can(user?.role, 'scouting.read') && (
+            <div className="btnrow" style={{ marginTop: 8 }}>
+              <Button variant="ghost" size="sm" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(nextMatch.opponent)}`)}>🔍 Scheda avversario</Button>
+            </div>
+          )}
         </Card>
       ) : (
         <Card>

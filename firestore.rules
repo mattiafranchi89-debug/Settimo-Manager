@@ -136,6 +136,14 @@ service cloud.firestore {
     match /lineups/{eventId}      { allow read: if active(); allow write: if isCoach(); }
     match /matchStats/{eventId}   { allow read: if active(); allow write: if isCoach(); }
 
+    // ---------- scheda avversari ----------
+    // Preparazione della partita: la legge anche il direttore sportivo,
+    // la scrive solo lo staff. Giocatori e sola lettura non la vedono.
+    match /scouting/{teamId} {
+      allow read: if isStaff() || (active() && role() == 'sporting_director');
+      allow write: if isStaff();
+    }
+
     // ---------- documents ----------
     match /documents/{docId} {
       allow read: if isStaff() || isSelfPlayer(resource.data.playerId);

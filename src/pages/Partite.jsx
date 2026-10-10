@@ -76,6 +76,9 @@ export default function Partite() {
         {canWrite && past && <Button size="sm" variant="secondary" onClick={() => setResult(m)}>Risultato</Button>}
         {canWrite && !past && <Button size="sm" variant="ghost" onClick={() => setEditing(toForm(m))}>Modifica</Button>}
         {canDelete && <button className="iconbtn" aria-label="Elimina partita" onClick={() => askDelete(m)}>🗑</button>}
+        {!past && can(user?.role, 'scouting.read') && (
+          <Button size="sm" variant="ghost" aria-label="Scheda avversario" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(m.opponent)}`)}>🔍</Button>
+        )}
         {!past && can(user?.role, 'callup.draft') && (
           <Button size="sm" onClick={() => navigate(`/convocazioni/nuova?event=${m.id}`)}>Convoca</Button>
         )}

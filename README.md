@@ -44,6 +44,7 @@ La matrice dei permessi vive in un solo file (`permissions.js`) e le regole Fire
 | `lineups/{eventId}` | formazione | `module`, `slots`, `captain`, panchina |
 | `matchStats/{eventId}` | scheda gara | `events[]` (gol, assist, cartellini, cambi), `totals` per giocatore, `closed` |
 | `ratings/{eventId}_{playerId}` | voto | `value`, `note`, autore |
+| `scouting/{slug}` | scheda avversario | `standing`, `results[]`, `players[]`, `suspended[]`, `notes`, `tuttocampoUrl` |
 | `documents`, `payments`, `fines` | — | scadenze e partite economiche |
 | `auditLogs/{id}` | log | append-only: pubblicazioni, forzature, cambi ruolo |
 

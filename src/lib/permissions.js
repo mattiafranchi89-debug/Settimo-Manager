@@ -46,6 +46,10 @@ const MATRIX = {
   'lineup.write': ['admin', 'head_coach', 'assistant_coach'],
   'matchstats.write': ['admin', 'head_coach', 'assistant_coach'],
 
+  // Scheda avversari: preparazione della partita, resta allo staff.
+  'scouting.read': [...STAFF_ROLES, 'sporting_director'],
+  'scouting.write': STAFF_ROLES,
+
   'documents.write': ['admin', 'team_manager'],
   'finance.read': ['admin', 'team_manager', 'sporting_director'],
   'finance.write': ['admin', 'team_manager']
@@ -76,6 +80,7 @@ const NAV_STAFF = [
   { to: '/partite', label: 'Partite', icon: '⚽', all: true },
   { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
+  { to: '/avversari', label: 'Avversari', icon: '🔍', perm: 'scouting.read' },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
   { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
