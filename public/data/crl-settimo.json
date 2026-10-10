@@ -1,0 +1,65 @@
+{
+  "updatedAt": "2026-10-10T12:30:00+02:00",
+  "lastChecked": "2026-10-10T12:30:00+02:00",
+  "source": "https://www.crlombardia.it/",
+  "checkedDocs": [
+    "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
+    "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35"
+  ],
+  "items": [
+    {
+      "id": "cu35-coppa-turno2",
+      "doc": "Comunicato Ufficiale n. 35",
+      "date": "2026-10-09",
+      "url": "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "calendario",
+      "text": "Secondo turno, gara unica mercoledì 28/10/2026: Settimo Milanese – Vela Mesero (in casa)."
+    },
+    {
+      "id": "cu35-coppa-qualificata",
+      "doc": "Comunicato Ufficiale n. 35",
+      "date": "2026-10-09",
+      "url": "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "classifica",
+      "text": "Settimo Milanese qualificato come primo del girone 15: 7 punti in 3 gare (2 vinte, 1 pareggiata), 7 gol fatti e 5 subiti."
+    },
+    {
+      "id": "cu35-coppa-cassolese",
+      "doc": "Comunicato Ufficiale n. 35",
+      "date": "2026-10-09",
+      "url": "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "risultato",
+      "text": "Girone 15, 3ª giornata (08/10/2026): Settimo Milanese – Cassolese 2-1."
+    },
+    {
+      "id": "cu34-pc-sangiuliano",
+      "doc": "Comunicato Ufficiale n. 34",
+      "date": "2026-10-08",
+      "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
+      "category": "Prima Categoria girone A",
+      "type": "risultato",
+      "text": "4ª giornata (04/10/2026): Settimo Milanese – Sangiuliano CVS 3-1."
+    },
+    {
+      "id": "cu34-pc-classifica",
+      "doc": "Comunicato Ufficiale n. 34",
+      "date": "2026-10-08",
+      "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
+      "category": "Prima Categoria girone A",
+      "type": "classifica",
+      "text": "Classifica: 1° con 12 punti in 4 gare (4 vinte), 11 gol fatti e 2 subiti."
+    },
+    {
+      "id": "cu34-giudice",
+      "doc": "Comunicato Ufficiale n. 34",
+      "date": "2026-10-08",
+      "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Nessun provvedimento a carico del Settimo Milanese per le gare del 4 ottobre."
+    }
+  ]
+}

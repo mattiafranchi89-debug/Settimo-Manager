@@ -81,6 +81,7 @@ const NAV_STAFF = [
   { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
   { to: '/avversari', label: 'Avversari', icon: '🔍', perm: 'scouting.read' },
+  { to: '/comunicati', label: 'Comunicati CRL', icon: '📰', perm: 'scouting.read' },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
   { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },

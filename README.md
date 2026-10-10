@@ -44,6 +44,7 @@ La matrice dei permessi vive in un solo file (`permissions.js`) e le regole Fire
 | `lineups/{eventId}` | formazione | `module`, `slots`, `captain`, panchina |
 | `matchStats/{eventId}` | scheda gara | `events[]` (gol, assist, cartellini, cambi), `totals` per giocatore, `closed` |
 | `ratings/{eventId}_{playerId}` | voto | `value`, `note`, autore |
+| `public/data/crl-settimo.json` | file statico | estratti dei comunicati CRL che citano la società (vedi sotto) |
 | `scouting/{slug}` | scheda avversario | `standing`, `results[]`, `players[]`, `suspended[]`, `notes`, `tuttocampoUrl` |
 | `documents`, `payments`, `fines` | — | scadenze e partite economiche |
 | `auditLogs/{id}` | log | append-only: pubblicazioni, forzature, cambi ruolo |
@@ -149,3 +150,20 @@ firebase deploy --only functions
 Senza Functions l'app funziona uguale: cambia solo chi fa la sincronizzazione — tu con un tap, oppure il server da solo.
 
 Dopo il primo deploy, prova il percorso completo su telefono: link di conferma, convocazione, messaggio WhatsApp. È lì che l'app vive.
+
+---
+
+## Comunicati CRL
+
+La sezione «Comunicati CRL» e il riquadro in Dashboard leggono `public/data/crl-settimo.json`.
+Il file lo aggiorna ogni due giorni un'attività programmata di Claude: legge i nuovi comunicati
+su crlombardia.it, estrae le righe che citano il Settimo Milanese e pubblica il file su `main`,
+così Cloudflare ricompila il sito. Schema di ogni voce:
+
+```json
+{ "id": "cu35-coppa-cassolese", "doc": "Comunicato Ufficiale n. 35", "date": "2026-10-09",
+  "url": "https://www.crlombardia.it/documenti/…", "category": "Coppa Lombardia Prima Categoria",
+  "type": "sanzione | risultato | calendario | variazione | classifica | altro", "text": "…" }
+```
+
+Sono dati pubblici del CRL, per questo stanno in un file statico e non in Firestore.

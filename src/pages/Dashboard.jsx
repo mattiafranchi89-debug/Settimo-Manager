@@ -6,6 +6,7 @@ import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/u
 import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
+import { useCrl, sortCrl, CrlItem } from '../lib/crl';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -54,6 +55,13 @@ export default function Dashboard() {
   const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(1)], []), staff);
 
   const lastCallup = callups[0];
+
+  // Ultime citazioni nei comunicati CRL (aggiornate ogni due giorni).
+  const { data: crl } = useCrl();
+  const crlRecent = useMemo(() => {
+    const since = new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10);
+    return sortCrl(crl?.items || []).filter((i) => (i.date || '') >= since).slice(0, 4);
+  }, [crl]);
 
   if (loading) return <Loading />;
 
@@ -160,6 +168,14 @@ export default function Dashboard() {
           ) : <Empty title="Nessuna partita giocata" />}
         </Card>
       </div>
+
+      {can(user?.role, 'scouting.read') && crlRecent.length > 0 && (
+        <Card title="📰 Dai comunicati CRL" action={<Button size="sm" variant="ghost" onClick={() => navigate('/comunicati')}>Tutti</Button>}>
+          <div className="stack">
+            {crlRecent.map((i) => <CrlItem key={i.id} item={i} showDoc />)}
+          </div>
+        </Card>
+      )}
 
       {staff && lastCallup && (
         <Card title="Ultima convocazione" className="card" action={<Badge tone={lastCallup.status === 'pubblicata' || lastCallup.status === 'condivisa' ? 'green' : 'grey'}>{lastCallup.status}</Badge>}>
