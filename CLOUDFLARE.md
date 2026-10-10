@@ -42,3 +42,19 @@ Nessuno zip da trascinare, nessun limite di deploy da tenere d'occhio.
 - `.node-version` fissa Node 20, la versione con cui il progetto è verificato.
 - `netlify.toml` resta nel repository: se un giorno Netlify torna utile,
   funziona ancora senza modifiche.
+
+## Notifiche push
+
+Il sito ha un piccolo worker (`worker/index.js`) che risponde solo agli
+indirizzi `/api/*` e invia le notifiche. La chiave pubblica sta in
+`wrangler.jsonc`; quella **privata** va inserita una volta sola in Cloudflare:
+
+1. dash.cloudflare.com → **Workers & Pages** → `settimo-manager`
+2. **Settings** → **Variables and Secrets** → **Add**
+3. Tipo **Secret**, nome `VAPID_PRIVATE_KEY`, valore: la chiave ricevuta
+   da Claude (non va mai scritta nel repository, che è pubblico)
+4. **Deploy**
+
+Poi ognuno attiva le notifiche dal proprio telefono in Impostazioni (o dal
+riquadro in Home). Su iPhone serve prima «Aggiungi a Home» da Safari.
+Su Netlify, che è solo statico, le notifiche non partono.

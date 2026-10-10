@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
 import { navFor, tabsFor, ROLES, can } from '../lib/permissions';
 import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
+import { setNotifyUser } from '../lib/notify';
+import { refreshPushSubscription } from '../lib/push';
 
 export default function Layout({ theme, toggleTheme }) {
   const { user, logout } = useAuth();
@@ -14,6 +16,10 @@ export default function Layout({ theme, toggleTheme }) {
   const nav = navFor(user?.role, user);
   const tabs = tabsFor(user?.role);
   const canCallup = can(user?.role, 'callup.draft');
+
+  // Chi salva firma le notifiche; l'iscrizione del telefono si riallinea a ogni apertura.
+  useEffect(() => { setNotifyUser(user); }, [user]);
+  useEffect(() => { if (user?.uid) refreshPushSubscription(); }, [user?.uid]);
 
   const go = (to) => { setMore(false); navigate(to); };
 

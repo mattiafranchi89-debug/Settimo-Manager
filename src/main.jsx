@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './lib/auth';
 import { ToastProvider, Loading, Alert, Card } from './components/ui';
 import { can, isPlayerView } from './lib/permissions';
 import { configMissing } from './lib/firebase';
+import { registerServiceWorker } from './lib/push';
 
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -172,6 +173,8 @@ function hideSplash() {
   el.classList.add('is-hidden');
   setTimeout(() => el.remove(), 300);
 }
+
+registerServiceWorker();
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -4,6 +4,7 @@ import { db } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, setDocument, serverTimestamp, where, orderBy, limit, audit } from '../lib/db';
+import { notifyEvent } from '../lib/notify';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue, toDate } from '../lib/format';
 import { can } from '../lib/permissions';
@@ -247,6 +248,7 @@ function Attendance({ session, players, user, onClose }) {
       });
       await batch.commit();
       toast(`Presenze salvate: ${presentCount} presenti, ${absentCount} assenti`);
+      notifyEvent('attendance', session.id, { summary: `${presentCount} presenti, ${absentCount} assenti` });
       // Registro e statistiche vengono dopo la conferma: se falliscono, il
       // salvataggio resta valido e non deve apparire come un errore.
       audit(user, 'attendance.save', session.id, { presenti: presentCount, assenti: absentCount })
@@ -387,6 +389,7 @@ function GeneraSedute({ club, sessions, matches, user, onClose }) {
       });
       await audit(user, 'training.generate', batchId, { count: planned.length, days, time });
       toast(`${planned.length} sedute create`);
+      notifyEvent('events', batchId, { type: 'training', venue, date: planned[0] }, 'add');
       onClose();
     } catch (e) {
       toast(errorText(e), 'error');

@@ -4,6 +4,7 @@ import { writeBatch, doc, collection, setDoc, serverTimestamp } from 'firebase/f
 import { db } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, audit } from '../lib/db';
+import { notifyEvent } from '../lib/notify';
 import { SCHEMAS, parseCsv, downloadCsv, validateRows, normName } from '../lib/bulk';
 import { deleteImportBatch } from '../lib/remove';
 import { slug, emptyStats } from '../lib/seedData';
@@ -84,6 +85,7 @@ export default function Importa() {
       });
       await audit(user, 'bulk.import', schema.collection, { count: valid.length, file: fileName, batchId });
       toast(`${valid.length} righe importate in ${schema.label}`);
+      notifyEvent('imports', batchId, { count: valid.length, label: schema.label.toLowerCase() }, 'add');
       setPreview(null); setFileName('');
     } catch (e) {
       toast(errorText(e), 'error');

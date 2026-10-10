@@ -144,6 +144,15 @@ service cloud.firestore {
       allow write: if isStaff();
     }
 
+    // ---------- notifiche push ----------
+    // Un documento per telefono iscritto. Lo scrive solo il proprietario; lo
+    // legge lo staff perché il servizio di invio usa il token di chi salva.
+    match /pushSubs/{subId} {
+      allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create, update: if active() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
     // ---------- documents ----------
     match /documents/{docId} {
       allow read: if isStaff() || isSelfPlayer(resource.data.playerId);

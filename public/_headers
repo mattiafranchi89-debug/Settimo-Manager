@@ -13,3 +13,7 @@
 # Estratti dei comunicati CRL, aggiornati ogni due giorni: sempre freschi.
 /data/*
   Cache-Control: no-cache
+
+# Il service worker va sempre riletto, altrimenti le correzioni non arrivano.
+/sw.js
+  Cache-Control: no-cache

@@ -12,6 +12,8 @@ import { errorText } from './Rosa';
 import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useClub, useCollection, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
+import PushCard from '../components/PushCard';
+import { isStaff } from '../lib/permissions';
 import { Card, Button, Field, Input, Select, Badge, Alert, Loading, useToast } from '../components/ui';
 import { ROLES } from '../lib/permissions';
 import { can } from '../lib/permissions';
@@ -171,6 +173,7 @@ export default function Impostazioni() {
           </table>
           <Button variant="ghost" onClick={logout} style={{ marginTop: 12 }}>Esci</Button>
         </Card>
+        <PushCard staff={isStaff(user.role)} />
         <Alert level="info">Solo un amministratore può modificare la configurazione della società.</Alert>
       </>
     );
@@ -182,6 +185,8 @@ export default function Impostazioni() {
         <div><h1>Impostazioni</h1><p>Identità società, staff e regole di default</p></div>
         <Button size="sm" onClick={save}>Salva</Button>
       </div>
+
+      <PushCard />
 
       {players.length === 0 && (
         <Card title="Primo avvio">

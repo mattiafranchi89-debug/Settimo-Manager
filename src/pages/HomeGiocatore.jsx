@@ -6,6 +6,7 @@ import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/u
 import { fmtShort, fmtTime, fmtLong, capitalize, toDate, countdown, euro } from '../lib/format';
 import { mapsLink, callupFor } from '../lib/callup';
 import { playerInsight } from '../lib/insights';
+import PushCard from '../components/PushCard';
 
 /**
  * La home di un giocatore risponde a tre domande, in quest'ordine:
@@ -68,6 +69,8 @@ export default function HomeGiocatore() {
           <p>{club.clubName} · {club.season}</p>
         </div>
       </div>
+
+      <PushCard compact staff={false} />
 
       {!pid && (
         <Alert level="info">

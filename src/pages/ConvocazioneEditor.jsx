@@ -4,6 +4,7 @@ import { doc, collection, addDoc, setDoc, serverTimestamp } from 'firebase/fires
 import { db } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, where, orderBy, limit, audit } from '../lib/db';
+import { notifyEvent } from '../lib/notify';
 import {
   Card, Button, Field, Input, Select, Badge, Sheet,
   Alert, Loading, useToast, ConfirmDialog
@@ -158,6 +159,7 @@ export default function ConvocazioneEditor() {
         opponent: event.opponent, count: selected.length, override: overrideReason || null
       });
     }
+    notifyEvent('callups', ref.id, payload, existing ? 'update' : 'add');
     setBusy(false);
     toast(status === 'bozza' ? 'Bozza salvata' : 'Convocazione registrata');
     if (!existing) navigate(`/convocazioni/${ref.id}`, { replace: true });

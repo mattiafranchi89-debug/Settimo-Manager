@@ -4,6 +4,7 @@ import {
   setDoc, updateDoc, addDoc, deleteDoc, getDoc, getDocs, serverTimestamp, increment
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { notifyWrite } from './notify';
 
 export { where, orderBy, fbLimit as limit, serverTimestamp, increment, getDoc, getDocs, doc, collection };
 
@@ -130,10 +131,15 @@ export const DEFAULT_CLUB = {
   staff: { head_coach: 'Mattia Franchi', assistant_coach: '', team_manager: '', athletic_trainer: '', gk_coach: '' }
 };
 
-export const setDocument = (path, id, data) => setDoc(doc(db, path, id), data, { merge: true });
-export const updateDocument = (path, id, data) => updateDoc(doc(db, path, id), data);
-export const addDocument = (path, data) => addDoc(collection(db, path), data);
-export const removeDocument = (path, id) => deleteDoc(doc(db, path, id));
+// Ogni salvataggio riuscito avvisa lo staff con una notifica push (vedi notify.js).
+export const setDocument = (path, id, data) =>
+  setDoc(doc(db, path, id), data, { merge: true }).then((r) => { notifyWrite('set', path, id, data); return r; });
+export const updateDocument = (path, id, data) =>
+  updateDoc(doc(db, path, id), data).then((r) => { notifyWrite('update', path, id, data); return r; });
+export const addDocument = (path, data) =>
+  addDoc(collection(db, path), data).then((r) => { notifyWrite('add', path, r.id, data); return r; });
+export const removeDocument = (path, id) =>
+  deleteDoc(doc(db, path, id)).then((r) => { notifyWrite('remove', path, id, null); return r; });
 
 /** Append-only audit trail. Used for overrides, publications and deletions. */
 export async function audit(user, action, target, details = {}) {

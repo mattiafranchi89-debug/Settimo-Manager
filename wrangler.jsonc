@@ -3,10 +3,21 @@
   // dedurla da solo e si ferma perché il progetto usa Vite 5.
   // Il sito è statico: Cloudflare serve la cartella dist e rimanda ogni
   // indirizzo sconosciuto a index.html, come richiede una single page app.
+  // Solo gli indirizzi /api/* passano dal worker, che invia le notifiche push.
   "name": "settimo-manager",
+  "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  // Valori pubblici. La chiave privata VAPID NON sta qui: va inserita in
+  // Cloudflare come segreto «VAPID_PRIVATE_KEY» (vedi CLOUDFLARE.md).
+  "vars": {
+    "FIREBASE_PROJECT_ID": "settimo-manager",
+    "VAPID_PUBLIC_KEY": "BF4j9P-bBzl2xQFWO_E3WBHgEdBXnggZshES6NjUMkOe_p4HS6gP1TBShFXZGO-OZ0ndp31xaZt-O6OS4ERN3Cs",
+    "VAPID_SUBJECT": "https://settimo-manager.mattia-franchi89.workers.dev"
   }
 }

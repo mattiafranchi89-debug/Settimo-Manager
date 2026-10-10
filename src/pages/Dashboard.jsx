@@ -7,6 +7,7 @@ import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong,
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { useCrl, sortCrl, CrlItem } from '../lib/crl';
+import PushCard from '../components/PushCard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -73,6 +74,8 @@ export default function Dashboard() {
           <p>{club.teamName} · {club.season}</p>
         </div>
       </div>
+
+      <PushCard compact />
 
       {nextMatch ? (
         <Card className="card" title="Prossima partita" action={<Badge tone="red">{countdown(nextMatch.date)}</Badge>}>
