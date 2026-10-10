@@ -72,25 +72,19 @@ export function isStaff(role) {
 const PLAYER_VIEW_ROLES = ['player', 'readonly'];
 export const isPlayerView = (role) => PLAYER_VIEW_ROLES.includes(role);
 
+/**
+ * Menu dello staff a gruppi: poche voci, ognuna una sezione con le sue
+ * schede interne (vedi SECTIONS). Le pagine «figlie» (partite, statistiche,
+ * comunicati…) restano raggiungibili dalle schede e dai link diretti.
+ */
 const NAV_STAFF = [
-  { to: '/', label: 'Dashboard', icon: '🏠', all: true },
-  { to: '/rosa', label: 'Rosa', icon: '👥', perm: 'players.read' },
-  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃', all: true },
-  { to: '/convocazioni', label: 'Convocazioni', icon: '📋', all: true },
-  { to: '/partite', label: 'Partite', icon: '⚽', all: true },
-  { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
-  { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
-  { to: '/avversari', label: 'Avversari', icon: '🔍', perm: 'scouting.read' },
-  { to: '/comunicati', label: 'Comunicati CRL', icon: '📰', perm: 'scouting.read' },
-  { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
-  { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
-  { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
-  { to: '/quote', label: 'Quote e multe', icon: '💶', perm: 'finance.read' },
-  { to: '/cassa', label: 'Cassa multe', icon: '🏺', all: true },
-  { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
-  { to: '/registro', label: 'Registro', icon: '📑', perm: 'audit.read' },
-  { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true },
-  { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage' }
+  { to: '/', label: 'Home', icon: '🏠', all: true },
+  { to: '/calendario', label: 'Calendario', icon: '📅', all: true, group: 'Squadra' },
+  { to: '/rosa', label: 'Rosa', icon: '👥', perm: 'players.read', group: 'Squadra' },
+  { to: '/campionato', label: 'Campionato', icon: '🏆', all: true, group: 'Squadra' },
+  { to: '/cassa', label: 'Cassa', icon: '💶', all: true, group: 'Società' },
+  { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write', group: 'Società' },
+  { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true, group: 'Account' }
 ];
 
 const NAV_PLAYER = [
@@ -106,9 +100,9 @@ const NAV_PLAYER = [
 /** Le cinque voci in fondo allo schermo: le prime quattro più «Altro». */
 export const TABS_STAFF = [
   { to: '/', label: 'Home', icon: '🏠' },
-  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃' },
-  { to: '/convocazioni', label: 'Convocazioni', icon: '📋' },
-  { to: '/calendario', label: 'Calendario', icon: '📅' }
+  { to: '/calendario', label: 'Calendario', icon: '📅' },
+  { to: '/rosa', label: 'Rosa', icon: '👥' },
+  { to: '/campionato', label: 'Campionato', icon: '🏆' }
 ];
 
 export const TABS_PLAYER = [
@@ -126,3 +120,57 @@ export function navFor(role, user) {
   const list = isPlayerView(role) ? NAV_PLAYER : NAV_STAFF;
   return list.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
 }
+
+/**
+ * Schede interne di ogni sezione. Compaiono in cima alla pagina quando la
+ * sezione ha più di una scheda visibile per il ruolo.
+ */
+export const SECTIONS = {
+  '/calendario': [
+    { to: '/calendario', label: 'Agenda', all: true },
+    { to: '/partite', label: 'Partite', perm: 'players.read' },
+    { to: '/allenamenti', label: 'Allenamenti', perm: 'players.read' },
+    { to: '/convocazioni', label: 'Convocazioni', perm: 'players.read' }
+  ],
+  '/rosa': [
+    { to: '/rosa', label: 'Giocatori', perm: 'players.read' },
+    { to: '/statistiche', label: 'Statistiche', perm: 'players.read' },
+    { to: '/analisi', label: 'Andamento', perm: 'players.read' }
+  ],
+  '/campionato': [
+    { to: '/campionato', label: 'Classifica', all: true },
+    { to: '/avversari', label: 'Avversari', perm: 'scouting.read' },
+    { to: '/comunicati', label: 'Comunicati', perm: 'scouting.read' }
+  ],
+  '/cassa': [
+    { to: '/cassa', label: 'Riepilogo', all: true },
+    { to: '/quote', label: 'Movimenti', perm: 'finance.read' }
+  ]
+};
+
+/** La voce di menu a cui appartiene una pagina (per evidenziarla). */
+const PARENT = [
+  [/^\/(partite|allenamenti|convocazioni|evento|formazioni)(\/|$)/, '/calendario'],
+  [/^\/(statistiche|analisi)(\/|$)/, '/rosa'],
+  [/^\/(avversari|comunicati)(\/|$)/, '/campionato'],
+  [/^\/quote(\/|$)/, '/cassa'],
+  [/^\/(importa|registro|diagnostica)(\/|$)/, '/impostazioni']
+];
+export function sectionOf(pathname = '/') {
+  for (const [re, root] of PARENT) if (re.test(pathname)) return root;
+  return pathname.split('/').slice(0, 2).join('/') || '/';
+}
+
+/** Schede visibili per la pagina corrente, solo se sono almeno due. */
+export function sectionTabs(pathname, role) {
+  const root = sectionOf(pathname);
+  const list = (SECTIONS[root] || []).filter((t) => t.all || can(role, t.perm));
+  return list.length > 1 && list.some((t) => t.to === pathname) ? list : [];
+}
+
+/** Strumenti che si usano poche volte l'anno: stanno in Impostazioni. */
+export const TOOLS = [
+  { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write', hint: 'Rosa, partite e allenamenti da file' },
+  { to: '/registro', label: 'Registro', icon: '📑', perm: 'audit.read', hint: 'Chi ha fatto cosa: pubblicazioni, modifiche, eliminazioni' },
+  { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage', hint: 'Stato di Firebase, regole e dati' }
+];

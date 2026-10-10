@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
-import { navFor, tabsFor, ROLES, can } from '../lib/permissions';
+import { navFor, tabsFor, ROLES, can, sectionOf, sectionTabs } from '../lib/permissions';
 import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
@@ -17,6 +17,17 @@ export default function Layout({ theme, toggleTheme }) {
   const nav = navFor(user?.role, user);
   const tabs = tabsFor(user?.role);
   const canCallup = can(user?.role, 'callup.draft');
+  const section = sectionOf(pathname);
+  const subTabs = sectionTabs(pathname, user?.role);
+  // Una voce resta evidenziata anche nelle sue pagine figlie (es. Calendario su /partite).
+  const linkClass = (to) => ({ isActive }) => (isActive || (to !== '/' && section === to) ? 'active' : undefined);
+  // Le voci a gruppi, nell'ordine in cui compaiono.
+  const groups = nav.reduce((acc, i) => {
+    const g = i.group || '';
+    const last = acc[acc.length - 1];
+    if (last && last.name === g) last.items.push(i); else acc.push({ name: g, items: [i] });
+    return acc;
+  }, []);
 
   // Chi salva firma le notifiche; l'iscrizione del telefono si riallinea a ogni apertura.
   useEffect(() => { setNotifyUser(user); }, [user]);
@@ -47,28 +58,35 @@ export default function Layout({ theme, toggleTheme }) {
               <Button block onClick={() => navigate('/convocazioni/nuova')}>＋ Nuova convocazione</Button>
             </div>
           )}
-          {nav.map((i) => (
-            <NavLink key={i.to} to={i.to} end={i.to === '/'}>
-              <span aria-hidden="true">{i.icon}</span>{i.label}
-            </NavLink>
+          {groups.map((g) => (
+            <div key={g.name || 'top'}>
+              {g.name && <div className="navgroup">{g.name}</div>}
+              {g.items.map((i) => (
+                <NavLink key={i.to} to={i.to} end={i.to === '/'} className={linkClass(i.to)}>
+                  <span aria-hidden="true">{i.icon}</span>{i.label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 
         <main className="main">
+          {subTabs.length > 0 && (
+            <nav className="subtabs" aria-label="Sezioni">
+              {subTabs.map((t) => (
+                <NavLink key={t.to} to={t.to} end className={({ isActive }) => `subtab${isActive ? ' subtab--on' : ''}`}>{t.label}</NavLink>
+              ))}
+            </nav>
+          )}
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>
         </main>
       </div>
 
-      {/* In Home il pulsante principale è già nel riquadro della partita: niente doppione che copre i contenuti. */}
-      {canCallup && pathname !== '/' && (
-        <button className="fab" onClick={() => navigate('/convocazioni/nuova')}>＋ NUOVA CONVOCAZIONE</button>
-      )}
-
       <nav className="tabbar" aria-label="Navigazione rapida">
         {tabs.map((t) => (
-          <NavLink key={t.to} to={t.to} end={t.to === '/'}>
+          <NavLink key={t.to} to={t.to} end={t.to === '/'} className={linkClass(t.to)}>
             <span aria-hidden="true">{t.icon}</span>{t.label}
           </NavLink>
         ))}
@@ -79,14 +97,19 @@ export default function Layout({ theme, toggleTheme }) {
 
       {more && (
         <Sheet title="Menu" onClose={() => setMore(false)}>
-          <div className="stack">
-            {nav.map((i) => (
-              <button key={i.to} className="prow" onClick={() => go(i.to)}>
-                <span className="prow__num" aria-hidden="true">{i.icon}</span>
-                <div className="prow__body"><div className="prow__name">{i.label}</div></div>
-              </button>
-            ))}
-          </div>
+          {groups.map((g) => (
+            <div key={g.name || 'top'} style={{ marginBottom: 6 }}>
+              {g.name && <div className="navgroup">{g.name}</div>}
+              <div className="stack">
+                {g.items.map((i) => (
+                  <button key={i.to} className={`prow ${section === i.to || pathname === i.to ? 'prow--selected' : ''}`} onClick={() => go(i.to)}>
+                    <span className="prow__num" aria-hidden="true">{i.icon}</span>
+                    <div className="prow__body"><div className="prow__name">{i.label}</div></div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
           <hr style={{ border: 'none', borderTop: '1px solid var(--line-soft)', margin: '16px 0' }} />
           <div className="spread">
             <div>

@@ -51,6 +51,7 @@ const Registro = lazyPage(() => import('./pages/Registro'));
 const Analisi = lazyPage(() => import('./pages/Analisi'));
 const Avversari = lazyPage(() => import('./pages/Avversari'));
 const Comunicati = lazyPage(() => import('./pages/Comunicati'));
+const Evento = lazyPage(() => import('./pages/Evento'));
 const MiaPagina = lazyPage(() => import('./pages/MiaPagina'));
 const Cassa = lazyPage(() => import('./pages/Cassa'));
 const HomeGiocatore = lazyPage(() => import('./pages/HomeGiocatore'));
@@ -148,6 +149,7 @@ function App() {
         <Route path="campionato" element={<Campionato />} />
         <Route path="statistiche" element={<Protected perm="players.read"><Statistiche /></Protected>} />
         <Route path="avversari" element={<Protected perm="scouting.read"><Avversari /></Protected>} />
+        <Route path="evento/:id" element={<Protected perm="players.read"><Evento /></Protected>} />
         <Route path="comunicati" element={<Protected perm="scouting.read"><Comunicati /></Protected>} />
         <Route path="analisi" element={<Protected perm="players.read"><Analisi /></Protected>} />
         <Route path="io" element={<MiaPagina />} />

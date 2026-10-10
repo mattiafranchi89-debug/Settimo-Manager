@@ -32,7 +32,7 @@ export default function Cassa() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Cassa multe</h1><p>Obiettivo: {club.cassaScopo || 'da decidere'}</p></div>
+        <div><h1>Cassa</h1><p>Obiettivo: {club.cassaScopo || 'da decidere'}</p></div>
       </div>
 
       {!hasPot && (

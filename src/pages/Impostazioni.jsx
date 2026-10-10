@@ -13,7 +13,8 @@ import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useClub, useCollection, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
 import PushCard from '../components/PushCard';
-import { isStaff } from '../lib/permissions';
+import { isStaff, TOOLS, can as canDo } from '../lib/permissions';
+import { useNavigate as useNav } from 'react-router-dom';
 import { Card, Button, Field, Input, Select, Badge, Alert, Loading, useToast } from '../components/ui';
 import { ROLES } from '../lib/permissions';
 import { can } from '../lib/permissions';
@@ -174,6 +175,7 @@ export default function Impostazioni() {
           <Button variant="ghost" onClick={logout} style={{ marginTop: 12 }}>Esci</Button>
         </Card>
         <PushCard staff={isStaff(user.role)} />
+        <ToolsCard role={user.role} />
         <Alert level="info">Solo un amministratore può modificare la configurazione della società.</Alert>
       </>
     );
@@ -187,6 +189,7 @@ export default function Impostazioni() {
       </div>
 
       <PushCard />
+      <ToolsCard role={user.role} />
 
       {players.length === 0 && (
         <Card title="Primo avvio">
@@ -405,5 +408,28 @@ export default function Impostazioni() {
 
       <Button variant="ghost" onClick={() => setForm(DEFAULT_CLUB)}>Ripristina valori predefiniti</Button>
     </>
+  );
+}
+
+/** Importazioni, Registro e Diagnostica: si usano poche volte l'anno. */
+function ToolsCard({ role }) {
+  const navigate = useNav();
+  const tools = TOOLS.filter((t) => canDo(role, t.perm));
+  if (!tools.length) return null;
+  return (
+    <Card title="Strumenti">
+      <div className="plist">
+        {tools.map((t) => (
+          <button key={t.to} className="prow" onClick={() => navigate(t.to)} style={{ width: '100%', textAlign: 'left' }}>
+            <span className="prow__num" aria-hidden="true">{t.icon}</span>
+            <span className="prow__body">
+              <span className="prow__name">{t.label}</span>
+              <span className="prow__meta"><span>{t.hint}</span></span>
+            </span>
+            <span aria-hidden="true" style={{ color: 'var(--muted)', fontSize: 18 }}>›</span>
+          </button>
+        ))}
+      </div>
+    </Card>
   );
 }

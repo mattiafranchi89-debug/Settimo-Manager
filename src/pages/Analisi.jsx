@@ -56,7 +56,7 @@ export default function Analisi() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Analisi</h1><p>Stagione {season} · {played.length} gare con risultato</p></div>
+        <div><h1>Andamento squadra</h1><p>Stagione {season} · {played.length} gare con risultato</p></div>
       </div>
       <div className="chiprow">
         {TABS.filter(([k]) => staff || ['rendimento', 'rotazione', 'disciplina'].includes(k)).filter(([k]) => k !== 'impiego' || staff).map(([k, l]) => (

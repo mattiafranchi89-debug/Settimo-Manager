@@ -190,7 +190,7 @@ function SessionForm({ club, onSave, onClose }) {
   );
 }
 
-function Attendance({ session, players, user, onClose }) {
+export function Attendance({ session, players, user, onClose }) {
   const toast = useToast();
   const { club } = useClub();
   const q = useMemo(() => [where('eventId', '==', session.id)], [session.id]);

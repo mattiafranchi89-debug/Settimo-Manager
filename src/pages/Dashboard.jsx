@@ -90,7 +90,7 @@ export default function Dashboard() {
       }
     }
     if (lastTraining && canAttend && !attLoading && lastAttendance.length === 0 && now - toDate(lastTraining.date).getTime() < 7 * DAY) {
-      out.push({ icon: '🏃', text: 'Presenze da registrare', meta: `allenamento di ${fmtShort(lastTraining.date)}`, to: '/allenamenti' });
+      out.push({ icon: '🏃', text: 'Presenze da registrare', meta: `allenamento di ${fmtShort(lastTraining.date)}`, to: `/evento/${lastTraining.id}` });
     }
     if (seesFinance && (openPayments.length || openFines.length)) {
       const total = [...openPayments, ...openFines].reduce((s, x) => s + (x.amount || 0), 0);
@@ -165,12 +165,10 @@ export default function Dashboard() {
           {opp && <OpponentLine opp={opp} />}
           <div className="btnrow" style={{ marginTop: 12 }}>
             <HeroAction match={nextMatch} callup={callup} role={role} navigate={navigate} />
-            {can(role, 'scouting.read') && (
-              <Button variant="ghost" size="sm" onClick={() => navigate(`/avversari?nome=${encodeURIComponent(nextMatch.opponent)}`)}>🔍 Avversario</Button>
-            )}
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/evento/${nextMatch.id}`)}>Scheda partita ›</Button>
           </div>
           {trainingFirst && (
-            <button className="prow" onClick={() => navigate('/allenamenti')} style={{ width: '100%', textAlign: 'left', marginTop: 12 }}>
+            <button className="prow" onClick={() => navigate(`/evento/${nextTraining.id}`)} style={{ width: '100%', textAlign: 'left', marginTop: 12 }}>
               <span className="prow__num" aria-hidden="true">🏃</span>
               <span className="prow__body">
                 <span className="prow__name">Prima: allenamento {fmtShort(nextTraining.date)} {fmtTime(nextTraining.date)}</span>

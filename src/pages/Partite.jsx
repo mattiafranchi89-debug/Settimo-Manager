@@ -183,7 +183,7 @@ function MatchForm({ club, initial, onSave, onClose }) {
   );
 }
 
-function ResultForm({ match, onSave, onClose }) {
+export function ResultForm({ match, onSave, onClose }) {
   const [home, setHome] = useState(match.scoreHome ?? '');
   const [away, setAway] = useState(match.scoreAway ?? '');
   const [notes, setNotes] = useState(match.resultNotes || '');
