@@ -37,11 +37,9 @@ Nessuno zip da trascinare, nessun limite di deploy da tenere d'occhio.
 - Le chiavi Firebase stanno in `.env.production`, letto da Vite durante il
   build. Sono identificatori pubblici: la sicurezza dei dati dipende da
   `firestore.rules`, non dal tenerli nascosti.
-- `public/_redirects` fa sì che indirizzi come `/convocazioni/xyz` aprano
-  l'applicazione invece di restituire 404.
+- Indirizzi come `/convocazioni/xyz` aprono l'applicazione grazie a
+  `not_found_handling: single-page-application` in `wrangler.jsonc`.
 - `.node-version` fissa Node 20, la versione con cui il progetto è verificato.
-- `netlify.toml` resta nel repository: se un giorno Netlify torna utile,
-  funziona ancora senza modifiche.
 
 ## Notifiche push
 
@@ -57,7 +55,6 @@ indirizzi `/api/*` e invia le notifiche. La chiave pubblica sta in
 
 Poi ognuno attiva le notifiche dal proprio telefono in Impostazioni (o dal
 riquadro in Home). Su iPhone serve prima «Aggiungi a Home» da Safari.
-Su Netlify, che è solo statico, le notifiche non partono.
 
 ## Lettura automatica del referto
 
