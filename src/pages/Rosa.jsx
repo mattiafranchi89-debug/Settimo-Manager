@@ -9,7 +9,7 @@ import { buildInsights } from '../lib/insights';
 import { useClub } from '../lib/db';
 import { POSITIONS, GROUPS, groupOf, positionLabel, age, fmtDate, sortPlayers, toInputValue, toDate } from '../lib/format';
 import DisciplineRows from '../components/Discipline';
-import { suspendedIn, COMPS } from '../lib/discipline';
+import { suspendedIn, COMPS, activeSuspension } from '../lib/discipline';
 import { can } from '../lib/permissions';
 
 const EMPTY = {
@@ -153,6 +153,19 @@ export default function Rosa() {
 
           <div className="stack" style={{ marginBottom: 12 }}>
             <DisciplineRows player={detail} insight={insights[detail.id]} />
+            {(detail.suspensions || []).filter((s) => activeSuspension(s, detail.stats)).map((s) => (
+              <div key={s.source} className="spread" style={{ fontSize: 13.5 }}>
+                <span>🟥 {s.games} {Number(s.games) === 1 ? 'giornata' : 'giornate'} in {COMPS[s.comp]?.label} · {s.note || 'comunicato'}</span>
+                {writable && (
+                  <button className="chip" style={{ minHeight: 32, padding: '4px 10px' }} onClick={async () => {
+                    const list = (detail.suspensions || []).filter((x) => x.source !== s.source);
+                    await updateDocument('players', detail.id, { suspensions: list, updatedAt: serverTimestamp() });
+                    setDetail({ ...detail, suspensions: list });
+                    toast('Squalifica tolta');
+                  }}>Togli</button>
+                )}
+              </div>
+            ))}
             <div className="spread">
               <span>Ultima partita giocata</span>
               <Badge tone={insights[detail.id]?.weeksSincePlayed >= 4 ? 'orange' : 'grey'}>

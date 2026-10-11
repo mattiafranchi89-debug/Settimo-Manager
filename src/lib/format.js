@@ -22,7 +22,7 @@ export const GROUPS = [
 
 export const CALLUP_STATUS = {
   bozza: 'Bozza',
-  da_revisionare: 'Da revisionare',
+  da_revisionare: 'Pronta da inviare',
   pubblicata: 'Pubblicata',
   condivisa: 'Condivisa',
   parzialmente_confermata: 'Parzialmente confermata',

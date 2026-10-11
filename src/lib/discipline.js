@@ -42,10 +42,60 @@ export function pendingSuspension({ hist }, per, played) {
   return trigger && trigger.n >= (played || 0) ? trigger : null;
 }
 
+/**
+ * Squalifica a giornate (dal comunicato): attiva finché, dopo la data del
+ * comunicato, non si sono chiuse `games` gare di quella competizione.
+ */
+export function activeSuspension(s, stats = {}) {
+  const played = (stats.compDates?.[s.comp] || []).filter((d) => d > (s.fromDate || '')).length;
+  return played < (Number(s.games) || 1);
+}
+
 /** Competizioni in cui il giocatore è squalificato ([] = nessuna). */
 export function suspendedIn(p) {
-  if (!p?.suspended) return [];
-  return p.suspendedIn?.length ? p.suspendedIn : ['campionato', 'coppa'];
+  const out = new Set();
+  if (p?.suspended) (p.suspendedIn?.length ? p.suspendedIn : ['campionato', 'coppa']).forEach((c) => out.add(c));
+  (p?.suspensions || []).forEach((s) => { if (activeSuspension(s, p.stats)) out.add(s.comp); });
+  return [...out];
+}
+
+/* ---------- squalifiche lette dai comunicati CRL ---------- */
+
+const nameTokens = (s = '') => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/[^a-z]+/).filter((t) => t.length > 1);
+
+/** Il giocatore in rosa che corrisponde al nome scritto nel comunicato (o null). */
+export function matchPlayer(name, players = []) {
+  const want = nameTokens(name);
+  if (!want.length) return null;
+  let best = null, bestScore = 0;
+  players.forEach((p) => {
+    const have = new Set(nameTokens(p.fullName));
+    const common = want.filter((t) => have.has(t)).length;
+    const score = common / Math.min(want.length, have.size || 1);
+    if (common >= Math.min(2, want.length) && score > bestScore) { best = p; bestScore = score; }
+  });
+  return bestScore >= 0.99 || (best && bestScore >= 0.66) ? best : null;
+}
+
+/**
+ * Squalifiche dei nostri giocatori trovate nei comunicati e non ancora
+ * confermate in app: una proposta per riga, da confermare con un tocco.
+ */
+export function suspensionProposals(items = [], players = [], sinceDays = 21) {
+  const since = new Date(Date.now() - sinceDays * 86400000).toISOString().slice(0, 10);
+  const out = [];
+  items.filter((i) => i.type === 'sanzione' && (i.date || '') >= since).forEach((item) => {
+    (item.squalifiche || []).forEach((s, k) => {
+      const source = `${item.id}#${k}`;
+      const player = matchPlayer(s.nome, players);
+      if (player && (player.suspensions || []).some((x) => x.source === source)) return;
+      out.push({
+        source, item, player, name: s.nome, games: Number(s.giornate) || 1,
+        comp: s.competizione === 'coppa' ? 'coppa' : 'campionato', fromDate: item.date
+      });
+    });
+  });
+  return out;
 }
 
 /**

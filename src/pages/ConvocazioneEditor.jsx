@@ -72,7 +72,9 @@ export default function ConvocazioneEditor() {
     setSelected(existing.players || []);
     setLogistics(existing.logistics || null);
     if (existing.options) setOptions(existing.options);
-    setStep(1);
+    // Chi riceve una convocazione pronta va dritto al messaggio da inviare.
+    setStep(existing.status === 'da_revisionare' && existing.readyBy !== user?.uid ? 2 : 1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existing]);
 
   // default logistics from the fixture
@@ -146,7 +148,9 @@ export default function ConvocazioneEditor() {
       updatedAt: serverTimestamp(),
       ...(existing ? {} : { createdBy: user.uid, createdByName: user.name, createdAt: serverTimestamp() }),
       ...(status === 'pubblicata' ? { publishedAt: serverTimestamp() } : {}),
-      ...(status === 'condivisa' ? { sharedAt: serverTimestamp() } : {}),
+      ...(status === 'condivisa' ? { sharedAt: serverTimestamp(), sharedByName: user.name } : {}),
+      // Passaggio di mano: il mister la prepara, il dirigente la manda al gruppo.
+      ...(status === 'da_revisionare' ? { readyAt: serverTimestamp(), readyBy: user.uid, readyByName: user.name } : {}),
       ...(overrideReason ? { overrideReason } : {})
     };
 
@@ -212,6 +216,17 @@ export default function ConvocazioneEditor() {
   };
 
   const shareAndPublish = withChecks(shareToGroup);
+
+  // Il mister non manda più il testo su WhatsApp al dirigente: segna la
+  // convocazione come pronta e il dirigente riceve una notifica.
+  const senderName = club.convocazioneNome || 'il dirigente';
+  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role);
+  const markReady = withChecks(async (reason) => {
+    await persist('da_revisionare', reason);
+    toast(`Pronta: ${senderName} riceve una notifica per inviarla al gruppo`);
+  });
+  const waitingForMe = existing?.status === 'da_revisionare' && existing.readyBy !== user?.uid && can(user?.role, 'callup.share');
+  const atTime = (v) => (toDate(v) ? fmtTime(v) : '');
   const sendAndPublish = withChecks(sendDirect);
 
   if (loadingPlayers || (id && loadingCallup)) return <Loading />;
@@ -234,6 +249,25 @@ export default function ConvocazioneEditor() {
           </button>
         ))}
       </div>
+
+      {waitingForMe && (
+        <Card title="📋 Pronta da inviare">
+          <p style={{ marginTop: 0, fontSize: 14 }}>
+            {existing.readyByName || 'Il mister'} l'ha preparata{existing.readyAt ? ` alle ${atTime(existing.readyAt)}` : ''}: {(existing.players || []).length} convocati.
+            Controlla il messaggio qui sotto e invialo al gruppo.
+          </p>
+          <div className="btnrow">
+            <Button onClick={shareAndPublish} disabled={busy}>{club.groupLink ? 'Invia al gruppo' : 'Copia il messaggio'}</Button>
+            <Button variant="ghost" onClick={() => setStep(1)}>Rivedi i convocati</Button>
+          </div>
+        </Card>
+      )}
+      {existing?.status === 'da_revisionare' && !waitingForMe && (
+        <Alert level="info">Pronta{existing.readyAt ? ` dalle ${atTime(existing.readyAt)}` : ''}: in attesa che {senderName} la invii al gruppo.</Alert>
+      )}
+      {existing?.status === 'condivisa' && existing.sharedByName && (
+        <Alert level="ok">Inviata al gruppo da {existing.sharedByName}{existing.sharedAt ? ` alle ${atTime(existing.sharedAt)}` : ''}.</Alert>
+      )}
 
       {/* ---------- step 1: match + logistics ---------- */}
       {step === 0 && (
@@ -366,12 +400,15 @@ export default function ConvocazioneEditor() {
             <div className="msgbox">{message}</div>
 
             <div className="btnrow" style={{ marginTop: 12 }}>
-              {directPhone && (
+              {isHandoff && (
+                <Button onClick={markReady} disabled={busy}>✅ Pronta per {senderName}</Button>
+              )}
+              {directPhone && !isHandoff && (
                 <Button onClick={sendAndPublish} disabled={busy}>
                   Invia a {directName}
                 </Button>
               )}
-              <Button variant={directPhone ? 'secondary' : 'primary'} onClick={shareAndPublish} disabled={busy}>
+              <Button variant={directPhone || isHandoff ? 'secondary' : 'primary'} onClick={shareAndPublish} disabled={busy}>
                 {club.groupLink ? 'Copia e apri il gruppo' : 'Copia messaggio'}
               </Button>
               {canSetLineup && (
@@ -382,7 +419,8 @@ export default function ConvocazioneEditor() {
             </div>
 
             <Alert level="info">
-              {directPhone && `Il primo pulsante apre la chat con ${directName} (${directPhone}) e il messaggio è già scritto. `}
+              {isHandoff && `«Pronta per ${senderName}» gli manda una notifica: la invia lui al gruppo, senza passare da WhatsApp. `}
+              {directPhone && !isHandoff && `Il primo pulsante apre la chat con ${directName} (${directPhone}) e il messaggio è già scritto. `}
               {club.groupLink
                 ? 'Il messaggio viene copiato negli appunti e il gruppo si apre: tieni premuto nel campo di testo e incolla. La convocazione viene salvata come condivisa.'
                 : 'Il messaggio viene copiato: incollalo nel gruppo. Imposta il link del gruppo in Impostazioni per aprirlo con un tocco.'}

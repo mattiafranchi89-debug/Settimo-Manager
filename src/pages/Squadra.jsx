@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { suspendedIn } from '../lib/discipline';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, limit } from '../lib/db';
 import { Card, Kpi, Badge, Empty, Loading } from '../components/ui';
@@ -97,7 +98,7 @@ export default function Squadra() {
                     <span className="prow__meta"><span>{positionLabel(p.position)}</span></span>
                   </span>
                   {p.injury?.active && <Badge tone="blue">Infortunato</Badge>}
-                  {p.suspended && <Badge tone="purple">Squalificato</Badge>}
+                  {suspendedIn(p).length > 0 && <Badge tone="purple">Squalificato</Badge>}
                 </div>
               ))}
             </div>

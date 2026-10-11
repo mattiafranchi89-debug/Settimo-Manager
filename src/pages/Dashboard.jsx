@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useDoc, useClub, where, orderBy, limit } from '../lib/db';
+import { useCollection, useDoc, useClub, updateDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
+import { Alert } from '../components/ui';
 import { Card, Button, Badge, Empty, Loading } from '../components/ui';
 import { fmtShort, fmtTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
@@ -10,7 +11,8 @@ import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 import { refreshStats } from '../lib/stats';
-import { suspendedIn, COMPS } from '../lib/discipline';
+import { ensureUpcomingTrainings } from '../lib/trainings';
+import { suspendedIn, COMPS, suspensionProposals } from '../lib/discipline';
 
 const DAY = 86400000;
 const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -37,9 +39,9 @@ export default function Dashboard() {
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
 
   const nextMatch = upcoming.find((e) => e.type === 'match');
-  const nextTraining = upcoming.find((e) => e.type === 'training');
+  const nextTraining = upcoming.find((e) => e.type === 'training' && !e.cancelled);
   const lastMatch = pastEvents.find((e) => e.type === 'match');
-  const lastTraining = pastEvents.find((e) => e.type === 'training');
+  const lastTraining = pastEvents.find((e) => e.type === 'training' && !e.cancelled);
 
   // Convocazione della prossima partita, scheda dell'ultima, presenze dell'ultimo allenamento.
   const callupQ = useMemo(() => [where('eventId', '==', nextMatch?.id || '-')], [nextMatch?.id]);
@@ -65,6 +67,13 @@ export default function Dashboard() {
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
 
+  // Le sedute delle prossime tre settimane si creano da sole nei giorni fissi.
+  useEffect(() => {
+    if (!can(role, 'events.write') || !club.season || !user?.uid) return;
+    ensureUpcomingTrainings({ club, user }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, club.season, user?.uid]);
+
   // Una volta sola: le statistiche calcolate prima della divisione campionato/coppa
   // (senza `cards`) si ricalcolano da sole, senza dover premere «Ricalcola».
   useEffect(() => {
@@ -82,6 +91,26 @@ export default function Dashboard() {
     ? autoOpp : null;
   const { data: crl } = useCrl();
 
+  // Squalifiche lette nei comunicati CRL e non ancora confermate in app.
+  const [ignored, setIgnored] = useState(() => { try { return JSON.parse(localStorage.getItem('sm-crl-ignored') || '[]'); } catch { return []; } });
+  const crlSusp = useMemo(
+    () => (can(role, 'players.write') ? suspensionProposals(crl?.items || [], players).filter((x) => !ignored.includes(x.source)) : []),
+    [crl, players, role, ignored]
+  );
+  const ignore = (source) => {
+    const next = [...ignored, source];
+    setIgnored(next);
+    try { localStorage.setItem('sm-crl-ignored', JSON.stringify(next)); } catch { /* ignorabile */ }
+  };
+  const confirmSuspension = async (x) => {
+    try {
+      await updateDocument('players', x.player.id, {
+        suspensions: [...(x.player.suspensions || []), { comp: x.comp, games: x.games, fromDate: x.fromDate, source: x.source, note: x.item.doc || '', at: new Date().toISOString() }],
+        updatedAt: serverTimestamp()
+      });
+    } catch (e) { /* l'errore compare dal salvataggio */ }
+  };
+
   /* ---------- da fare: solo voci verificabili dai dati ---------- */
   const todo = useMemo(() => {
     const out = [];
@@ -98,8 +127,13 @@ export default function Dashboard() {
       if (until < 4 * DAY) {
         if (!callup) {
           out.push({ icon: '📋', text: 'Convocazione da preparare', meta: `vs ${nextMatch.opponent} · ${countdown(nextMatch.date)}`, to: `/convocazioni/nuova?event=${nextMatch.id}`, urgent: until < 2 * DAY });
+        } else if (callup.status === 'da_revisionare') {
+          // Passaggio di mano: chi l'ha preparata aspetta, chi la invia la vede in cima.
+          if (callup.readyBy !== user?.uid && can(role, 'callup.share')) {
+            out.push({ icon: '📤', text: 'Convocazione pronta: invia al gruppo', meta: `da ${callup.readyByName || 'il mister'} · ${(callup.players || []).length} convocati`, to: `/convocazioni/${callup.id}`, urgent: true });
+          }
         } else if (!PUBLISHED.includes(callup.status)) {
-          out.push({ icon: '📋', text: 'Convocazione da pubblicare', meta: `bozza · ${(callup.players || []).length} giocatori`, to: `/convocazioni/${callup.id}`, urgent: until < 2 * DAY });
+          out.push({ icon: '📋', text: 'Convocazione da completare', meta: `bozza · ${(callup.players || []).length} giocatori`, to: `/convocazioni/${callup.id}`, urgent: until < 2 * DAY });
         }
       }
     }
@@ -235,8 +269,20 @@ export default function Dashboard() {
       )}
 
       {/* 3. Attenzione */}
-      {staff && (watch.length > 0 || alerts.dimenticati.length > 0) && (
+      {staff && (watch.length > 0 || alerts.dimenticati.length > 0 || crlSusp.length > 0) && (
         <Card title="Attenzione" action={<Button size="sm" variant="ghost" onClick={() => navigate('/rosa')}>Rosa</Button>}>
+          {crlSusp.map((x) => (
+            <Alert key={x.source} level="error">
+              <div style={{ fontSize: 14 }}>
+                <b>{x.item.doc}</b>: {x.player ? x.player.fullName : x.name} squalificato {x.games} {x.games === 1 ? 'giornata' : 'giornate'} in {COMPS[x.comp].label}
+                {!x.player && <div style={{ fontSize: 12.5 }}>Nome non trovato in rosa: controlla e segnalo a mano dalla scheda giocatore.</div>}
+              </div>
+              <div className="btnrow" style={{ marginTop: 6 }}>
+                {x.player && <Button size="sm" onClick={() => confirmSuspension(x)}>Conferma</Button>}
+                <Button size="sm" variant="ghost" onClick={() => ignore(x.source)}>Ignora</Button>
+              </div>
+            </Alert>
+          ))}
           {watch.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {watch.map((w) => <Badge key={w.id} tone={w.tone}>{w.label}</Badge>)}

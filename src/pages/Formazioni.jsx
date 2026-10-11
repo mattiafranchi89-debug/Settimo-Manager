@@ -197,11 +197,20 @@ export default function Formazioni() {
     byId, bench, captain, vice, numbers
   }) : ''), [club, match, module, slotList, slots, byId, bench, captain, vice, numbers]);
 
-  const persist = () => setDocument('lineups', eventId, {
+  const persist = (extra = {}) => setDocument('lineups', eventId, {
     eventId, module, slots, captain, vice, notes, numbers,
     starters, bench: bench.map((p) => p.id),
-    updatedBy: user.uid, updatedAt: serverTimestamp()
+    updatedBy: user.uid, updatedAt: serverTimestamp(), ...extra
   });
+
+  // Passaggio di mano: il mister segna la formazione come pronta e chi compila
+  // la distinta riceve una notifica, senza messaggi WhatsApp intermedi.
+  const distintaName = club.distintaNome || club.convocazioneNome || 'il dirigente';
+  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role);
+  const markReady = async () => {
+    await persist({ ready: { at: serverTimestamp(), byUid: user.uid, byName: user.name } });
+    toast(`Pronta: ${distintaName} riceve una notifica`);
+  };
   const save = async () => { await persist(); toast('Formazione salvata'); };
 
   // Salvataggio automatico a ogni scelta: il pulsante «Salva» non serve più.
@@ -252,8 +261,20 @@ export default function Formazioni() {
         ))}
       </div>
 
+      {saved?.ready && saved.ready.byUid !== user?.uid && (
+        <Card title="📝 Pronta per la distinta" className="noprint">
+          <p style={{ marginTop: 0, fontSize: 14 }}>
+            {saved.ready.byName || 'Il mister'} l'ha segnata come pronta{toDate(saved.ready.at) ? ` alle ${toDate(saved.ready.at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}` : ''}.
+          </p>
+          <div className="msgbox">{lineupMessage}</div>
+          <div className="btnrow" style={{ marginTop: 10 }}>
+            <Button onClick={async () => { await copyText(lineupMessage); toast('Formazione copiata: incollala nella distinta'); }}>Copia per la distinta</Button>
+          </div>
+        </Card>
+      )}
+
       {mode === 'rapida' && match && (
-        <Rapida pool={pool} slots={slots} setSlots={setSlots} slotList={slotList}
+        <Rapida onReady={isHandoff ? markReady : null} readyName={distintaName} isReady={!!saved?.ready} pool={pool} slots={slots} setSlots={setSlots} slotList={slotList}
           numbers={numbers} setNumbers={setNumbers} captain={captain} vice={vice}
           toggleCaptain={toggleCaptain} toggleVice={toggleVice}
           club={club} match={match} lineupMessage={lineupMessage} save={save} toast={toast} />
@@ -434,7 +455,7 @@ const PREFERRED = {
   ATT: ['ATT', 'PC', 'AD', 'AS', 'TRQ']
 };
 
-function Rapida({ pool, slots, setSlots, slotList, numbers, setNumbers, captain, vice, toggleCaptain, toggleVice, club, match, lineupMessage, save, toast }) {
+function Rapida({ onReady, readyName, isReady, pool, slots, setSlots, slotList, numbers, setNumbers, captain, vice, toggleCaptain, toggleVice, club, match, lineupMessage, save, toast }) {
   const [editing, setEditing] = useState(null);
   const [sending, setSending] = useState(false);
   const starterIds = new Set(Object.values(slots).filter(Boolean));
@@ -557,9 +578,21 @@ function Rapida({ pool, slots, setSlots, slotList, numbers, setNumbers, captain,
             {starters.length > 0 && !hasGk && <div style={{ color: 'var(--red)', fontSize: 12 }}>Manca il portiere</div>}
             {starters.length === 11 && !captain && <div style={{ color: 'var(--muted)', fontSize: 12 }}>Capitano non indicato</div>}
           </div>
-          <Button disabled={starters.length !== 11 || sending} onClick={send}>
-            {club.distintaPhone ? `Invia a ${club.distintaNome || 'distinta'}` : 'Invia formazione'}
-          </Button>
+          {onReady ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+              <Button disabled={starters.length !== 11 || sending} onClick={async () => { setSending(true); try { await onReady(); } catch (e) { toast(errorText(e), 'error'); } setSending(false); }}>
+                {isReady ? '✅ Pronta · aggiorna' : `✅ Pronta per ${readyName}`}
+              </Button>
+              <button onClick={send} disabled={starters.length !== 11 || sending}
+                style={{ background: 'none', border: 0, color: 'var(--muted)', fontSize: 12, textDecoration: 'underline', cursor: 'pointer' }}>
+                oppure mandala su WhatsApp
+              </button>
+            </div>
+          ) : (
+            <Button disabled={starters.length !== 11 || sending} onClick={send}>
+              {club.distintaPhone ? `Invia a ${club.distintaNome || 'distinta'}` : 'Invia formazione'}
+            </Button>
+          )}
         </div>
       </div>
 

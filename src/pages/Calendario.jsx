@@ -36,7 +36,7 @@ export default function Calendario() {
 
   const Row = ({ e, past }) => (
     <button className="prow" onClick={staff ? () => navigate(`/evento/${e.id}`) : undefined}
-      style={{ width: '100%', textAlign: 'left', cursor: staff ? 'pointer' : 'default', ...(past ? { opacity: .7 } : {}) }}>
+      style={{ width: '100%', textAlign: 'left', cursor: staff ? 'pointer' : 'default', ...(past || e.cancelled ? { opacity: .6 } : {}), ...(e.cancelled ? { textDecoration: 'line-through' } : {}) }}>
       <span className="prow__num">{e.type === 'match' ? '⚽' : '🏃'}</span>
       <span className="prow__body">
         <span className="prow__name">
@@ -48,6 +48,7 @@ export default function Calendario() {
         </span>
       </span>
       {e.type === 'match' && e.scoreHome != null && <Badge tone="grey">{e.scoreHome}–{e.scoreAway}</Badge>}
+      {e.cancelled && <Badge tone="red">Annullato</Badge>}
       {staff && <span aria-hidden="true" style={{ color: 'var(--muted)', fontSize: 18, marginLeft: 4 }}>›</span>}
     </button>
   );

@@ -8,6 +8,7 @@ import { earned, nextMilestone } from '../lib/milestones';
 import { copyText, callupFor } from '../lib/callup';
 import { Button, Kpi as K } from '../components/ui';
 import DisciplineRows from '../components/Discipline';
+import { suspendedIn } from '../lib/discipline';
 import { setDocument, serverTimestamp } from '../lib/db';
 
 /** Cosa vede un giocatore di sé stesso: i suoi numeri, nient'altro. */
@@ -129,7 +130,7 @@ export default function MiaPagina() {
 
       <Card title="Disciplina">
         <DisciplineRows player={me} insight={i} />
-        {(me.suspended || i.autoSuspendedIn?.length > 0) && <Alert level="error">Risulti squalificato: controlla in quale competizione qui sopra.</Alert>}
+        {(suspendedIn(me).length > 0 || i.autoSuspendedIn?.length > 0) && <Alert level="error">Risulti squalificato: controlla in quale competizione qui sopra.</Alert>}
         {i.diffidaIn?.length > 0 && (
           <Alert level="warn">Sei in diffida in {i.diffidaIn.map((k) => (k === 'coppa' ? 'Coppa Lombardia' : 'campionato')).join(' e ')}: alla prossima ammonizione salti una partita.</Alert>
         )}

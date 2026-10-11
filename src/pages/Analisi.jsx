@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
+import { suspendedIn } from '../lib/discipline';
 import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtDate, toDate, sortPlayers } from '../lib/format';
 import { can } from '../lib/permissions';
@@ -252,7 +253,7 @@ function Gol({ matchStats, matches }) {
 
 function Disciplina({ players, club }) {
   const rows = sortPlayers(players).map((p) => ({ p, i: playerInsight(p, club) }))
-    .filter((r) => r.i.yellow || r.i.red || r.i.cup.yellow || r.i.cup.red || r.p.suspended || r.i.autoSuspendedIn.length).sort((a, b) => (b.i.yellow + b.i.cup.yellow) - (a.i.yellow + a.i.cup.yellow));
+    .filter((r) => r.i.yellow || r.i.red || r.i.cup.yellow || r.i.cup.red || suspendedIn(r.p).length || r.i.autoSuspendedIn.length).sort((a, b) => (b.i.yellow + b.i.cup.yellow) - (a.i.yellow + a.i.cup.yellow));
   const where = (list) => list.map((k) => (k === 'coppa' ? 'coppa' : 'campionato')).join(' e ');
   if (!rows.length) return <Card><Empty title="Nessun cartellino" /></Card>;
   return (
@@ -263,7 +264,7 @@ function Disciplina({ players, club }) {
       </small>
       <div className="btnrow" style={{ marginTop: 10 }}>
         {rows.filter((r) => r.i.diffidaIn.length).map((r) => <Badge key={`d${r.p.id}`} tone="orange">{r.p.fullName} in diffida ({where(r.i.diffidaIn)})</Badge>)}
-        {rows.filter((r) => r.p.suspended || r.i.autoSuspendedIn.length).map((r) => <Badge key={`s${r.p.id}`} tone="purple">{r.p.fullName} squalificato ({where([...new Set([...(r.p.suspendedIn?.length ? r.p.suspendedIn : r.p.suspended ? ['campionato', 'coppa'] : []), ...r.i.autoSuspendedIn])])})</Badge>)}
+        {rows.filter((r) => suspendedIn(r.p).length || r.i.autoSuspendedIn.length).map((r) => <Badge key={`s${r.p.id}`} tone="purple">{r.p.fullName} squalificato ({where([...new Set([...suspendedIn(r.p), ...r.i.autoSuspendedIn])])})</Badge>)}
       </div>
     </Card>
   );
@@ -298,7 +299,7 @@ function Note({ matchStats, matches }) {
 function Impiego({ players, club }) {
   const rows = sortPlayers(players).map((p) => {
     const i = playerInsight(p, club);
-    const reason = p.injury?.active ? ['Infortunio', 'blue'] : p.suspended ? ['Squalifica', 'purple']
+    const reason = p.injury?.active ? ['Infortunio', 'blue'] : suspendedIn(p).length ? ['Squalifica', 'purple']
       : i.neverPlayed ? ['Mai impiegato', 'red'] : i.weeksSincePlayed >= 3 ? ['Scelta tecnica', 'orange'] : null;
     return { p, i, reason };
   }).filter((r) => r.reason).sort((a, b) => (b.i.weeksSincePlayed ?? 99) - (a.i.weeksSincePlayed ?? 99));

@@ -7,6 +7,7 @@ import { fmtShort, fmtTime, fmtLong, capitalize, toDate, countdown, euro } from 
 import { mapsLink, callupFor } from '../lib/callup';
 import { playerInsight } from '../lib/insights';
 import PushCard from '../components/PushCard';
+import { suspendedIn } from '../lib/discipline';
 
 /**
  * La home di un giocatore risponde a tre domande, in quest'ordine:
@@ -159,7 +160,7 @@ export default function HomeGiocatore() {
               Senti lo staff prima di riprendere.
             </Alert>
           )}
-          {(me.suspended || insight?.autoSuspendedIn?.length > 0) && <Alert level="warn">Risulti squalificato: i dettagli sono nel tuo profilo.</Alert>}
+          {(suspendedIn(me).length > 0 || insight?.autoSuspendedIn?.length > 0) && <Alert level="warn">Risulti squalificato: i dettagli sono nel tuo profilo.</Alert>}
           {insight?.diffidaIn?.length > 0 && (
             <Alert level="warn">Sei in diffida in {insight.diffidaIn.map((k) => (k === 'coppa' ? 'Coppa Lombardia' : 'campionato')).join(' e ')}: alla prossima ammonizione salti una partita.</Alert>
           )}

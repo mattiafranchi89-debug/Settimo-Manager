@@ -92,6 +92,8 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     cards: { campionato: { y: 0, r: 0, hist: [] }, coppa: { y: 0, r: 0, hist: [] }, amichevole: { y: 0, r: 0, hist: [] } },
     // Gare chiuse per competizione: servono a capire se una squalifica è già scontata.
     compMatches: { campionato: 0, coppa: 0, amichevole: 0 },
+    // Date (YYYY-MM-DD) delle gare chiuse per competizione: fanno scadere le squalifiche a giornate.
+    compDates: { campionato: [], coppa: [], amichevole: [] },
     // Pre-computed so the squad pages only ever read /players.
     lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0,
     // Strisce in corso, contate dall'ultimo evento all'indietro.
@@ -107,9 +109,12 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
 
   const competitionOf = Object.fromEntries(events.map((e) => [e.id, e.competition || '']));
   const ordinal = { campionato: 0, coppa: 0, amichevole: 0 };
+  const dates = { campionato: [], coppa: [], amichevole: [] };
   closed.forEach((m) => {
     const bucket = compBucket(m.competition || competitionOf[m.eventId || m.id] || '');
     const n = ++ordinal[bucket];
+    const d = toDate(m.date);
+    if (d && !Number.isNaN(d.getTime())) dates[bucket].push(d.toISOString().slice(0, 10));
     Object.entries(m.totals).forEach(([pid, s]) => {
       const acc = stats[pid];
       if (!acc) return;
@@ -134,7 +139,7 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
       if (stats[pid]) stats[pid].minutesLast3 += s.minutes || 0;
     });
   });
-  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.compMatches = { ...ordinal }; });
+  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.compMatches = { ...ordinal }; s.compDates = { campionato: [...dates.campionato], coppa: [...dates.coppa], amichevole: [...dates.amichevole] }; });
 
   const trainingIds = new Set(attendance.map((a) => a.eventId));
   attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });

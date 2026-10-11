@@ -51,10 +51,14 @@ export function describeWrite(op, path, id, data = {}) {
       if (d.status === 'pubblicata' || d.status === 'condivisa') {
         return { tag: `callup-${id}`, title: 'Convocazione pubblicata', body: `${d.opponent ? `vs ${d.opponent} · ` : ''}${(d.players || []).length} convocati`, url: `/convocazioni/${id}`, audience: 'all', urgent: true };
       }
+      if (d.status === 'da_revisionare') {
+        return { tag: `callup-${id}`, title: 'Convocazione pronta da inviare', body: `${d.opponent ? `vs ${d.opponent} · ` : ''}${(d.players || []).length} convocati: tocca per mandarla al gruppo`, url: `/convocazioni/${id}`, urgent: true };
+      }
       return { tag: `callup-${id}`, title: 'Convocazione in preparazione', body: `${d.opponent ? `vs ${d.opponent} · ` : ''}bozza aggiornata`, url: `/convocazioni/${id}` };
     case 'attendance':
       return { tag: `attendance-${id}`, title: 'Presenze registrate', body: d.summary || 'Allenamento aggiornato', url: '/allenamenti' };
     case 'lineups':
+      if (d.ready) return { tag: `lineup-ready-${id}`, title: 'Formazione pronta per la distinta', body: 'Titolari, numeri e capitano: tocca per copiarla', url: `/formazioni?event=${id}`, urgent: true };
       return { tag: `lineup-${id}`, title: 'Formazione salvata', body: d.module ? `Modulo ${d.module}` : 'Formazione aggiornata', url: '/convocazioni' };
     case 'matchStats':
       if (d.mvp) return { tag: `mvp-${id}`, title: 'Migliore in campo', body: 'Il voto è stato pubblicato', url: `/partite/${id}`, audience: 'all' };

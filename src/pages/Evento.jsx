@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, updateDocument, serverTimestamp, where } from '../lib/db';
-import { Card, Button, Badge, Empty, Loading, useToast } from '../components/ui';
-import { capitalize, fmtLong, fmtTime, countdown, toDate, CALLUP_STATUS } from '../lib/format';
+import { Card, Button, Badge, Empty, Loading, useToast, Alert, Input } from '../components/ui';
+import { capitalize, fmtLong, fmtTime, countdown, toDate, toInputValue, CALLUP_STATUS } from '../lib/format';
 import { can } from '../lib/permissions';
 import { ResultForm } from './Partite';
 import { Attendance } from './Allenamenti';
@@ -148,8 +148,17 @@ function Match({ ev }) {
 function Training({ ev }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const role = user?.role;
   const [attending, setAttending] = useState(false);
+  const [moving, setMoving] = useState(false);
+  const [newDate, setNewDate] = useState(toInputValue(ev.date));
+  const canEdit = can(role, 'events.write');
+
+  const update = async (patch, msg) => {
+    try { await updateDocument('events', ev.id, { ...patch, updatedAt: serverTimestamp() }); toast(msg); }
+    catch (e) { toast(errorText(e), 'error'); }
+  };
   const canAttend = can(role, 'attendance.write');
 
   const attQ = useMemo(() => [where('eventId', '==', ev.id)], [ev.id]);
@@ -172,20 +181,32 @@ function Training({ ev }) {
       <Card>
         <div style={{ fontSize: 14 }}>📍 {ev.venue || '—'}</div>
         {ev.notes && <div style={{ fontSize: 14, marginTop: 6, whiteSpace: 'pre-wrap' }}>{ev.notes}</div>}
-        {can(role, 'events.write') && (
+        {ev.cancelled && <Alert level="warn">Seduta annullata.</Alert>}
+        {canEdit && (
           <div className="btnrow" style={{ marginTop: 10 }}>
-            <Button size="sm" variant="ghost" onClick={() => navigate('/allenamenti')}>Modifica o avvisa il gruppo</Button>
+            {!ev.cancelled && <Button size="sm" variant="secondary" onClick={() => setMoving((v) => !v)}>Sposta</Button>}
+            <Button size="sm" variant={ev.cancelled ? 'secondary' : 'ghost'}
+              onClick={() => update({ cancelled: !ev.cancelled }, ev.cancelled ? 'Seduta ripristinata' : 'Seduta annullata')}>
+              {ev.cancelled ? 'Ripristina' : 'Annulla seduta'}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => navigate('/allenamenti')}>Avvisa il gruppo</Button>
+          </div>
+        )}
+        {moving && (
+          <div className="btnrow" style={{ marginTop: 10, alignItems: 'center' }}>
+            <Input type="datetime-local" value={newDate} onChange={(e) => setNewDate(e.target.value)} style={{ flex: 1 }} />
+            <Button size="sm" disabled={!newDate} onClick={async () => { await update({ date: new Date(newDate) }, 'Seduta spostata'); setMoving(false); }}>Salva</Button>
           </div>
         )}
       </Card>
 
-      <div className="plist" style={{ marginTop: 12 }}>
+      {!ev.cancelled && <div className="plist" style={{ marginTop: 12 }}>
         <Step icon="✅" title="Presenze"
           status={rows.length ? `${present} presenti` : started ? 'Da registrare' : 'Non ancora'}
           tone={rows.length ? 'green' : started ? 'orange' : 'grey'}
           meta={rows.length ? `${rows.length - present} assenti` : 'Tutti presenti salvo chi segni assente'}
           onClick={canAttend ? () => setAttending(true) : null} />
-      </div>
+      </div>}
 
       {attending && <Attendance session={ev} players={players} user={user} onClose={() => setAttending(false)} />}
     </>

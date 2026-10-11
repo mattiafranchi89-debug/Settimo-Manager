@@ -69,6 +69,23 @@ export default function Allenamenti() {
     } catch (e) { toast(errorText(e), 'error'); }
   };
 
+  /**
+   * Allenamento non in calendario: crea la seduta adesso e apre subito le
+   * presenze, in un solo passaggio.
+   */
+  const extraToday = async () => {
+    try {
+      const date = new Date();
+      const data = {
+        type: 'training', date, venue: club.trainingLocations?.[0] || '', focus: 'Allenamento extra', notes: '',
+        seasonId: club.season, createdBy: user.uid, createdAt: serverTimestamp()
+      };
+      const ref = await addDocument('events', data);
+      await audit(user, 'training.create', 'extra', {});
+      setAttendFor({ id: ref.id, ...data });
+    } catch (e) { toast(errorText(e), 'error'); }
+  };
+
   if (loading) return <Loading />;
 
   const upcoming = sessions.filter((s) => (s.date?.toDate?.() || new Date(s.date)) >= new Date()).reverse();
@@ -82,6 +99,7 @@ export default function Allenamenti() {
           {canWrite && <Button size="sm" variant="secondary" onClick={() => navigate('/importa?tipo=allenamenti')}>⬆ Importa</Button>}
           {canWrite && <Button size="sm" variant="secondary" onClick={() => setGenerating(true)}>🗓 Genera</Button>}
           {canWrite && <Button size="sm" onClick={() => setCreating(true)}>＋ Seduta</Button>}
+          {canWrite && canAttend && <Button size="sm" variant="secondary" onClick={extraToday}>⚡ Extra di oggi</Button>}
         </div>
       </div>
 
@@ -159,7 +177,8 @@ const SessionRow = ({ s, rows = [], onAttend, onDelete, onAnnounce, past }) => {
         </span>
       </span>
       {onAnnounce && !past && <button className="iconbtn" aria-label="Avvisa il gruppo" title="Avvisa il gruppo" onClick={onAnnounce}>💬</button>}
-      {onAttend && <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>}
+      {s.cancelled ? <Badge tone="red">Annullata</Badge>
+        : onAttend && <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>}
       {onDelete && <button className="iconbtn" aria-label="Elimina seduta" onClick={onDelete}>🗑</button>}
     </div>
   );
