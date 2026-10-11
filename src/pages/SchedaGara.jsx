@@ -8,6 +8,7 @@ import { SLOTS, uploadAttachment, saveAttachmentLink, removeAttachment, validate
 import { errorText } from './Rosa';
 import { fmtLong, fmtTime, capitalize, sortPlayers, shortName } from '../lib/format';
 import { can } from '../lib/permissions';
+import { readRefertoPhoto, ourSide, playersByNumber, proposals, mergeEvents } from '../lib/referto';
 
 export default function SchedaGara() {
   const { id } = useParams();
@@ -45,6 +46,8 @@ export default function SchedaGara() {
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [postNote, setPostNote] = useState('');
+  const [referto, setReferto] = useState(null);
+  const [reading, setReading] = useState(false);
 
   useEffect(() => {
     if (!saved) return;
@@ -115,6 +118,33 @@ export default function SchedaGara() {
     setBusy(false);
   };
 
+  /** Foto del referto: si archivia tra gli allegati e si legge in automatico. */
+  const onRefertoPhoto = async (file) => {
+    if (!file) return;
+    setReading(true);
+    uploadAttachment({ eventId: id, slot: 'referto', file, user }).catch(() => { /* Storage facoltativo */ });
+    try {
+      const data = await readRefertoPhoto(file);
+      if (!data?.leggibile) toast('Il referto non si legge bene: riprova con una foto più dritta e illuminata', 'error');
+      else setReferto(data);
+    } catch (e) {
+      toast(e.message || 'Lettura non riuscita', 'error');
+    }
+    setReading(false);
+  };
+
+  const applyReferto = async ({ items, score }) => {
+    setEvents((v) => mergeEvents(v, items.map(({ type, minute, playerId, playerInId }) => ({ type, minute, playerId, playerInId }))));
+    setDirty(true);
+    if (score && score.home !== '' && score.away !== '') {
+      try {
+        await updateDocument('events', id, { scoreHome: Number(score.home), scoreAway: Number(score.away), updatedAt: serverTimestamp() });
+      } catch (e) { toast(errorText(e), 'error'); }
+    }
+    setReferto(null);
+    toast('Dati del referto inseriti: controlla e premi «Salva scheda»');
+  };
+
   if (loading || !match) return <Loading />;
 
   const closed = saved?.closed;
@@ -140,6 +170,21 @@ export default function SchedaGara() {
       </div>
 
       {canWrite && (
+        <Card title="📷 Referto arbitrale">
+          <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>
+            Fotografa il referto: risultato, sostituzioni, ammonizioni ed espulsioni vengono letti e proposti qui, da confermare.
+            I numeri di maglia si abbinano ai giocatori con la formazione salvata per questa gara.
+          </p>
+          <label className={`btn btn--primary ${reading ? 'btn--disabled' : ''}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: reading ? 'wait' : 'pointer' }}>
+            {reading ? 'Leggo il referto…' : 'Carica la foto del referto'}
+            <input type="file" accept="image/*" capture="environment" disabled={reading} style={{ display: 'none' }}
+              onChange={(e) => { onRefertoPhoto(e.target.files?.[0]); e.target.value = ''; }} />
+          </label>
+          {!lineup?.numbers && <Alert level="warn">Manca la formazione con i numeri di maglia: il referto si legge lo stesso, ma i giocatori andranno scelti a mano.</Alert>}
+        </Card>
+      )}
+
+      {canWrite && (
         <Card title="Registra evento">
           <div className="btnrow">
             {Object.entries(EVENT_TYPES).map(([k, v]) => (
@@ -158,7 +203,7 @@ export default function SchedaGara() {
           <div className="plist">
             {[...events].sort((a, b) => a.minute - b.minute).map((e) => (
               <div key={e.id} className="prow">
-                <span className="prow__num">{e.minute}'</span>
+                <span className="prow__num">{e.minute == null ? '?' : e.minute}'</span>
                 <span className="prow__body">
                   <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : (byId[e.playerId]?.fullName || '—')}</span>
                   {e.type === 'sostituzione' && <span className="prow__meta"><span>entra {byId[e.playerInId]?.fullName || '—'}</span></span>}
@@ -234,6 +279,11 @@ export default function SchedaGara() {
       {adding && (
         <EventForm type={adding} players={onSheet} totals={totals} starters={starters} bench={bench} byId={byId}
           onSave={addEvent} onClose={() => setAdding(null)} />
+      )}
+
+      {referto && (
+        <RefertoReview data={referto} match={match} club={club} lineup={lineup} onSheet={onSheet} byId={byId}
+          onApply={applyReferto} onClose={() => setReferto(null)} />
       )}
 
       {closing && (
@@ -380,6 +430,97 @@ function LinkForm({ slot, onSave, onClose }) {
       </Field>
       <div className="btnrow">
         <Button disabled={!valid} onClick={() => onSave(url)}>Salva</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+    </Sheet>
+  );
+}
+
+const KIND = { sostituzione: '🔁 Sostituzione', gialla: '🟨 Ammonizione', rossa: '🟥 Espulsione', gol_subito: '🥅 Gol subito' };
+
+/** Controllo dei dati letti: ogni riga si conferma, si corregge o si esclude. */
+function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onClose }) {
+  const [side, setSide] = useState(() => ourSide(data, club.clubName, match));
+  const byNumber = useMemo(() => playersByNumber(lineup?.numbers), [lineup]);
+  const [items, setItems] = useState(() => proposals(data, ourSide(data, club.clubName, match), byNumber));
+  const [include, setInclude] = useState({});
+  const [score, setScore] = useState({ home: data.risultato?.ospitante ?? '', away: data.risultato?.ospitata ?? '' });
+
+  const changeSide = (s) => { setSide(s); setItems(proposals(data, s, byNumber)); setInclude({}); };
+  const update = (key, patch) => setItems((list) => list.map((x) => (x.key === key ? { ...x, ...patch } : x)));
+  const isIn = (x) => include[x.key] ?? true;
+  const ready = (x) => x.type === 'gol_subito' || (x.playerId && (x.type !== 'sostituzione' || x.playerInId));
+  const chosen = items.filter(isIn);
+  const missing = chosen.filter((x) => !ready(x)).length;
+  const other = side === 'ospitante' ? 'ospitata' : 'ospitante';
+  const theirCards = [...(data.ammoniti?.[other] || []).map((a) => `🟨 ${a.numero ?? '?'} ${a.nome}`), ...(data.espulsi?.[other] || []).map((a) => `🟥 ${a.numero ?? '?'} ${a.nome}`)];
+
+  const PlayerPick = ({ value, onChange, n }) => (
+    <Select value={value || ''} onChange={(e) => onChange(e.target.value || null)} style={{ minHeight: 38, padding: '4px 8px', fontSize: 13.5 }}>
+      <option value="">{n != null ? `n. ${n} — scegli` : 'scegli'}</option>
+      {onSheet.map((p) => <option key={p.id} value={p.id}>{lineup?.numbers?.[p.id] ? `${lineup.numbers[p.id]} · ` : ''}{p.fullName}</option>)}
+    </Select>
+  );
+
+  return (
+    <Sheet title="Controlla il referto" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: 'var(--muted)' }}>{data.competizione}{data.data ? ` · ${data.data.split('-').reverse().join('/')}` : ''}</div>
+      <div className="row2" style={{ marginTop: 8 }}>
+        <Field label={data.ospitante || 'Ospitante'}><Input type="number" min="0" inputMode="numeric" value={score.home} onChange={(e) => setScore((s) => ({ ...s, home: e.target.value }))} /></Field>
+        <Field label={data.ospitata || 'Ospitata'}><Input type="number" min="0" inputMode="numeric" value={score.away} onChange={(e) => setScore((s) => ({ ...s, away: e.target.value }))} /></Field>
+      </div>
+      <div className="chiprow" style={{ marginBottom: 10 }}>
+        <span style={{ fontSize: 13.5, alignSelf: 'center' }}>Noi siamo:</span>
+        {['ospitante', 'ospitata'].map((s) => (
+          <button key={s} className={`chip ${side === s ? 'chip--on' : ''}`} onClick={() => changeSide(s)}>{s === 'ospitante' ? 'di casa' : 'in trasferta'}</button>
+        ))}
+      </div>
+
+      {data.dubbi?.length > 0 && <Alert level="warn">Da verificare: {data.dubbi.join(' · ')}</Alert>}
+
+      {items.length === 0 ? <p style={{ fontSize: 14 }}>Nessuna sostituzione, ammonizione o espulsione per noi sul referto.</p> : (
+        <div className="stack" style={{ gap: 8 }}>
+          {items.map((x) => (
+            <div key={x.key} className="card" style={{ padding: 10, margin: 0, opacity: isIn(x) ? 1 : 0.5 }}>
+              <div className="spread">
+                <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 600, fontSize: 14 }}>
+                  <input type="checkbox" checked={isIn(x)} onChange={(e) => setInclude((v) => ({ ...v, [x.key]: e.target.checked }))} />
+                  {KIND[x.type]}
+                </label>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
+                  min <Input type="number" inputMode="numeric" value={x.minute ?? ''} placeholder="?" onChange={(e) => update(x.key, { minute: e.target.value === '' ? null : Number(e.target.value) })}
+                    style={{ width: 56, minHeight: 34, padding: '2px 6px', textAlign: 'center' }} />
+                </span>
+              </div>
+              {x.type === 'sostituzione' && (
+                <div className="stack" style={{ gap: 6, marginTop: 8 }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--muted)' }}>Sul referto: esce {x.number ?? '?'}, entra {x.inNumber ?? '?'} · {x.raw}</div>
+                  <div className="row2">
+                    <Field label="Esce"><PlayerPick value={x.playerId} n={x.number} onChange={(v) => update(x.key, { playerId: v })} /></Field>
+                    <Field label="Entra"><PlayerPick value={x.playerInId} n={x.inNumber} onChange={(v) => update(x.key, { playerInId: v })} /></Field>
+                  </div>
+                </div>
+              )}
+              {(x.type === 'gialla' || x.type === 'rossa') && (
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--muted)', marginBottom: 4 }}>Sul referto: {x.number ?? '?'} {x.name}</div>
+                  <PlayerPick value={x.playerId} n={x.number} onChange={(v) => update(x.key, { playerId: v })} />
+                </div>
+              )}
+              {x.type === 'gol_subito' && <div style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 4 }}>Dal risultato: il minuto non è sul referto.</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {theirCards.length > 0 && <p style={{ fontSize: 12.5, color: 'var(--muted)' }}>Avversari (non salvati): {theirCards.join(' · ')}</p>}
+      <p style={{ fontSize: 12.5, color: 'var(--muted)' }}>
+        I marcatori non sono sul referto: aggiungili con «Gol». Ammonizioni ed espulsioni non hanno il minuto: se lo conosci, scrivilo.
+      </p>
+      <div className="btnrow">
+        <Button disabled={missing > 0} onClick={() => onApply({ items: chosen, score })}>
+          {missing > 0 ? `Scegli ${missing} giocator${missing === 1 ? 'e' : 'i'}` : `Inserisci nella scheda (${chosen.length})`}
+        </Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
     </Sheet>

@@ -4,6 +4,7 @@
 // dell'app (solo lo staff può far partire notifiche agli altri).
 
 import { importVapidKey, sendPush } from './webpush.js';
+import { readReferto } from './referto.js';
 
 const STAFF = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
 // Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori.
@@ -25,12 +26,33 @@ export default {
         return json({ key: env.VAPID_PUBLIC_KEY || null, ready: !!(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY) });
       }
       if (url.pathname === '/api/notify' && request.method === 'POST') return await notify(request, env);
+      if (url.pathname === '/api/referto' && request.method === 'POST') return await referto(request, env);
       return json({ error: 'not_found' }, 404);
     } catch (e) {
       return json({ error: 'internal', message: String(e?.message || e) }, 500);
     }
   }
 };
+
+/** Foto del referto → dati strutturati. Solo per chi compila le schede gara. */
+async function referto(request, env) {
+  if (!env.ANTHROPIC_API_KEY) return json({ error: 'referto_not_configured' }, 503);
+  const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  const claims = await verifyFirebaseToken(token, env.FIREBASE_PROJECT_ID);
+  if (!claims) return json({ error: 'unauthorized' }, 401);
+  const me = await firestore(env.FIREBASE_PROJECT_ID, token).get(`users/${claims.sub}`);
+  if (!me || me.active === false || !['admin', 'head_coach', 'assistant_coach'].includes(me.role)) return json({ error: 'forbidden' }, 403);
+
+  const input = await request.json().catch(() => ({}));
+  const image = typeof input.image === 'string' ? input.image.replace(/^data:[^,]+,/, '') : '';
+  const mediaType = ['image/jpeg', 'image/png', 'image/webp'].includes(input.mediaType) ? input.mediaType : 'image/jpeg';
+  if (!image || image.length > 7_000_000) return json({ error: 'bad_image' }, 400);
+  try {
+    return json({ data: await readReferto({ image, mediaType }, env) });
+  } catch (e) {
+    return json({ error: 'read_failed', message: String(e?.message || e) }, 502);
+  }
+}
 
 async function notify(request, env) {
   if (!env.VAPID_PRIVATE_KEY || !env.VAPID_PUBLIC_KEY) return json({ error: 'push_not_configured' }, 503);

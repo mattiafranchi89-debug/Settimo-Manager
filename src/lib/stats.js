@@ -27,17 +27,19 @@ export function computeMatchTotals({ starters = [], bench = [], events = [], dur
   const leftAt = {};
   starters.forEach((pid) => { enteredAt[pid] = 0; ensure(pid).started = true; });
 
-  [...events].sort((a, b) => a.minute - b.minute).forEach((e) => {
+  // Minuto mancante (eventi letti dal referto): in fondo, come a fine gara.
+  const at = (e) => (e.minute == null ? duration : e.minute);
+  [...events].sort((a, b) => at(a) - at(b)).forEach((e) => {
     if (e.type === 'gol_subito' || !e.playerId) return;
     const s = ensure(e.playerId);
     switch (e.type) {
       case 'gol': s.goals += 1; break;
       case 'assist': s.assists += 1; break;
-      case 'gialla': s.yellow += 1; if (s.yellow >= 2 && leftAt[e.playerId] == null) leftAt[e.playerId] = e.minute; break;
-      case 'rossa': s.red += 1; if (leftAt[e.playerId] == null) leftAt[e.playerId] = e.minute; break;
+      case 'gialla': s.yellow += 1; if (s.yellow >= 2 && leftAt[e.playerId] == null) leftAt[e.playerId] = at(e); break;
+      case 'rossa': s.red += 1; if (leftAt[e.playerId] == null) leftAt[e.playerId] = at(e); break;
       case 'sostituzione':
-        if (leftAt[e.playerId] == null) leftAt[e.playerId] = e.minute;
-        if (e.playerInId) { enteredAt[e.playerInId] = e.minute; ensure(e.playerInId); }
+        if (leftAt[e.playerId] == null) leftAt[e.playerId] = at(e);
+        if (e.playerInId) { enteredAt[e.playerInId] = at(e); ensure(e.playerInId); }
         break;
       default: break;
     }

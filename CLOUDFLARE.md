@@ -58,3 +58,17 @@ indirizzi `/api/*` e invia le notifiche. La chiave pubblica sta in
 Poi ognuno attiva le notifiche dal proprio telefono in Impostazioni (o dal
 riquadro in Home). Su iPhone serve prima «Aggiungi a Home» da Safari.
 Su Netlify, che è solo statico, le notifiche non partono.
+
+## Lettura automatica del referto
+
+Nella scheda gara, «Carica la foto del referto» manda la foto al worker
+(`/api/referto`), che la fa leggere a Claude e restituisce risultato,
+sostituzioni, ammonizioni ed espulsioni da confermare. Serve una chiave API
+Anthropic, a consumo (circa un centesimo a referto):
+
+1. console.anthropic.com → **API Keys** → **Create Key** (e un po' di credito in Billing)
+2. dash.cloudflare.com → **Workers & Pages** → `settimo-manager` → **Settings** →
+   **Variables and Secrets** → **Add** → tipo **Secret**, nome `ANTHROPIC_API_KEY`
+3. **Deploy**
+
+Facoltativo: variabile `ANTHROPIC_MODEL` per cambiare modello (predefinito `claude-sonnet-5-5`).
