@@ -175,11 +175,17 @@ export default function SchedaGara() {
             Fotografa il referto: risultato, sostituzioni, ammonizioni ed espulsioni vengono letti e proposti qui, da confermare.
             I numeri di maglia si abbinano ai giocatori con la formazione salvata per questa gara.
           </p>
-          <label className={`btn btn--primary ${reading ? 'btn--disabled' : ''}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: reading ? 'wait' : 'pointer' }}>
-            {reading ? 'Leggo il referto…' : 'Carica la foto del referto'}
-            <input type="file" accept="image/*" capture="environment" disabled={reading} style={{ display: 'none' }}
-              onChange={(e) => { onRefertoPhoto(e.target.files?.[0]); e.target.value = ''; }} />
-          </label>
+          {/* Due ingressi: la fotocamera per lo scatto al momento, la galleria per una foto già fatta
+              (con «capture» Android apre solo la fotocamera, quindi serve un secondo pulsante). */}
+          <div className="btnrow">
+            {[['📷 Scatta foto', true, 'primary'], ['🖼️ Scegli dalla galleria', false, 'secondary']].map(([label, camera, variant]) => (
+              <label key={label} className={`btn btn--${variant}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: reading ? 'wait' : 'pointer', opacity: reading ? 0.6 : 1 }}>
+                {reading && camera ? 'Leggo il referto…' : label}
+                <input type="file" accept="image/*" {...(camera ? { capture: 'environment' } : {})} disabled={reading} style={{ display: 'none' }}
+                  onChange={(e) => { onRefertoPhoto(e.target.files?.[0]); e.target.value = ''; }} />
+              </label>
+            ))}
+          </div>
           {!lineup?.numbers && <Alert level="warn">Manca la formazione con i numeri di maglia: il referto si legge lo stesso, ma i giocatori andranno scelti a mano.</Alert>}
         </Card>
       )}
