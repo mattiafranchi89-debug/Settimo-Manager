@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Button, Alert, useToast } from './ui';
-import { pushStatus, enablePush, disablePush, sendTestPush } from '../lib/push';
+import { pushStatus, enablePush, disablePush, sendTestPush, pushServerReady } from '../lib/push';
 
 const DISMISS_KEY = 'sm-push-banner-dismissed';
 
@@ -22,7 +22,9 @@ export default function PushCard({ compact = false, staff = true }) {
     try { return localStorage.getItem(DISMISS_KEY) === '1'; } catch { return false; }
   });
 
+  const [serverReady, setServerReady] = useState(true);
   useEffect(() => { pushStatus().then(setStatus).catch(() => setStatus('unsupported')); }, []);
+  useEffect(() => { if (!compact) pushServerReady().then(setServerReady); }, [compact]);
 
   const run = async (fn, ok) => {
     setBusy(true);
@@ -54,10 +56,16 @@ export default function PushCard({ compact = false, staff = true }) {
     <Card title="🔔 Notifiche sul telefono">
       <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>{what} Vale per questo dispositivo.</p>
       {HINT[status] && <Alert level={status === 'denied' ? 'warn' : 'info'}>{HINT[status]}</Alert>}
+      {!serverReady && status !== 'unsupported' && (
+        <Alert level="warn">
+          Il server delle notifiche non è ancora configurato: in Cloudflare manca il segreto <b>VAPID_PRIVATE_KEY</b>.
+          {status === 'on' ? ' Questo telefono è già iscritto: le notifiche arriveranno appena il server sarà pronto.' : ''}
+        </Alert>
+      )}
       {status === 'off' && <Button disabled={busy} onClick={() => run(enablePush, 'Notifiche attivate')}>Attiva su questo telefono</Button>}
       {status === 'on' && (
         <div className="btnrow">
-          <Button variant="secondary" disabled={busy} onClick={() => run(sendTestPush, 'Notifica di prova inviata')}>Invia una prova</Button>
+          <Button variant="secondary" disabled={busy || !serverReady} onClick={() => run(sendTestPush, 'Notifica di prova inviata')}>Invia una prova</Button>
           <Button variant="ghost" disabled={busy} onClick={() => run(disablePush, 'Notifiche disattivate')}>Disattiva</Button>
         </div>
       )}

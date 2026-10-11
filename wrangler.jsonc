@@ -7,6 +7,9 @@
   "name": "settimo-manager",
   "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
+  // Le variabili aggiunte a mano nel pannello Cloudflare restano anche dopo
+  // ogni deploy da GitHub (i segreti restano comunque).
+  "keep_vars": true,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

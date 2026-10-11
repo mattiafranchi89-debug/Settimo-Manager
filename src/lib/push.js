@@ -101,6 +101,24 @@ export async function sendTestPush() {
     body: JSON.stringify({ test: true, title: 'Settimo · Prova', body: 'Le notifiche funzionano su questo telefono ✅', url: '/impostazioni' })
   });
   const out = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(out.error || `errore ${res.status}`);
+  if (!res.ok) throw new Error(pushError(out.error, res.status));
+  if (out.candidates === 0) throw new Error('Questo telefono non risulta iscritto: tocca Disattiva e poi di nuovo Attiva.');
+  if (out.sent === 0) throw new Error('Il servizio di notifiche del telefono ha rifiutato l\'invio: disattiva e riattiva le notifiche.');
   return out;
+}
+
+/** Messaggi comprensibili per gli errori del server notifiche. */
+export function pushError(code, status) {
+  if (code === 'push_not_configured') return 'Notifiche non ancora attive sul server: in Cloudflare manca il segreto VAPID_PRIVATE_KEY.';
+  if (code === 'unauthorized') return 'Sessione scaduta: esci e rientra nell\'app.';
+  if (code === 'forbidden') return 'Il tuo account non può inviare notifiche.';
+  return `Invio non riuscito (${code || `errore ${status}`}).`;
+}
+
+/** Il server ha la chiave per firmare le notifiche? */
+export async function pushServerReady() {
+  try {
+    const res = await fetch('/api/push-key', { cache: 'no-store' });
+    return res.ok ? !!(await res.json()).ready : false;
+  } catch { return false; }
 }
