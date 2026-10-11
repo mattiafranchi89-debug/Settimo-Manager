@@ -57,7 +57,7 @@ Trascrivi esattamente ciò che è scritto, senza dedurre nulla:
 - i numeri di maglia sono interi; nelle sostituzioni riporta il minuto e il tempo come scritti, senza convertirli;
 - il risultato è nel campo RISULTATO: primo numero ospitante, secondo ospitata;
 - se una cifra è ambigua (es. 1 o 7, 4 o 9) scegli la più probabile e segnalala in "dubbi".
-Rispondi solo chiamando lo strumento "referto".`;
+Rispondi SOLO chiamando lo strumento "referto" con tutti i campi richiesti. Se non puoi usare lo strumento, rispondi con un unico oggetto JSON con gli stessi campi, senza altro testo.`;
 
 export async function readReferto({ image, mediaType = 'image/jpeg' }, env) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -71,7 +71,9 @@ export async function readReferto({ image, mediaType = 'image/jpeg' }, env) {
       model: env.ANTHROPIC_MODEL || 'claude-sonnet-5-5',
       max_tokens: 2000,
       tools: [TOOL],
-      tool_choice: { type: 'tool', name: 'referto' },
+      // I modelli recenti non accettano tool_choice «tool»/«any»: si lascia
+      // «auto» e il prompt chiede di usare lo strumento.
+      tool_choice: { type: 'auto' },
       messages: [{
         role: 'user',
         content: [
@@ -83,7 +85,13 @@ export async function readReferto({ image, mediaType = 'image/jpeg' }, env) {
   });
   const out = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(out?.error?.message || `Claude API ${res.status}`);
-  const call = (out.content || []).find((c) => c.type === 'tool_use');
-  if (!call) throw new Error('Risposta senza dati');
-  return call.input;
+  const call = (out.content || []).find((c) => c.type === 'tool_use' && c.name === 'referto');
+  if (call) return call.input;
+  // Riserva: il modello ha risposto in testo con un JSON.
+  const text = (out.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('\n');
+  const match = text.match(/\{[\s\S]*\}/);
+  if (match) {
+    try { return JSON.parse(match[0]); } catch { /* sotto */ }
+  }
+  throw new Error('Il referto non è stato letto: riprova con una foto più nitida');
 }
