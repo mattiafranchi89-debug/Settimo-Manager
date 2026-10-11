@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, where, orderBy, limit } from '../lib/db';
@@ -9,6 +9,7 @@ import { buildInsights, squadAlerts } from '../lib/insights';
 import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
+import { refreshStats } from '../lib/stats';
 import { suspendedIn, COMPS } from '../lib/discipline';
 
 const DAY = 86400000;
@@ -63,6 +64,18 @@ export default function Dashboard() {
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
+
+  // Una volta sola: le statistiche calcolate prima della divisione campionato/coppa
+  // (senza `cards`) si ricalcolano da sole, senza dover premere «Ricalcola».
+  useEffect(() => {
+    if (!can(role, 'matchstats.write') || !players.length) return;
+    const old = players.some((p) => p.stats && !p.stats.cards && (p.stats.matchesPlayedTotal || 0) > 0);
+    let flag = false;
+    try { flag = sessionStorage.getItem('sm-cards-recalc') === '1'; } catch { /* ignorabile */ }
+    if (!old || flag) return;
+    try { sessionStorage.setItem('sm-cards-recalc', '1'); } catch { /* ignorabile */ }
+    refreshStats(players, club.season).catch(() => {});
+  }, [players, role, club.season]);
 
   const { data: autoOpp } = useAutoOpponent();
   const opp = nextMatch && can(role, 'scouting.read') && autoVisible(autoOpp, nowTs) && sameTeam(autoOpp.next.opponent, nextMatch.opponent || '')

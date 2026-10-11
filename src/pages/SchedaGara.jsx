@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, setDocument, updateDocument, serverTimestamp, where, audit } from '../lib/db';
@@ -9,6 +9,10 @@ import { errorText } from './Rosa';
 import { fmtLong, fmtTime, capitalize, sortPlayers, shortName } from '../lib/format';
 import { can } from '../lib/permissions';
 import { readRefertoPhoto, ourSide, playersByNumber, proposals, mergeEvents } from '../lib/referto';
+import { useAutosave, AutosaveBadge } from '../lib/autosave';
+
+/** JSON con le chiavi in ordine: Firestore non garantisce l'ordine dei campi. */
+const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined).map((key) => [key, x[key]])) : x));
 
 export default function SchedaGara() {
   const { id } = useParams();
@@ -44,17 +48,22 @@ export default function SchedaGara() {
   const [adding, setAdding] = useState(null);
   const [closing, setClosing] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [dirty, setDirty] = useState(false);
+  const [scorersOpen, setScorersOpen] = useState(false);
   const [postNote, setPostNote] = useState('');
   const [referto, setReferto] = useState(null);
   const [reading, setReading] = useState(false);
 
+  // I dati in arrivo dal database riempiono la scheda solo se non ci sono
+  // modifiche locali ancora da salvare: così non si perde quello che si sta scrivendo.
+  const pendingRef = useRef(false);
+  const hydrated = useRef(false);
   useEffect(() => {
-    if (!saved) return;
+    if (!saved) { hydrated.current = true; return; }
+    if (hydrated.current && pendingRef.current) return;
+    hydrated.current = true;
     setEvents(saved.events || []);
     setDuration(saved.duration || 90);
     setPostNote(saved.postNote || '');
-    setDirty(false);
   }, [saved]);
 
   const byId = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
@@ -73,41 +82,48 @@ export default function SchedaGara() {
   const ourGoals = events.filter((e) => e.type === 'gol').length;
   const conceded = events.filter((e) => e.type === 'gol_subito').length;
 
-  const addEvent = (e) => { setEvents((v) => [...v, { ...e, id: Math.random().toString(36).slice(2) }]); setDirty(true); setAdding(null); };
-  const removeEvent = (eid) => { setEvents((v) => v.filter((e) => e.id !== eid)); setDirty(true); };
+  const addEvent = (e) => { setEvents((v) => [...v, { ...e, id: Math.random().toString(36).slice(2) }]); setAdding(null); };
+  const removeEvent = (eid) => { setEvents((v) => v.filter((e) => e.id !== eid)); };
 
-  const save = async (closed = saved?.closed || false) => {
-    setBusy(true);
-    try {
-      // Solo campi valorizzati: gli eventi letti dal referto hanno campi vuoti.
-      const clean = events.map((e) => Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined)));
-      await setDocument('matchStats', id, {
-        eventId: id, date: match.date, opponent: match.opponent,
-        starters, bench, events: clean, duration, totals, closed, postNote,
-        conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
-        competition: match.competition || '',
-        updatedBy: user.uid, updatedAt: serverTimestamp()
-      });
-      setDirty(false);
-      toast('Scheda salvata');
-      return true;
-    } catch (e) {
-      toast(errorText(e), 'error');
-      return false;
-    } finally {
-      setBusy(false);
-    }
+  /** Scrive la scheda. Lancia l'errore: chi chiama decide come mostrarlo. */
+  const persist = async (closedFlag = saved?.closed || false) => {
+    // Solo campi valorizzati: gli eventi letti dal referto possono averne di vuoti.
+    const clean = events.map((e) => Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined)));
+    await setDocument('matchStats', id, {
+      eventId: id, date: match.date, opponent: match.opponent,
+      starters, bench, events: clean, duration, totals, closed: closedFlag, postNote,
+      conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
+      competition: match.competition || '',
+      updatedBy: user.uid, updatedAt: serverTimestamp()
+    });
   };
+
+  // Salvataggio automatico: niente più «Salva scheda». Se la gara è già chiusa,
+  // le statistiche si riallineano da sole dopo ogni correzione.
+  const localKey = stableKey({ events, duration, postNote });
+  const savedKey = stableKey({ events: saved?.events || [], duration: saved?.duration || 90, postNote: saved?.postNote || '' });
+  const autosave = useAutosave({
+    key: localKey, savedKey, enabled: canWrite && !!match && hydrated.current,
+    save: async () => {
+      await persist();
+      if (saved?.closed) refreshStats(players, club.season).catch(() => {});
+    }
+  });
+  pendingRef.current = autosave.pending;
 
   const closeMatch = async () => {
     setBusy(true);
-    if (!(await save(true))) { setBusy(false); return; }
+    try {
+      await persist(true);
+    } catch (e) {
+      toast(errorText(e), 'error'); setBusy(false); return;
+    }
     await audit(user, 'match.close', id, { opponent: match.opponent, goals: ourGoals });
     try {
       const r = await refreshStats(players, club.season);
-      toast(`Gara chiusa e statistiche aggiornate (${r.matches} gare)`);
+      toast(`Partita chiusa e statistiche aggiornate (${r.matches} gare)`);
     } catch (e) {
-      toast('Gara chiusa. Premi «Ricalcola statistiche» per aggiornare i totali.', 'error');
+      toast('Partita chiusa. Le statistiche si aggiorneranno al prossimo ricalcolo.', 'error');
     }
     setBusy(false);
   };
@@ -145,14 +161,13 @@ export default function SchedaGara() {
 
   const applyReferto = async ({ items, score }) => {
     setEvents((v) => mergeEvents(v, items.map(({ type, minute, playerId, playerInId }) => ({ type, minute, playerId, playerInId }))));
-    setDirty(true);
     if (score && score.home !== '' && score.away !== '') {
       try {
         await updateDocument('events', id, { scoreHome: Number(score.home), scoreAway: Number(score.away), updatedAt: serverTimestamp() });
       } catch (e) { toast(errorText(e), 'error'); }
     }
     setReferto(null);
-    toast('Dati del referto inseriti: controlla e premi «Salva scheda»');
+    toast('Dati del referto inseriti nella scheda');
   };
 
   if (loading || !match) return <Loading />;
@@ -166,11 +181,14 @@ export default function SchedaGara() {
           <h1>Scheda gara</h1>
           <p>{match.home === false ? `${match.opponent} — ${club.clubName}` : `${club.clubName} — ${match.opponent}`} · {capitalize(fmtLong(match.date))} {fmtTime(match.date)}</p>
         </div>
-        {closed ? <Badge tone="green">Chiusa</Badge> : dirty ? <Badge tone="orange">Non salvata</Badge> : null}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+          {closed && <Badge tone="green">Chiusa</Badge>}
+          {canWrite && <AutosaveBadge status={autosave} />}
+        </div>
       </div>
 
       {!lineup && <Alert level="warn">Nessuna formazione salvata per questa gara: i minuti dei titolari non possono essere calcolati. <a href="#" onClick={(e) => { e.preventDefault(); navigate('/formazioni'); }}>Vai alla formazione</a>.</Alert>}
-      {closed && <Alert level="info">Gara chiusa. Puoi ancora correggere gli eventi: dopo la modifica salva e ricalcola le statistiche.</Alert>}
+      {closed && <Alert level="info">Partita chiusa. Puoi ancora correggere gli eventi: si salva tutto da solo e le statistiche si aggiornano.</Alert>}
 
       <div className="grid grid--kpi">
         <Kpi value={ourGoals} label="Gol segnati" accent />
@@ -179,25 +197,9 @@ export default function SchedaGara() {
         <Kpi value={events.filter((e) => e.type === 'sostituzione').length} label="Cambi" />
       </div>
 
-      {canWrite && (
-        <Card title="📷 Referto arbitrale">
-          <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>
-            Fotografa il referto: risultato, sostituzioni, ammonizioni ed espulsioni vengono letti e proposti qui, da confermare.
-            I numeri di maglia si abbinano ai giocatori con la formazione salvata per questa gara.
-          </p>
-          {/* Due ingressi: la fotocamera per lo scatto al momento, la galleria per una foto già fatta
-              (con «capture» Android apre solo la fotocamera, quindi serve un secondo pulsante). */}
-          <div className="btnrow">
-            {[['📷 Scatta foto', true, 'primary'], ['🖼️ Scegli dalla galleria', false, 'secondary']].map(([label, camera, variant]) => (
-              <label key={label} className={`btn btn--${variant}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: reading ? 'wait' : 'pointer', opacity: reading ? 0.6 : 1 }}>
-                {reading && camera ? 'Leggo il referto…' : label}
-                <input type="file" accept="image/*" {...(camera ? { capture: 'environment' } : {})} disabled={reading} style={{ display: 'none' }}
-                  onChange={(e) => { onRefertoPhoto(e.target.files?.[0]); e.target.value = ''; }} />
-              </label>
-            ))}
-          </div>
-          {!lineup?.numbers && <Alert level="warn">Manca la formazione con i numeri di maglia: il referto si legge lo stesso, ma i giocatori andranno scelti a mano.</Alert>}
-        </Card>
+      {canWrite && !closed && (
+        <AfterMatch match={match} events={events} ourGoals={ourGoals} reading={reading} busy={busy} lineup={lineup}
+          onPhoto={onRefertoPhoto} onScorers={() => setScorersOpen(true)} onClose={closeMatch} toast={toast} />
       )}
 
       {canWrite && (
@@ -208,7 +210,7 @@ export default function SchedaGara() {
             ))}
           </div>
           <div className="row2" style={{ marginTop: 12 }}>
-            <Field label="Durata gara (minuti)"><Input type="number" min="40" max="120" value={duration} onChange={(e) => { setDuration(Number(e.target.value)); setDirty(true); }} /></Field>
+            <Field label="Durata gara (minuti)"><Input type="number" min="40" max="120" value={duration} onChange={(e) => setDuration(Number(e.target.value))} /></Field>
             <Field label="Risultato registrato"><Input value={match.scoreHome != null ? `${match.scoreHome} – ${match.scoreAway}` : 'non inserito'} readOnly /></Field>
           </div>
         </Card>
@@ -221,7 +223,7 @@ export default function SchedaGara() {
               <div key={e.id} className="prow">
                 <span className="prow__num">{e.minute == null ? '?' : e.minute}'</span>
                 <span className="prow__body">
-                  <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : (byId[e.playerId]?.fullName || '—')}</span>
+                  <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : e.og ? 'Autogol avversario' : (byId[e.playerId]?.fullName || '—')}</span>
                   {e.type === 'sostituzione' && <span className="prow__meta"><span>entra {byId[e.playerInId]?.fullName || '—'}</span></span>}
                 </span>
                 {canWrite && <button className="iconbtn" aria-label="Rimuovi" onClick={() => removeEvent(e.id)}>✕</button>}
@@ -257,9 +259,9 @@ export default function SchedaGara() {
 
       {canWrite && (
         <Card title="Nota post-gara">
-          <Textarea rows={3} value={postNote} onChange={(e) => { setPostNote(e.target.value); setDirty(true); }}
+          <Textarea rows={3} value={postNote} onChange={(e) => setPostNote(e.target.value)}
             placeholder="Tre righe: cosa ha funzionato, cosa no, su cosa lavorare in settimana." />
-          <p><small>Si salva con la scheda. Le note di tutta la stagione si rileggono in fila nella sezione Analisi.</small></p>
+          <p><small>Si salva da sola. Le note di tutta la stagione si rileggono in fila nella sezione Andamento.</small></p>
         </Card>
       )}
 
@@ -286,8 +288,6 @@ export default function SchedaGara() {
 
       {canWrite && (
         <div className="btnrow" style={{ marginTop: 16 }}>
-          <Button onClick={() => save()} disabled={busy || !dirty}>Salva scheda</Button>
-          {!closed && <Button variant="secondary" onClick={() => setClosing(true)} disabled={busy}>Chiudi gara</Button>}
           <Button variant="ghost" onClick={recalc} disabled={busy}>↻ Ricalcola statistiche</Button>
         </div>
       )}
@@ -300,6 +300,12 @@ export default function SchedaGara() {
       {referto && (
         <RefertoReview data={referto} match={match} club={club} lineup={lineup} onSheet={onSheet} byId={byId}
           onApply={applyReferto} onClose={() => setReferto(null)} />
+      )}
+
+      {scorersOpen && (
+        <ScorersSheet match={match} events={events} onSheet={onSheet} lineup={lineup}
+          onSave={(list) => { setEvents((v) => [...v, ...list]); setScorersOpen(false); toast('Marcatori inseriti'); }}
+          onClose={() => setScorersOpen(false)} />
       )}
 
       {closing && (
@@ -538,6 +544,162 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
           {missing > 0 ? `Scegli ${missing} giocator${missing === 1 ? 'e' : 'i'}` : `Inserisci nella scheda (${chosen.length})`}
         </Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+    </Sheet>
+  );
+}
+
+/* ---------------- dopo la partita: un percorso, quattro passi ---------------- */
+
+const ourScore = (m) => (m.scoreHome == null || m.scoreAway == null ? null : m.home === false ? m.scoreAway : m.scoreHome);
+
+function StepRow({ n, done, title, children }) {
+  return (
+    <div style={{ display: 'flex', gap: 12, padding: '10px 0', borderTop: n > 1 ? '1px solid var(--line-soft)' : 'none' }}>
+      <span aria-hidden="true" style={{
+        width: 28, height: 28, borderRadius: '50%', flex: '0 0 auto', display: 'grid', placeItems: 'center', fontWeight: 700, fontSize: 14,
+        background: done ? 'var(--green)' : 'var(--ink)', color: '#fff'
+      }}>{done ? '✓' : n}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 700, fontSize: 15 }}>{title}</div>
+        <div style={{ marginTop: 6 }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, onScorers, onClose, toast }) {
+  const [home, setHome] = useState('');
+  const [away, setAway] = useState('');
+  const [editScore, setEditScore] = useState(false);
+  const hasScore = match.scoreHome != null && match.scoreAway != null;
+  const us = ourScore(match);
+  const refertoDone = events.some((e) => e.source === 'referto');
+  const homeName = match.home === false ? match.opponent : 'Settimo';
+  const awayName = match.home === false ? 'Settimo' : match.opponent;
+
+  const saveScore = async () => {
+    try {
+      await updateDocument('events', match.id, { scoreHome: Number(home), scoreAway: Number(away), updatedAt: serverTimestamp() });
+      setEditScore(false);
+      toast('Risultato salvato');
+    } catch (e) { toast(errorText(e), 'error'); }
+  };
+
+  const photoButtons = (
+    <div className="btnrow">
+      {[['📷 Scatta foto', true, refertoDone ? 'ghost' : 'primary'], ['🖼️ Dalla galleria', false, refertoDone ? 'ghost' : 'secondary']].map(([label, camera, variant]) => (
+        <label key={label} className={`btn btn--${variant} btn--sm`} style={{ display: 'inline-flex', alignItems: 'center', cursor: reading ? 'wait' : 'pointer', opacity: reading ? 0.6 : 1 }}>
+          {reading && camera ? 'Leggo il referto…' : label}
+          {/* Con «capture» Android apre solo la fotocamera: la galleria ha il suo pulsante. */}
+          <input type="file" accept="image/*" {...(camera ? { capture: 'environment' } : {})} disabled={reading} style={{ display: 'none' }}
+            onChange={(e) => { onPhoto(e.target.files?.[0]); e.target.value = ''; }} />
+        </label>
+      ))}
+    </div>
+  );
+
+  return (
+    <Card title="🏁 Dopo la partita">
+      <StepRow n={1} done={hasScore && !editScore} title="Risultato">
+        {hasScore && !editScore ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontFamily: 'var(--display)', fontSize: 20, fontWeight: 700 }}>{homeName} {match.scoreHome} – {match.scoreAway} {awayName}</span>
+            <button className="chip" style={{ minHeight: 32, padding: '4px 10px' }} onClick={() => { setHome(String(match.scoreHome)); setAway(String(match.scoreAway)); setEditScore(true); }}>Modifica</button>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 13.5 }}>{homeName}</span>
+              <Input type="number" min="0" inputMode="numeric" value={home} onChange={(e) => setHome(e.target.value)} style={{ width: 56, textAlign: 'center' }} />
+              <span>–</span>
+              <Input type="number" min="0" inputMode="numeric" value={away} onChange={(e) => setAway(e.target.value)} style={{ width: 56, textAlign: 'center' }} />
+              <span style={{ fontSize: 13.5 }}>{awayName}</span>
+              <Button size="sm" disabled={home === '' || away === ''} onClick={saveScore}>Salva</Button>
+            </div>
+            <small style={{ color: 'var(--muted)' }}>Oppure carica il referto: il risultato si compila da solo.</small>
+          </>
+        )}
+      </StepRow>
+
+      <StepRow n={2} done={refertoDone} title={refertoDone ? 'Referto letto' : 'Referto arbitrale'}>
+        <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 6 }}>
+          {refertoDone ? 'Sostituzioni e cartellini inseriti. Ricarica la foto se serve correggere.' : 'Sostituzioni, ammonizioni ed espulsioni dalla foto del referto.'}
+        </div>
+        {photoButtons}
+        {!lineup?.numbers && !refertoDone && <small style={{ display: 'block', marginTop: 6, color: 'var(--orange, #b45309)' }}>Senza formazione con i numeri, i giocatori andranno scelti a mano.</small>}
+      </StepRow>
+
+      <StepRow n={3} done={hasScore && ourGoals >= us} title="Marcatori">
+        {!hasScore ? <small style={{ color: 'var(--muted)' }}>Prima il risultato.</small>
+          : us === 0 ? <span style={{ fontSize: 14 }}>Nessun gol da assegnare.</span>
+          : ourGoals >= us ? <span style={{ fontSize: 14 }}>{ourGoals} su {us} gol assegnati.</span>
+          : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 14 }}>{ourGoals} su {us} gol assegnati</span>
+              <Button size="sm" onClick={onScorers}>Chi ha segnato?</Button>
+            </div>
+          )}
+      </StepRow>
+
+      <StepRow n={4} done={false} title="Chiudi la partita">
+        {hasScore && ourGoals !== us && (
+          <small style={{ display: 'block', color: 'var(--red)', marginBottom: 6 }}>
+            Gol registrati {ourGoals}, risultato {us}: controlla prima di chiudere.
+          </small>
+        )}
+        <Button disabled={!hasScore || busy} onClick={onClose}>{busy ? 'Chiudo…' : 'Chiudi e aggiorna le statistiche'}</Button>
+        <small style={{ display: 'block', marginTop: 6, color: 'var(--muted)' }}>La partita resta modificabile anche dopo.</small>
+      </StepRow>
+    </Card>
+  );
+}
+
+/** Un riquadro per ogni gol ancora da assegnare: marcatore, assist facoltativo, minuto facoltativo. */
+function ScorersSheet({ match, events, onSheet, lineup, onSave, onClose }) {
+  const us = ourScore(match) ?? 1;
+  const have = events.filter((e) => e.type === 'gol').length;
+  const [rows, setRows] = useState(() => Array.from({ length: Math.max(1, us - have) }, () => ({ playerId: '', assistId: '', minute: '' })));
+  const set = (i, patch) => setRows((r) => r.map((x, k) => (k === i ? { ...x, ...patch } : x)));
+  const label = (p) => `${lineup?.numbers?.[p.id] ? `${lineup.numbers[p.id]} · ` : ''}${p.fullName}`;
+  const ok = rows.every((r) => r.playerId);
+
+  const save = () => {
+    const rid = () => Math.random().toString(36).slice(2);
+    const list = [];
+    rows.forEach((r) => {
+      const minute = r.minute === '' ? null : Number(r.minute);
+      if (r.playerId === 'og') list.push({ id: rid(), type: 'gol', minute, og: true });
+      else list.push({ id: rid(), type: 'gol', minute, playerId: r.playerId });
+      if (r.assistId) list.push({ id: rid(), type: 'assist', minute, playerId: r.assistId });
+    });
+    onSave(list);
+  };
+
+  return (
+    <Sheet title="Chi ha segnato?" onClose={onClose}>
+      <div className="stack" style={{ gap: 10 }}>
+        {rows.map((r, i) => (
+          <div key={i} className="card" style={{ padding: 10, margin: 0 }}>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>⚽ Gol {have + i + 1}</div>
+            <Select value={r.playerId} onChange={(e) => set(i, { playerId: e.target.value })}>
+              <option value="">Marcatore…</option>
+              {onSheet.map((p) => <option key={p.id} value={p.id}>{label(p)}</option>)}
+              <option value="og">Autogol avversario</option>
+            </Select>
+            <div className="row2" style={{ marginTop: 6 }}>
+              <Select value={r.assistId} onChange={(e) => set(i, { assistId: e.target.value })}>
+                <option value="">Assist (facoltativo)</option>
+                {onSheet.filter((p) => p.id !== r.playerId).map((p) => <option key={p.id} value={p.id}>{label(p)}</option>)}
+              </Select>
+              <Input type="number" inputMode="numeric" min="0" max="120" placeholder="Minuto" value={r.minute} onChange={(e) => set(i, { minute: e.target.value })} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="btnrow" style={{ marginTop: 12 }}>
+        <Button disabled={!ok} onClick={save}>Inserisci {rows.length === 1 ? 'il gol' : `i ${rows.length} gol`}</Button>
+        <Button variant="ghost" onClick={() => setRows((x) => [...x, { playerId: '', assistId: '', minute: '' }])}>＋ un altro gol</Button>
       </div>
     </Sheet>
   );

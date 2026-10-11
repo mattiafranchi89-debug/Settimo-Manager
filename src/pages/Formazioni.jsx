@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useAutosave, AutosaveBadge } from '../lib/autosave';
+
+const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined && x[key] !== '').map((key) => [key, x[key]])) : x));
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, setDocument, serverTimestamp, where, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage, whatsappLink, callupFor } from '../lib/callup';
 import { errorText } from './Rosa';
+import { can } from '../lib/permissions';
 import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
 import { GROUPS, groupOf } from '../lib/format';
@@ -43,8 +47,14 @@ export default function Formazioni() {
   // I numeri valgono per la singola gara: in Prima Categoria cambiano di domenica in domenica.
   const [numbers, setNumbers] = useState({});
 
+  // I dati salvati riempiono la formazione al cambio di partita, oppure quando
+  // non ci sono modifiche locali in attesa di salvataggio.
+  const pendingRef = useRef(false);
+  const hydratedFor = useRef(null);
   useEffect(() => {
-    if (!saved) { setSlots({}); return; }
+    if (hydratedFor.current === eventId && pendingRef.current) return;
+    hydratedFor.current = eventId;
+    if (!saved) { setSlots({}); setCaptain(''); setVice(''); setNotes(''); setNumbers({}); return; }
     setModule(saved.module || club.defaultModule);
     setSlots(saved.slots || {});
     setCaptain(saved.captain || '');
@@ -187,14 +197,21 @@ export default function Formazioni() {
     byId, bench, captain, vice, numbers
   }) : ''), [club, match, module, slotList, slots, byId, bench, captain, vice, numbers]);
 
-  const save = async () => {
-    await setDocument('lineups', eventId, {
-      eventId, module, slots, captain, vice, notes, numbers,
-      starters, bench: bench.map((p) => p.id),
-      updatedBy: user.uid, updatedAt: serverTimestamp()
-    });
-    toast('Formazione salvata');
-  };
+  const persist = () => setDocument('lineups', eventId, {
+    eventId, module, slots, captain, vice, notes, numbers,
+    starters, bench: bench.map((p) => p.id),
+    updatedBy: user.uid, updatedAt: serverTimestamp()
+  });
+  const save = async () => { await persist(); toast('Formazione salvata'); };
+
+  // Salvataggio automatico a ogni scelta: il pulsante «Salva» non serve più.
+  const autosave = useAutosave({
+    key: stableKey({ eventId, module, slots, captain, vice, notes, numbers }),
+    savedKey: stableKey({ eventId, module: saved ? (saved.module || club.defaultModule) : module, slots: saved?.slots || {}, captain: saved?.captain || '', vice: saved?.vice || '', notes: saved?.notes || '', numbers: saved?.numbers || {} }),
+    enabled: !!eventId && hydratedFor.current === eventId && can(user?.role, 'lineup.write'),
+    save: persist
+  });
+  pendingRef.current = autosave.pending;
 
   if (loading) return <Loading />;
   if (!matches.length) return <Card><Empty title="Nessuna partita">Aggiungi una gara per costruire la formazione.</Empty></Card>;
@@ -203,7 +220,7 @@ export default function Formazioni() {
     <>
       <div className="pagehead noprint">
         <div><h1>Formazione</h1><p>{starters.length}/11 titolari · {bench.length} in panchina</p></div>
-        <Button size="sm" onClick={save}>Salva</Button>
+        <AutosaveBadge status={autosave} />
       </div>
 
       <div className="noprint">
