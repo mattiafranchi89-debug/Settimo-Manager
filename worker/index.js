@@ -23,7 +23,15 @@ export default {
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     try {
       if (url.pathname === '/api/push-key' && request.method === 'GET') {
-        return json({ key: env.VAPID_PUBLIC_KEY || null, ready: !!(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY) });
+        // Solo i NOMI delle impostazioni rilevanti, mai i valori: serve a capire
+        // se una chiave inserita in Cloudflare ha un nome diverso da quello atteso.
+        const seen = Object.keys(env).filter((k) => /vapid|anthropic|firebase/i.test(k)).sort();
+        return json({
+          key: env.VAPID_PUBLIC_KEY || null,
+          ready: !!(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY),
+          referto: !!env.ANTHROPIC_API_KEY,
+          seen
+        });
       }
       if (url.pathname === '/api/notify' && request.method === 'POST') return await notify(request, env);
       if (url.pathname === '/api/referto' && request.method === 'POST') return await referto(request, env);
