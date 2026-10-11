@@ -56,7 +56,8 @@ export function mergeEvents(current = [], incoming = []) {
     if (e.type === 'gol_subito') { if (skipGoals > 0) { skipGoals--; return false; } return true; }
     return !manual.some((m) => same(m, e));
   });
-  return [...manual, ...add.map((e) => ({ ...e, id: Math.random().toString(36).slice(2), source: 'referto' }))];
+  const tidy = (e) => Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined));
+  return [...manual, ...add.map((e) => tidy({ ...e, id: Math.random().toString(36).slice(2), source: 'referto' }))];
 }
 
 /** Ridimensiona la foto (lato lungo 1800 px, JPEG): basta per leggere e pesa poco. */

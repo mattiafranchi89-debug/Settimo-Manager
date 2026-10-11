@@ -22,7 +22,10 @@ export const auth = getAuth(app);
 // Cache persistente: l'app si apre anche senza campo con i dati già letti, e
 // le scritture fatte offline partono quando torna la linea.
 export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+  // Un campo «undefined» (es. giocatore entrato in un'ammonizione) non deve far
+  // fallire il salvataggio: viene semplicemente omesso.
+  ignoreUndefinedProperties: true
 });
 export const storage = getStorage(app);
 export const now = serverTimestamp;

@@ -78,20 +78,30 @@ export default function SchedaGara() {
 
   const save = async (closed = saved?.closed || false) => {
     setBusy(true);
-    await setDocument('matchStats', id, {
-      eventId: id, date: match.date, opponent: match.opponent,
-      starters, bench, events, duration, totals, closed, postNote,
-      conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
-      updatedBy: user.uid, updatedAt: serverTimestamp()
-    });
-    setDirty(false);
-    setBusy(false);
-    toast('Scheda salvata');
+    try {
+      // Solo campi valorizzati: gli eventi letti dal referto hanno campi vuoti.
+      const clean = events.map((e) => Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined)));
+      await setDocument('matchStats', id, {
+        eventId: id, date: match.date, opponent: match.opponent,
+        starters, bench, events: clean, duration, totals, closed, postNote,
+        conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
+        competition: match.competition || '',
+        updatedBy: user.uid, updatedAt: serverTimestamp()
+      });
+      setDirty(false);
+      toast('Scheda salvata');
+      return true;
+    } catch (e) {
+      toast(errorText(e), 'error');
+      return false;
+    } finally {
+      setBusy(false);
+    }
   };
 
   const closeMatch = async () => {
     setBusy(true);
-    await save(true);
+    if (!(await save(true))) { setBusy(false); return; }
     await audit(user, 'match.close', id, { opponent: match.opponent, goals: ourGoals });
     try {
       const r = await refreshStats(players, club.season);
