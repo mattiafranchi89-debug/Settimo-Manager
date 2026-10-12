@@ -13,11 +13,13 @@ import {
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { compBucket } from '../lib/discipline';
 import { useAutoOpponent } from '../lib/crl';
+import { ScaledFrame, widgetUrl } from '../components/TuttocampoWidget';
 
 /**
  * Scheda dell'avversario: classifica, forma, rosa, squalificati e note per
- * preparare la partita. I dati si incollano da Tuttocampo o dal comunicato del
- * CRL: l'app non scarica nulla da siti esterni, così non dipende da loro.
+ * preparare la partita. Classifica e risultati del girone si vedono dai widget
+ * ufficiali di Tuttocampo; i dati della scheda arrivano dai comunicati CRL o
+ * si incollano. L'app non copia dati da siti esterni.
  */
 export default function Avversari() {
   const { user } = useAuth();
@@ -151,6 +153,8 @@ export default function Avversari() {
         <>
           <OpponentCard scout={scout} name={name} match={match} auto={autoHere} />
 
+          {club.tuttocampoId && <TuttocampoCard id={club.tuttocampoId} name={scout.name || name} />}
+
           <RecentCard scout={scout} />
 
           <Card title="💡 Suggerimenti">
@@ -252,6 +256,37 @@ function OpponentCard({ scout, name, match, auto }) {
           🔄 Dati dai comunicati CRL, aggiornati il {fmtDay(auto.availableFrom)}
         </small>
       )}
+    </Card>
+  );
+}
+
+/**
+ * Classifica e risultati del girone dai widget ufficiali di Tuttocampo.
+ * Il widget mostra tutto il girone e non si può filtrare dall'app: in testa
+ * si ricorda quale squadra cercare.
+ */
+const TC_TABS = [
+  { key: 'Classifica', label: 'Classifica', height: 800 },
+  { key: 'Risultati', label: 'Ultimi risultati', height: 600 },
+  { key: 'Marcatori', label: 'Marcatori', height: 700 }
+];
+function TuttocampoCard({ id, name }) {
+  const [tab, setTab] = useState(() => {
+    try { return localStorage.getItem('sm-tc-tab') || 'Classifica'; } catch { return 'Classifica'; }
+  });
+  const pick = (k) => { setTab(k); try { localStorage.setItem('sm-tc-tab', k); } catch { /* ignorabile */ } };
+  const active = TC_TABS.find((t) => t.key === tab) || TC_TABS[0];
+  return (
+    <Card title="📊 Da Tuttocampo">
+      <div className="chiprow" style={{ marginTop: -4 }}>
+        {TC_TABS.map((t) => (
+          <button key={t.key} className={`chip ${tab === t.key ? 'chip--on' : ''}`} onClick={() => pick(t.key)}>{t.label}</button>
+        ))}
+      </div>
+      <small style={{ display: 'block', margin: '6px 0 8px', color: 'var(--muted)' }}>
+        Girone completo, aggiornato da Tuttocampo: cerca <b>{name}</b>.
+      </small>
+      <ScaledFrame key={active.key} src={widgetUrl(active.key, id)} height={active.height} title={`Tuttocampo – ${active.label}`} />
     </Card>
   );
 }
