@@ -8,7 +8,7 @@ import { useCollection, useClub, setDocument, serverTimestamp, where, limit } fr
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage, whatsappLink, callupFor } from '../lib/callup';
 import { errorText } from './Rosa';
-import { can } from '../lib/permissions';
+import { can, isClassicUx } from '../lib/permissions';
 import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
 import { GROUPS, groupOf } from '../lib/format';
@@ -82,10 +82,13 @@ export default function Formazioni() {
 
   // Due modi di fare la stessa formazione: «Rapida» (lista, per il mister dal
   // telefono) e «Campo» (modulo e posizioni). Salvano lo stesso documento.
-  const [mode, setModeState] = useState(() => {
+  // Esperienza classica (9 ottobre): solo campo e modulo, pulsante «Salva».
+  const classic = isClassicUx(user?.role);
+  const [modeState, setModeState] = useState(() => {
     try { return localStorage.getItem('sm-lineup-mode') || (user?.role === 'head_coach' ? 'rapida' : 'campo'); }
     catch { return 'rapida'; }
   });
+  const mode = classic ? 'campo' : modeState;
   const setMode = (m) => { setModeState(m); try { localStorage.setItem('sm-lineup-mode', m); } catch { /* ignorabile */ } };
 
   /** Primo numero libero, così non si devono ricordare quelli già dati. */
@@ -206,7 +209,7 @@ export default function Formazioni() {
   // Passaggio di mano: il mister segna la formazione come pronta e chi compila
   // la distinta riceve una notifica, senza messaggi WhatsApp intermedi.
   const distintaName = club.distintaNome || club.convocazioneNome || 'il dirigente';
-  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role);
+  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role) && !classic;
   const markReady = async () => {
     await persist({ ready: { at: serverTimestamp(), byUid: user.uid, byName: user.name } });
     toast(`Pronta: ${distintaName} riceve una notifica`);
@@ -217,7 +220,7 @@ export default function Formazioni() {
   const autosave = useAutosave({
     key: stableKey({ eventId, module, slots, captain, vice, notes, numbers }),
     savedKey: stableKey({ eventId, module: saved ? (saved.module || club.defaultModule) : module, slots: saved?.slots || {}, captain: saved?.captain || '', vice: saved?.vice || '', notes: saved?.notes || '', numbers: saved?.numbers || {} }),
-    enabled: !!eventId && hydratedFor.current === eventId && can(user?.role, 'lineup.write'),
+    enabled: !classic && !!eventId && hydratedFor.current === eventId && can(user?.role, 'lineup.write'),
     save: persist
   });
   pendingRef.current = autosave.pending;
@@ -229,7 +232,7 @@ export default function Formazioni() {
     <>
       <div className="pagehead noprint">
         <div><h1>Formazione</h1><p>{starters.length}/11 titolari · {bench.length} in panchina</p></div>
-        <AutosaveBadge status={autosave} />
+        {classic ? <Button size="sm" onClick={save}>Salva</Button> : <AutosaveBadge status={autosave} />}
       </div>
 
       <div className="noprint">
@@ -254,12 +257,12 @@ export default function Formazioni() {
         )}
       </div>
 
-      <div className="subtabs noprint" style={{ marginTop: 4 }}>
+      {!classic && <div className="subtabs noprint" style={{ marginTop: 4 }}>
         {[['rapida', 'Rapida'], ['campo', 'Campo e modulo']].map(([k, l]) => (
           <button key={k} className={`subtab${mode === k ? ' subtab--on' : ''}`} onClick={() => setMode(k)}
             style={{ border: 0, background: mode === k ? undefined : 'none', cursor: 'pointer' }}>{l}</button>
         ))}
-      </div>
+      </div>}
 
       {saved?.ready && saved.ready.byUid !== user?.uid && (
         <Card title="📝 Pronta per la distinta" className="noprint">

@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { ToastProvider, Loading, Alert, Card } from './components/ui';
-import { can, isPlayerView } from './lib/permissions';
+import { can, isPlayerView, isClassicUx } from './lib/permissions';
 import { configMissing } from './lib/firebase';
 import { registerServiceWorker } from './lib/push';
 
@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import DashboardClassica from './pages/DashboardClassica';
 
 /**
  * Dopo un rilascio il browser può avere in cache la pagina vecchia, che punta
@@ -43,6 +44,7 @@ const Convocazioni = lazyPage(() => import('./pages/Convocazioni'));
 const ConvocazioneEditor = lazyPage(() => import('./pages/ConvocazioneEditor'));
 const Formazioni = lazyPage(() => import('./pages/Formazioni'));
 const Calendario = lazyPage(() => import('./pages/Calendario'));
+const CalendarioClassico = lazyPage(() => import('./pages/CalendarioClassico'));
 const Campionato = lazyPage(() => import('./pages/Campionato'));
 const Impostazioni = lazyPage(() => import('./pages/Impostazioni'));
 const Importa = lazyPage(() => import('./pages/Importa'));
@@ -104,7 +106,14 @@ function Protected({ perm, children }) {
 /** Staff e giocatori entrano dalla stessa porta ma in due stanze diverse. */
 function Home() {
   const { user } = useAuth();
-  return isPlayerView(user?.role) ? <HomeGiocatore /> : <Dashboard />;
+  if (isPlayerView(user?.role)) return <HomeGiocatore />;
+  return isClassicUx(user?.role) ? <DashboardClassica /> : <Dashboard />;
+}
+
+/** Calendario: versione del 9 ottobre per chi usa l'esperienza classica. */
+function CalendarioPage() {
+  const { user } = useAuth();
+  return isClassicUx(user?.role) ? <CalendarioClassico /> : <Calendario />;
 }
 
 function Shell() {
@@ -145,7 +154,7 @@ function App() {
         <Route path="convocazioni/:id" element={<Protected perm="players.read"><ConvocazioneEditor /></Protected>} />
         {/* Raggiungibile solo dal pulsante della convocazione, non dal menu. */}
         <Route path="formazioni" element={<Protected perm="lineup.write"><Formazioni /></Protected>} />
-        <Route path="calendario" element={<Calendario />} />
+        <Route path="calendario" element={<CalendarioPage />} />
         <Route path="campionato" element={<Campionato />} />
         <Route path="statistiche" element={<Protected perm="players.read"><Statistiche /></Protected>} />
         <Route path="avversari" element={<Protected perm="scouting.read"><Avversari /></Protected>} />

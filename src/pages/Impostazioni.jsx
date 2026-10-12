@@ -13,7 +13,7 @@ import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useClub, useCollection, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
 import PushCard from '../components/PushCard';
-import { isStaff, TOOLS, can as canDo } from '../lib/permissions';
+import { isStaff, TOOLS, can as canDo, isClassicUx } from '../lib/permissions';
 import { useNavigate as useNav } from 'react-router-dom';
 import { Card, Button, Field, Input, Select, Badge, Alert, Loading, useToast } from '../components/ui';
 import { ROLES } from '../lib/permissions';
@@ -418,7 +418,8 @@ export default function Impostazioni() {
 function ToolsCard({ role }) {
   const navigate = useNav();
   const tools = TOOLS.filter((t) => canDo(role, t.perm));
-  if (!tools.length) return null;
+  // Nel menu classico gli strumenti sono già voci del menu.
+  if (!tools.length || isClassicUx(role)) return null;
   return (
     <Card title="Strumenti">
       <div className="plist">

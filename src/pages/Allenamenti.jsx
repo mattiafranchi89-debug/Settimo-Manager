@@ -7,7 +7,7 @@ import { useCollection, useClub, addDocument, setDocument, serverTimestamp, wher
 import { notifyEvent } from '../lib/notify';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
 import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue, toDate } from '../lib/format';
-import { can } from '../lib/permissions';
+import { can, isClassicUx } from '../lib/permissions';
 import { deleteEventCascade } from '../lib/remove';
 import { refreshStats } from '../lib/stats';
 import { errorText } from './Rosa';
@@ -99,7 +99,7 @@ export default function Allenamenti() {
           {canWrite && <Button size="sm" variant="secondary" onClick={() => navigate('/importa?tipo=allenamenti')}>⬆ Importa</Button>}
           {canWrite && <Button size="sm" variant="secondary" onClick={() => setGenerating(true)}>🗓 Genera</Button>}
           {canWrite && <Button size="sm" onClick={() => setCreating(true)}>＋ Seduta</Button>}
-          {canWrite && canAttend && <Button size="sm" variant="secondary" onClick={extraToday}>⚡ Extra di oggi</Button>}
+          {canWrite && canAttend && !isClassicUx(user?.role) && <Button size="sm" variant="secondary" onClick={extraToday}>⚡ Extra di oggi</Button>}
         </div>
       </div>
 

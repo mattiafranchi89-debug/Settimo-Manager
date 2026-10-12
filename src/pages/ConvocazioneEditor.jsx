@@ -15,7 +15,7 @@ import {
 import { validateCallup, summarise, buildMessage, copyText, whatsappLink } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { compBucket, isSuspendedFor, COMPS } from '../lib/discipline';
-import { can } from '../lib/permissions';
+import { can, isClassicUx } from '../lib/permissions';
 import { errorText } from './Rosa';
 
 const STEPS = ['Partita', 'Convocati', 'Messaggio'];
@@ -220,7 +220,9 @@ export default function ConvocazioneEditor() {
   // Il mister non manda più il testo su WhatsApp al dirigente: segna la
   // convocazione come pronta e il dirigente riceve una notifica.
   const senderName = club.convocazioneNome || 'il dirigente';
-  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role);
+  // Nell'esperienza classica il mister invia ancora il messaggio su WhatsApp, come al 9 ottobre.
+  const classic = isClassicUx(user?.role);
+  const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role) && !classic;
   const markReady = withChecks(async (reason) => {
     await persist('da_revisionare', reason);
     toast(`Pronta: ${senderName} riceve una notifica per inviarla al gruppo`);
@@ -413,7 +415,7 @@ export default function ConvocazioneEditor() {
               </Button>
               {canSetLineup && (
                 <Button variant="ghost" onClick={() => navigate(`/formazioni?event=${eventId}`)}>
-                  Titolari e numeri ›
+                  {classic ? 'Formazione per la distinta' : 'Titolari e numeri ›'}
                 </Button>
               )}
             </div>

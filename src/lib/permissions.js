@@ -112,12 +112,46 @@ export const TABS_PLAYER = [
   { to: '/io', label: 'Profilo', icon: '🙋' }
 ];
 
-export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : TABS_STAFF);
+/**
+ * Esperienza «classica» (menu e schermate com'erano al 9 ottobre 2026):
+ * richiesta per l'allenatore, che con l'app fa poche cose sempre uguali.
+ * Per tornare al menu nuovo basta togliere il ruolo da questa lista.
+ */
+export const CLASSIC_UX_ROLES = ['head_coach'];
+export const isClassicUx = (role) => CLASSIC_UX_ROLES.includes(role);
+
+const NAV_CLASSIC = [
+  { to: '/', label: 'Dashboard', icon: '🏠', all: true },
+  { to: '/rosa', label: 'Rosa', icon: '👥', perm: 'players.read' },
+  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃', all: true },
+  { to: '/convocazioni', label: 'Convocazioni', icon: '📋', all: true },
+  { to: '/partite', label: 'Partite', icon: '⚽', all: true },
+  { to: '/calendario', label: 'Calendario', icon: '📅', all: true },
+  { to: '/campionato', label: 'Campionato', icon: '🏆', all: true },
+  { to: '/statistiche', label: 'Statistiche', icon: '📊', all: true },
+  { to: '/analisi', label: 'Analisi', icon: '📈', all: true },
+  { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write' },
+  { to: '/quote', label: 'Quote e multe', icon: '💶', perm: 'finance.read' },
+  { to: '/cassa', label: 'Cassa multe', icon: '🏺', all: true },
+  { to: '/importa', label: 'Importazioni', icon: '⬆️', perm: 'players.write' },
+  { to: '/registro', label: 'Registro', icon: '📑', perm: 'audit.read' },
+  { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true },
+  { to: '/diagnostica', label: 'Diagnostica', icon: '🩺', perm: 'club.manage' }
+];
+
+const TABS_CLASSIC = [
+  { to: '/', label: 'Home', icon: '🏠' },
+  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃' },
+  { to: '/convocazioni', label: 'Convocazioni', icon: '📋' },
+  { to: '/calendario', label: 'Calendario', icon: '📅' }
+];
+
+export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : isClassicUx(role) ? TABS_CLASSIC : TABS_STAFF);
 
 export const NAV = NAV_STAFF;
 
 export function navFor(role, user) {
-  const list = isPlayerView(role) ? NAV_PLAYER : NAV_STAFF;
+  const list = isPlayerView(role) ? NAV_PLAYER : isClassicUx(role) ? NAV_CLASSIC : NAV_STAFF;
   return list.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
 }
 
@@ -163,6 +197,7 @@ export function sectionOf(pathname = '/') {
 
 /** Schede visibili per la pagina corrente, solo se sono almeno due. */
 export function sectionTabs(pathname, role) {
+  if (isClassicUx(role)) return [];
   const root = sectionOf(pathname);
   const list = (SECTIONS[root] || []).filter((t) => t.all || can(role, t.perm));
   return list.length > 1 && list.some((t) => t.to === pathname) ? list : [];

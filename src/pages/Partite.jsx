@@ -4,7 +4,7 @@ import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, updateDocument, serverTimestamp, where, orderBy, limit, audit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
 import { fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate } from '../lib/format';
-import { can } from '../lib/permissions';
+import { can, isClassicUx } from '../lib/permissions';
 import { deleteEventCascade, countEventDependencies } from '../lib/remove';
 import { errorText } from './Rosa';
 
@@ -68,7 +68,7 @@ export default function Partite() {
   // Tutto il resto (avversario, formazione, migliore in campo) è nella scheda evento.
   const Row = ({ m, past }) => (
     <div className="prow prow--card">
-      <button className="prow__main" onClick={() => navigate(`/evento/${m.id}`)}>
+      <button className="prow__main" onClick={() => navigate(isClassicUx(user?.role) ? `/partite/${m.id}` : `/evento/${m.id}`)}>
         <span className="prow__num">{past ? (m.scoreHome != null ? `${m.scoreHome}-${m.scoreAway}` : '—') : '⚽'}</span>
         <span className="prow__body">
           <span className="prow__name">{m.home === false ? `${m.opponent} (T)` : m.opponent}</span>

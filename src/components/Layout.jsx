@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
-import { navFor, tabsFor, ROLES, can, sectionOf, sectionTabs } from '../lib/permissions';
+import { navFor, tabsFor, ROLES, can, sectionOf, sectionTabs, isClassicUx } from '../lib/permissions';
 import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
@@ -17,7 +17,9 @@ export default function Layout({ theme, toggleTheme }) {
   const nav = navFor(user?.role, user);
   const tabs = tabsFor(user?.role);
   const canCallup = can(user?.role, 'callup.draft');
-  const section = sectionOf(pathname);
+  const classic = isClassicUx(user?.role);
+  // Menu classico: ogni voce si evidenzia solo sulla sua pagina, come al 9 ottobre.
+  const section = classic ? pathname : sectionOf(pathname);
   const subTabs = sectionTabs(pathname, user?.role);
   // Una voce resta evidenziata anche nelle sue pagine figlie (es. Calendario su /partite).
   const linkClass = (to) => ({ isActive }) => (isActive || (to !== '/' && section === to) ? 'active' : undefined);
@@ -83,6 +85,10 @@ export default function Layout({ theme, toggleTheme }) {
           </ErrorBoundary>
         </main>
       </div>
+
+      {classic && canCallup && (
+        <button className="fab" onClick={() => navigate('/convocazioni/nuova')}>＋ NUOVA CONVOCAZIONE</button>
+      )}
 
       <nav className="tabbar" aria-label="Navigazione rapida">
         {tabs.map((t) => (
