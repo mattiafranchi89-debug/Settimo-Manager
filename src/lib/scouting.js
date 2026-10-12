@@ -272,15 +272,36 @@ export function parseResults(text = '', teamName = '', ref = new Date()) {
 export function sortResults(results = []) {
   return results
     .map((r, i) => ({ ...r, _i: i }))
-    .sort((a, b) => (b.date || '').localeCompare(a.date || '') || b._i - a._i)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.round || 0) - (a.round || 0) || b._i - a._i)
     .map(({ _i, ...r }) => r);
 }
 
+const dayDiff = (a, b) => Math.abs(new Date(a) - new Date(b)) / 86400000;
+
+/**
+ * Stessa partita da due fonti (comunicato CRL con la data esatta, Tuttocampo
+ * con la data stimata dalla giornata): stesso avversario, stesso punteggio,
+ * date vicine o mancanti. Vince la data esatta.
+ */
+function samePlayed(a, b) {
+  if (!sameTeam(a.against || '', b.against || '') || a.gf !== b.gf || a.gs !== b.gs || a.home !== b.home) return false;
+  if (a.round != null && b.round != null && a.round !== b.round) return false;
+  if (!a.date || !b.date) return true;
+  return a.date === b.date || ((a.dateApprox || b.dateApprox) && dayDiff(a.date, b.date) <= 5);
+}
+
 export function mergeResults(current = [], incoming = []) {
-  const key = (r) => `${r.date}|${teamTokens(r.against).join(' ')}|${r.gf}-${r.gs}`;
-  const map = new Map(current.map((r) => [key(r), r]));
-  incoming.forEach((r) => map.set(key(r), r));
-  return sortResults([...map.values()]);
+  const list = [...current];
+  for (const r of incoming) {
+    const i = list.findIndex((x) => samePlayed(x, r));
+    if (i < 0) { list.push(r); continue; }
+    const old = list[i];
+    const exact = old.date && !old.dateApprox ? old : r.date && !r.dateApprox ? r : old.date ? old : r;
+    list[i] = { ...old, ...r, date: exact.date, dateApprox: exact === old ? old.dateApprox : r.dateApprox, round: r.round ?? old.round };
+    if (!list[i].dateApprox) delete list[i].dateApprox;
+    if (list[i].round == null) delete list[i].round;
+  }
+  return sortResults(list);
 }
 
 export const outcome = (r) => (r.gf > r.gs ? 'V' : r.gf === r.gs ? 'N' : 'P');

@@ -6,7 +6,7 @@ import { Card, Kpi, Button, Field, Input, Select, Textarea, Sheet, Badge, Empty,
 import { capitalize, fmtDate, fmtLong, fmtShort, fmtTime, toDate } from '../lib/format';
 import { can } from '../lib/permissions';
 import {
-  SCOUT_ROLES, scoutId, sameTeam, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
+  SCOUT_ROLES, scoutId, sameTeam, isoDay, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
   outcome, formOf, rosterSummary, sortRoster, playerAge, birthYearOf, headToHead, buildScoutInsights,
   shareText, fmtDay, autoVisible, applyAuto, buildSuggestions, ourForm
 } from '../lib/scouting';
@@ -87,6 +87,12 @@ export default function Avversari() {
 
   const [adding, setAdding] = useState(false);
   const [pastingTc, setPastingTc] = useState(false);
+  // Stesso girone, stesse domeniche: la giornata N dell'avversario si gioca
+  // nel weekend della nostra N-esima partita di campionato.
+  const roundDates = useMemo(() => matches
+    .filter((m) => compBucket(m.competition || '') === 'campionato' && toDate(m.date))
+    .sort((a, b) => toDate(a.date) - toDate(b.date))
+    .map((m) => toDate(m.date)), [matches]);
 
   const save = async (patch, message = 'Scheda aggiornata') => {
     try {
@@ -228,7 +234,7 @@ export default function Avversari() {
       )}
 
       {pastingTc && (
-        <PasteTuttocampo scout={scout} name={scout.name || name} refDate={now}
+        <PasteTuttocampo scout={scout} name={scout.name || name} refDate={now} roundDates={roundDates}
           onClose={() => setPastingTc(false)}
           onSave={async (patch, msg) => { if (await save(patch, msg)) setPastingTc(false); }} />
       )}
@@ -279,10 +285,18 @@ function OpponentCard({ scout, name, match, auto }) {
  * riconosce da solo cosa c'è e si aggiunge alla scheda solo ciò che riguarda
  * questa squadra. Si può ripetere con più pagine: i dati si sommano.
  */
-export function PasteTuttocampo({ scout, name, refDate, onSave, onClose, initialText = '' }) {
+export function PasteTuttocampo({ scout, name, refDate, roundDates = [], onSave, onClose, initialText = '' }) {
   const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState(false);
-  const parsed = useMemo(() => parseTuttocampo(text, name, refDate), [text, name, refDate]);
+  const parsed = useMemo(() => {
+    const p = parseTuttocampo(text, name, refDate);
+    // Senza data ma con la giornata: data stimata dal nostro calendario (segnata come stimata).
+    p.results = p.results.map((r) => {
+      const d = !r.date && r.round ? roundDates[r.round - 1] : null;
+      return d && d <= refDate ? { ...r, date: isoDay(d), dateApprox: true } : r;
+    });
+    return p;
+  }, [text, name, refDate, roundDates]);
   const st = parsed.standing;
   const url = scout.tuttocampoUrl || `https://www.google.com/search?q=${encodeURIComponent(`tuttocampo ${name}`)}`;
 
@@ -324,7 +338,7 @@ export function PasteTuttocampo({ scout, name, refDate, onSave, onClose, initial
           <div style={{ fontWeight: 700, marginBottom: 4 }}>Trovato per {name}:</div>
           {st && <div style={{ fontSize: 13.5 }}>🏆 Classifica: {st.pos}° su {st.of}, {st.pts} punti in {st.g} gare ({st.v}V {st.n}N {st.p}P, gol {st.gf}:{st.gs})</div>}
           {parsed.results.length > 0 && (
-            <div style={{ fontSize: 13.5 }}>⚽ Risultati: {parsed.results.slice(0, 5).map((r) => `${r.date ? fmtDay(r.date) + ' ' : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs}`).join(' · ')}{parsed.results.length > 5 ? ` e altri ${parsed.results.length - 5}` : ''}</div>
+            <div style={{ fontSize: 13.5 }}>⚽ Risultati: {sortResults(parsed.results).slice(0, 6).map((r) => `${r.round ? `${r.round}ª ` : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs} (${outcome(r)})`).join(' · ')}{parsed.results.length > 6 ? ` e altri ${parsed.results.length - 6}` : ''}</div>
           )}
           {parsed.players.length > 0 && <div style={{ fontSize: 13.5 }}>👥 Rosa: {parsed.players.length} giocatori ({parsed.players.filter((p) => p.birthDate || p.birthYear).length} con età)</div>}
         </Alert>
@@ -362,7 +376,7 @@ function RecentCard({ scout }) {
               <span className="prow__body">
                 <span className="prow__name">{r.home ? 'vs' : '@'} {r.against}</span>
                 <span className="prow__meta">
-                  <span>{r.date ? fmtDay(r.date) : 'data n.d.'}</span>
+                  <span>{r.round ? `${r.round}ª giornata` : r.date ? fmtDay(r.date) : 'data n.d.'}</span>
                   <span>{r.home ? 'in casa' : 'fuori'}</span>
                   {r.competition && <span>{r.competition}</span>}
                 </span>
@@ -502,7 +516,7 @@ function FormCard({ scout, canWrite, onSave, refDate }) {
               <span className="prow__body">
                 <span className="prow__name">{r.home ? 'vs' : '@'} {r.against}</span>
                 <span className="prow__meta">
-                  <span>{r.date ? fmtDay(r.date) : 'data non indicata'}</span>
+                  <span>{r.round ? `${r.round}ª giornata${r.date ? ` · ${r.dateApprox ? '≈ ' : ''}${fmtDay(r.date)}` : ''}` : r.date ? fmtDay(r.date) : 'data non indicata'}</span>
                   <span>{r.home ? 'in casa' : 'in trasferta'}</span>
                   {r.competition && <span>{r.competition}</span>}
                 </span>

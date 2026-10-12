@@ -23,6 +23,42 @@ export function normalizeDates(line) {
 }
 
 const NUM = /^[+-]?\d{1,3}$/;
+
+/** «Frog Milano Frog Milano» → «Frog Milano»: Tuttocampo ripete il nome accanto al logo. */
+export function dedupeName(s = '') {
+  const w = s.trim().split(/\s+/).filter(Boolean);
+  if (w.length >= 2 && w.length % 2 === 0) {
+    const h = w.length / 2;
+    if (w.slice(0, h).join(' ').toLowerCase() === w.slice(h).join(' ').toLowerCase()) return w.slice(0, h).join(' ');
+  }
+  return w.join(' ');
+}
+
+const TAIL_JUNK = /\s*(media\s*info|mediainfo|media|info|dettagli|cronaca)\s*$/i;
+
+/**
+ * Riga di risultato copiata dalla pagina squadra di Tuttocampo:
+ * «1  Garibaldina 1932 logo Garibaldina 1932 2  2 logo Frog Milano Frog Milano  mediaINFO»
+ * → «Garibaldina 1932 - Frog Milano 2-2» con la giornata (il numero iniziale).
+ * Righe senza «logo» restano come sono (tolta solo la parola «logo»).
+ */
+export function normalizeLogoLine(line = '') {
+  let l = line.replace(/\s+/g, ' ').trim();
+  for (let i = 0; i < 3; i++) l = l.replace(TAIL_JUNK, '');
+  if (!/\blogo\b/i.test(l)) return { line: l };
+  const segs = l.split(/\s*\blogo\b\s*/i);
+  if (segs.length === 3) {
+    const lead = segs[0].match(/^(\d{1,3})\s+(.*)$/);
+    const home = dedupeName(lead ? lead[2] : segs[0]);
+    const sc = segs[1].match(/^(.*?)\s+(\d{1,2})\s*[-–:]?\s*(\d{1,2})$/);
+    const away = dedupeName(segs[2]);
+    if (!home || !away) return { line: l.replace(/\blogo\b/gi, ' ') };
+    // Partita non ancora giocata: niente punteggio, la riga non conta.
+    if (!sc) return { line: '' };
+    return { line: `${home} - ${away} ${sc[2]}-${sc[3]}`, round: lead ? Number(lead[1]) : null };
+  }
+  return { line: l.replace(/\blogo\b/gi, ' ').replace(/\s+/g, ' ').trim() };
+}
 const hasLetters = (s) => /\p{L}{2,}/u.test(s);
 
 /**
@@ -80,7 +116,7 @@ export function parseStanding(text = '', teamName = '') {
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const rows = toRecords(lines)
     .filter((r) => hasLetters(r.name))
-    .map((r) => ({ name: r.name, ...readStandingNumbers(r.nums) }))
+    .map((r) => ({ name: dedupeName(r.name), ...readStandingNumbers(r.nums) }))
     .filter((r) => r.g != null);
   if (rows.length < 3) return { rows, standing: null };
   // La classifica è in ordine: la posizione è l'ordine di apparizione (a pari punti
@@ -158,12 +194,27 @@ export function parseTuttocampo(text = '', teamName = '', ref = new Date()) {
     .map((l) => normalizeDates(l.replace(WEEKDAYS, ' ').replace(/\s+/g, ' ').trim()))
     .filter(Boolean);
 
-  const { standing, rows } = parseStanding(lines.join('\n'), teamName);
+  const { standing, rows } = parseStanding(lines.map((l) => normalizeLogoLine(l).line).join('\n'), teamName);
 
-  const joined = joinResultLines(lines.map(stripTimes).map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean));
+  // Righe «con logo» della pagina squadra: una partita per riga, con la giornata.
+  const logo = lines.map((l) => (/\blogo\b/i.test(l) ? normalizeLogoLine(l) : null));
+  const roundOf = new Map();
+  const plain = lines.map((l, i) => {
+    if (!logo[i]) return l;
+    if (logo[i].round != null && logo[i].line) roundOf.set(logo[i].line, logo[i].round);
+    return logo[i].line;
+  }).filter(Boolean);
+
+  const joined = joinResultLines(plain.map((l) => (roundOf.has(l) ? l : stripTimes(l))).map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean));
   const today = isoDay(ref);
-  const results = parseResults(joined.join('\n'), teamName, ref).results
-    .filter((r) => r.gf <= 20 && r.gs <= 20 && (!r.date || r.date <= today) && !sameTeam(r.against, teamName));
+  const results = [];
+  for (const l of joined) {
+    const [r] = parseResults(l, teamName, ref).results;
+    if (!r || r.gf > 20 || r.gs > 20 || (r.date && r.date > today) || sameTeam(r.against, teamName)) continue;
+    r.against = dedupeName(r.against);
+    if (roundOf.has(l)) r.round = roundOf.get(l);
+    results.push(r);
+  }
 
   // La rosa solo se il testo la contiene davvero (intestazioni dei ruoli o
   // molte date di nascita), altrimenti i nomi delle squadre diventerebbero giocatori.
