@@ -13,13 +13,13 @@ import {
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { compBucket } from '../lib/discipline';
 import { useAutoOpponent } from '../lib/crl';
-import { ScaledFrame, widgetUrl } from '../components/TuttocampoWidget';
+import { parseTuttocampo } from '../lib/tuttocampoPaste';
 
 /**
  * Scheda dell'avversario: classifica, forma, rosa, squalificati e note per
- * preparare la partita. Classifica e risultati del girone si vedono dai widget
- * ufficiali di Tuttocampo; i dati della scheda arrivano dai comunicati CRL o
- * si incollano. L'app non copia dati da siti esterni.
+ * preparare la partita. I dati arrivano dai comunicati CRL oppure si incollano:
+ * «Incolla da Tuttocampo» legge il testo che l'utente copia dalla pagina della
+ * squadra. L'app non scarica nulla da siti esterni.
  */
 export default function Avversari() {
   const { user } = useAuth();
@@ -86,6 +86,7 @@ export default function Avversari() {
   const [details, setDetails] = useState(false);
 
   const [adding, setAdding] = useState(false);
+  const [pastingTc, setPastingTc] = useState(false);
 
   const save = async (patch, message = 'Scheda aggiornata') => {
     try {
@@ -153,7 +154,11 @@ export default function Avversari() {
         <>
           <OpponentCard scout={scout} name={name} match={match} auto={autoHere} />
 
-          {club.tuttocampoId && <TuttocampoCard id={club.tuttocampoId} name={scout.name || name} />}
+          {canWrite && (
+            <Button block variant="secondary" onClick={() => setPastingTc(true)} style={{ marginBottom: 12 }}>
+              📋 Incolla da Tuttocampo
+            </Button>
+          )}
 
           <RecentCard scout={scout} />
 
@@ -171,7 +176,7 @@ export default function Avversari() {
                 ))}
               </div>
             ) : (
-              <Empty title="Pochi dati per ora">Servono almeno classifica o un paio di risultati: arrivano da soli dai comunicati CRL, oppure si inseriscono in «Dettagli e modifica».</Empty>
+              <Empty title="Pochi dati per ora">Servono almeno classifica o un paio di risultati: arrivano da soli dai comunicati CRL, oppure con «Incolla da Tuttocampo».</Empty>
             )}
             {tips.length > 0 && <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>Indicazioni ricavate dai numeri: la decisione resta al mister.</small>}
           </Card>
@@ -222,6 +227,12 @@ export default function Avversari() {
         </>
       )}
 
+      {pastingTc && (
+        <PasteTuttocampo scout={scout} name={scout.name || name} refDate={now}
+          onClose={() => setPastingTc(false)}
+          onSave={async (patch, msg) => { if (await save(patch, msg)) setPastingTc(false); }} />
+      )}
+
       {adding && (
         <NewTeamSheet onClose={() => setAdding(false)} onCreate={(n) => { setParams({ nome: n }); setAdding(false); }} />
       )}
@@ -251,7 +262,9 @@ function OpponentCard({ scout, name, match, auto }) {
         </div>
       ) : null}
       {absent.length > 0 && <div style={{ fontSize: 13.5, marginTop: 10 }}>🚫 Assenti: {absent.join(', ')}</div>}
-      {auto && (
+      {st.asOf?.startsWith('Tuttocampo') ? (
+        <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>📋 Classifica da {st.asOf}</small>
+      ) : auto && (
         <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>
           🔄 Dati dai comunicati CRL, aggiornati il {fmtDay(auto.availableFrom)}
         </small>
@@ -261,33 +274,75 @@ function OpponentCard({ scout, name, match, auto }) {
 }
 
 /**
- * Classifica e risultati del girone dai widget ufficiali di Tuttocampo.
- * Il widget mostra tutto il girone e non si può filtrare dall'app: in testa
- * si ricorda quale squadra cercare.
+ * «Incolla da Tuttocampo»: si apre la pagina della squadra (classifica,
+ * risultati o rosa), si seleziona tutto, si copia e si incolla qui. Si
+ * riconosce da solo cosa c'è e si aggiunge alla scheda solo ciò che riguarda
+ * questa squadra. Si può ripetere con più pagine: i dati si sommano.
  */
-const TC_TABS = [
-  { key: 'Classifica', label: 'Classifica', height: 800 },
-  { key: 'Risultati', label: 'Ultimi risultati', height: 600 },
-  { key: 'Marcatori', label: 'Marcatori', height: 700 }
-];
-function TuttocampoCard({ id, name }) {
-  const [tab, setTab] = useState(() => {
-    try { return localStorage.getItem('sm-tc-tab') || 'Classifica'; } catch { return 'Classifica'; }
-  });
-  const pick = (k) => { setTab(k); try { localStorage.setItem('sm-tc-tab', k); } catch { /* ignorabile */ } };
-  const active = TC_TABS.find((t) => t.key === tab) || TC_TABS[0];
+export function PasteTuttocampo({ scout, name, refDate, onSave, onClose, initialText = '' }) {
+  const [text, setText] = useState(initialText);
+  const [busy, setBusy] = useState(false);
+  const parsed = useMemo(() => parseTuttocampo(text, name, refDate), [text, name, refDate]);
+  const st = parsed.standing;
+  const url = scout.tuttocampoUrl || `https://www.google.com/search?q=${encodeURIComponent(`tuttocampo ${name}`)}`;
+
+  const fromClipboard = async () => {
+    try { setText(await navigator.clipboard.readText()); }
+    catch { /* permesso negato: si incolla a mano nel riquadro */ }
+  };
+
+  const apply = async () => {
+    setBusy(true);
+    const patch = {};
+    const parts = [];
+    const day = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    if (st) { patch.standing = { ...st, asOf: `Tuttocampo, ${day}` }; parts.push('classifica'); }
+    if (parsed.results.length) { patch.results = mergeResults(scout.results || [], parsed.results); parts.push(`${parsed.results.length} risultati`); }
+    if (parsed.players.length) { patch.players = mergeRoster(scout.players || [], parsed.players); parts.push(`${parsed.players.length} giocatori`); }
+    patch.tuttocampoAt = new Date().toISOString();
+    await onSave(patch, `Da Tuttocampo: ${parts.join(', ')}`);
+    setBusy(false);
+  };
+
   return (
-    <Card title="📊 Da Tuttocampo">
-      <div className="chiprow" style={{ marginTop: -4 }}>
-        {TC_TABS.map((t) => (
-          <button key={t.key} className={`chip ${tab === t.key ? 'chip--on' : ''}`} onClick={() => pick(t.key)}>{t.label}</button>
-        ))}
+    <Sheet title="Incolla da Tuttocampo" onClose={onClose}>
+      <ol style={{ fontSize: 13.5, color: 'var(--ink-soft)', paddingLeft: 18, margin: '0 0 10px' }}>
+        <li>Apri su Tuttocampo la pagina di <b>{name}</b>: classifica, risultati o rosa.</li>
+        <li>Tieni premuto sul testo, «Seleziona tutto» e «Copia».</li>
+        <li>Torna qui e incolla: l'app riconosce da sola cosa c'è.</li>
+      </ol>
+      <div className="btnrow" style={{ marginBottom: 10 }}>
+        <Button size="sm" variant="secondary" as="a" href={url} target="_blank" rel="noopener noreferrer">Apri Tuttocampo ↗</Button>
+        {navigator.clipboard?.readText && <Button size="sm" variant="secondary" onClick={fromClipboard}>📋 Incolla dagli appunti</Button>}
       </div>
-      <small style={{ display: 'block', margin: '6px 0 8px', color: 'var(--muted)' }}>
-        Girone completo, aggiornato da Tuttocampo: cerca <b>{name}</b>.
+      <Field>
+        <Textarea rows={6} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo copiato dalla pagina" />
+      </Field>
+
+      {text.trim() && (parsed.found.length ? (
+        <Alert level="ok">
+          <div style={{ fontWeight: 700, marginBottom: 4 }}>Trovato per {name}:</div>
+          {st && <div style={{ fontSize: 13.5 }}>🏆 Classifica: {st.pos}° su {st.of}, {st.pts} punti in {st.g} gare ({st.v}V {st.n}N {st.p}P, gol {st.gf}:{st.gs})</div>}
+          {parsed.results.length > 0 && (
+            <div style={{ fontSize: 13.5 }}>⚽ Risultati: {parsed.results.slice(0, 5).map((r) => `${r.date ? fmtDay(r.date) + ' ' : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs}`).join(' · ')}{parsed.results.length > 5 ? ` e altri ${parsed.results.length - 5}` : ''}</div>
+          )}
+          {parsed.players.length > 0 && <div style={{ fontSize: 13.5 }}>👥 Rosa: {parsed.players.length} giocatori ({parsed.players.filter((p) => p.birthDate || p.birthYear).length} con età)</div>}
+        </Alert>
+      ) : (
+        <Alert level="warn">
+          Non trovo dati di {name} in questo testo. Controlla di aver copiato la pagina giusta: classifica del girone, risultati o rosa della squadra.
+          {parsed.rows.length >= 3 && ' La classifica c\'è, ma senza questa squadra: il nome è scritto diversamente?'}
+        </Alert>
+      ))}
+
+      <div className="btnrow">
+        <Button disabled={!parsed.found.length || busy} onClick={apply}>Aggiungi alla scheda</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+      <small style={{ display: 'block', marginTop: 8, color: 'var(--muted)' }}>
+        Puoi ripetere con altre pagine: i dati si sommano. Classifica e risultati aggiornano i suggerimenti.
       </small>
-      <ScaledFrame key={active.key} src={widgetUrl(active.key, id)} height={active.height} title={`Tuttocampo – ${active.label}`} />
-    </Card>
+    </Sheet>
   );
 }
 
@@ -317,7 +372,7 @@ function RecentCard({ scout }) {
           ))}
         </div>
       ) : (
-        <Empty title="Nessun risultato">I risultati arrivano dai comunicati CRL o si aggiungono in «Dettagli e modifica».</Empty>
+        <Empty title="Nessun risultato">I risultati arrivano dai comunicati CRL o con «Incolla da Tuttocampo».</Empty>
       )}
     </Card>
   );
