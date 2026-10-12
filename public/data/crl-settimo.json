@@ -1,12 +1,34 @@
 {
-  "updatedAt": "2026-10-10T12:30:00+02:00",
-  "lastChecked": "2026-10-10T12:30:00+02:00",
+  "updatedAt": "2026-10-12T09:05:56+02:00",
+  "lastChecked": "2026-10-12T09:05:56+02:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
-    "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35"
+    "https://www.crlombardia.it/documenti/33623/comunicato-ufficiale-n-35",
+    "https://www.crlombardia.it/documenti/33575/comunicato-ufficiale-n-32",
+    "https://www.crlombardia.it/news/33588/programma-gare-dal-06-al-08-ottobre-2026",
+    "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
+    "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026"
   ],
   "items": [
+    {
+      "id": "pg0912-pc-leonexiii",
+      "doc": "Programma gare 09-12/10/2026",
+      "date": "2026-10-09",
+      "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026",
+      "category": "Prima Categoria girone A",
+      "type": "calendario",
+      "text": "5ª giornata: Leone XIII Sport – Settimo Milanese (in trasferta), domenica 11/10/2026 alle 14:30 al C.S. \"Leone XIII\" campo 1, via Rossetti 4, Milano."
+    },
+    {
+      "id": "pg0912-u21-frog",
+      "doc": "Programma gare 09-12/10/2026",
+      "date": "2026-10-09",
+      "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026",
+      "category": "Terza Categoria Under 21 girone F",
+      "type": "variazione",
+      "text": "Gara variata: Settimo Milanese – Frog Milano si gioca domenica 11/10/2026 alle 11:00 al C.S. \"S. Pertini\" campo n. 1, via dello Sport 1, Cornaredo."
+    },
     {
       "id": "cu35-coppa-turno2",
       "doc": "Comunicato Ufficiale n. 35",
@@ -60,6 +82,33 @@
       "category": "Giudice Sportivo",
       "type": "sanzione",
       "text": "Nessun provvedimento a carico del Settimo Milanese per le gare del 4 ottobre."
+    },
+    {
+      "id": "cu33-coppa-cassolese-posticipo",
+      "doc": "Comunicato Ufficiale n. 33",
+      "date": "2026-10-06",
+      "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "variazione",
+      "text": "Girone 15, 3ª giornata: Settimo Milanese – Cassolese posticipata dal 30/09 (ore 20:00) a giovedì 08/10/2026 alle 21:00, campo comunale n. 1 di Cusago, via IV Novembre 9."
+    },
+    {
+      "id": "cu33-coppa-classifica",
+      "doc": "Comunicato Ufficiale n. 33",
+      "date": "2026-10-06",
+      "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "classifica",
+      "text": "Girone 15 (con una gara da recuperare): Settimo Milanese 2° con 4 punti in 2 gare (1 vinta, 1 pareggiata), 5 gol fatti e 4 subiti; in testa Marcallese con 6 punti in 3 gare."
+    },
+    {
+      "id": "cu33-giudice",
+      "doc": "Comunicato Ufficiale n. 33",
+      "date": "2026-10-06",
+      "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ]
 }
