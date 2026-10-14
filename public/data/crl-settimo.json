@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-13T16:22:57+02:00",
-  "lastChecked": "2026-10-13T16:22:57+02:00",
+  "updatedAt": "2026-10-14T09:52:38+02:00",
+  "lastChecked": "2026-10-14T09:52:38+02:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -8,7 +8,9 @@
     "https://www.crlombardia.it/documenti/33575/comunicato-ufficiale-n-32",
     "https://www.crlombardia.it/news/33588/programma-gare-dal-06-al-08-ottobre-2026",
     "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
-    "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026"
+    "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026",
+    "https://www.crlombardia.it/documenti/33631/comunicato-ufficiale-n-36",
+    "https://www.crlombardia.it/news/33630/programma-gare-dal-13-al-15-ottobre-2026"
   ],
   "items": [
     {
@@ -109,6 +111,15 @@
       "category": "Giudice Sportivo",
       "type": "sanzione",
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
+    },
+    {
+      "id": "cu36-pc-leonexiii",
+      "doc": "Comunicato Ufficiale n. 36",
+      "date": "2026-10-13",
+      "url": "https://www.crlombardia.it/documenti/33631/comunicato-ufficiale-n-36",
+      "category": "Prima Categoria girone A",
+      "type": "risultato",
+      "text": "5ª giornata (11/10/2026): Leone XIII Sport – Settimo Milanese 0-4, vittoria in trasferta."
     }
   ]
 }
