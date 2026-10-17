@@ -313,6 +313,86 @@ BARANZATESE 1948 POL.D.     AFFORESE G.S.D.                         COMUNALE "G.
 CLUB MILANO S.S.D. A R.L.   MAZZO 80 A.C. SSD A RL                  COMUNALE "G.BRERA"CAMPO1(E.A)                        11/10/2026    09:30 5A    PERO                                     VIA GIOVANNI XXIII°,6
 ```
 
+## COMUNICATO UFFICIALE N° 34 (2026-10-08)
+Pagina: https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34
+
+### Comunicato Ufficiale Nr. 34 del 08.10.2026.pdf – riga 1443
+```
+NEVADA CALCIO                 - VILLA S.S.D.R.L.              0-2        LEO TEAM                          - PRO LISSONE CALCIO          5-0
+PARTIZAN BONOLA ASD           - GARIBALDINA 1932              2-1        MONTESOLARO G.S. A.S.D.           - ZETA MILANO F.C. ASD        1-1
+PRO PESCHIERA BORROMEO        - LEONE XIII SPORT              4-0        OLIMPIA CALCIO CADORAGO           - CASSINA RIZZARDI            3-5
+SETTIMO MILANESE              - SANGIULIANO CVS A R.L.        3-1        VIRTUS CALCIO CERMENATE           - CASTELLO CITTA DI CANTU     0-1
+                                                                         (1) - disputata il 03/10/2026
+
+
+```
+
+### Comunicato Ufficiale Nr. 34 del 08.10.2026.pdf – riga 1717
+```
+                        Squadra 1                 Squadra 2                                                     Impianto
+ Gara Gior.                                                              Orig.       Var. Orig.
+                                                                                                     COMUNALE-CAMPO N.1 CUSAGO VIA IV
+08/10/2026   3A   SETTIMO MILANESE         POL.D. U.S. CASSOLESE        30/09/2026   21:00   20:00
+                                                                                                     NOVEMBRE 9
+
+
+```
+
+### Comunicato Ufficiale Nr. 34 del 08.10.2026.pdf – riga 2103
+```
+ Data N°                                                                         Data         Ora Ora
+                          Squadra 1                   Squadra 2                                                            Impianto
+ Gara Gior.                                                                      Orig.        Var. Orig.
+11/10/2026   5A    SETTIMO MILANESE           FROG MILANO                                     11:00      15:00
+21/10/2026   6A    FROG MILANO                SUPERGA G.S. A.S.D.               18/10/2026    20:30      18:00
+
+
+```
+
+### Comunicato Ufficiale Nr. 34 del 08.10.2026.pdf – riga 2156
+```
+(1) MONGUZZO 1997               - LUISAGO GRANDATE ASD        1-3      ORATORIANA VITTUONE ASD         - VIGHI 1967                  2-1
+(1) NOVEDRATE                   - CDA E CAVALLASCA A.S.D.     1-5      (1) ORIONE                      - FATIMATRACCIA               6-0
+(1) OLIMPIA CALCIO CADORAGO     - INVERIGO                    7-2      POL.D. U.S. CASSOLESE           - FROG MILANO                 3-1
+PONTELAMBRESE A.S.D.            - LIBERTAS SAN BARTOLOMEO     4-0      QUINTO ROMANO A.S.D.            - SETTIMO MILANESE            2-2
+SIRTORESE                       - GSO SAN GIORGIO             6-3      ROZZANO CALCIO SRL SSD          - FOOTBALL CLUB SEDRIANO      3-0
+(1) - disputata il 04/10/2026                                          (1) - disputata il 04/10/2026
+
+```
+
+### Comunicato Ufficiale Nr. 34 del 08.10.2026.pdf – riga 2310
+```
+
+AMMONIZIONE CON DIFFIDA (IV INFR)
+
+FORTUNATO DAVIDE           (SETTIMO MILANESE)
+
+
+                                             GARE DEL 4/10/2026
+```
+
+### Classifiche_CU34.pdf – riga 281
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            12   4   4   0   0   11    2    9    0
+A.S.D. POLISPORTIVA DI NOVA                       8   4   2   2   0   10    4    6    0
+POL. BUCCINASCO                                   8   4   2   2   0    7    2    5    0
+A.S.D. PRO PESCHIERA BORROMEO                     8   4   2   2   0   11    5    6    0
+```
+
+### Classifiche_CU34.pdf – riga 645
+```
+A.S.D. VIGHI 1967                             3   3   1   0   2    4    8    -4   0
+A.S.D. FATIMATRACCIA                          3   3   1   0   2    2   10    -8   0
+SUPERGA G.S. A.S.D.                           1   4   0   1   3    4   14   -10   0
+U.S. SETTIMO MILANESE                         1   4   0   1   3    4   15   -11   0
+
+
+
+```
+
 ## COMUNICATO UFFICIALE N° 33 (2026-10-06)
 Pagina: https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33
 
