@@ -1,0 +1,58 @@
+# Scarica i comunicati ufficiali e i programmi gare del CRL Lombardia e ne
+# salva il testo sul ramo `crl-cache` (non su main, così Cloudflare non
+# ricompila il sito). I task programmati di Claude leggono da quel ramo.
+name: Cache comunicati CRL
+
+on:
+  schedule:
+    # Orari UTC: 04:40 e 17:40 = 06:40 e 19:40 in Italia (05:40 e 18:40 con l'ora solare)
+    - cron: "40 4 * * *"
+    - cron: "40 17 * * *"
+  workflow_dispatch:
+  push:
+    branches: [crl-cache-dev]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crl-cache
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Codice dello script
+        uses: actions/checkout@v4
+        with:
+          path: src
+
+      - name: Ramo crl-cache
+        run: |
+          set -e
+          url="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git ls-remote --exit-code --heads "$url" crl-cache >/dev/null; then
+            git clone --depth 1 --branch crl-cache "$url" cache
+          else
+            mkdir cache && cd cache && git init -q -b crl-cache && git remote add origin "$url"
+          fi
+
+      - name: pdftotext
+        run: |
+          which pdftotext || (sudo apt-get update -q && sudo apt-get install -y -q poppler-utils)
+
+      - name: Scarica i documenti
+        run: python3 -I src/scripts/crl_cache.py cache
+
+      - name: Pubblica sul ramo crl-cache
+        working-directory: cache
+        run: |
+          set -e
+          cp ../src/scripts/crl_cache_README.md README.md
+          git config user.name "crl-cache bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Cache CRL $(TZ=Europe/Rome date '+%d/%m %H:%M') [skip ci]" || { echo "Nessuna modifica"; exit 0; }
+          git push -q origin HEAD:crl-cache
