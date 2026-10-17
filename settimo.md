@@ -312,3 +312,517 @@ SEMPIONE HALF 1919 SSDSRL   FOOTBALL CLUB SEDRIANO                  CAMPO "R.ZOP
 BARANZATESE 1948 POL.D.     AFFORESE G.S.D.                         COMUNALE "G.RAFFIN"- CAMPO 1                         11/10/2026    09:30 5A    BARANZATE                                VIA N.SAURO 160
 CLUB MILANO S.S.D. A R.L.   MAZZO 80 A.C. SSD A RL                  COMUNALE "G.BRERA"CAMPO1(E.A)                        11/10/2026    09:30 5A    PERO                                     VIA GIOVANNI XXIII°,6
 ```
+
+## COMUNICATO UFFICIALE N° 31 (2026-10-01)
+Pagina: https://www.crlombardia.it/documenti/33551/comunicato-ufficiale-n-31
+
+### Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf – riga 1233
+```
+04/10/2026   4A   CENTRO SCHUSTER A.S.D.      POLISPORTIVA OR.PA.S.                  14:30   15:30
+                                                                                                     VIMODRONE VIA G. LEOPARDI 11
+                                                                                                     C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+04/10/2026   4A   SETTIMO MILANESE            SANGIULIANO CVS A R.L.                 19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                     SICA,14
+
+
+```
+
+### Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf – riga 1374
+```
+POLISPORTIVA OR.PA.S.          - FROG MILANO                  0-2        LUISAGO GRANDATE ASD         - LA DOMINANTE                  3-2
+QUINTO ROMANO A.S.D.           - NEVADA CALCIO                2-2        MONTESOLARO G.S. A.S.D.      - GIUSSANO CALCIO A.S.D.        3-0
+SANGIULIANO CVS A R.L.         - PRO PESCHIERA BORROMEO       3-3        PRO LISSONE CALCIO           - ZETA MILANO F.C. ASD          1-1
+VILLA S.S.D.R.L.               - SETTIMO MILANESE             0-2        TRIUGGESE                    - VIRTUS CALCIO CERMENATE       1-0
+
+
+                  GIRONE C - 3 Giornata - A                                                GIRONE D - 3 Giornata - A
+```
+
+### Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf – riga 1596
+```
+                         Squadra 1                     Squadra 2                                                    Impianto
+ Gara Gior.                                                                 Orig.       Var. Orig.
+                                                                                                        C.S."S.PERTINI" N.2 CORNAREDO VIA
+07/10/2026   3A   SETTIMO MILANESE            POL.D. U.S. CASSOLESE        30/09/2026   21:00   20:00
+                                                                                                        DELLO SPORT,70
+
+
+```
+
+### Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf – riga 2591
+```
+ALTO LARIO CALCIO A.S.D.      - ARDITA CITTADELLA 1934        1-5       (1) BUCCINASCO                  - POL.D. U.S. CASSOLESE      2-1
+(1) CDA E CAVALLASCA A.S.D.   - SIRTORESE                     5-2       FOOTBALL CLUB SEDRIANO          - ORATORIANA VITTUONE ASD    2-0
+GSO SAN GIORGIO               - OLIMPIA CALCIO CADORAGO       1-3       (2) FROG MILANO                 - QUINTO ROMANO A.S.D.       4-1
+INVERIGO                      - PONTELAMBRESE A.S.D.          0-5       SETTIMO MILANESE                - ACCADEMIA MILANESE         0-3
+(1) LIBERTAS SAN BARTOLOMEO - MONGUZZO 1997                   3-2       SUPERGA G.S. A.S.D.             - CESANO BOSCONE IDROSTAR    2-6
+LUISAGO GRANDATE ASD          - LESMO SSD ARL                  -    R   VICTORIA MMVII A.S.D.           - ROZZANO CALCIO SRL SSD     2-3
+PERTICATO XENIA ASD           - NOVEDRATE                     1-2       (1) VIGHI 1967                  - ORIONE                     2-6
+```
+
+### Classifica CU_31 del 01.10.2026.pdf – riga 413
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            9    3   3   0   0   8     1    7    0
+POL. BUCCINASCO                                  7    3   2   1   0   7     2    5    0
+A.C. GARIBALDINA 1932                            7    3   2   1   0   8     5    3    0
+A.S.D. IRIS 1914                                 6    3   2   0   1   3     1    2    0
+```
+
+### Classifica CU_31 del 01.10.2026.pdf – riga 778
+```
+U.S. QUINTO ROMANO A.S.D.                    3    3   1   0   2    6    7    -1   0
+POL. ORATORIANA VITTUONE ASD                 1    3   0   1   2    3    7    -4   0
+SUPERGA G.S. A.S.D.                          1    3   0   1   2    4   12    -8   0
+U.S. SETTIMO MILANESE                        0    3   0   0   3    2   13   -11   0
+
+
+
+```
+
+## COMUNICATO UFFICIALE N° 30 (2026-09-29)
+Pagina: https://www.crlombardia.it/documenti/33544/comunicato-ufficiale-n-30
+
+### Comunicato Ufficiale Nr. 30 del 29.09.26.pdf – riga 889
+```
+ Gara Gior.                                                                Orig.       Var. Orig.
+30/09/2026   3A   OSSONA A.S.D.             MARCALLESE A.S.D.                          20:45   20:00
+                                                                                                       C.S."S.PERTINI" N.2 CORNAREDO VIA
+07/10/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE         30/09/2026   21:00   20:00
+                                                                                                       DELLO SPORT,70
+
+
+```
+
+## COMUNICATO UFFICIALE N° 29 (2026-09-25)
+Pagina: https://www.crlombardia.it/documenti/33531/comunicato-ufficiale-n-29
+
+### Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf – riga 250
+```
+                         Squadra 1                 Squadra 2                                                     Impianto
+ Gara Gior.                                                              Orig.       Var. Orig.
+                                                                                                     C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+04/10/2026   4A   SETTIMO MILANESE         SANGIULIANO CVS A R.L.                    19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                     SICA,14
+
+
+```
+
+## COMUNICATO UFFICIALE N° 28 (2026-09-24)
+Pagina: https://www.crlombardia.it/documenti/33510/comunicato-ufficiale-n-28
+
+### Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf – riga 1305
+```
+IRIS 1914                         - LEONE XIII SPORT            1-0       LA DOMINANTE                      - MONTESOLARO G.S. A.S.D.     0-1
+PARTIZAN BONOLA ASD               - SANGIULIANO CVS A R.L.      3-3       OLIMPIA CALCIO CADORAGO           - LUISAGO GRANDATE ASD        4-2
+PRO PESCHIERA BORROMEO            - VILLA S.S.D.R.L.            1-1       VIRTUS CALCIO CERMENATE           - CASSINA RIZZARDI            3-1
+(1) QUINTO ROMANO A.S.D.          - SETTIMO MILANESE            0-4       ZETA MILANO F.C. ASD              - LOMAZZO CALCIO A.S.D.       2-2
+(1) - disputata il 19/09/2026                                             (1) - disputata il 19/09/2026
+
+
+```
+
+### Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf – riga 1593
+```
+ Gara Gior.                                                               Orig.       Var. Orig.
+30/09/2026   3A   OSSONA A.S.D.            MARCALLESE A.S.D.                          20:45   20:00
+                                                                                                      C.S."S.PERTINI" N.2 CORNAREDO VIA
+30/09/2026   3A   SETTIMO MILANESE         POL.D. U.S. CASSOLESE                      21:00   20:00
+                                                                                                      DELLO SPORT,70
+
+
+```
+
+### Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf – riga 1933
+```
+                  GIRONE E - 2 Giornata - A                                                   GIRONE F - 2 Giornata - A
+(1) LESMO SSD ARL               - ALTO LARIO CALCIO A.S.D.      3-1         (1) ACCADEMIA MILANESE          - FROG MILANO                 2-1
+LUISAGO GRANDATE ASD            - LIBERTAS SAN BARTOLOMEO       4-1         (1) BUCCINASCO                  - FATIMATRACCIA               3-0
+(1) MONGUZZO 1997               - INVERIGO                      2-1         CESANO BOSCONE IDROSTAR         - SETTIMO MILANESE            4-1
+(1) NOVEDRATE                   - ARDITA CITTADELLA 1934        3-8         ORATORIANA VITTUONE ASD         - VICTORIA MMVII A.S.D.       1-3
+(1) OLIMPIA CALCIO CADORAGO     - CDA E CAVALLASCA A.S.D.       0-2         (1) ORIONE                      - FOOTBALL CLUB SEDRIANO      4-3
+PERTICATO XENIA ASD             - SIRTORESE                     0-5         POL.D. U.S. CASSOLESE           - QUINTO ROMANO A.S.D.        2-1
+```
+
+### Classifiche CU_28.pdf – riga 279
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            6    2   2   0   0   6   1    5   0
+A.S.D. IRIS 1914                                 6    2   2   0   0   3   0    3   0
+A.S.D. PRO PESCHIERA BORROMEO                    4    2   1   1   0   4   2    2   0
+G.S. VILLA S.S.D.R.L.                            4    2   1   1   0   3   2    1   0
+```
+
+### Classifiche CU_28.pdf – riga 643
+```
+SUPERGA G.S. A.S.D.                          1    2   0   1   1    2    6   -4   0
+A.S.D. FOOTBALL CLUB SEDRIANO                0    1   0   0   1    3    4   -1   0
+A.C.D. FROG MILANO                           0    2   0   0   2    3    5   -2   0
+U.S. SETTIMO MILANESE                        0    2   0   0   2    2   10   -8   0
+
+
+
+```
+
+## COMUNICATO UFFICIALE N° 27 (2026-09-22)
+Pagina: https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27
+
+### Comunicato Ufficiale Nr.27 del 22.09.2026.pdf – riga 807
+```
+                          Squadra 1                   Squadra 2                                                      Impianto
+ Gara Gior.                                                                  Orig.       Var. Orig.
+                                                                                                         C.S."S.PERTINI" N.2 CORNAREDO VIA
+30/09/2026   3A   SETTIMO MILANESE           POL.D. U.S. CASSOLESE                       21:00   20:00
+                                                                                                         DELLO SPORT,70
+
+
+```
+
+### Comunicato Ufficiale Nr.27 del 22.09.2026.pdf – riga 995
+```
+
+                   GIRONE 15 - 2 Giornata - A                                                  GIRONE 16 - 2 Giornata - A
+MARCALLESE A.S.D.                 - POL.D. U.S. CASSOLESE         1-0        GROPELLO SAN GIORGIO         - VELA MESERO                   0-3
+OSSONA A.S.D.                     - SETTIMO MILANESE              2-2
+
+
+
+```
+
+### Comunicato Ufficiale Nr.27 del 22.09.2026.pdf – riga 1166
+```
+
+SQUALIFICA FINO AL 21/10/2026
+
+MUGNAINI ROBERTO          (SETTIMO MILANESE)
+
+Al termine della gara colpiva con l'asta della bandierina alcuni calciatori avversari,senza conseguenze.
+
+```
+
+### Comunicato Ufficiale Nr.27 del 22.09.2026.pdf – riga 1248
+```
+BUONAIUTO ANTONIO       (RAPID OLIMPIA)                        CANGEMI THOMAS            (REAL MELEGNANO 1928)
+PIRONA LUCA             (REAL MELEGNANO 1928)                  CAPOBIANCO MAURO          (REAL TREZZANO)
+PERSICO FILIPPO         (ROMANENGO ASD)                        GAFFURI LUCA              (SALVIROLA A.S.D.)
+RUTIGLIANO MATTIA       (SETTIMO MILANESE)                     CATTANEO SAMUELE          (TICINIA ROBECCHETTO)
+                                                               MARQUEZ CORNEJO
+ROSSI TOMMASO           (U.S.O. ZANICA ASD)                                              (VALCUVIANA A.S.D.)
+                                                               MATTIAS RAUL
+```
+
+### Comunicato Ufficiale Nr.27 del 22.09.2026.pdf – riga 1455
+```
+POZZI DARIO            (SAN GIORGIO)                          PLACIDO GIOVANNI      (SAN MICHELE CALCIO)
+CAPISANI DAVIDE        (SERENISSIMA 1918)                     PAPINI ANDREA         (SERGNANESE A.S.D.)
+TASSONCINI FEDERICO    (SESTO 2012 SSD A R.L.)                LOCATELLI RICCARDO    (SETTALESE)
+RIZZO DANIEL           (SETTIMO MILANESE)                     BRUSADELLI PIETRO     (SIRTORESE)
+GIOVANESSI MATTIA      (SIRTORESE)                            CANIGIULA JACOPO      (SORESINESE CALCIO A.S.D.)
+MAZZUCCHELLI LUCA      (TICINIA ROBECCHETTO)                  PISONI DIEGO GIACOMO  (TICINIA ROBECCHETTO)
+ESSAN KOUA LEOPAUL     (TRADATE A.S.D.)                       MALFARA RICCARDO      (TRADATE A.S.D.)
+```
+
+### Classifiche Coppe CU27.pdf – riga 299
+```
+
+GIRONE 15
+                               Squadra            PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                             4    2   1   1   0   5   4     1   0
+U.S. MARCALLESE A.S.D.                            3    2   1   0   1   3   3     0   0
+A.C. OSSONA A.S.D.                                2    2   0   2   0   3   3     0   0
+POL.D. U.S. CASSOLESE                             1    2   0   1   1   1   2    -1   0
+```
+
+## COMUNICATO UFFICIALE N° 26 (2026-09-18)
+Pagina: https://www.crlombardia.it/documenti/33496/comunicato-ufficiale-n-26
+Nessuna menzione del Settimo Milanese.
+
+## COMUNICATO UFFICIALE N° 25 (2026-09-17)
+Pagina: https://www.crlombardia.it/documenti/33470/comunicato-ufficiale-n-25
+
+### Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf – riga 1171
+```
+ Data N°                                                                   Data        Ora Ora
+                          Squadra 1                 Squadra 2                                                      Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE             20/09/2026   20:30   15:30
+                                                                                                       C.S.CAMBINI-FOSSATI (E.A) MILANO VIA
+20/09/2026   2A   CENTRO SCHUSTER A.S.D.     GARIBALDINA 1932                          16:30   15:30
+                                                                                                       PALMANOVA,47
+```
+
+### Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf – riga 1324
+```
+                  GIRONE A - 1 Giornata - A                                               GIRONE B - 1 Giornata - A
+GARIBALDINA 1932              - FROG MILANO                 2-2         ATLETICO SCHIAFFINO          - VIRTUS CALCIO CERMENATE       0-1
+LEONE XIII SPORT              - CENTRO SCHUSTER A.S.D.      1-1         CASSINA RIZZARDI             - CASTELLO CITTA DI CANTU       1-1
+NEVADA CALCIO                 - SETTIMO MILANESE            1-2         LEO TEAM                     - ZETA MILANO F.C. ASD          0-1
+POLISPORTIVA DI NOVA          - BUCCINASCO                  1-1         LOMAZZO CALCIO A.S.D.        - GIUSSANO CALCIO A.S.D.        1-2
+POLISPORTIVA OR.PA.S.         - AUSONIA ACADEMY             1-1         LUISAGO GRANDATE ASD         - ITALA A.S.D.                  5-0
+QUINTO ROMANO A.S.D.          - PRO PESCHIERA BORROMEO      1-3         MONTESOLARO G.S. A.S.D.      - OLIMPIA CALCIO CADORAGO       2-2
+```
+
+### Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf – riga 2314
+```
+                          Squadra 1                     Squadra 2                                                               Impianto
+ Gara Gior.                                                                         Orig.       Var. Orig.
+                                                                                                                    C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+19/09/2026   2A    CESANO BOSCONE IDROSTAR       SETTIMO MILANESE                 20/09/2026    15:30       16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                                    SICA,14
+
+
+```
+
+### Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf – riga 2386
+```
+ALTO LARIO CALCIO A.S.D.      - NOVEDRATE                     0-0         FATIMATRACCIA                   - POL.D. U.S. CASSOLESE      2-1
+ARDITA CITTADELLA 1934        - SIRTORESE                     2-2         FROG MILANO                     - CESANO BOSCONE IDROSTAR    2-3
+(1) CDA E CAVALLASCA A.S.D.   - PONTELAMBRESE A.S.D.          1-8         QUINTO ROMANO A.S.D.            - ACCADEMIA MILANESE         4-1
+GSO SAN GIORGIO               - MONGUZZO 1997                 3-2         SETTIMO MILANESE                - ROZZANO CALCIO SRL SSD     1-6
+INVERIGO                      - LUISAGO GRANDATE ASD          3-2         SUPERGA G.S. A.S.D.             - ORATORIANA VITTUONE ASD    2-2
+(1) LIBERTAS SAN BARTOLOMEO - LESMO SSD ARL                   0-2         VICTORIA MMVII A.S.D.           - ORIONE                     2-1
+PERTICATO XENIA ASD           - OLIMPIA CALCIO CADORAGO       1-2         (1) VIGHI 1967                  - BUCCINASCO                 1-0
+```
+
+### Classifiche CU Nr25.pdf – riga 286
+```
+A.S.D. PRO PESCHIERA BORROMEO                    3    1   1   0   0   3   1    2   0
+A.S.D. IRIS 1914                                 3    1   1   0   0   2   0    2   0
+G.S. VILLA S.S.D.R.L.                            3    1   1   0   0   2   1    1   0
+U.S. SETTIMO MILANESE                            3    1   1   0   0   2   1    1   0
+A.C. GARIBALDINA 1932                            1    1   0   1   0   2   2    0   0
+A.C.D. FROG MILANO                               1    1   0   1   0   2   2    0   0
+CENTRO SCHUSTER A.S.D.                           1    1   0   1   0   1   1    0   0
+```
+
+### Classifiche CU Nr25.pdf – riga 647
+```
+U.S. ORIONE                                  0    1   0   0   1   1   2   -1   0
+POL. BUCCINASCO                              0    1   0   0   1   0   1   -1   0
+ASD ACCADEMIA MILANESE                       0    1   0   0   1   1   4   -3   0
+U.S. SETTIMO MILANESE                        0    1   0   0   1   1   6   -5   0
+
+
+
+```
+
+## COMUNICATO UFFICIALE N° 24 (2026-09-15)
+Pagina: https://www.crlombardia.it/documenti/33462/comunicato-ufficiale-n-24
+
+### Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf – riga 756
+```
+                          Squadra 1                Squadra 2                                                       Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00
+16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00
+                                                                                                       C.S."S.PERTINI" N.2 CORNAREDO VIA
+30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00
+                                                                                                       DELLO SPORT,70
+
+
+```
+
+## COMUNICATO UFFICIALE N° 23 (2026-09-11)
+Pagina: https://www.crlombardia.it/documenti/33454/comunicato-ufficiale-n-23
+Nessuna menzione del Settimo Milanese.
+
+## COMUNICATO UFFICIALE N° 22 (2026-09-10)
+Pagina: https://www.crlombardia.it/documenti/33428/comunicato-ufficiale-n-22
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 1352
+```
+13/09/2026   1A   GARIBALDINA 1932            FROG MILANO                                17:00   15:30
+                                                                                                         VIA ASSIETTA,48
+13/09/2026   1A   LEONE XIII SPORT            CENTRO SCHUSTER A.S.D.                     16:30   14:30
+19/09/2026   2A   QUINTO ROMANO A.S.D.        SETTIMO MILANESE              20/09/2026   20:30   15:30
+
+
+
+```
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 1612
+```
+                          Squadra 1                Squadra 2                                                       Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00
+16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00
+                                                                                                       C.S."S.PERTINI" N.2 CORNAREDO VIA
+30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00
+                                                                                                       DELLO SPORT,70
+
+
+```
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 1888
+```
+
+                   GIRONE 15 - 1 Giornata - A                                          GIRONE 16 - 1 Giornata - A
+POL.D. U.S. CASSOLESE       - OSSONA A.S.D.               1-1      (1) U.S. CASTELNOVETTO          - GROPELLO SAN GIORGIO        2-2
+SETTIMO MILANESE            - MARCALLESE A.S.D.           3-2      (1) - disputata il 05/09/2026
+
+
+                   GIRONE 17 - 1 Giornata - A                                          GIRONE 18 - 1 Giornata - A
+```
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 2057
+```
+SAVI ROBERTO           (C.D.G. VENIANO)                        PREITE DANIELE          (GARIBALDINA 1932)
+FINAZZI EMANUELE       (NOVA MONTELLO)                         TRUNETTI MAURO          (OLIMPIA CALCIO CADORAGO)
+MOTTA MARCO            (PRO LISSONE CALCIO)                    DIANA GIACOMO           (REAL CERTOSA A.S.D.)
+PUGLIESE LUCA          (SETTIMO MILANESE)                      VICECONTI NICOLA        (UNION VALLEOLONA ASD)
+BAFFI GIANLUCA         (ZIBIDO S.GIACOMO A.S.D.)
+
+
+```
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 2254
+```
+ALVES DE LIMA THIAGO
+                       (SETTALESE)                            ALZANI RICCARDO          (SETTALESE)
+OTAVIO
+FAZZARI DAVIDE         (SETTALESE)                            RUTIGLIANO MATTIA      (SETTIMO MILANESE)
+CAZZANIGA CARLO        (SIRTORESE)                            FOFANA MOUSTAPHA       (SIRTORESE)
+BADAWI EL SAYED        (SORESINESE CALCIO A.S.D.)             BENIE KOUAME MOHAMED (SORESINESE CALCIO A.S.D.)
+BELLOTTI FRANCESCO     (TALAMONESE A.S.D.)                    DOMINICI FRANCESCO     (TALAMONESE A.S.D.)
+```
+
+### Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf – riga 4196
+```
+                         Squadra 1                     Squadra 2                                                     Impianto
+ Gara Gior.                                                                  Orig.       Var. Orig.
+                                                                                                         C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+19/09/2026   2A   CESANO BOSCONE IDROSTAR     SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                         SICA,14
+
+
+```
+
+### Classifiche_Coppe_CUNr22.pdf – riga 559
+```
+
+GIRONE 15
+                               Squadra             PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                              3    1   1   0   0   3   2    1   0
+POL.D. U.S. CASSOLESE                              1    1   0   1   0   1   1    0   0
+A.C. OSSONA A.S.D.                                 1    1   0   1   0   1   1    0   0
+U.S. MARCALLESE A.S.D.                             0    1   0   0   1   2   3   -1   0
+```
+
+## COMUNICATO UFFICIALE N° 21 (2026-09-08)
+Pagina: https://www.crlombardia.it/documenti/33422/comunicato-ufficiale-n-21
+
+### Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf – riga 320
+```
+Girone F
+
+La Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318
+– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.
+
+JUNIORES UNDER 19 REG. ELITE
+
+```
+
+### Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf – riga 339
+```
+Girone H
+
+La Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318
+– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.
+
+UNDER 18 REG.LE
+
+Girone C
+
+La Società U.S. VIGHIGNOLO disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c.
+318 – E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VIGHIGNOLO - VIA PACE S.N.C.
+
+COPPA LOMBARDIA PRIMA CATEGORIA
+
+```
+
+### Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf – riga 781
+```
+13/09/2026   1A   GARIBALDINA 1932         FROG MILANO                                17:00   15:30
+                                                                                                      VIA ASSIETTA,48
+13/09/2026   1A   LEONE XIII SPORT         CENTRO SCHUSTER A.S.D.                     16:30   14:30
+19/09/2026   2A   QUINTO ROMANO A.S.D.     SETTIMO MILANESE              20/09/2026   20:30   15:30
+
+
+
+```
+
+### Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf – riga 966
+```
+                          Squadra 1                 Squadra 2                                                       Impianto
+ Gara Gior.                                                                  Orig.       Var. Orig.
+16/09/2026   2A   MARCALLESE A.S.D.          POL.D. U.S. CASSOLESE                       20:30   20:00
+16/09/2026   2A   OSSONA A.S.D.              SETTIMO MILANESE                            21:00   20:00
+
+
+
+```
+
+### Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf – riga 1812
+```
+                         Squadra 1                   Squadra 2                                                     Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+                                                                                                       C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                       SICA,14
+
+
+```
+
+## COMUNICATO UFFICIALE N° 20 (2026-09-03)
+Pagina: https://www.crlombardia.it/documenti/33402/comunicato-ufficiale-n-20
+
+### Comunicato Ufficiale Nr.20 del 03.09.2026.pdf – riga 965
+```
+13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                 17:00   15:30
+                                                                                                         VIA ASSIETTA,48
+13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                      16:30   14:30
+19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE               20/09/2026   20:30   15:30
+
+
+
+```
+
+### Comunicato Ufficiale Nr.20 del 03.09.2026.pdf – riga 2071
+```
+                         Squadra 1                   Squadra 2                                                     Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+                                                                                                       C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                       SICA,14
+
+
+```
+
+## COMUNICATO UFFICIALE N° 19 (2026-09-01)
+Pagina: https://www.crlombardia.it/documenti/33381/comunicato-ufficiale-n-19
+
+### Comunicato Ufficiale Nr.19 del 01.09.2026.pdf – riga 752
+```
+13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                17:00   15:30
+                                                                                                        VIA ASSIETTA,48
+13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                     16:30   14:30
+19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE              20/09/2026   20:30   15:30
+
+
+
+```
+
+### Comunicato Ufficiale Nr.19 del 01.09.2026.pdf – riga 1636
+```
+                         Squadra 1                 Squadra 2                                                       Impianto
+ Gara Gior.                                                                Orig.       Var. Orig.
+                                                                                                       C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                       SICA,14
+
+
+```

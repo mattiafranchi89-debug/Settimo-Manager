@@ -412,10 +412,837 @@
         }
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
+    },
+    "33381": {
+      "id": "33381",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 19",
+      "number": 19,
+      "date": "2026-09-01",
+      "url": "https://www.crlombardia.it/documenti/33381/comunicato-ufficiale-n-19",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr.19 del 01.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea53c3aa1_Comunicato Ufficiale Nr.19 del 01.09.2026.pdf",
+          "pages_chars": 216403,
+          "settimo_mentions": 2,
+          "txt": "docs/33381/Comunicato_Ufficiale_Nr.19_del_01.09.2026.txt",
+          "mentions": [
+            {
+              "line": 752,
+              "text": "13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                17:00   15:30\n                                                                                                        VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
+            },
+            {
+              "line": 1636,
+              "text": "                         Squadra 1                 Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
+            }
+          ]
+        },
+        {
+          "name": "1_Allievi U17 Reg.li GirE 010926.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5416222_1_Allievi U17 Reg.li GirE 010926.pdf",
+          "pages_chars": 11438,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "2_Coppa Italia Calcio a 5 Serie C1.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5423b1c_2_Coppa Italia Calcio a 5 Serie C1.pdf",
+          "pages_chars": 2558,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "3_Coppa Lombardia Calcioa 5 Serie C2.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea542aedc_3_Coppa Lombardia Calcioa 5 Serie C2.pdf",
+          "pages_chars": 5385,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Numerazione Fissa.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5436506_Numerazione Fissa.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33402": {
+      "id": "33402",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 20",
+      "number": 20,
+      "date": "2026-09-03",
+      "url": "https://www.crlombardia.it/documenti/33402/comunicato-ufficiale-n-20",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr.20 del 03.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33402/6a99876d6d39e_Comunicato Ufficiale Nr.20 del 03.09.2026.pdf",
+          "pages_chars": 301435,
+          "settimo_mentions": 2,
+          "txt": "docs/33402/Comunicato_Ufficiale_Nr.20_del_03.09.2026.txt",
+          "mentions": [
+            {
+              "line": 965,
+              "text": "13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                 17:00   15:30\n                                                                                                         VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                      16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE               20/09/2026   20:30   15:30\n\n\n"
+            },
+            {
+              "line": 2071,
+              "text": "                         Squadra 1                   Squadra 2                                                     Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Numerazione Fissa.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33402/6a99876dd58f9_Numerazione Fissa.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33422": {
+      "id": "33422",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 21",
+      "number": 21,
+      "date": "2026-09-08",
+      "url": "https://www.crlombardia.it/documenti/33422/comunicato-ufficiale-n-21",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d15ea9b7_Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf",
+          "pages_chars": 221408,
+          "settimo_mentions": 5,
+          "txt": "docs/33422/Comunicato_Ufficiale_Nr._21_del_08.09.2026.txt",
+          "mentions": [
+            {
+              "line": 320,
+              "text": "Girone F\n\nLa Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318\n– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.\n\nJUNIORES UNDER 19 REG. ELITE\n"
+            },
+            {
+              "line": 339,
+              "text": "Girone H\n\nLa Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318\n– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.\n\nUNDER 18 REG.LE\n\nGirone C\n\nLa Società U.S. VIGHIGNOLO disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c.\n318 – E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VIGHIGNOLO - VIA PACE S.N.C.\n\nCOPPA LOMBARDIA PRIMA CATEGORIA\n"
+            },
+            {
+              "line": 781,
+              "text": "13/09/2026   1A   GARIBALDINA 1932         FROG MILANO                                17:00   15:30\n                                                                                                      VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT         CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.     SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
+            },
+            {
+              "line": 966,
+              "text": "                          Squadra 1                 Squadra 2                                                       Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.          POL.D. U.S. CASSOLESE                       20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.              SETTIMO MILANESE                            21:00   20:00\n\n\n"
+            },
+            {
+              "line": 1812,
+              "text": "                         Squadra 1                   Squadra 2                                                     Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Regolamento competizioni provinciali SGS S.S. 26_27 (08.09.2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d15e1a0c_Regolamento competizioni provinciali SGS S.S. 26_27 (08.09.2026).pdf",
+          "pages_chars": 79157,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Numerazione Fissa CU21.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d161700f_Numerazione Fissa CU21.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33428": {
+      "id": "33428",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 22",
+      "number": 22,
+      "date": "2026-09-10",
+      "url": "https://www.crlombardia.it/documenti/33428/comunicato-ufficiale-n-22",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b08756437_Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf",
+          "pages_chars": 509143,
+          "settimo_mentions": 6,
+          "txt": "docs/33428/Comunicato_Ufficiale_Nr._22_del_10.09.2026.txt",
+          "mentions": [
+            {
+              "line": 1352,
+              "text": "13/09/2026   1A   GARIBALDINA 1932            FROG MILANO                                17:00   15:30\n                                                                                                         VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT            CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.        SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
+            },
+            {
+              "line": 1612,
+              "text": "                          Squadra 1                Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00\n                                                                                                       C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                       DELLO SPORT,70\n\n"
+            },
+            {
+              "line": 1888,
+              "text": "\n                   GIRONE 15 - 1 Giornata - A                                          GIRONE 16 - 1 Giornata - A\nPOL.D. U.S. CASSOLESE       - OSSONA A.S.D.               1-1      (1) U.S. CASTELNOVETTO          - GROPELLO SAN GIORGIO        2-2\nSETTIMO MILANESE            - MARCALLESE A.S.D.           3-2      (1) - disputata il 05/09/2026\n\n\n                   GIRONE 17 - 1 Giornata - A                                          GIRONE 18 - 1 Giornata - A"
+            },
+            {
+              "line": 2057,
+              "text": "SAVI ROBERTO           (C.D.G. VENIANO)                        PREITE DANIELE          (GARIBALDINA 1932)\nFINAZZI EMANUELE       (NOVA MONTELLO)                         TRUNETTI MAURO          (OLIMPIA CALCIO CADORAGO)\nMOTTA MARCO            (PRO LISSONE CALCIO)                    DIANA GIACOMO           (REAL CERTOSA A.S.D.)\nPUGLIESE LUCA          (SETTIMO MILANESE)                      VICECONTI NICOLA        (UNION VALLEOLONA ASD)\nBAFFI GIANLUCA         (ZIBIDO S.GIACOMO A.S.D.)\n\n"
+            },
+            {
+              "line": 2254,
+              "text": "ALVES DE LIMA THIAGO\n                       (SETTALESE)                            ALZANI RICCARDO          (SETTALESE)\nOTAVIO\nFAZZARI DAVIDE         (SETTALESE)                            RUTIGLIANO MATTIA      (SETTIMO MILANESE)\nCAZZANIGA CARLO        (SIRTORESE)                            FOFANA MOUSTAPHA       (SIRTORESE)\nBADAWI EL SAYED        (SORESINESE CALCIO A.S.D.)             BENIE KOUAME MOHAMED (SORESINESE CALCIO A.S.D.)\nBELLOTTI FRANCESCO     (TALAMONESE A.S.D.)                    DOMINICI FRANCESCO     (TALAMONESE A.S.D.)"
+            },
+            {
+              "line": 4196,
+              "text": "                         Squadra 1                     Squadra 2                                                     Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n                                                                                                         C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR     SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                         SICA,14\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Classifiche_Coppe_CUNr22.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0878470a_Classifiche_Coppe_CUNr22.pdf",
+          "pages_chars": 182382,
+          "settimo_mentions": 1,
+          "txt": "docs/33428/Classifiche_Coppe_CUNr22.txt",
+          "mentions": [
+            {
+              "line": 559,
+              "text": "\nGIRONE 15\n                               Squadra             PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                              3    1   1   0   0   3   2    1   0\nPOL.D. U.S. CASSOLESE                              1    1   0   1   0   1   1    0   0\nA.C. OSSONA A.S.D.                                 1    1   0   1   0   1   1    0   0\nU.S. MARCALLESE A.S.D.                             0    1   0   0   1   2   3   -1   0"
+            }
+          ]
+        },
+        {
+          "name": "Maglie personalizzate CU22.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b087e23ed_Maglie personalizzate CU22.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "SGS Circolare N°1 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0882e10f_SGS Circolare  N°1 Stagione 2026-2027.pdf",
+          "pages_chars": 4670,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0883c62f_Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
+          "pages_chars": 3957,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xls",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b08846e58_MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xls",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33454": {
+      "id": "33454",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 23",
+      "number": 23,
+      "date": "2026-09-11",
+      "url": "https://www.crlombardia.it/documenti/33454/comunicato-ufficiale-n-23",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr.23 del 11.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1b9bc57_Comunicato Ufficiale Nr.23 del 11.09.2026.pdf",
+          "pages_chars": 20247,
+          "settimo_mentions": 0,
+          "txt": "docs/33454/Comunicato_Ufficiale_Nr.23_del_11.09.2026.txt"
+        },
+        {
+          "name": "Calendario_C5_SerieD.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1ba97a5_Calendario_C5_SerieD.pdf",
+          "pages_chars": 15378,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_C5_U19.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bb3961_Calendario_C5_U19.pdf",
+          "pages_chars": 3326,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_C5_U17.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bbd5b3_Calendario_C5_U17.pdf",
+          "pages_chars": 9076,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Campionato_C5_U15.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bc8824_Campionato_C5_U15.pdf",
+          "pages_chars": 6921,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie numerazione fissa CU23.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bd53e6_Maglie numerazione fissa CU23.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33462": {
+      "id": "33462",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 24",
+      "number": 24,
+      "date": "2026-09-15",
+      "url": "https://www.crlombardia.it/documenti/33462/comunicato-ufficiale-n-24",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33462/6aa94913d6366_Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf",
+          "pages_chars": 181201,
+          "settimo_mentions": 1,
+          "txt": "docs/33462/Comunicato_Ufficiale_Nr._24_del_15.09.2026.txt",
+          "mentions": [
+            {
+              "line": 756,
+              "text": "                          Squadra 1                Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00\n                                                                                                       C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                       DELLO SPORT,70\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Maglie Personalizzate CU24.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33462/6aa9491424272_Maglie Personalizzate CU24.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33470": {
+      "id": "33470",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 25",
+      "number": 25,
+      "date": "2026-09-17",
+      "url": "https://www.crlombardia.it/documenti/33470/comunicato-ufficiale-n-25",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea96bb28a_Comunicato Ufficiale Nr. 25 del 17.09.2026.pdf",
+          "pages_chars": 324455,
+          "settimo_mentions": 4,
+          "txt": "docs/33470/Comunicato_Ufficiale_Nr._25_del_17.09.2026.txt",
+          "mentions": [
+            {
+              "line": 1171,
+              "text": " Data N°                                                                   Data        Ora Ora\n                          Squadra 1                 Squadra 2                                                      Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE             20/09/2026   20:30   15:30\n                                                                                                       C.S.CAMBINI-FOSSATI (E.A) MILANO VIA\n20/09/2026   2A   CENTRO SCHUSTER A.S.D.     GARIBALDINA 1932                          16:30   15:30\n                                                                                                       PALMANOVA,47"
+            },
+            {
+              "line": 1324,
+              "text": "                  GIRONE A - 1 Giornata - A                                               GIRONE B - 1 Giornata - A\nGARIBALDINA 1932              - FROG MILANO                 2-2         ATLETICO SCHIAFFINO          - VIRTUS CALCIO CERMENATE       0-1\nLEONE XIII SPORT              - CENTRO SCHUSTER A.S.D.      1-1         CASSINA RIZZARDI             - CASTELLO CITTA DI CANTU       1-1\nNEVADA CALCIO                 - SETTIMO MILANESE            1-2         LEO TEAM                     - ZETA MILANO F.C. ASD          0-1\nPOLISPORTIVA DI NOVA          - BUCCINASCO                  1-1         LOMAZZO CALCIO A.S.D.        - GIUSSANO CALCIO A.S.D.        1-2\nPOLISPORTIVA OR.PA.S.         - AUSONIA ACADEMY             1-1         LUISAGO GRANDATE ASD         - ITALA A.S.D.                  5-0\nQUINTO ROMANO A.S.D.          - PRO PESCHIERA BORROMEO      1-3         MONTESOLARO G.S. A.S.D.      - OLIMPIA CALCIO CADORAGO       2-2"
+            },
+            {
+              "line": 2314,
+              "text": "                          Squadra 1                     Squadra 2                                                               Impianto\n Gara Gior.                                                                         Orig.       Var. Orig.\n                                                                                                                    C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A    CESANO BOSCONE IDROSTAR       SETTIMO MILANESE                 20/09/2026    15:30       16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                                    SICA,14\n\n"
+            },
+            {
+              "line": 2386,
+              "text": "ALTO LARIO CALCIO A.S.D.      - NOVEDRATE                     0-0         FATIMATRACCIA                   - POL.D. U.S. CASSOLESE      2-1\nARDITA CITTADELLA 1934        - SIRTORESE                     2-2         FROG MILANO                     - CESANO BOSCONE IDROSTAR    2-3\n(1) CDA E CAVALLASCA A.S.D.   - PONTELAMBRESE A.S.D.          1-8         QUINTO ROMANO A.S.D.            - ACCADEMIA MILANESE         4-1\nGSO SAN GIORGIO               - MONGUZZO 1997                 3-2         SETTIMO MILANESE                - ROZZANO CALCIO SRL SSD     1-6\nINVERIGO                      - LUISAGO GRANDATE ASD          3-2         SUPERGA G.S. A.S.D.             - ORATORIANA VITTUONE ASD    2-2\n(1) LIBERTAS SAN BARTOLOMEO - LESMO SSD ARL                   0-2         VICTORIA MMVII A.S.D.           - ORIONE                     2-1\nPERTICATO XENIA ASD           - OLIMPIA CALCIO CADORAGO       1-2         (1) VIGHI 1967                  - BUCCINASCO                 1-0"
+            }
+          ]
+        },
+        {
+          "name": "Classifiche CU Nr25.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea97ce166_Classifiche CU Nr25.pdf",
+          "pages_chars": 132141,
+          "settimo_mentions": 2,
+          "txt": "docs/33470/Classifiche_CU_Nr25.txt",
+          "mentions": [
+            {
+              "line": 286,
+              "text": "A.S.D. PRO PESCHIERA BORROMEO                    3    1   1   0   0   3   1    2   0\nA.S.D. IRIS 1914                                 3    1   1   0   0   2   0    2   0\nG.S. VILLA S.S.D.R.L.                            3    1   1   0   0   2   1    1   0\nU.S. SETTIMO MILANESE                            3    1   1   0   0   2   1    1   0\nA.C. GARIBALDINA 1932                            1    1   0   1   0   2   2    0   0\nA.C.D. FROG MILANO                               1    1   0   1   0   2   2    0   0\nCENTRO SCHUSTER A.S.D.                           1    1   0   1   0   1   1    0   0"
+            },
+            {
+              "line": 647,
+              "text": "U.S. ORIONE                                  0    1   0   0   1   1   2   -1   0\nPOL. BUCCINASCO                              0    1   0   0   1   0   1   -1   0\nASD ACCADEMIA MILANESE                       0    1   0   0   1   1   4   -3   0\nU.S. SETTIMO MILANESE                        0    1   0   0   1   1   6   -5   0\n\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Convocazione 24 Settembre2026 Rappresentativa U19.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea987df96_Convocazione  24 Settembre2026 Rappresentativa U19.pdf",
+          "pages_chars": 4398,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Convocazione 23 Settembre 2026 Rappresentativa U17.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea9889389_Convocazione  23 Settembre 2026 Rappresentativa U17.pdf",
+          "pages_chars": 4581,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Convocazione 22 Settembre2026 Rappresentativa U15 .pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea9892b12_Convocazione  22 Settembre2026 Rappresentativa U15 .pdf",
+          "pages_chars": 3628,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie Personalizzate CU25.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea989679d_Maglie Personalizzate CU25.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "Calendari_SGS_U14Pro.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea989e4f7_Calendari_SGS_U14Pro.pdf",
+          "pages_chars": 14233,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendari_SGS_U13Pro.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea98aabe9_Calendari_SGS_U13Pro.pdf",
+          "pages_chars": 13552,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "SGS Circolare N°2 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea98b45fa_SGS Circolare  N°2 Stagione 2026-2027.pdf",
+          "pages_chars": 4745,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea98bc54d_Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
+          "pages_chars": 3948,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xlsx",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33470/6aabea98c705a_MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xlsx",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33496": {
+      "id": "33496",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 26",
+      "number": 26,
+      "date": "2026-09-18",
+      "url": "https://www.crlombardia.it/documenti/33496/comunicato-ufficiale-n-26",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 26 del 18.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db05a3e7_Comunicato Ufficiale Nr. 26 del 18.09.2026.pdf",
+          "pages_chars": 29615,
+          "settimo_mentions": 0,
+          "txt": "docs/33496/Comunicato_Ufficiale_Nr._26_del_18.09.2026.txt"
+        },
+        {
+          "name": "Calendari_SGS_U13Pro agg.180926.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db0695ca_Calendari_SGS_U13Pro agg.180926.pdf",
+          "pages_chars": 13502,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_AllieveReg.li.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db071df6_Calendario_AllieveReg.li.pdf",
+          "pages_chars": 39849,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_GiovanissimeReg.li.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db081cea_Calendario_GiovanissimeReg.li.pdf",
+          "pages_chars": 49901,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "SGS Circolare N°3 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db09b254_SGS Circolare  N°3 Stagione 2026-2027.pdf",
+          "pages_chars": 2435,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie Personalizzate_CU26.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db0aa423_Maglie Personalizzate_CU26.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33505": {
+      "id": "33505",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 27",
+      "number": 27,
+      "date": "2026-09-22",
+      "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr.27 del 22.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ace0e21e6225_Comunicato Ufficiale Nr.27 del 22.09.2026.pdf",
+          "pages_chars": 325105,
+          "settimo_mentions": 5,
+          "txt": "docs/33505/Comunicato_Ufficiale_Nr.27_del_22.09.2026.txt",
+          "mentions": [
+            {
+              "line": 807,
+              "text": "                          Squadra 1                   Squadra 2                                                      Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n                                                                                                         C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE           POL.D. U.S. CASSOLESE                       21:00   20:00\n                                                                                                         DELLO SPORT,70\n\n"
+            },
+            {
+              "line": 995,
+              "text": "\n                   GIRONE 15 - 2 Giornata - A                                                  GIRONE 16 - 2 Giornata - A\nMARCALLESE A.S.D.                 - POL.D. U.S. CASSOLESE         1-0        GROPELLO SAN GIORGIO         - VELA MESERO                   0-3\nOSSONA A.S.D.                     - SETTIMO MILANESE              2-2\n\n\n"
+            },
+            {
+              "line": 1166,
+              "text": "\nSQUALIFICA FINO AL 21/10/2026\n\nMUGNAINI ROBERTO          (SETTIMO MILANESE)\n\nAl termine della gara colpiva con l'asta della bandierina alcuni calciatori avversari,senza conseguenze.\n"
+            },
+            {
+              "line": 1248,
+              "text": "BUONAIUTO ANTONIO       (RAPID OLIMPIA)                        CANGEMI THOMAS            (REAL MELEGNANO 1928)\nPIRONA LUCA             (REAL MELEGNANO 1928)                  CAPOBIANCO MAURO          (REAL TREZZANO)\nPERSICO FILIPPO         (ROMANENGO ASD)                        GAFFURI LUCA              (SALVIROLA A.S.D.)\nRUTIGLIANO MATTIA       (SETTIMO MILANESE)                     CATTANEO SAMUELE          (TICINIA ROBECCHETTO)\n                                                               MARQUEZ CORNEJO\nROSSI TOMMASO           (U.S.O. ZANICA ASD)                                              (VALCUVIANA A.S.D.)\n                                                               MATTIAS RAUL"
+            },
+            {
+              "line": 1455,
+              "text": "POZZI DARIO            (SAN GIORGIO)                          PLACIDO GIOVANNI      (SAN MICHELE CALCIO)\nCAPISANI DAVIDE        (SERENISSIMA 1918)                     PAPINI ANDREA         (SERGNANESE A.S.D.)\nTASSONCINI FEDERICO    (SESTO 2012 SSD A R.L.)                LOCATELLI RICCARDO    (SETTALESE)\nRIZZO DANIEL           (SETTIMO MILANESE)                     BRUSADELLI PIETRO     (SIRTORESE)\nGIOVANESSI MATTIA      (SIRTORESE)                            CANIGIULA JACOPO      (SORESINESE CALCIO A.S.D.)\nMAZZUCCHELLI LUCA      (TICINIA ROBECCHETTO)                  PISONI DIEGO GIACOMO  (TICINIA ROBECCHETTO)\nESSAN KOUA LEOPAUL     (TRADATE A.S.D.)                       MALFARA RICCARDO      (TRADATE A.S.D.)"
+            }
+          ]
+        },
+        {
+          "name": "Classifiche Coppe CU27.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3f76346_Classifiche Coppe CU27.pdf",
+          "pages_chars": 91284,
+          "settimo_mentions": 1,
+          "txt": "docs/33505/Classifiche_Coppe_CU27.txt",
+          "mentions": [
+            {
+              "line": 299,
+              "text": "\nGIRONE 15\n                               Squadra            PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                             4    2   1   1   0   5   4     1   0\nU.S. MARCALLESE A.S.D.                            3    2   1   0   1   3   3     0   0\nA.C. OSSONA A.S.D.                                2    2   0   2   0   3   3     0   0\nPOL.D. U.S. CASSOLESE                             1    2   0   1   1   1   2    -1   0"
+            }
+          ]
+        },
+        {
+          "name": "Calendario_GiovanissimeReg.Gir.G agg.19.19.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3fcfe2c_Calendario_GiovanissimeReg.Gir.G agg.19.19.2026.pdf",
+          "pages_chars": 8331,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU27.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3fdd05a_Maglie personalizzate CU27.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33510": {
+      "id": "33510",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 28",
+      "number": 28,
+      "date": "2026-09-24",
+      "url": "https://www.crlombardia.it/documenti/33510/comunicato-ufficiale-n-28",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f7c9279_Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf",
+          "pages_chars": 383141,
+          "settimo_mentions": 3,
+          "txt": "docs/33510/Comunicato_Ufficiale_Nr._28_del_24.09.2026.txt",
+          "mentions": [
+            {
+              "line": 1305,
+              "text": "IRIS 1914                         - LEONE XIII SPORT            1-0       LA DOMINANTE                      - MONTESOLARO G.S. A.S.D.     0-1\nPARTIZAN BONOLA ASD               - SANGIULIANO CVS A R.L.      3-3       OLIMPIA CALCIO CADORAGO           - LUISAGO GRANDATE ASD        4-2\nPRO PESCHIERA BORROMEO            - VILLA S.S.D.R.L.            1-1       VIRTUS CALCIO CERMENATE           - CASSINA RIZZARDI            3-1\n(1) QUINTO ROMANO A.S.D.          - SETTIMO MILANESE            0-4       ZETA MILANO F.C. ASD              - LOMAZZO CALCIO A.S.D.       2-2\n(1) - disputata il 19/09/2026                                             (1) - disputata il 19/09/2026\n\n"
+            },
+            {
+              "line": 1593,
+              "text": " Gara Gior.                                                               Orig.       Var. Orig.\n30/09/2026   3A   OSSONA A.S.D.            MARCALLESE A.S.D.                          20:45   20:00\n                                                                                                      C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE         POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                      DELLO SPORT,70\n\n"
+            },
+            {
+              "line": 1933,
+              "text": "                  GIRONE E - 2 Giornata - A                                                   GIRONE F - 2 Giornata - A\n(1) LESMO SSD ARL               - ALTO LARIO CALCIO A.S.D.      3-1         (1) ACCADEMIA MILANESE          - FROG MILANO                 2-1\nLUISAGO GRANDATE ASD            - LIBERTAS SAN BARTOLOMEO       4-1         (1) BUCCINASCO                  - FATIMATRACCIA               3-0\n(1) MONGUZZO 1997               - INVERIGO                      2-1         CESANO BOSCONE IDROSTAR         - SETTIMO MILANESE            4-1\n(1) NOVEDRATE                   - ARDITA CITTADELLA 1934        3-8         ORATORIANA VITTUONE ASD         - VICTORIA MMVII A.S.D.       1-3\n(1) OLIMPIA CALCIO CADORAGO     - CDA E CAVALLASCA A.S.D.       0-2         (1) ORIONE                      - FOOTBALL CLUB SEDRIANO      4-3\nPERTICATO XENIA ASD             - SIRTORESE                     0-5         POL.D. U.S. CASSOLESE           - QUINTO ROMANO A.S.D.        2-1"
+            }
+          ]
+        },
+        {
+          "name": "Regolamento Under15 e Under17 Femminile.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f856040_Regolamento Under15 e Under17 Femminile.pdf",
+          "pages_chars": 18768,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Classifiche CU_28.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f86c60e_Classifiche CU_28.pdf",
+          "pages_chars": 133639,
+          "settimo_mentions": 2,
+          "txt": "docs/33510/Classifiche_CU_28.txt",
+          "mentions": [
+            {
+              "line": 279,
+              "text": "                                  PRIMA CATEGORIA\nGIRONE A\n                         Squadra                 PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                            6    2   2   0   0   6   1    5   0\nA.S.D. IRIS 1914                                 6    2   2   0   0   3   0    3   0\nA.S.D. PRO PESCHIERA BORROMEO                    4    2   1   1   0   4   2    2   0\nG.S. VILLA S.S.D.R.L.                            4    2   1   1   0   3   2    1   0"
+            },
+            {
+              "line": 643,
+              "text": "SUPERGA G.S. A.S.D.                          1    2   0   1   1    2    6   -4   0\nA.S.D. FOOTBALL CLUB SEDRIANO                0    1   0   0   1    3    4   -1   0\nA.C.D. FROG MILANO                           0    2   0   0   2    3    5   -2   0\nU.S. SETTIMO MILANESE                        0    2   0   0   2    2   10   -8   0\n\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Convocazione 30 Settembre2026 Rappresentativa FEMMINILE.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8e3ba8_Convocazione 30  Settembre2026 Rappresentativa FEMMINILE.pdf",
+          "pages_chars": 4314,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_U13Interpovinciale_FaseAutunnale.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8e8827_Calendario_U13Interpovinciale_FaseAutunnale.pdf",
+          "pages_chars": 8376,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_Allieve_GirA agg.24-09-2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8f103f_Calendario_Allieve_GirA agg.24-09-2026.pdf",
+          "pages_chars": 10260,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU28.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8f3d3e_Maglie personalizzate CU28.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "1_SGS Circolare N°4 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f904e1d_1_SGS Circolare  N°4 Stagione 2026-2027.pdf",
+          "pages_chars": 2926,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "2_CU_N_006_SGS_U12_Femminile_Regolamento_2026_2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f90ae26_2_CU_N_006_SGS_U12_Femminile_Regolamento_2026_2027.pdf",
+          "pages_chars": 20801,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "3_CU_N_007_SGS_U13_Fair Play_Regolamento_Stagione_2026_2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f910c23_3_CU_N_007_SGS_U13_Fair Play_Regolamento_Stagione_2026_2027.pdf",
+          "pages_chars": 22086,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "4_CU_N_008_SGS_Regolamento_U13_Futsal_2026_2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f916262_4_CU_N_008_SGS_Regolamento_U13_Futsal_2026_2027.pdf",
+          "pages_chars": 20726,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "5_BANDO CORSO GRASSROOTS LIV.E per Dirigenti Attività di Base.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f91e84a_5_BANDO CORSO GRASSROOTS LIV.E per Dirigenti Attività di Base.pdf",
+          "pages_chars": 12467,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "6_BANDO CORSO GRASSROOTS LIV.E per Istruttori Attività di Base BERGAMO.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f9209a7_6_BANDO CORSO GRASSROOTS LIV.E per Istruttori Attività di Base BERGAMO.pdf",
+          "pages_chars": 13355,
+          "settimo_mentions": 0
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33531": {
+      "id": "33531",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 29",
+      "number": 29,
+      "date": "2026-09-25",
+      "url": "https://www.crlombardia.it/documenti/33531/comunicato-ufficiale-n-29",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b005f9_Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf",
+          "pages_chars": 38946,
+          "settimo_mentions": 1,
+          "txt": "docs/33531/Comunicato_Ufficiale_Nr._29_del_25.09.2026.txt",
+          "mentions": [
+            {
+              "line": 250,
+              "text": "                         Squadra 1                 Squadra 2                                                     Impianto\n Gara Gior.                                                              Orig.       Var. Orig.\n                                                                                                     C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n04/10/2026   4A   SETTIMO MILANESE         SANGIULIANO CVS A R.L.                    19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                     SICA,14\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Calendario_EsordientiMiste_Femm_Aut.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b193e1_Calendario_EsordientiMiste_Femm_Aut.pdf",
+          "pages_chars": 21810,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Calendario_PulcineMiste_Femm_Aut.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b2b92b_Calendario_PulcineMiste_Femm_Aut.pdf",
+          "pages_chars": 11373,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "U15F_Referto_Gara.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b3b03c_U15F_Referto_Gara.pdf",
+          "pages_chars": 5196,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglia personalizzate CU29.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b48d20_Maglia personalizzate CU29.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33544": {
+      "id": "33544",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 30",
+      "number": 30,
+      "date": "2026-09-29",
+      "url": "https://www.crlombardia.it/documenti/33544/comunicato-ufficiale-n-30",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 30 del 29.09.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33544/6abbccd71f51f_Comunicato Ufficiale Nr. 30 del 29.09.26.pdf",
+          "pages_chars": 304181,
+          "settimo_mentions": 1,
+          "txt": "docs/33544/Comunicato_Ufficiale_Nr._30_del_29.09.26.txt",
+          "mentions": [
+            {
+              "line": 889,
+              "text": " Gara Gior.                                                                Orig.       Var. Orig.\n30/09/2026   3A   OSSONA A.S.D.             MARCALLESE A.S.D.                          20:45   20:00\n                                                                                                       C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n07/10/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE         30/09/2026   21:00   20:00\n                                                                                                       DELLO SPORT,70\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Regolamenti Calcio 5 SerieD-U19-U17-U15.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33544/6abbccd723a43_Regolamenti Calcio 5 SerieD-U19-U17-U15.pdf",
+          "pages_chars": 67581,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Classifiche Coppe CU 30 del 29.09.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33544/6abbccd71cf23_Classifiche Coppe CU 30 del 29.09.26.pdf",
+          "pages_chars": 94186,
+          "settimo_mentions": 0,
+          "txt": "docs/33544/Classifiche_Coppe_CU_30_del_29.09.26.txt"
+        },
+        {
+          "name": "Maglie personalizzate CU30.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33544/6abbccd75c8c3_Maglie personalizzate CU30.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33551": {
+      "id": "33551",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 31",
+      "number": 31,
+      "date": "2026-10-01",
+      "url": "https://www.crlombardia.it/documenti/33551/comunicato-ufficiale-n-31",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7e04806_Comunicato Ufficiale Nr. 31 del 01.10.2026.pdf",
+          "pages_chars": 398917,
+          "settimo_mentions": 4,
+          "txt": "docs/33551/Comunicato_Ufficiale_Nr._31_del_01.10.2026.txt",
+          "mentions": [
+            {
+              "line": 1233,
+              "text": "04/10/2026   4A   CENTRO SCHUSTER A.S.D.      POLISPORTIVA OR.PA.S.                  14:30   15:30\n                                                                                                     VIMODRONE VIA G. LEOPARDI 11\n                                                                                                     C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n04/10/2026   4A   SETTIMO MILANESE            SANGIULIANO CVS A R.L.                 19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                     SICA,14\n\n"
+            },
+            {
+              "line": 1374,
+              "text": "POLISPORTIVA OR.PA.S.          - FROG MILANO                  0-2        LUISAGO GRANDATE ASD         - LA DOMINANTE                  3-2\nQUINTO ROMANO A.S.D.           - NEVADA CALCIO                2-2        MONTESOLARO G.S. A.S.D.      - GIUSSANO CALCIO A.S.D.        3-0\nSANGIULIANO CVS A R.L.         - PRO PESCHIERA BORROMEO       3-3        PRO LISSONE CALCIO           - ZETA MILANO F.C. ASD          1-1\nVILLA S.S.D.R.L.               - SETTIMO MILANESE             0-2        TRIUGGESE                    - VIRTUS CALCIO CERMENATE       1-0\n\n\n                  GIRONE C - 3 Giornata - A                                                GIRONE D - 3 Giornata - A"
+            },
+            {
+              "line": 1596,
+              "text": "                         Squadra 1                     Squadra 2                                                    Impianto\n Gara Gior.                                                                 Orig.       Var. Orig.\n                                                                                                        C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n07/10/2026   3A   SETTIMO MILANESE            POL.D. U.S. CASSOLESE        30/09/2026   21:00   20:00\n                                                                                                        DELLO SPORT,70\n\n"
+            },
+            {
+              "line": 2591,
+              "text": "ALTO LARIO CALCIO A.S.D.      - ARDITA CITTADELLA 1934        1-5       (1) BUCCINASCO                  - POL.D. U.S. CASSOLESE      2-1\n(1) CDA E CAVALLASCA A.S.D.   - SIRTORESE                     5-2       FOOTBALL CLUB SEDRIANO          - ORATORIANA VITTUONE ASD    2-0\nGSO SAN GIORGIO               - OLIMPIA CALCIO CADORAGO       1-3       (2) FROG MILANO                 - QUINTO ROMANO A.S.D.       4-1\nINVERIGO                      - PONTELAMBRESE A.S.D.          0-5       SETTIMO MILANESE                - ACCADEMIA MILANESE         0-3\n(1) LIBERTAS SAN BARTOLOMEO - MONGUZZO 1997                   3-2       SUPERGA G.S. A.S.D.             - CESANO BOSCONE IDROSTAR    2-6\nLUISAGO GRANDATE ASD          - LESMO SSD ARL                  -    R   VICTORIA MMVII A.S.D.           - ROZZANO CALCIO SRL SSD     2-3\nPERTICATO XENIA ASD           - NOVEDRATE                     1-2       (1) VIGHI 1967                  - ORIONE                     2-6"
+            }
+          ]
+        },
+        {
+          "name": "Classifica CU_31 del 01.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7e8f91b_Classifica CU_31 del 01.10.2026.pdf",
+          "pages_chars": 155559,
+          "settimo_mentions": 2,
+          "txt": "docs/33551/Classifica_CU_31_del_01.10.2026.txt",
+          "mentions": [
+            {
+              "line": 413,
+              "text": "                                  PRIMA CATEGORIA\nGIRONE A\n                         Squadra                 PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                            9    3   3   0   0   8     1    7    0\nPOL. BUCCINASCO                                  7    3   2   1   0   7     2    5    0\nA.C. GARIBALDINA 1932                            7    3   2   1   0   8     5    3    0\nA.S.D. IRIS 1914                                 6    3   2   0   1   3     1    2    0"
+            },
+            {
+              "line": 778,
+              "text": "U.S. QUINTO ROMANO A.S.D.                    3    3   1   0   2    6    7    -1   0\nPOL. ORATORIANA VITTUONE ASD                 1    3   0   1   2    3    7    -4   0\nSUPERGA G.S. A.S.D.                          1    3   0   1   2    4   12    -8   0\nU.S. SETTIMO MILANESE                        0    3   0   0   3    2   13   -11   0\n\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Convocazione U19 8 Ottobre 2026 Dalmine.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7eaa572_Convocazione U19  8 Ottobre 2026 Dalmine.pdf",
+          "pages_chars": 4169,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "U15F_Referto_Gara.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7eb0ff3_U15F_Referto_Gara.pdf",
+          "pages_chars": 5196,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "REFERTO - Adb Femminile.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7ebcb0b_REFERTO - Adb Femminile.pdf",
+          "pages_chars": 10128,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU31.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7ec63db_Maglie personalizzate CU31.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "01_SGS Circolare N°5 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7ed7407_01_SGS Circolare N°5 Stagione 2026-2027.pdf",
+          "pages_chars": 6606,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_AMMESSI GRASSROOT LIVELLO E BERGAMO.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7ee802c_02_AMMESSI GRASSROOT LIVELLO E BERGAMO.pdf",
+          "pages_chars": 3421,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_AMMESSI GRASSROOTS DIRIGENTI REGIONALE.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7ef3f4a_03_AMMESSI GRASSROOTS DIRIGENTI REGIONALE.pdf",
+          "pages_chars": 3381,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Circolare richiesta biglietti per le Società ITALIA BIELORUSSIA - FIRENZE.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7f0c574_04_Circolare richiesta biglietti per le Società ITALIA BIELORUSSIA - FIRENZE.pdf",
+          "pages_chars": 3935,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_MODULO RICHIESTA BIGLIETTI GRATUITI PER GRUPPI - Semifinale Playoff UEFA Women’s World CUP Qualifiers.xlsx",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33551/6abe6d7f16b1f_05_MODULO RICHIESTA BIGLIETTI GRATUITI PER GRUPPI - Semifinale Playoff UEFA Women’s World CUP Qualifiers.xlsx",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T08:13:59+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-17T07:46:35+00:00",
+  "lastRun": "2026-10-17T08:13:59+00:00",
   "homepage": [
     "33661",
     "33657",
@@ -426,5 +1253,189 @@
     "33630",
     "33619"
   ],
-  "errors": []
+  "errors": [],
+  "notRegional": [
+    "33380",
+    "33382",
+    "33383",
+    "33384",
+    "33385",
+    "33386",
+    "33387",
+    "33388",
+    "33389",
+    "33390",
+    "33391",
+    "33392",
+    "33393",
+    "33394",
+    "33395",
+    "33396",
+    "33397",
+    "33398",
+    "33399",
+    "33400",
+    "33401",
+    "33403",
+    "33404",
+    "33405",
+    "33406",
+    "33407",
+    "33408",
+    "33409",
+    "33410",
+    "33411",
+    "33412",
+    "33413",
+    "33414",
+    "33415",
+    "33416",
+    "33417",
+    "33418",
+    "33419",
+    "33420",
+    "33421",
+    "33423",
+    "33424",
+    "33425",
+    "33426",
+    "33427",
+    "33429",
+    "33430",
+    "33431",
+    "33432",
+    "33433",
+    "33434",
+    "33435",
+    "33436",
+    "33437",
+    "33438",
+    "33439",
+    "33440",
+    "33441",
+    "33442",
+    "33443",
+    "33444",
+    "33445",
+    "33446",
+    "33447",
+    "33448",
+    "33449",
+    "33450",
+    "33451",
+    "33452",
+    "33453",
+    "33455",
+    "33456",
+    "33457",
+    "33458",
+    "33459",
+    "33460",
+    "33461",
+    "33463",
+    "33464",
+    "33465",
+    "33466",
+    "33467",
+    "33468",
+    "33469",
+    "33471",
+    "33472",
+    "33473",
+    "33474",
+    "33475",
+    "33476",
+    "33477",
+    "33478",
+    "33479",
+    "33480",
+    "33481",
+    "33482",
+    "33483",
+    "33484",
+    "33485",
+    "33486",
+    "33487",
+    "33488",
+    "33489",
+    "33490",
+    "33491",
+    "33492",
+    "33493",
+    "33494",
+    "33495",
+    "33497",
+    "33498",
+    "33499",
+    "33500",
+    "33501",
+    "33502",
+    "33503",
+    "33504",
+    "33506",
+    "33507",
+    "33508",
+    "33509",
+    "33511",
+    "33512",
+    "33513",
+    "33514",
+    "33515",
+    "33516",
+    "33517",
+    "33518",
+    "33519",
+    "33520",
+    "33521",
+    "33522",
+    "33523",
+    "33524",
+    "33525",
+    "33526",
+    "33527",
+    "33528",
+    "33529",
+    "33530",
+    "33532",
+    "33533",
+    "33534",
+    "33535",
+    "33536",
+    "33537",
+    "33538",
+    "33539",
+    "33540",
+    "33541",
+    "33542",
+    "33543",
+    "33545",
+    "33546",
+    "33547",
+    "33548",
+    "33549",
+    "33550",
+    "33552",
+    "33553",
+    "33554",
+    "33555",
+    "33556",
+    "33557",
+    "33558",
+    "33559",
+    "33560",
+    "33561",
+    "33562",
+    "33563",
+    "33564",
+    "33565",
+    "33566",
+    "33567",
+    "33568",
+    "33569",
+    "33570",
+    "33571",
+    "33572",
+    "33573",
+    "33574"
+  ]
 }
