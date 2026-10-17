@@ -19,13 +19,15 @@ export const scoutId = (name = '') => slug(name.trim()).replace(/^-+|-+$/g, '') 
 
 // Sigle e parole che non distinguono una squadra dall'altra.
 const GENERIC = new Set([
-  'asd', 'ssd', 'ssdarl', 'srl', 'arl', 'a', 'r', 'l', 'ac', 'acd', 'as', 'us', 'usd', 'gs', 'fc', 'sc', 'ss', 'cs',
-  'pol', 'polisportiva', 'calcio', 'sport', 'sportiva', 'societa', 'football', 'club', 'academy', 'di', 'del', 'della', 'de', 'd'
+  'asd', 'ssd', 'ssdarl', 'ssdrl', 'srl', 'arl', 'rl', 'ac', 'acd', 'as', 'us', 'usd', 'gs', 'gsd', 'fc', 'sc', 'ss', 'cs',
+  'pol', 'pold', 'polisportiva', 'calcio', 'sport', 'sportiva', 'societa', 'football', 'club', 'academy', 'di', 'del', 'della', 'de'
 ]);
 
+// «U.S.», «A.S.D.» sono sigle: si tolgono i punti prima di spezzare il nome,
+// e le lettere isolate non distinguono una squadra dall'altra.
 const teamTokens = (name = '') =>
-  name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .split(/[^a-z0-9]+/).filter((t) => t && !GENERIC.has(t));
+  name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\./g, '')
+    .split(/[^a-z0-9]+/).filter((t) => t.length > 1 && !GENERIC.has(t));
 
 /** 0..1: quanto due nomi indicano la stessa squadra ("Leone XIII" ≈ "SSDARL Leone XIII Sport"). */
 export function teamSimilarity(a, b) {

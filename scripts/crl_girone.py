@@ -33,12 +33,14 @@ RESULT_RE = re.compile(r"(?:\((\d+)\)\s*)?(" + NAME + r")\s+-\s+(" + NAME + r")\
 NOTE_RE = re.compile(r"\((\d+)\)\s*-\s*disputata\s+il\s+(\d{1,2})/(\d{1,2})/(\d{4})", re.I)
 ROW_RE = re.compile(r"^\s*(\S.*?)\s{2,}(-?\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(-?\d+)\s+(-?\d+)\s*$")
 
-GENERIC = set("asd ssd ssdarl srl arl a r l ac acd as us usd gs fc sc ss cs pol polisportiva calcio sport "
-              "sportiva societa football club academy di del della de d".split())
+GENERIC = set("asd ssd ssdarl ssdrl srl arl rl ac acd as us usd gs gsd fc sc ss cs pol pold polisportiva calcio "
+              "sport sportiva societa football club academy di del della de".split())
 
 
 def tokens(name):
-    return [t for t in re.split(r"[^a-z0-9]+", name.lower()) if t and t not in GENERIC]
+    # «U.S.», «A.S.D.» sono sigle: si tolgono i punti prima di spezzare il nome.
+    return [t for t in re.split(r"[^a-z0-9]+", name.lower().replace(".", ""))
+            if len(t) > 1 and t not in GENERIC]
 
 
 def similarity(a, b):
@@ -171,7 +173,9 @@ def main():
     if not standing:
         raise SystemExit("Classifica di Prima Categoria girone A non trovata nei comunicati in cache")
     teams = [r["team"] for r in standing["rows"]]
-    in_girone = lambda name: max(similarity(name, t) for t in teams) >= 0.6  # noqa: E731
+    # Per la Coppa serve lo stesso nome (sigle a parte): «Villa» non è «Villa D'Adda».
+    team_sets = [set(tokens(t)) for t in teams]
+    in_girone = lambda name: set(tokens(name)) in team_sets  # noqa: E731
     kept = [r for r in results.values()
             if (r["competition"] == COMPETITION and r["girone"] == GIRONE)
             or (r["competition"] == COPPA and (in_girone(r["home"]) or in_girone(r["away"])))]
