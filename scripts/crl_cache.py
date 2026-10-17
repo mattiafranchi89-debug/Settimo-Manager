@@ -231,7 +231,10 @@ def backfill_doc(doc_id, out_dir):
         with open(os.path.join(out_dir, main["txt"]), encoding="utf-8") as f:
             head = "".join(f.readlines()[:45])
     h = HEADER_RE.search(head)
-    if not main or "delegazion" in head.lower() or not h:
+    regional = "comitato regionale lombardia" in head.lower() and "delegazione provinciale" not in head.lower()
+    if not main or not h or not regional:
+        print("Scartato", doc_id, title, "| allegato principale:", bool(main), "| intestazione:", bool(h),
+              "| regionale:", regional)
         shutil.rmtree(os.path.join(out_dir, "docs", str(doc_id)), ignore_errors=True)
         return None
     doc["date"] = date(int(h.group(4)), int(h.group(3)), int(h.group(2))).isoformat()
