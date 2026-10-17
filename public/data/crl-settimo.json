@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-17T09:48:24+02:00",
+  "updatedAt": "2026-10-17T09:52:10+02:00",
   "lastChecked": "2026-10-16T19:44:01+02:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
@@ -27,15 +27,6 @@
       "text": "6ª giornata: Settimo Milanese – Garibaldina 1932 (in casa), domenica 18/10/2026 alle 15:30 al C.S. \"S. Pertini\" campo n. 1, via dello Sport 1, Cornaredo."
     },
     {
-      "id": "pg1619-u21-cassolese",
-      "doc": "Programma gare 16-19 ottobre 2026",
-      "date": "2026-10-16",
-      "url": "https://www.crlombardia.it/news/33653/programma-gare-dal-16-al-19-ottobre-2026",
-      "category": "Terza Categoria Under 21 girone F",
-      "type": "calendario",
-      "text": "6ª giornata: Cassolese – Settimo Milanese (in trasferta), sabato 17/10/2026 alle 14:30 al campo sportivo comunale n. 1, via Genova, Cassolnovo."
-    },
-    {
       "id": "cu37-coppa-turno2-orario",
       "doc": "Comunicato Ufficiale n. 37",
       "date": "2026-10-15",
@@ -54,15 +45,6 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese per le gare di Prima Categoria dell'11 ottobre."
     },
     {
-      "id": "cu37-u21-allenatore",
-      "doc": "Comunicato Ufficiale n. 37",
-      "date": "2026-10-15",
-      "url": "https://www.crlombardia.it/documenti/33633/comunicato-ufficiale-n-37",
-      "category": "Terza Categoria Under 21 – Giudice Sportivo",
-      "type": "sanzione",
-      "text": "Under 21, gare dell'11 ottobre: l'allenatore Bianchi Bosisio Mattia (Settimo Milanese) è squalificato per 4 gare per condotta irriguardosa nei confronti dell'arbitro."
-    },
-    {
       "id": "cu37-pc-classifica",
       "doc": "Comunicato Ufficiale n. 37",
       "date": "2026-10-15",
@@ -70,15 +52,6 @@
       "category": "Prima Categoria girone A",
       "type": "classifica",
       "text": "Classifica dopo la 5ª giornata: Settimo Milanese 1° con 15 punti in 5 gare (5 vinte, 0 pareggiate, 0 perse), 15 gol fatti e 2 subiti; seguono Garibaldina 1932 e Villa a 10 punti."
-    },
-    {
-      "id": "cu37-u21-classifica",
-      "doc": "Comunicato Ufficiale n. 37",
-      "date": "2026-10-15",
-      "url": "https://www.crlombardia.it/documenti/33633/comunicato-ufficiale-n-37",
-      "category": "Terza Categoria Under 21 girone F",
-      "type": "classifica",
-      "text": "Under 21: Settimo Milanese 12° con 4 punti in 5 gare (1 vinta, 1 pareggiata, 3 perse), 7 gol fatti e 17 subiti."
     },
     {
       "id": "cu36-pc-leonexiii",
@@ -97,15 +70,6 @@
       "category": "Prima Categoria girone A",
       "type": "calendario",
       "text": "5ª giornata: Leone XIII Sport – Settimo Milanese (in trasferta), domenica 11/10/2026 alle 14:30 al C.S. \"Leone XIII\" campo 1, via Rossetti 4, Milano."
-    },
-    {
-      "id": "pg0912-u21-frog",
-      "doc": "Programma gare 09-12/10/2026",
-      "date": "2026-10-09",
-      "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026",
-      "category": "Terza Categoria Under 21 girone F",
-      "type": "variazione",
-      "text": "Gara variata: Settimo Milanese – Frog Milano si gioca domenica 11/10/2026 alle 11:00 al C.S. \"S. Pertini\" campo n. 1, via dello Sport 1, Cornaredo."
     },
     {
       "id": "cu35-coppa-turno2",
