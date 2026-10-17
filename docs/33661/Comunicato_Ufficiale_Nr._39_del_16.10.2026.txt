@@ -1,0 +1,436 @@
+                                                             FIGC Lega Nazionale Dilettanti
+                                             comitato regionale lombardia lnd
+                                  Via R. PITTERI n° 95/2 20134 MILANO | Tel. 02/21722563
+                        Sito web: www.crlombardia.it | PEC: crllnd@pec.comitatoregionalelombardia.it
+           Telegram: @lndlombardia | Facebook: FIGC LND Lombardia | Instagram: @lnd_lombardia | X: @LNDLombardia
+                                                                 Ufficio Competizioni
+                                               Tel. 02/21722.202-204 | Mail: competizioni.lombardia@lnd.it
+                                                                          Servizio Pronto A.I.A.
+                                                                              349/4107063
+                                                                Ufficio Tesseramento
+                                              Tel. 02/21722.207-208 | Mail: tesseramento.lombardia@lnd.it
+                                                PEC: tesseramento@pec.comitatoregionalelombardia.it
+                                                                Ufficio Anagrafe Federale
+                                                  Tel. 02/21722.207-208 | Mail: anagrafe.lombardia@lnd.it
+                                                        Giudice Sportivo Territoriale Regionale
+                                                PEC: giudicesportivocrl@pec.comitatoregionalelombardia.it
+                                                           Corte d’Appello Territoriale
+                                    PEC: cortedappello.tribunaleterritoriale@pec.comitatoregionalelombardia.it
+                                                         Tribunale Federale Territoriale
+                                    PEC: cortedappello.tribunaleterritoriale@pec.comitatoregionalelombardia.it
+
+
+
+                                              Stagione Sportiva 2026/2027
+                      Comunicato Ufficiale N° 39 del 16/10/2026
+
+SOMMARIO
+
+1. ASSEMBLEA STRAORDINARIA ................................................................................................................................... 2
+2. ACCESSO ALL’ASSEMBLEA – INDICAZIONI TECNICHE ................................................................................ 3
+3. ACCREDITAMENTO IN ASSEMBLEA ...................................................................................................................... 4
+3.1 ACCREDITAMENTO IN ASSEMBLEA – IL LINK DI ACCESSO/COLLEGAMENTO ................................ 4
+3.2 ACCREDITAMENTO IN ASSEMBLEA – DATA E ORA DI APERTURA DEGLI ACCREDITAMENTI . 5
+3.3 ACCREDITAMENTO IN ASSEMBLEA – SMS DI VERIFICA ........................................................................... 5
+3.4 ACCREDITAMENTO IN ASSEMBLEA – CHIUSURA DEGLI ACCREDITAMENTI ................................... 5
+4. VOTAZIONE ....................................................................................................................................................................... 6
+5. SCRUTINIO E VERBALI ................................................................................................................................................. 6
+6. VERIFICA ANAGRAFICHE PRESIDENTI O DIRIGENTI DELEGATI .................................................................7
+7. LE DELEGHE – MODALITA’ E TERMINI PERENTORI DI DEPOSITO .............................................................7
+8. CHIARIMENTI ................................................................................................................................................................... 8
+9. INVITO SOCIETA’ NON AVENTI DIRITTO ............................................................................................................. 9
+
+
+
+
+                                                                                      1 / 39
+1. CONVOCAZIONE ASSEMBLEA STRAORDINARIA
+
+L’Assemblea Straordinaria del Comitato Regionale Lombardia della F.I.G.C. Lega Nazionale Dilettanti è
+convocata, ai sensi del Regolamento della Lega Nazionale Dilettanti e delle “Norme Procedurali per le
+Assemblee della LND”, per il giorno martedì 27 ottobre 2026 in modalità online, alle ore 16.00 in prima
+convocazione ed alle ore 17.00 in seconda convocazione per l’esame, la discussione e le decisioni
+in merito agli argomenti contenuti nel seguente
+
+                                           ORDINE DEL GIORNO
+
+1.      Verifica poteri;
+2.      Costituzione dell’Ufficio di Presidenza dell’Assemblea;
+3.      Comunicazioni del Presidente del Comitato;
+4.      Designazione di un candidato alla carica di Consigliere Federale, sulla base dell’area territoriale
+        di appartenenza;
+5.      Designazione dei candidati alla carica di Consigliere Federale Nazionale.
+
+L’Assemblea sarà disciplinata dalle norme regolamentari vigenti alla data di svolgimento della stessa.
+
+Le operazioni di verifica dei poteri e di scrutinio saranno svolte dal Tribunale Federale a livello territoriale
+presso il Comitato Regionale Lombardia.
+La verifica dei poteri sarà effettuata con accreditamento online dalle ore 15.00 del giorno 27 ottobre
+2026 fino al termine dell’accreditamento come stabilito dal Collegio di Garanzia Elettorale.
+Il presente Comunicato Ufficiale costituisce formale convocazione per le Società aventi diritto, ai sensi
+delle norme regolamentari.
+Si allegano alla presente convocazione, costituendone parte integrante:
+a) Norme Procedurali per le Assemblee della L.N.D., approvate dalla F.I.G.C. con provvedimento di cui
+      al Comunicato Ufficiale n. 157/A del 30 Gennaio 2025 (corrispondente Comunicato Ufficiale di Lega
+      n. 311 del 30 Gennaio 2025);
+b) Convocazione dell’Assemblea Federale Elettiva per il 14 dicembre 2026 e allegato “Regolamento
+      Elettorale e dei Voti dell’Assemblea Elettiva” (Comunicato Ufficiale F.I.G.C. n. 5 del 9 ottobre 2026
+      2026 e corrispondente Comunicato Ufficiale di Lega n. 130 del 9 ottobre 2026);
+c) Elenco delle Società con diritto di voto alla data di convocazione dell’Assemblea;
+d) Modulo A) - Delega di rappresentanza extra-societaria (Comitato Regionale Lombardia);
+e) Modulo B) - Delega di rappresentanza intra-societaria (Comitato Regionale Lombardia);
+f) Elenco delle Società “non aventi diritto” alla data di convocazione dell’Assemblea;
+g) Vademecum modifica recapiti telefonici e indirizzi e-mail Anagrafe Federale.
+
+
+
+
+                                                     2 / 39
+2. ACCESSO ALL’ASSEMBLEA – INDICAZIONI TECNICHE
+
+
+La partecipazione all’Assemblea da remoto e l’espressione del voto sono garantiti attraverso l’accesso
+ad Internet con un qualsiasi browser compatibile con i protocolli di sicurezza vigenti (TLS 1.2 o superiore)
+quali Google Chrome, Microsoft Edge, Safari, Mozilla.
+Non è richiesta l’installazione di alcun software specifico né App dedicata.
+La partecipazione all’Assemblea e al voto elettronico online richiede all’avente diritto le seguenti
+predisposizioni:
+      -   avere a disposizione un dispositivo connesso a Internet. Per una migliore visualizzazione dei
+          lavori Assembleari è consigliabile l’utilizzo di un PC; è comunque possibile votare anche con
+          tablet o con uno smartphone, con sistema operativo iOS (iPhone, iPad Apple) e Android
+          (Samsung, Huawei, etc.)
+          Tale dispositivo deve assicurare:
+            - una webcam, per essere visualizzati in Assemblea, in caso di interventi;
+            - un microfono, per fare interventi vocali;
+            - altoparlanti, per ascoltare la discussione dell’Assemblea;
+      -   un sistema di puntamento (mouse, touch screen, etc) per poter esprimere la preferenza di
+          voto, se si ha diritto di voto;
+      -   avere una connessione ad Internet stabile non inferiore a 2Mb/s per tutta la durata della
+          partecipazione all’Assemblea e alle votazioni. In caso di utilizzo di smartphone e/o tablet è
+          possibile che l’arrivo di chiamate interrompa la connessione all’Assemblea; in tal caso si
+          dovrà ripetere la procedura di accesso, come descritto al paragrafo “ACCREDITAMENTO IN
+          ASSEMBLEA”;
+      -   avere a disposizione un telefono cellulare, connesso alla rete mobile per la ricezione di SMS;
+      -   avere a disposizione la propria casella di posta elettronica (mail ordinaria) come censita in
+          Anagrafe Federale alla quale sia garantito l’accesso durante le fasi di accreditamento e per
+          tutta la durata dell’Assemblea.
+
+
+
+
+                                                   3 / 39
+3. ACCREDITAMENTO IN ASSEMBLEA
+
+
+Il processo di accreditamento online delle Società “aventi diritto al voto” garantisce l’acquisizione della
+partecipazione all’Assemblea, concorrendo al conteggio del quorum costitutivo dell’Assemblea.
+
+3.1 ACCREDITAMENTO IN ASSEMBLEA – IL LINK DI ACCESSO/COLLEGAMENTO
+
+
+Il link di accesso/collegamento all’Assemblea sarà inviato a tutte le Società “aventi diritto” a partire dalle
+ore 12.00 del giorno 26 ottobre 2026, sulla base delle disposizioni che seguono:
+3.1.a   Legale Rappresentante (Presidente) che partecipa in prima persona per la propria Società
+Il link di accesso/collegamento è inviato all’indirizzo mail del Presidente come censito in Anagrafe
+Federale ed allo stesso abbinato.
+I legali rappresentanti (Presidenti) che partecipano in prima persona per la propria Società non
+necessitano di depositare Delega B intra-societaria in quanto i dati di contatto ai quali sarà inviato il
+link di collegamento sono già presenti nella Banca Dati estratta dal Sistema di Anagrafe F.I.G.C.
+Si chiarisce che, ad eccezione del caso in cui non siano state validamente presentate entro i termini
+eventuali Deleghe A (extra-societaria) o B (intra-societaria), il link di accesso/collegamento sarà inviato
+automaticamente all’indirizzo mail del Presidente / Legale Rappresentante delle società “aventi diritto”,
+nei termini di cui sopra.
+3.1.b) Delega B intra-societaria
+Per le Società i cui legali rappresentanti (Presidenti) hanno conferito Delega B intra-societaria ad un
+Dirigente interno tesserato per la Società – Delega regolarmente depositata e validata dal Collegio di
+Garanzia Elettorale – il link di collegamento è inviato all’indirizzo mail del Dirigente Delegato come censito
+in Anagrafe Federale ed allo stesso abbinato.
+3.1.c) Delega A extra-societaria
+In caso una Società abbia conferito Delega A extra-societaria ad altra Società – Delega regolarmente
+depositata e validata dal Collegio di Garanzia Elettorale – l’accredito in Assemblea della Società
+Delegata, tramite il proprio link, determina automaticamente accredito sia per la Società Delegata, sia
+per la Società Delegante.
+3.1.d) Delega A extra-societaria + Delega B intra-societaria
+Ove una Società abbia ricevuto Delega da altra Società tramite Delega A (extra-societaria) regolarmente
+depositata e validata dal Collegio di Garanzia Elettorale e, a sua volta, la Società Delegata abbia delegato
+un proprio Dirigente interno a partecipare all’assemblea tramite Delega B (intra-societaria) regolarmente
+depositata e validata dal Collegio di Garanzia Elettorale, l’accredito in Assemblea del Dirigente Delegato,
+tramite il proprio link, determina automaticamente l’accredito sia per la Società Delegata, sia per la
+Società Delegante.
+In questo caso il link di collegamento viene ricevuto dal Dirigente Delegato all’indirizzo mail censito in
+Anagrafe Federale ed allo stesso abbinato.
+
+
+
+
+                                                    4 / 39
+3.2 ACCREDITAMENTO IN ASSEMBLEA – DATA E ORA DI APERTURA DEGLI
+ACCREDITAMENTI
+
+Come previsto dal presente Comunicato Ufficiale, a partire dalle ore 15.00 del giorno
+dell’Assemblea, 27 ottobre 2026, gli aventi diritto possono procedere all’accreditamento in
+Assemblea cliccando sul link personale ricevuto via mail, iniziando in questo modo la procedura di
+accreditamento.
+Ogni avente diritto deve confermare l’avvenuta lettura dell’informativa sul trattamento dei propri dati
+personali ed esprimere i consensi necessari alla partecipazione all’Assemblea e alla votazione da
+remoto.
+Ogni avente diritto al voto dovrà poi confermare i propri dati relativi a nome, cognome, e-mail e
+numero di cellulare che compariranno automaticamente sul dispositivo utilizzato per partecipare
+all’Assemblea.
+Nel caso in cui i dati visualizzati – essenziali per la prosecuzione della procedura di accredito - non siano
+corretti, sarà necessario contattare tempestivamente i numeri di telefono che il giorno dell’Assemblea
+saranno messi a disposizione dal Comitato Regionale o scrivere alla e-mail anagrafe.lombardia@lnd.it.
+Si chiarisce che qualsiasi dichiarazione mendace rispetto alla conferma e validazione dei dati personali
+e all’identificazione univoca del partecipante quale Legale Rappresentante della società (o suo Delegato,
+nei termini del paragrafo 2.1) avente diritto al voto in Assemblea nella fase di accreditamento costituisce
+grave illecito disciplinare che sarà segnalato alle Autorità Federali competenti per ogni opportuna
+determinazione.
+
+
+
+3.3 ACCREDITAMENTO IN ASSEMBLEA – SMS DI VERIFICA
+
+Alla conferma dei dati di cui al paragrafo precedente, la piattaforma trasmette un SMS con un codice
+numerico al numero di cellulare come censito in Anagrafe Federale e come dichiarato proprio dal Legale
+Rappresentante (il Presidente) ed allo stesso abbinato, o a quello del Dirigente interno Delegato.
+Il numero di cellulare a cui sarà trasmesso SMS con codice di verifica sarà quello censito in
+Anagrafe Federale ed abbinato univocamente all’avente diritto, ossia quello confermato in fase
+di avvio delle operazioni di accesso.
+L’avente diritto al voto dovrà inserire nell’apposito spazio il suddetto codice numerico per accedere
+all’Assemblea.
+L’inserimento del codice numerico corretto da parte dell’avente diritto al voto determina
+l’accreditamento all’Assemblea e concorre al calcolo del quorum costitutivo.
+
+
+
+3.4 ACCREDITAMENTO IN ASSEMBLEA – CHIUSURA DEGLI ACCREDITAMENTI
+
+È il Presidente d’Assemblea che dispone la chiusura degli accreditamenti prima dell’avvio della sessione
+di voto.
+
+
+
+
+                                                   5 / 39
+4. VOTAZIONE
+
+Il processo di votazione viene attivato dal Presidente di Assemblea.
+Ove si tratti di votazioni multiple, le schede relative a ciascun voto sono presentate al votante secondo
+la sequenza prevista dalle Norme Procedurali delle Assemblee Elettive L.N.D.
+Per ogni votazione, ogni avente diritto collegato e accreditato riceve un SMS con un codice numerico
+sul numero di cellulare confermato durante la procedura di accreditamento in Assemblea.
+Inserito il codice numerico ricevuto via SMS nell’apposito spazio, viene visualizzata la scheda di voto
+con il nome della votazione ed il numero di preferenze che si possono esprimere.
+Tra le opzioni di voto è presente anche l’opzione scheda bianca.
+Il votante esprime il proprio voto, indicando il numero di preferenze nel limite massimo previsto per la
+specifica votazione.
+Dopo aver espresso il proprio voto, il votante deve confermare le proprie preferenze.
+Fino a quando non ha confermato le preferenze può modificarle senza limitazione alcuna nel numero di
+volte, seppur entro la conclusione della sessione di voto indicata dal Presidente dell’Assemblea.
+Dopo aver confermato il voto espresso, il sistema acquisisce il voto e registra l’avente diritto nell’elenco
+dei votanti. Non è possibile accedere al voto più di una volta per ogni votazione.
+Laddove si votasse anche per Delega di altra Società, si dovranno effettuare 2 votazioni, una per la
+propria Società ed una per la Società Delegante; una volta acquisito il primo voto (“voto 1/2") il sistema
+prosegue automaticamente, in continuità, acquisendo il secondo voto (“voto 2/2").
+La sessione di voto termina secondo le indicazioni del Presidente d’Assemblea.
+
+
+
+5. SCRUTINIO E VERBALI
+
+Quando il Presidente d’Assemblea dichiara chiusa la sessione di voto, viene effettuato lo scrutinio
+elettronico della specifica votazione effettuata.
+Il Collegio di Garanzia Elettorale, nell’espletamento delle proprie funzioni, verifica il documento generato
+dal sistema riportante il numero dei voti espressi dagli elettori ed il numero di schede bianche; procede
+quindi alla identificazione dei designati, determinando l’esito della votazione; lo riporta a penna nel
+documento generato dal sistema, lo sottoscrive, consegnandolo al Presidente d’Assemblea che ne dà
+lettura in Assemblea.
+Terminata l’Assemblea il sistema trasmette al Collegio di Garanzia Elettorale tutti i verbali relativi alle
+rilevazioni dei presenti, l’elenco dei presenti, l’elenco dei votanti per ogni votazione, i risultati di ogni
+votazione.
+
+
+
+
+                                                   6 / 39
+6. VERIFICA ANAGRAFICHE PRESIDENTI O DIRIGENTI DELEGATI
+
+In considerazione della circostanza che i procedimenti illustrati ai punti 3 e 4 del presente Comunicato
+Ufficiale sono fondati sui dati censiti in Anagrafe Federale relativamente al Presidente della Società (o
+al Dirigente Delegato in caso di conferimento di Delega B intra-societaria), con riferimento al numero
+di cellulare personale e all’indirizzo mail personale, si raccomanda a tutti gli interessati (Presidenti o
+Dirigenti Delegati) di effettuare la verifica a Portale Anagrafe FIGC dei propri dati censiti, con particolare
+attenzione a Nome e Cognome, Codice Fiscale, numero di cellulare personale, indirizzo mail personale.
+Nel caso in cui, a seguito di verifica dei propri dati, fosse necessaria una variazione dei dati stessi, i
+Presidenti interessati (o i Dirigenti interessati) dovranno procedere, tramite la apposita funzione resa
+disponibile sul Portale Anagrafe, ad effettuare l’aggiornamento/correzione dei dati di contatto e,
+specificatamente, di:
+        - indirizzo di posta elettronica (mail);
+        - numero di cellulare.
+Si allega al presente C.U. vademecum illustrativo della relativa funzionalità del Portale Anagrafe.
+La variazione dei dati di contatto di cui sopra va effettuata, preferibilmente, entro il giorno 26 ottobre
+2026 e, comunque, entro e non oltre il termine perentorio delle ore 09.00 del giorno 27 ottobre
+2026.
+
+
+
+
+7. LE DELEGHE – MODALITA’ E TERMINI PERENTORI DI DEPOSITO
+
+
+La Delega extra-societaria e quella intra-societaria allegati al presente Comunicato Ufficiale, vanno
+trasmesse solo ed esclusivamente da indirizzo P.E.C. censito in Anagrafe Federale della Società
+interessata    all’indirizzo  P.E.C.,      solo      ed      esclusivamente      all’indirizzo    PEC
+crllnd@pec.comitatoregionalelombardia.it.
+Al fine di consentire il recepimento a Sistema dei dati contenuti nelle Deleghe per le necessarie verifiche
+del Collegio di Garanzia Elettorale ed effettuare, ove validate, la trasmissione della mail con link di
+accesso da remoto all’Assemblea, le Deleghe dovranno essere inviate, preferibilmente, entro lunedì 26
+ottobre 2026 e, comunque, entro e non oltre il termine perentorio delle ore 09.00 del giorno 27
+ottobre 2026.
+
+
+Come da indicazione già prevista sul modello di Delega A (extra-societaria), si ricorda che, una volta
+compilato e sottoscritto, il modello:
+   - deve essere trasmesso a cura della Società Delegata inserendo in copia conoscenza la P.E.C.
+       censita in Anagrafe Federale della Società Delegante (laddove non si disponesse della P.E.C.
+       censita in Anagrafe Federale della Società Delegante è possibile contattare il C.R. Lombardia, in
+       orari di ufficio 9.00/13.00-13.48/17.00, ai numeri 0221722207 / 0221722208);
+   - deve contenere l’allegazione di una copia del documento di identità in corso di validità del Legale
+       Rappresentante della Società Delegante e di quello del Legale Rappresentante della Società
+       Delegata.
+
+
+
+
+                                                    7 / 39
+Come da indicazione già prevista sul modulo di Delega B (intra-societaria), si ricorda che, una volta
+compilato e sottoscritto, il modello deve essere trasmesso a mezzo P.E.C. a cura della Società,
+unitamente ad una copia del documento di identità in corso di validità del Legale Rappresentante della
+Società e di quello del Dirigente Delegato.
+Si chiarisce, inoltre, che sino al termine perentorio delle ore 09.00 del giorno 27 ottobre 2026
+ciascuna Società avente diritto alla partecipazione in Assemblea e al voto, nella persona del suo Legale
+Rappresentante, ha facoltà di revocare le Deleghe in precedenza conferite.
+La dichiarazione di revoca della Delega A o della Delega B (o di entrambe) dovrà essere trasmessa su
+carta intestata della società, debitamente firmata e riportante il timbro, da indirizzo P.E.C. censito in
+Anagrafe Federale della Società interessata, solo ed esclusivamente all’indirizzo P.E.C.
+crllnd@pec.comitatoregionalelombardia.it, riportando in allegato la copia del documento d’identità
+del Legale Rappresentante firmatario della dichiarazione di revoca.
+Qualora si tratti di una Delega A (extra-societaria), la Società Delegante che procede alla revoca di tale
+Delega (o alla modifica del soggetto Delegato) dovrà altresì trasmettere l’atto di revoca in copia
+conoscenza alla società in precedenza Delegata.
+Una volta completato il processo di revoca, ciascuna Società potrà eventualmente dare luogo a una
+nuova procedura di Delega A o B, nel rispetto dei termini e delle modalità operative sopra riportate, che
+dovrà essere completata entro il termine perentorio delle ore 09.00 del giorno 27 ottobre 2026.
+Una volta che il Collegio di Garanzia elettorale avrà verificato e validato l’eventuale revoca, l’unico
+soggetto accreditato alla partecipazione sarà il Legale Rappresentante della Società avente diritto di
+voto.
+Per ragioni organizzative, si invitano le società a trasmettere le Deleghe A e B solo allorquando le
+modalità di partecipazione all’assemblea saranno state da loro definite in termini di ragionevole certezza,
+onde evitare, nei limiti del possibile, il sovrapporsi di Deleghe e revoche che richiedono i doverosi
+accertamenti da parte del Collegio di Garanzia.
+
+
+
+
+8. CHIARIMENTI
+
+
+a) Il Legale Rappresentante “inibito” a qualsivoglia titolo, non può rappresentare la Società, né
+sottoscrivere una Delega al fine di attribuire ad altro soggetto la rappresentanza della Società stessa.
+Occorre in questo caso che la Società, con le modalità previste dal proprio Statuto, abbia
+preventivamente attribuito i poteri di rappresentanza della Società stessa ad un altro Dirigente (es. il Vice
+Presidente), che può partecipare o designare o Delegare con l’apposito modulo. In questo caso, colui
+che esercita i poteri di rappresentanza in sostituzione del Presidente, dovrà documentare al Collegio di
+Garanzia Elettorale l’impedimento del Legale Rappresentante;
+b) la Delega A (extra-societaria) deve indicare i dati del Legale Rappresentante / Presidente della società
+Delegata, riportando in allegato anche la copia del relativo documento d’identità. Non deve, invece,
+indicare i dati dell’eventuale destinatario della Delega B (intra-societaria) che la Società Delegata abbia,
+eventualmente, conferito ad un suo dirigente;
+
+
+
+
+                                                   8 / 39
+c) ove una Società abbia ricevuto Delega da altra Società (tramite Delega A extra-societaria
+regolarmente depositata e validata dal Collegio di Garanzia Elettorale) e, a sua volta, la Società Delegata
+abbia Delegato un proprio Dirigente interno a partecipare (tramite Delega B intra-societaria
+regolarmente depositata e validata dal Collegio di Garanzia Elettorale), il Dirigente Delegato effettua
+accreditamento in Assemblea sia per la Società Delegante che per la Società Delegata;
+d) i legali rappresentanti (Presidenti) che partecipano in prima persona all’Assemblea per la propria
+Società, non necessitano di depositare Delega B intra-societaria, in quanto i dati necessari all’invio del
+link di collegamento all’Assemblea, nelle modalità e nei termini previsti dal presente Comunicato
+Ufficiale, sono già presenti ed acquisiti nella Banca Dati estratta dai Sistemi di Anagrafe della F.I.G.C.;
+laddove poi completino l’accredito tramite il link di collegamento ricevuto, concorreranno a formare il
+quorum costitutivo dell’Assemblea;
+e) la Delega B intra-societaria, da depositarsi solo ed esclusivamente nel caso di Delega di
+rappresentanza ad un proprio dirigente interno, si intenderà sempre a favore del Dirigente interno
+indicato nella Delega stessa, unico al quale saranno inviate le credenziali necessarie all’accesso da
+remoto all’Assemblea nella modalità e nei termini previsti dal presente Comunicato Ufficiale.
+
+
+
+
+9. INVITO SOCIETA’ NON AVENTI DIRITTO
+
+
+Premesso che, in ragione dei punti all’ordine del giorno, risultano essere “aventi diritto” le Società
+dilettantistiche, le Società dilettantistiche “pure” di Calcio a Cinque, le Società dilettantistiche “pure” di
+Calcio Femminile (come da allegato elenco delle “aventi diritto”), si allega altresì al presente Comunicato
+Ufficiale l’elenco delle Società “non aventi diritto” alla data di convocazione dell’Assemblea (16.10.2026),
+elenco composto da:
+    -   Società dilettantistiche che non hanno maturato un’anzianità di affiliazione federale di 12 mesi,
+        come invece previsto ai fini dell’esercizio di voto nelle assemblee dall’art. 20, comma 9, dello
+        Statuto F.I.G.C.;
+    -   Società dilettantistiche che non risultano regolarmente iscritte al Registro Nazionale delle Attività
+        Sportive Dilettantistiche, come invece previsto ai fini dell’esercizio di voto nelle assemblee
+        dall’art. 20, comma 10, dello Statuto F.I.G.C.;
+    -   Società dilettantistiche che, ai sensi delle vigenti “Norme Procedurali per le Assemblee della
+        L.N.D.”, svolgendo attività dilettantistica a livelli differenti, in ambito nazionale e regionale, anche
+        se in discipline diverse, esercitano il diritto di designazione e di voto unicamente nell’ambito
+        sportivo nazionale;
+    -   Società cosiddette “pure” di Settore Giovanile e Scolastico che, a prescindere dalla verifica dei
+        requisiti soggettivi di voto previsti dallo Statuto F.I.G.C, risultano oggettivamente “non aventi
+        diritto” in ragione dei punti previsti all’ordine del giorno della specifica Assemblea.
+Il presente Comunicato costituisce formale invito alle Società in elenco ad assistere all’Assemblea del
+giorno 27.10.2026 come previsto dalle Norme Procedurali delle Assemblee Elettive L.N.D., senza che
+tanto contribuisca al raggiungimento del quorum costitutivo riservato invece alle Società “aventi diritto”
+e senza l’esercizio dei diritti connessi all’Assemblea stessaanch’essi riservati alle Società “aventi diritto”.
+
+
+
+
+                                                    9 / 39
+Per tali Società, richiamate le specifiche tecniche e informatiche indicate nel presente Comunicato
+Ufficiale ai fini dell’accesso dell’Assemblea da remoto, il link di collegamento ed il messaggio SMS con
+codice numerico di verifica, secondo i tempi e le modalità già indicate per le Società aventi diritto di voto,
+sono inviati in automatico all’indirizzo mail ordinario ed al numero di telefono cellulare, censiti in Anagrafe
+Federale, come dichiarati propri dal Legale Rappresentante (il Presidente) e dunque allo stesso abbinati.
+Nel caso, a seguito di verifica dei propri dati, fosse necessaria una variazione del Presidente (o suo
+Delegato) non votante e invitato a partecipare all’Assemblea, la stessa dovrà essere effettuata,
+gentilmente - per questioni organizzative - preferibilmente entro il 26 ottobre e comunque entro e non
+oltre il termine perentorio le ore 09.00 del giorno fissato per l’assemblea, 27 ottobre 2026, al fine
+di consentire il recepimento a sistema dei dati per la trasmissione della mail con link di accesso.
+Quanto sopra deve avvenire per il tramite della nuova funzione resa disponibile sul Portale Anagrafe
+Federale che permette alle Società di effettuare aggiornamento/correzione ai dati di contatto dei
+dirigenti, e specificatamente:
+        - Indirizzo di posta elettronica (mail)
+        - Numero di cellulare
+
+
+
+
+                    IL SEGRETARIO                                          IL PRESIDENTE
+                    Davide Fenaroli                                       Valentina Battistini
+
+
+
+
+________________________________________________________________________________________________
+                PUBBLICATO ED AFFISSO ALL’ALBO DEL COMITATO IN MILANO IL 16.10.2026
+________________________________________________________________________________________________
+
+
+
+
+                                                    10 / 39
+
