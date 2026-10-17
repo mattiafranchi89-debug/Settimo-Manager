@@ -496,6 +496,69 @@ export function applyAuto(scout = {}, auto) {
   return out;
 }
 
+/* ---------------- girone dai comunicati CRL (public/data/girone.json) ---------------- */
+
+const KEEP_UPPER = /\.|^[IVXLC]+$|^(ASD|SSD|SSDARL|SRL|ARL|AC|ACD|AS|US|USD|GS|FC|SC|SS|CS|CVS|SDA|A|R|L)$/;
+/** «POLISPORTIVA OR.PA.S.» → «Polisportiva OR.PA.S.»: nomi dei comunicati leggibili. */
+export function teamTitle(name = '') {
+  return name.trim().split(/\s+/).map((w, i) => (KEEP_UPPER.test(w) ? w
+    : i > 0 && /^(DI|DEL|DELLA|DE|D)$/.test(w) ? w.toLowerCase() : w.charAt(0) + w.slice(1).toLowerCase())).join(' ');
+}
+
+/** «A.C. GARIBALDINA 1932» → «Garibaldina 1932»: senza le sigle societarie davanti. */
+export function shortTeam(name = '') {
+  const w = teamTitle(name).split(' ');
+  while (w.length > 1 && (KEEP_UPPER.test(w[0]) || w[0] === 'Pol.') && !/^[IVXLC]+$/.test(w[0])) w.shift();
+  return w.join(' ');
+}
+
+/** Riga di classifica del girone che corrisponde alla squadra (la più simile, se abbastanza). */
+export function gironeRow(girone, name = '') {
+  const rows = girone?.standing?.rows || [];
+  let best = null, score = 0;
+  for (const r of rows) {
+    const s = teamSimilarity(name, r.team);
+    if (s > score) { best = r; score = s; }
+  }
+  return score >= 0.6 ? best : null;
+}
+
+/** Classifica e risultati della squadra presi dal girone, nel formato della scheda. */
+export function gironeData(girone, name = '') {
+  const row = gironeRow(girone, name);
+  if (!row) return null;
+  const rows = girone.standing.rows;
+  const isUs = (team) => gironeRow(girone, team) === row;
+  const results = (girone.results || [])
+    .filter((r) => isUs(r.home) || isUs(r.away))
+    .map((r) => {
+      const home = isUs(r.home);
+      return {
+        date: r.date, home, against: teamTitle(home ? r.away : r.home),
+        gf: home ? r.hg : r.ag, gs: home ? r.ag : r.hg,
+        competition: r.competition === 'Prima Categoria' ? '' : 'Coppa',
+        ...(r.competition === 'Prima Categoria' && r.round ? { round: r.round } : {})
+      };
+    });
+  const { pos, pts, g, v, n, p, gf, gs } = row;
+  return {
+    team: row.team,
+    standing: { pos, of: rows.length, pts, g, v, n, p, gf, gs, asOf: `CRL, ${girone.standing.asOf}` },
+    results
+  };
+}
+
+/** Scheda arricchita con classifica e risultati del girone, senza toccare quanto inserito a mano. */
+export function applyGirone(scout = {}, girone) {
+  const data = gironeData(girone, scout.name || '');
+  if (!data) return scout;
+  const out = { ...scout };
+  const mine = scout.standing || {};
+  if (mine.pos == null || (Number(data.standing.g) || 0) >= (Number(mine.g) || 0)) out.standing = data.standing;
+  if (data.results.length) out.results = mergeResults(scout.results || [], data.results);
+  return out;
+}
+
 /* ---------------- suggerimenti per la partita ---------------- */
 
 const n1 = (x) => x.toLocaleString('it-IT', { maximumFractionDigits: 1 });

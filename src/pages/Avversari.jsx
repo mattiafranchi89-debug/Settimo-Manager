@@ -8,11 +8,11 @@ import { can } from '../lib/permissions';
 import {
   SCOUT_ROLES, scoutId, sameTeam, isoDay, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
   outcome, formOf, rosterSummary, sortRoster, playerAge, birthYearOf, headToHead, buildScoutInsights,
-  shareText, fmtDay, autoVisible, applyAuto, buildSuggestions, ourForm
+  shareText, fmtDay, autoVisible, applyAuto, applyGirone, gironeRow, teamTitle, shortTeam, buildSuggestions, ourForm
 } from '../lib/scouting';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { compBucket } from '../lib/discipline';
-import { useAutoOpponent } from '../lib/crl';
+import { useAutoOpponent, useGirone } from '../lib/crl';
 import { parseTuttocampo } from '../lib/tuttocampoPaste';
 
 /**
@@ -20,6 +20,8 @@ import { parseTuttocampo } from '../lib/tuttocampoPaste';
  * preparare la partita. I dati arrivano dai comunicati CRL oppure si incollano:
  * «Incolla da Tuttocampo» legge il testo che l'utente copia dalla pagina della
  * squadra. L'app non scarica nulla da siti esterni.
+ * Classifica e risultati delle squadre di Prima Categoria girone A arrivano
+ * da soli da public/data/girone.json (estratto dai comunicati CRL).
  */
 export default function Avversari() {
   const { user } = useAuth();
@@ -35,6 +37,7 @@ export default function Avversari() {
   const now = useMemo(() => new Date(), []);
   const { data: autoData } = useAutoOpponent();
   const auto = autoVisible(autoData, now) ? autoData : null;
+  const { data: girone } = useGirone();
   const upcoming = useMemo(
     () => matches.filter((m) => toDate(m.date) >= now).sort((a, b) => toDate(a.date) - toDate(b.date)),
     [matches, now]
@@ -62,7 +65,11 @@ export default function Avversari() {
   // Una volta salvato (o modificato) nella scheda, l'aggiornamento non si risomma:
   // così ciò che si toglie a mano resta tolto.
   const autoApplied = !!autoHere && saved.autoAppliedAt === autoHere.generatedAt;
-  const scout = useMemo(() => (autoApplied ? saved : applyAuto(saved, autoHere)), [saved, autoHere, autoApplied]);
+  // Classifica e risultati del girone si sommano sempre: arrivano da ogni nuovo comunicato.
+  const scout = useMemo(
+    () => applyGirone(autoApplied ? saved : applyAuto(saved, autoHere), girone),
+    [saved, autoHere, autoApplied, girone]
+  );
 
   const match = useMemo(() => {
     const ev = upcoming.find((m) => sameTeam(m.opponent || '', name));
@@ -168,6 +175,11 @@ export default function Avversari() {
 
           <RecentCard scout={scout} />
 
+          {girone?.standing?.rows?.length > 0 && (
+            <GironeCard girone={girone} current={gironeRow(girone, scout.name || name)}
+              onPick={(team) => { setParams({ nome: shortTeam(team) }); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
+          )}
+
           <Card title="💡 Suggerimenti">
             {tips.length ? (
               <div className="stack" style={{ gap: 12 }}>
@@ -270,6 +282,8 @@ function OpponentCard({ scout, name, match, auto }) {
       {absent.length > 0 && <div style={{ fontSize: 13.5, marginTop: 10 }}>🚫 Assenti: {absent.join(', ')}</div>}
       {st.asOf?.startsWith('Tuttocampo') ? (
         <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>📋 Classifica da {st.asOf}</small>
+      ) : st.asOf?.startsWith('CRL') ? (
+        <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>🔄 Classifica e risultati dai comunicati {st.asOf}</small>
       ) : auto && (
         <small style={{ display: 'block', marginTop: 10, color: 'var(--muted)' }}>
           🔄 Dati dai comunicati CRL, aggiornati il {fmtDay(auto.availableFrom)}
@@ -357,6 +371,49 @@ export function PasteTuttocampo({ scout, name, refDate, roundDates = [], onSave,
         Puoi ripetere con altre pagine: i dati si sommano. Classifica e risultati aggiornano i suggerimenti.
       </small>
     </Sheet>
+  );
+}
+
+/** Classifica completa del girone: si tocca una squadra per aprirne la scheda. */
+function GironeCard({ girone, current, onPick }) {
+  const [open, setOpen] = useState(false);
+  const rows = girone.standing.rows;
+  const us = rows.find((r) => sameTeam(r.team, 'Settimo Milanese'));
+  // Chiusa mostra le prime cinque più noi e la squadra aperta.
+  const shown = open ? rows : rows.filter((r, i) => i < 5 || r === us || r === current);
+  return (
+    <Card title={`🏆 Classifica ${girone.competition || 'girone'}`}
+      action={<small style={{ color: 'var(--muted)' }}>{girone.standing.asOf?.replace('Comunicato Ufficiale', 'CU')}</small>}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+        <thead>
+          <tr style={{ color: 'var(--muted)', fontSize: 12, textAlign: 'right' }}>
+            <th style={{ textAlign: 'left', fontWeight: 600 }} colSpan={2}>Squadra</th>
+            <th style={{ fontWeight: 600 }}>Pt</th><th style={{ fontWeight: 600 }}>G</th>
+            <th style={{ fontWeight: 600 }}>V-N-P</th><th style={{ fontWeight: 600 }}>Gol</th>
+          </tr>
+        </thead>
+        <tbody>
+          {shown.map((r) => {
+            const mine = r === us, sel = r === current;
+            return (
+              <tr key={r.team} onClick={() => !mine && onPick(r.team)}
+                style={{ cursor: mine ? 'default' : 'pointer', textAlign: 'right', borderTop: '1px solid var(--line-soft)',
+                  background: sel ? 'var(--red-soft)' : undefined, fontWeight: mine || sel ? 700 : 400 }}>
+                <td style={{ textAlign: 'left', padding: '7px 4px 7px 0', width: 24, color: 'var(--muted)' }}>{r.pos}</td>
+                <td style={{ textAlign: 'left', padding: '7px 0' }}>{shortTeam(r.team)}</td>
+                <td>{r.pts}</td><td>{r.g}</td><td>{r.v}-{r.n}-{r.p}</td><td>{r.gf}:{r.gs}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {rows.length > shown.length || open ? (
+        <Button size="sm" variant="ghost" onClick={() => setOpen((v) => !v)} style={{ marginTop: 6 }}>
+          {open ? 'Mostra meno' : `Tutte le ${rows.length} squadre`}
+        </Button>
+      ) : null}
+      <small style={{ display: 'block', marginTop: 6, color: 'var(--muted)' }}>Tocca una squadra per aprirne la scheda.</small>
+    </Card>
   );
 }
 

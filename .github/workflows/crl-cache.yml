@@ -1,6 +1,8 @@
 # Scarica i comunicati ufficiali e i programmi gare del CRL Lombardia e ne
 # salva il testo sul ramo `crl-cache` (non su main, così Cloudflare non
 # ricompila il sito). I task programmati di Claude leggono da quel ramo.
+# Dai comunicati ricava anche classifica e risultati di Prima Categoria
+# girone A (public/data/girone.json su main), usati dalla scheda Avversari.
 name: Cache comunicati CRL
 
 on:
@@ -9,6 +11,11 @@ on:
     - cron: "40 4 * * *"
     - cron: "40 17 * * *"
   workflow_dispatch:
+    inputs:
+      backfill:
+        description: "Recupera anche i comunicati più vecchi: intervallo di id delle pagine /documenti (es. 33380-33600)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -20,12 +27,13 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Codice dello script
+      - name: Codice dello script (main)
         uses: actions/checkout@v4
         with:
           path: src
+          ref: main
 
       - name: Ramo crl-cache
         run: |
@@ -42,7 +50,14 @@ jobs:
           which pdftotext || (sudo apt-get update -q && sudo apt-get install -y -q poppler-utils)
 
       - name: Scarica i documenti
-        run: python3 -I src/scripts/crl_cache.py cache
+        env:
+          BACKFILL: ${{ github.event.inputs.backfill }}
+        run: |
+          if [ -n "$BACKFILL" ]; then
+            python3 -I src/scripts/crl_cache.py cache --backfill "$BACKFILL"
+          else
+            python3 -I src/scripts/crl_cache.py cache
+          fi
 
       - name: Pubblica sul ramo crl-cache
         working-directory: cache
@@ -54,3 +69,19 @@ jobs:
           git add -A
           git commit -q -m "Cache CRL $(TZ=Europe/Rome date '+%d/%m %H:%M') [skip ci]" || { echo "Nessuna modifica"; exit 0; }
           git push -q origin HEAD:crl-cache
+
+      - name: Classifica e risultati del girone (main)
+        working-directory: src
+        run: |
+          set -e
+          python3 -I scripts/crl_girone.py ../cache public/data/girone.json
+          git add public/data/girone.json
+          if git diff --cached --quiet; then echo "Girone invariato"; exit 0; fi
+          git config user.name "crl-cache bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Girone A: classifica e risultati dai comunicati CRL"
+          for i in 1 2 3; do
+            git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
+            sleep 10
+          done
+          exit 1

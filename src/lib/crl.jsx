@@ -57,6 +57,24 @@ export function CrlItem({ item, showDoc }) {
   );
 }
 
+/**
+ * Classifica e risultati di Prima Categoria girone A (più la Coppa delle
+ * squadre del girone), estratti dai comunicati CRL dalla GitHub Action
+ * «Cache comunicati CRL» (scripts/crl_girone.py).
+ */
+export function useGirone() {
+  const [state, setState] = useState({ data: null, loading: true });
+  useEffect(() => {
+    let alive = true;
+    fetch('/data/girone.json', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null)
+      .then((data) => alive && setState({ data, loading: false }));
+    return () => { alive = false; };
+  }, []);
+  return state;
+}
+
 /** Aggiornamento automatico dell'avversario, preparato due giorni dopo ogni partita. */
 export function useAutoOpponent() {
   const [state, setState] = useState({ data: null, loading: true });

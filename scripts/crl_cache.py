@@ -6,7 +6,9 @@ Lo esegue la GitHub Action .github/workflows/crl-cache.yml, che pubblica il
 risultato sul ramo `crl-cache`. I task programmati di Claude leggono da lì,
 così non devono aprire crlombardia.it (e non chiedono permessi ogni volta).
 
-Uso: python3 scripts/crl_cache.py <cartella-cache>
+Uso: python3 scripts/crl_cache.py <cartella-cache> [--backfill DA-A]
+Con --backfill si recuperano anche i comunicati regionali più vecchi,
+provando le pagine /documenti/<id> nell'intervallo di id indicato.
 Solo libreria standard + `pdftotext` (poppler-utils).
 """
 
@@ -188,6 +190,41 @@ def fetch_doc(doc, out_dir):
     return files
 
 
+HEADER_RE = re.compile(r"Comunicato\s+Ufficiale\s+N\S*\s*(\d+)\s+del\s+(\d{1,2})/(\d{1,2})/(\d{4})", re.I)
+
+
+def backfill_doc(doc_id, out_dir):
+    """Comunicato regionale recuperato per id; None se la pagina non lo è."""
+    url = f"{BASE}documenti/{doc_id}/x"
+    try:
+        html = get(url, tries=1).decode("utf-8", "replace")
+    except RuntimeError:
+        return None
+    m = re.search(r"<title>(.*?)</title>", html, re.S | re.I)
+    title = " ".join((m.group(1) if m else "").split())
+    title = re.sub(r"^CRL\s*\|\s*", "", title)
+    if "comunicato ufficiale" not in title.lower() or "delegazion" in title.lower():
+        return None
+    slug = re.sub(r"[^a-z0-9]+", "-", title.lower().replace("°", "")).strip("-")
+    num = re.search(r"n[°º]?\s*(\d+)", title, re.I)
+    doc = {"id": str(doc_id), "kind": "comunicato", "title": title,
+           "number": int(num.group(1)) if num else None, "date": None,
+           "url": f"{BASE}documenti/{doc_id}/{slug}", "backfill": True}
+    doc["files"] = fetch_doc(doc, out_dir)
+    # Solo comunicati del Comitato Regionale: l'intestazione del PDF lo dice.
+    main = next((f for f in doc["files"] if f.get("txt") and "comunicato ufficiale" in f["name"].lower()), None)
+    head = ""
+    if main:
+        with open(os.path.join(out_dir, main["txt"]), encoding="utf-8") as f:
+            head = "".join(f.readlines()[:45])
+    h = HEADER_RE.search(head)
+    if not main or "delegazion" in head.lower() or not h:
+        shutil.rmtree(os.path.join(out_dir, "docs", str(doc_id)), ignore_errors=True)
+        return None
+    doc["date"] = date(int(h.group(4)), int(h.group(3)), int(h.group(2))).isoformat()
+    return doc
+
+
 def write_settimo_md(out_dir, docs):
     """Riepilogo leggibile: tutte le menzioni del Settimo, documento per documento."""
     rows = ["# Menzioni di SETTIMO MILANESE nei documenti CRL in cache", ""]
@@ -208,7 +245,7 @@ def write_settimo_md(out_dir, docs):
 
 
 def main():
-    out_dir = sys.argv[1] if len(sys.argv) > 1 else "crl-cache"
+    out_dir = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else "crl-cache"
     os.makedirs(out_dir, exist_ok=True)
     idx_path = os.path.join(out_dir, "index.json")
     index = {"docs": {}}
@@ -223,6 +260,26 @@ def main():
         raise SystemExit("Nessun comunicato trovato in home: struttura del sito cambiata?")
 
     errors = []
+    if "--backfill" in sys.argv:
+        lo, hi = map(int, sys.argv[sys.argv.index("--backfill") + 1].split("-"))
+        skipped = set(index.get("notRegional", []))
+        for doc_id in range(lo, hi + 1):
+            if str(doc_id) in docs or str(doc_id) in skipped or str(doc_id) in {d["id"] for d in listed}:
+                continue
+            time.sleep(0.4)
+            try:
+                doc = backfill_doc(doc_id, out_dir)
+            except Exception as e:  # noqa: BLE001
+                errors.append(f"backfill {doc_id}: {e}")
+                continue
+            if doc:
+                doc["fetchedAt"] = now
+                docs[doc["id"]] = doc
+                print("Recuperato", doc["title"], doc["date"])
+            else:
+                skipped.add(str(doc_id))
+        index["notRegional"] = sorted(skipped, key=int)[-2000:]
+
     for doc in listed:
         old = docs.get(doc["id"])
         if old and old.get("files"):
