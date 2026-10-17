@@ -313,6 +313,35 @@ BARANZATESE 1948 POL.D.     AFFORESE G.S.D.                         COMUNALE "G.
 CLUB MILANO S.S.D. A R.L.   MAZZO 80 A.C. SSD A RL                  COMUNALE "G.BRERA"CAMPO1(E.A)                        11/10/2026    09:30 5A    PERO                                     VIA GIOVANNI XXIII°,6
 ```
 
+## COMUNICATO UFFICIALE N° 33 (2026-10-06)
+Pagina: https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33
+
+### Comunicato Ufficiale Nr. 33 del 06.10.2026.pdf – riga 613
+```
+                                Squadra 1                      Squadra 2                                                    Impianto
+  Gara Gior.                                                                        Orig.        Var. Orig.
+                                                                                                                 COMUNALE-CAMPO N.1 CUSAGO VIA IV
+08/10/2026      3A     SETTIMO MILANESE              POL.D. U.S. CASSOLESE         30/09/2026    21:00   20:00
+                                                                                                                 NOVEMBRE 9
+
+
+```
+
+### Classifiche Coppe_CU Nr.33 del 06.10.26.pdf – riga 171
+```
+GIRONE 15
+                               Squadra            PT   G   V   N   P   GF GS DR PE
+U.S. MARCALLESE A.S.D.                            6    3   2   0   1   5    4     1   0
+U.S. SETTIMO MILANESE                             4    2   1   1   0   5    4     1   0
+A.C. OSSONA A.S.D.                                2    3   0   2   1   4    5    -1   0
+POL.D. U.S. CASSOLESE                             1    2   0   1   1   1    2    -1   0
+
+```
+
+## COMUNICATO UFFICIALE N° 32 (2026-10-02)
+Pagina: https://www.crlombardia.it/documenti/33575/comunicato-ufficiale-n-32
+Nessuna menzione del Settimo Milanese.
+
 ## COMUNICATO UFFICIALE N° 31 (2026-10-01)
 Pagina: https://www.crlombardia.it/documenti/33551/comunicato-ufficiale-n-31
 

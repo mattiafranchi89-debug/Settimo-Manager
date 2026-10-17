@@ -1239,10 +1239,132 @@
         }
       ],
       "fetchedAt": "2026-10-17T08:13:59+00:00"
+    },
+    "33575": {
+      "id": "33575",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 32",
+      "number": 32,
+      "date": "2026-10-02",
+      "url": "https://www.crlombardia.it/documenti/33575/comunicato-ufficiale-n-32",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 32 del 02.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33575/6abfb3530e4f3_Comunicato Ufficiale Nr. 32 del 02.10.2026.pdf",
+          "pages_chars": 18773,
+          "settimo_mentions": 0,
+          "txt": "docs/33575/Comunicato_Ufficiale_Nr._32_del_02.10.2026.txt"
+        }
+      ],
+      "fetchedAt": "2026-10-17T09:07:36+00:00"
+    },
+    "33590": {
+      "id": "33590",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 33",
+      "number": 33,
+      "date": "2026-10-06",
+      "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33",
+      "backfill": true,
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 33 del 06.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c28d2c93_Comunicato Ufficiale Nr. 33 del 06.10.2026.pdf",
+          "pages_chars": 286476,
+          "settimo_mentions": 1,
+          "txt": "docs/33590/Comunicato_Ufficiale_Nr._33_del_06.10.2026.txt",
+          "mentions": [
+            {
+              "line": 613,
+              "text": "                                Squadra 1                      Squadra 2                                                    Impianto\n  Gara Gior.                                                                        Orig.        Var. Orig.\n                                                                                                                 COMUNALE-CAMPO N.1 CUSAGO VIA IV\n08/10/2026      3A     SETTIMO MILANESE              POL.D. U.S. CASSOLESE         30/09/2026    21:00   20:00\n                                                                                                                 NOVEMBRE 9\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Classifiche Coppe_CU Nr.33 del 06.10.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c2950102_Classifiche Coppe_CU Nr.33 del 06.10.26.pdf",
+          "pages_chars": 85708,
+          "settimo_mentions": 1,
+          "txt": "docs/33590/Classifiche_Coppe_CU_Nr.33_del_06.10.26.txt",
+          "mentions": [
+            {
+              "line": 171,
+              "text": "GIRONE 15\n                               Squadra            PT   G   V   N   P   GF GS DR PE\nU.S. MARCALLESE A.S.D.                            6    3   2   0   1   5    4     1   0\nU.S. SETTIMO MILANESE                             4    2   1   1   0   5    4     1   0\nA.C. OSSONA A.S.D.                                2    3   0   2   1   4    5    -1   0\nPOL.D. U.S. CASSOLESE                             1    2   0   1   1   1    2    -1   0\n"
+            }
+          ]
+        },
+        {
+          "name": "01_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c297e8c1_01_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "pages_chars": 10651,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Coppa_SecondaCategoria_K2_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c2986ff6_02_Coppa_SecondaCategoria_K2_Tabellone.pdf",
+          "pages_chars": 16825,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Coppa_TerzaCategoria_C3_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c2994520_03_Coppa_TerzaCategoria_C3_Tabellone.pdf",
+          "pages_chars": 15441,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Coppa_U19_Elite_CG_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c299d174_04_Coppa_U19_Elite_CG_Tabellone.pdf",
+          "pages_chars": 992,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Coppa_U19_Regionale_CB_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29a4b11_05_Coppa_U19_Regionale_CB_Tabellone.pdf",
+          "pages_chars": 4972,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Coppa_U19_Provinciale_CA_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29abe5e_06_Coppa_U19_Provinciale_CA_Tabellone.pdf",
+          "pages_chars": 12663,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "07_Coppa_U17_Elite_UV_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29acab4_07_Coppa_U17_Elite_UV_Tabellone.pdf",
+          "pages_chars": 957,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "08_Coppa_U17_Regionale_CL_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29b1c0f_08_Coppa_U17_Regionale_CL_Tabellone.pdf",
+          "pages_chars": 4976,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "09_Coppa_U15_Elite_UW_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29b5150_09_Coppa_U15_Elite_UW_Tabellone.pdf",
+          "pages_chars": 937,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "10_Coppa_U15_Regionale_DL_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29b8277_10_Coppa_U15_Regionale_DL_Tabellone.pdf",
+          "pages_chars": 4963,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzare CU33.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33590/6ac50c29bb77b_Maglie personalizzare CU33.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-17T09:07:36+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-17T08:35:37+00:00",
+  "lastRun": "2026-10-17T09:07:36+00:00",
   "homepage": [
     "33661",
     "33657",
@@ -1436,6 +1558,51 @@
     "33571",
     "33572",
     "33573",
-    "33574"
+    "33574",
+    "33576",
+    "33577",
+    "33578",
+    "33579",
+    "33580",
+    "33581",
+    "33582",
+    "33583",
+    "33584",
+    "33585",
+    "33586",
+    "33587",
+    "33588",
+    "33589",
+    "33591",
+    "33592",
+    "33593",
+    "33594",
+    "33595",
+    "33596",
+    "33597",
+    "33598",
+    "33599",
+    "33600",
+    "33601",
+    "33602",
+    "33603",
+    "33604",
+    "33605",
+    "33606",
+    "33607",
+    "33608",
+    "33609",
+    "33610",
+    "33611",
+    "33612",
+    "33613",
+    "33614",
+    "33615",
+    "33616",
+    "33617",
+    "33618",
+    "33620",
+    "33621",
+    "33622"
   ]
 }
