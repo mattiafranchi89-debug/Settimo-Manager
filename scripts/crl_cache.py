@@ -21,6 +21,7 @@ import sys
 import tempfile
 import time
 import urllib.parse
+import urllib.error
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
@@ -58,6 +59,10 @@ class Links(HTMLParser):
             self.links.append((href, " ".join(" ".join(parts).split())))
 
 
+class NotFound(Exception):
+    pass
+
+
 def get(url, tries=3, timeout=60):
     # Gli href contengono spazi e parentesi: codifica solo ciò che serve.
     url = urllib.parse.quote(url, safe=":/?&=%#()~+,;@!$'*-._")
@@ -68,6 +73,12 @@ def get(url, tries=3, timeout=60):
                                                        "Accept-Language": "it-IT,it;q=0.9"})
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 410):
+                raise NotFound(url) from e
+            last = e
+            time.sleep(3 * (i + 1))
+            continue
         except Exception as e:  # noqa: BLE001
             last = e
             time.sleep(3 * (i + 1))
@@ -166,7 +177,7 @@ def fetch_doc(doc, out_dir):
         entry = {"name": name, "url": url}
         try:
             data = get(url)
-        except RuntimeError as e:
+        except (RuntimeError, NotFound) as e:
             entry["error"] = str(e)
             files.append(entry)
             continue
@@ -196,9 +207,11 @@ HEADER_RE = re.compile(r"Comunicato\s+Ufficiale\s+N\S*\s*(\d+)\s+del\s+(\d{1,2})
 def backfill_doc(doc_id, out_dir):
     """Comunicato regionale recuperato per id; None se la pagina non lo è."""
     url = f"{BASE}documenti/{doc_id}/x"
+    # Un errore di rete si propaga: l'id non va segnato come «non regionale»
+    # e si riprova al giro successivo.
     try:
-        html = get(url, tries=1, timeout=20).decode("utf-8", "replace")
-    except RuntimeError:
+        html = get(url, tries=2, timeout=30).decode("utf-8", "replace")
+    except NotFound:
         return None
     m = re.search(r"<title>(.*?)</title>", html, re.S | re.I)
     title = " ".join((m.group(1) if m else "").split())
@@ -270,7 +283,8 @@ def main():
             if time.time() > deadline:
                 print("Recupero interrotto per tempo all'id", doc_id, "- riprende al prossimo giro")
                 break
-            if str(doc_id) in docs or str(doc_id) in skipped or str(doc_id) in {d["id"] for d in listed}:
+            # Con un solo id (es. 33598-33598) si riprova anche se era stato scartato.
+            if str(doc_id) in docs or (str(doc_id) in skipped and lo != hi) or str(doc_id) in {d["id"] for d in listed}:
                 continue
             time.sleep(0.4)
             try:
@@ -284,6 +298,7 @@ def main():
                 print("Recuperato", doc["title"], doc["date"])
             else:
                 skipped.add(str(doc_id))
+                print("Scartato", doc_id)
         index["notRegional"] = sorted(skipped, key=int)[-2000:]
 
     for doc in listed:
