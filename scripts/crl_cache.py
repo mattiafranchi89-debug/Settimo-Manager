@@ -58,7 +58,7 @@ class Links(HTMLParser):
             self.links.append((href, " ".join(" ".join(parts).split())))
 
 
-def get(url, tries=3):
+def get(url, tries=3, timeout=60):
     # Gli href contengono spazi e parentesi: codifica solo ciò che serve.
     url = urllib.parse.quote(url, safe=":/?&=%#()~+,;@!$'*-._")
     last = None
@@ -66,7 +66,7 @@ def get(url, tries=3):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA,
                                                        "Accept-Language": "it-IT,it;q=0.9"})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
         except Exception as e:  # noqa: BLE001
             last = e
@@ -197,7 +197,7 @@ def backfill_doc(doc_id, out_dir):
     """Comunicato regionale recuperato per id; None se la pagina non lo è."""
     url = f"{BASE}documenti/{doc_id}/x"
     try:
-        html = get(url, tries=1).decode("utf-8", "replace")
+        html = get(url, tries=1, timeout=20).decode("utf-8", "replace")
     except RuntimeError:
         return None
     m = re.search(r"<title>(.*?)</title>", html, re.S | re.I)
@@ -263,14 +263,20 @@ def main():
     if "--backfill" in sys.argv:
         lo, hi = map(int, sys.argv[sys.argv.index("--backfill") + 1].split("-"))
         skipped = set(index.get("notRegional", []))
+        # Tempo massimo: ciò che resta si riprende al giro successivo
+        # (gli id già provati sono salvati in index.json).
+        deadline = time.time() + 12 * 60
         for doc_id in range(lo, hi + 1):
+            if time.time() > deadline:
+                print("Recupero interrotto per tempo all'id", doc_id, "- riprende al prossimo giro")
+                break
             if str(doc_id) in docs or str(doc_id) in skipped or str(doc_id) in {d["id"] for d in listed}:
                 continue
             time.sleep(0.4)
             try:
                 doc = backfill_doc(doc_id, out_dir)
             except Exception as e:  # noqa: BLE001
-                errors.append(f"backfill {doc_id}: {e}")
+                print(f"Recupero {doc_id} non riuscito, si riprova al prossimo giro: {e}")
                 continue
             if doc:
                 doc["fetchedAt"] = now
