@@ -16,6 +16,8 @@ on:
         description: "Recupera anche i comunicati più vecchi: intervallo di id delle pagine /documenti (es. 33380-33600)"
         required: false
         default: ""
+  push:
+    branches: [crl-backfill]
 
 permissions:
   contents: write
@@ -51,7 +53,7 @@ jobs:
 
       - name: Scarica i documenti
         env:
-          BACKFILL: ${{ github.event.inputs.backfill }}
+          BACKFILL: ${{ github.event.inputs.backfill || '33380-33574' }}
         run: |
           if [ -n "$BACKFILL" ]; then
             python3 -I src/scripts/crl_cache.py cache --backfill "$BACKFILL"
