@@ -9,8 +9,6 @@ on:
     - cron: "40 4 * * *"
     - cron: "40 17 * * *"
   workflow_dispatch:
-  push:
-    branches: [crl-cache-dev]
 
 permissions:
   contents: write
