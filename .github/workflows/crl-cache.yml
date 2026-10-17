@@ -53,7 +53,7 @@ jobs:
 
       - name: Scarica i documenti
         env:
-          BACKFILL: ${{ github.event.inputs.backfill || '33575-33622' }}
+          BACKFILL: ${{ github.event.inputs.backfill || '33598-33598' }}
         run: |
           if [ -n "$BACKFILL" ]; then
             python3 -I src/scripts/crl_cache.py cache --backfill "$BACKFILL"
