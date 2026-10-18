@@ -4,7 +4,9 @@
 // dati della squadra indicata. Non salva nulla: l'app mostra cosa ha trovato
 // e chi carica le schermate decide se aggiungerlo alla scheda.
 
-const INT = { type: ['integer', 'null'] };
+// Niente campi «numero o null»: l'API ne accetta al massimo 16 con tipi multipli.
+// Un dato assente arriva come -1 (o stringa vuota) e diventa null in absentToNull.
+const INT = { type: 'integer', description: '-1 se non visibile' };
 
 const SCHEMA = {
   type: 'object',
@@ -48,7 +50,7 @@ const SCHEMA = {
           punti_casa: INT, punti_trasferta: INT,
           gol_fatti_casa: INT, gol_fatti_trasferta: INT, gol_subiti_casa: INT, gol_subiti_trasferta: INT,
           gol_su_rigore: INT, ammonizioni: INT, espulsioni: INT,
-          eta_media: { type: ['number', 'null'] },
+          eta_media: { type: 'number', description: '-1 se non visibile' },
           serie_vittorie: { ...INT, description: 'Massimo di vittorie consecutive' },
           serie_pareggi: { ...INT, description: 'Massimo di pareggi consecutivi' },
           serie_sconfitte: { ...INT, description: 'Massimo di sconfitte consecutive' },
@@ -71,7 +73,7 @@ const SCHEMA = {
         required: ['giornata', 'data', 'casa', 'ospite', 'gol_casa', 'gol_ospite'],
         properties: {
           giornata: INT,
-          data: { type: ['string', 'null'], description: 'YYYY-MM-DD se la data è visibile' },
+          data: { type: 'string', description: 'YYYY-MM-DD, stringa vuota se non visibile' },
           casa: { type: 'string' },
           ospite: { type: 'string' },
           gol_casa: INT,
@@ -92,7 +94,7 @@ Possono esserci:
 - i risultati di una giornata: tieni solo le partite di «${team}» già giocate, con la giornata indicata nella scheda selezionata;
 - altro (rosa, marcatori, pubblicità): segnalalo in "schermate" senza estrarre dati.
 
-Regole: trascrivi solo numeri e nomi che si leggono davvero; un dato assente è null, mai stimato. Se una cifra è incerta scegli la più probabile e segnalala in "dubbi". Se nessuna schermata riguarda «${team}», metti squadra_trovata a false.`;
+Regole: trascrivi solo numeri e nomi che si leggono davvero; un dato assente si scrive -1 (la data come stringa vuota), mai stimato; "classifica" e "statistiche" sono null se nessuna schermata le mostra. Se una cifra è incerta scegli la più probabile e segnalala in "dubbi". Se nessuna schermata riguarda «${team}», metti squadra_trovata a false.`;
 
 export async function readTuttocampo({ images, team }, env) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -123,9 +125,18 @@ export async function readTuttocampo({ images, team }, env) {
   if (out.stop_reason === 'refusal') throw new Error('Le schermate non sono state lette: riprova con immagini diverse');
   if (out.stop_reason === 'max_tokens') throw new Error('Troppe schermate in una volta: riprova con meno immagini');
   const text = (out.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('');
+  let data;
   try {
-    return JSON.parse(text);
+    data = JSON.parse(text);
   } catch {
     throw new Error('Risposta non leggibile: riprova');
   }
+  return absentToNull(data);
+}
+
+/** -1 e stringhe vuote dello schema tornano null, come se li aspetta l'app. Nessun dato estratto è negativo. */
+export function absentToNull(v) {
+  if (Array.isArray(v)) return v.map(absentToNull);
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, absentToNull(x)]));
+  return v === -1 || v === '' ? null : v;
 }
