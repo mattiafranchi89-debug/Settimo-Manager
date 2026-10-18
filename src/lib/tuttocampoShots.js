@@ -66,5 +66,5 @@ export function shotsToScout(data = {}, team = '', ref = new Date()) {
   const hasStats = stats && Object.entries(stats).some(([k, v]) => (k === 'topScorers' ? v.length : v != null));
 
   const found = [standing && 'classifica', results.length && 'risultati', hasStats && 'statistiche'].filter(Boolean);
-  return { standing, results, stats: hasStats ? stats : null, found, doubts: data.dubbi || [], screens: data.schermate || [], teamFound: !!data.squadra_trovata };
+  return { standing, results, stats: hasStats ? stats : null, found, doubts: (data.dubbi || []).filter(Boolean), screens: data.schermate || [], teamFound: !!data.squadra_trovata };
 }
