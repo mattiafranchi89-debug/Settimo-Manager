@@ -14,6 +14,7 @@ import { buildInsights, squadAlerts } from '../lib/insights';
 import { compBucket } from '../lib/discipline';
 import { useAutoOpponent, useGirone } from '../lib/crl';
 import { parseTuttocampo } from '../lib/tuttocampoPaste';
+import { readTuttocampoShots, shotsToScout, MAX_SHOTS } from '../lib/tuttocampoShots';
 
 /**
  * Scheda dell'avversario: classifica, forma, rosa, squalificati e note per
@@ -294,39 +295,91 @@ function OpponentCard({ scout, name, match, auto }) {
 }
 
 /**
- * «Incolla da Tuttocampo»: si apre la pagina della squadra (classifica,
- * risultati o rosa), si seleziona tutto, si copia e si incolla qui. Si
- * riconosce da solo cosa c'è e si aggiunge alla scheda solo ciò che riguarda
- * questa squadra. Si può ripetere con più pagine: i dati si sommano.
+ * «Incolla da Tuttocampo»: dalla pagina della squadra si copia il testo
+ * (seleziona tutto, copia) oppure si fanno le schermate (statistiche,
+ * classifica, risultati). Si riconosce da solo cosa c'è e si aggiunge alla
+ * scheda solo ciò che riguarda questa squadra. Si può ripetere: i dati si sommano.
  */
 export function PasteTuttocampo({ scout, name, refDate, roundDates = [], onSave, onClose, initialText = '' }) {
   const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState(false);
+  const [shots, setShots] = useState([]);
+  const [reading, setReading] = useState(false);
+  const [shotError, setShotError] = useState('');
+  const [fromShots, setFromShots] = useState(null);
+
+  // Senza data ma con la giornata: data stimata dal nostro calendario (segnata come stimata).
+  const withDates = (results) => results.map((r) => {
+    const d = !r.date && r.round ? roundDates[r.round - 1] : null;
+    return d && d <= refDate ? { ...r, date: isoDay(d), dateApprox: true } : r;
+  });
   const parsed = useMemo(() => {
     const p = parseTuttocampo(text, name, refDate);
-    // Senza data ma con la giornata: data stimata dal nostro calendario (segnata come stimata).
-    p.results = p.results.map((r) => {
-      const d = !r.date && r.round ? roundDates[r.round - 1] : null;
-      return d && d <= refDate ? { ...r, date: isoDay(d), dateApprox: true } : r;
-    });
+    p.results = withDates(p.results);
     return p;
   }, [text, name, refDate, roundDates]);
-  const st = parsed.standing;
   const url = scout.tuttocampoUrl || `https://www.google.com/search?q=${encodeURIComponent(`tuttocampo ${name}`)}`;
 
-  const fromClipboard = async () => {
-    try { setText(await navigator.clipboard.readText()); }
-    catch { /* permesso negato: si incolla a mano nel riquadro */ }
+  const addShots = (files) => {
+    const imgs = [...files].filter((f) => f.type.startsWith('image/'));
+    if (!imgs.length) return;
+    setShots((cur) => [...cur, ...imgs].slice(0, MAX_SHOTS));
+    setFromShots(null); setShotError('');
   };
+  // Un'immagine incollata (tieni premuto → Incolla) va tra le schermate; il testo resta nel riquadro.
+  useEffect(() => {
+    const onPaste = (e) => {
+      const files = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith('image/'));
+      if (files.length) { e.preventDefault(); addShots(files); }
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+  }, []);
+  const thumbs = useMemo(() => shots.map((f) => URL.createObjectURL(f)), [shots]);
+  useEffect(() => () => thumbs.forEach((u) => URL.revokeObjectURL(u)), [thumbs]);
+
+  const fromClipboard = async () => {
+    try {
+      // Prima le immagini (schermate copiate), poi il testo.
+      if (navigator.clipboard.read) {
+        const items = await navigator.clipboard.read();
+        const files = [];
+        for (const it of items) {
+          const type = it.types.find((t) => t.startsWith('image/'));
+          if (type) files.push(new File([await it.getType(type)], `schermata-${files.length + 1}`, { type }));
+        }
+        if (files.length) { addShots(files); return; }
+      }
+      setText(await navigator.clipboard.readText());
+    } catch { /* permesso negato: si incolla a mano */ }
+  };
+
+  const readShots = async () => {
+    setReading(true); setShotError(''); setFromShots(null);
+    try {
+      const r = shotsToScout(await readTuttocampoShots(shots, name), name, refDate);
+      r.results = withDates(r.results);
+      setFromShots(r);
+    } catch (e) { setShotError(e.message); }
+    setReading(false);
+  };
+
+  // Dalle schermate e dal testo insieme: la classifica letta per ultima vince, risultati e rosa si sommano.
+  const st = fromShots?.standing || parsed.standing;
+  const results = [...(fromShots?.results || []), ...parsed.results];
+  const stats = fromShots?.stats || null;
+  const found = [...new Set([...(fromShots?.found || []), ...parsed.found])];
 
   const apply = async () => {
     setBusy(true);
     const patch = {};
     const parts = [];
     const day = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    if (st) { patch.standing = { ...st, asOf: `Tuttocampo, ${day}` }; parts.push('classifica'); }
-    if (parsed.results.length) { patch.results = mergeResults(scout.results || [], parsed.results); parts.push(`${parsed.results.length} risultati`); }
+    // Un dato che la schermata non mostra (es. i gol, assenti dalla classifica) non cancella quello già in scheda.
+    if (st) { patch.standing = { ...(scout.standing || {}), ...Object.fromEntries(Object.entries(st).filter(([, v]) => v != null)), asOf: `Tuttocampo, ${day}` }; parts.push('classifica'); }
+    if (results.length) { patch.results = mergeResults(scout.results || [], results); parts.push(`${results.length} risultati`); }
     if (parsed.players.length) { patch.players = mergeRoster(scout.players || [], parsed.players); parts.push(`${parsed.players.length} giocatori`); }
+    if (stats) { patch.tcStats = { ...stats, asOf: day }; parts.push('statistiche'); }
     patch.tuttocampoAt = new Date().toISOString();
     await onSave(patch, `Da Tuttocampo: ${parts.join(', ')}`);
     setBusy(false);
@@ -335,28 +388,61 @@ export function PasteTuttocampo({ scout, name, refDate, roundDates = [], onSave,
   return (
     <Sheet title="Incolla da Tuttocampo" onClose={onClose}>
       <ol style={{ fontSize: 13.5, color: 'var(--ink-soft)', paddingLeft: 18, margin: '0 0 10px' }}>
-        <li>Apri su Tuttocampo la pagina di <b>{name}</b>: classifica, risultati o rosa.</li>
-        <li>Tieni premuto sul testo, «Seleziona tutto» e «Copia».</li>
-        <li>Torna qui e incolla: l'app riconosce da sola cosa c'è.</li>
+        <li>Apri su Tuttocampo la pagina di <b>{name}</b>: statistiche, classifica, risultati o rosa.</li>
+        <li>Fai le <b>schermate</b>, oppure tieni premuto sul testo, «Seleziona tutto» e «Copia».</li>
+        <li>Torna qui: carica le schermate o incolla. L'app riconosce da sola cosa c'è.</li>
       </ol>
       <div className="btnrow" style={{ marginBottom: 10 }}>
         <Button size="sm" variant="secondary" as="a" href={url} target="_blank" rel="noopener noreferrer">Apri Tuttocampo ↗</Button>
+        <label className="btn btn--secondary btn--sm" style={{ cursor: 'pointer' }}>
+          📷 Scegli schermate
+          <input type="file" accept="image/*" multiple hidden onChange={(e) => { addShots(e.target.files || []); e.target.value = ''; }} />
+        </label>
         {navigator.clipboard?.readText && <Button size="sm" variant="secondary" onClick={fromClipboard}>📋 Incolla dagli appunti</Button>}
       </div>
+
+      {shots.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+            {thumbs.map((u, i) => (
+              <div key={u} style={{ position: 'relative', flex: '0 0 auto' }}>
+                <img src={u} alt={`Schermata ${i + 1}`} style={{ height: 96, borderRadius: 8, border: '1px solid var(--line-soft)' }} />
+                <button className="iconbtn" aria-label="Togli schermata" style={{ position: 'absolute', top: 2, right: 2, minHeight: 0, padding: '0 6px' }}
+                  onClick={() => { setShots((cur) => cur.filter((_, j) => j !== i)); setFromShots(null); }}>✕</button>
+              </div>
+            ))}
+          </div>
+          <div className="btnrow" style={{ marginTop: 8 }}>
+            <Button size="sm" disabled={reading} onClick={readShots}>
+              {reading ? 'Lettura in corso…' : `Leggi ${shots.length === 1 ? 'la schermata' : `le ${shots.length} schermate`}`}
+            </Button>
+            <small style={{ color: 'var(--muted)', alignSelf: 'center' }}>Fino a {MAX_SHOTS} alla volta</small>
+          </div>
+          {shotError && <Alert level="error">{shotError}</Alert>}
+          {fromShots && !fromShots.found.length && (
+            <Alert level="warn">Nelle schermate non trovo dati di {name}. {fromShots.screens.length ? `Ho visto: ${fromShots.screens.map((x) => x.descrizione).join('; ')}.` : ''}</Alert>
+          )}
+          {fromShots?.doubts?.length > 0 && (
+            <Alert level="info"><b>Da controllare:</b> {fromShots.doubts.join(' · ')}</Alert>
+          )}
+        </div>
+      )}
+
       <Field>
-        <Textarea rows={6} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo copiato dalla pagina" />
+        <Textarea rows={shots.length ? 3 : 6} value={text} onChange={(e) => setText(e.target.value)} placeholder="…oppure incolla qui il testo copiato dalla pagina" />
       </Field>
 
-      {text.trim() && (parsed.found.length ? (
+      {(text.trim() || fromShots) && (found.length ? (
         <Alert level="ok">
           <div style={{ fontWeight: 700, marginBottom: 4 }}>Trovato per {name}:</div>
-          {st && <div style={{ fontSize: 13.5 }}>🏆 Classifica: {st.pos}° su {st.of}, {st.pts} punti in {st.g} gare ({st.v}V {st.n}N {st.p}P, gol {st.gf}:{st.gs})</div>}
-          {parsed.results.length > 0 && (
-            <div style={{ fontSize: 13.5 }}>⚽ Risultati: {sortResults(parsed.results).slice(0, 6).map((r) => `${r.round ? `${r.round}ª ` : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs} (${outcome(r)})`).join(' · ')}{parsed.results.length > 6 ? ` e altri ${parsed.results.length - 6}` : ''}</div>
+          {st && <div style={{ fontSize: 13.5 }}>🏆 Classifica: {st.pos ?? '?'}°{st.of ? ` su ${st.of}` : ''}, {st.pts ?? '?'} punti in {st.g ?? '?'} gare ({st.v ?? '?'}V {st.n ?? '?'}N {st.p ?? '?'}P{st.gf != null || st.gs != null ? `, gol ${st.gf ?? '?'}:${st.gs ?? '?'}` : ''})</div>}
+          {results.length > 0 && (
+            <div style={{ fontSize: 13.5 }}>⚽ Risultati: {sortResults(results).slice(0, 6).map((r) => `${r.round ? `${r.round}ª ` : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs} (${outcome(r)})`).join(' · ')}{results.length > 6 ? ` e altri ${results.length - 6}` : ''}</div>
           )}
+          {stats && <div style={{ fontSize: 13.5 }}>📊 Statistiche: {statsLine(stats)}</div>}
           {parsed.players.length > 0 && <div style={{ fontSize: 13.5 }}>👥 Rosa: {parsed.players.length} giocatori ({parsed.players.filter((p) => p.birthDate || p.birthYear).length} con età)</div>}
         </Alert>
-      ) : (
+      ) : text.trim() && (
         <Alert level="warn">
           Non trovo dati di {name} in questo testo. Controlla di aver copiato la pagina giusta: classifica del girone, risultati o rosa della squadra.
           {parsed.rows.length >= 3 && ' La classifica c\'è, ma senza questa squadra: il nome è scritto diversamente?'}
@@ -364,17 +450,32 @@ export function PasteTuttocampo({ scout, name, refDate, roundDates = [], onSave,
       ))}
 
       <div className="btnrow">
-        <Button disabled={!parsed.found.length || busy} onClick={apply}>Aggiungi alla scheda</Button>
+        <Button disabled={!found.length || busy || reading} onClick={apply}>Aggiungi alla scheda</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
       <small style={{ display: 'block', marginTop: 8, color: 'var(--muted)' }}>
-        Puoi ripetere con altre pagine: i dati si sommano. Classifica e risultati aggiornano i suggerimenti.
+        Puoi ripetere con altre pagine: i dati si sommano. Le schermate le legge Claude: controlla sempre il riepilogo prima di aggiungere.
       </small>
     </Sheet>
   );
 }
 
-/** Classifica completa del girone: si tocca una squadra per aprirne la scheda. */
+const fmtNum = (v) => String(v).replace('.', ',');
+
+/** «Casa 5 pt (gol 7:6) · Trasferta 5 pt (gol 8:3) · …»: solo i dati presenti. */
+function statsLine(s) {
+  const side = (label, pts, gf, gs) => (pts != null || gf != null
+    ? `${label} ${pts ?? '?'} pt${gf != null || gs != null ? ` (gol ${gf ?? '?'}:${gs ?? '?'})` : ''}` : null);
+  return [
+    side('Casa', s.ptsHome, s.gfHome, s.gsHome),
+    side('Trasferta', s.ptsAway, s.gfAway, s.gsAway),
+    (s.streakW != null || s.streakD != null || s.streakL != null)
+      && `serie massime ${s.streakW ?? '?'}V ${s.streakD ?? '?'}N ${s.streakL ?? '?'}P`,
+    s.topScorers?.length && `capocannoniere ${s.topScorers.map((x) => `${x.name}${x.goals != null ? ` (${x.goals})` : ''}`).join(', ')}`,
+    s.avgAge != null && `età media ${fmtNum(s.avgAge)}`
+  ].filter(Boolean).join(' · ');
+}
+
 function GironeCard({ girone, current, onPick }) {
   const [open, setOpen] = useState(false);
   const rows = girone.standing.rows;
@@ -519,6 +620,12 @@ function StandingCard({ scout, canWrite, onSave }) {
           <Kpi value={`${st.gf ?? 0}:${st.gs ?? 0}`} label="Gol fatti:subiti" />
         </div>
       ) : <Empty title="Classifica non inserita">La trovi su Tuttocampo o negli allegati del comunicato CRL del giovedì.</Empty>}
+      {scout.tcStats && (
+        <div style={{ fontSize: 13.5, marginTop: 10 }}>
+          {statsLine(scout.tcStats)}
+          <small style={{ display: 'block', color: 'var(--muted)' }}>Statistiche da Tuttocampo, {scout.tcStats.asOf}</small>
+        </div>
+      )}
 
       {open && (
         <Sheet title="Classifica" onClose={() => setOpen(false)}>
