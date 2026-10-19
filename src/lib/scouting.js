@@ -153,7 +153,19 @@ function readTable(rows, refYear) {
   };
   if (ix.name < 0 && ix.surname < 0 && ix.first < 0) return null;
 
-  return rows.slice(1).map((cells) => {
+  // Tuttocampo ripete il nome (testo del logo + nome): la riga ha una cella in
+  // più dell'intestazione e tutte le colonne slittano. Si toglie il doppione.
+  const align = (cells) => {
+    if (cells.length <= header.length) return cells;
+    const c = [...cells];
+    for (let i = 0; i + 1 < c.length && c.length > header.length; i++) {
+      if (c[i].trim() && c[i].trim().toLowerCase() === c[i + 1].trim().toLowerCase()) c.splice(i + 1, 1);
+    }
+    return c;
+  };
+
+  const out = rows.slice(1).map((raw) => {
+    const cells = align(raw);
     const get = (i) => (i >= 0 ? (cells[i] || '').trim() : '');
     let name = get(ix.name);
     if (!name) name = [get(ix.surname), ix.first !== ix.surname ? get(ix.first) : ''].filter(Boolean).join(' ');
@@ -170,6 +182,9 @@ function readTable(rows, refYear) {
     if (get(ix.note)) p.note = get(ix.note);
     return p;
   }).filter(Boolean);
+  // Presenze tutte a zero ma con gol segnati: colonna non compilata, meglio non mostrarla.
+  if (out.some((p) => p.goals > 0) && out.every((p) => !p.apps)) out.forEach((p) => { delete p.apps; });
+  return out;
 }
 
 const playerKey = (name) => teamTokens(name).sort().join(' ') || name.toLowerCase();
