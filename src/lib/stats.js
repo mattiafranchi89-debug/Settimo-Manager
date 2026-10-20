@@ -129,8 +129,8 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
       acc.cards[bucket].r += s.red || 0;
       // Storico dei cartellini per gara (n = numero d'ordine della gara nella competizione).
       if (s.yellow || s.red) acc.cards[bucket].hist.push({ n, y: s.yellow || 0, r: s.red || 0 });
-      acc.lastMatchMinutes = s.minutes || 0;
-      if (s.played) acc.lastPlayedAt = toDate(m.date);
+      // Data e minuti della stessa gara: una panchina successiva non deve dare «0′».
+      if (s.played) { acc.lastPlayedAt = toDate(m.date); acc.lastMatchMinutes = s.minutes || 0; }
     });
   });
 
