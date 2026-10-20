@@ -1,5 +1,45 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 40 CRL (2026-10-20)
+Pagina: https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40
+
+### Comunicato Ufficiale Nr. 40 del 20.10.2026.pdf – riga 666
+```
+                         Squadra 1                   Squadra 2                                            Impianto
+ Gara Gior.                                                               Orig.   Var. Orig.
+                                                                                               COMUNALE-CAMPO N.1 CUSAGO VIA IV
+28/10/2026   1A   SETTIMO MILANESE           VELA MESERO                          20:00
+                                                                                               NOVEMBRE 9
+
+
+```
+
+### 03_Programma Gare Coppe.pdf – riga 693
+```
+
+
+
+VIGHIGNOLO                                FOOTBALL CLUB SEDRIANO      C.S.VIGHIGNOLO E.A.                           11/11/2026    20:00 1A SETTIMO MILANESE FR.VIGHIGNOLO     VIA PACE S.N.C.
+GIRONE G                                                                                                       DATA              ORA                                                                                 STATO GARA
+
+
+```
+
+### 03_Programma Gare Coppe.pdf – riga 802
+```
+
+
+
+VIGHIGNOLO                                FOOTBALL CLUB SEDRIANO    C.S.VIGHIGNOLO E.A.                      12/11/2026    20:00 1A SETTIMO MILANESE FR.VIGHIGNOLO     VIA PACE S.N.C.
+GIRONE F                                                                                                 DATA             ORA                                                                                STATO GARA
+
+
+```
+
+## Programma gare dal 20 al 22 Ottobre 2026 CRL (2026-10-20)
+Pagina: https://www.crlombardia.it/news/33666/programma-gare-dal-20-al-22-ottobre-2026
+Nessuna menzione del Settimo Milanese.
+
 ## COMUNICATO UFFICIALE N° 39 CRL (2026-10-16)
 Pagina: https://www.crlombardia.it/documenti/33661/comunicato-ufficiale-n-39
 

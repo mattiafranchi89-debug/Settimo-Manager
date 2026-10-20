@@ -1471,19 +1471,114 @@
         }
       ],
       "fetchedAt": "2026-10-17T09:18:01+00:00"
+    },
+    "33669": {
+      "id": "33669",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 40 CRL",
+      "number": 40,
+      "date": "2026-10-20",
+      "url": "https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 40 del 20.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c1ef9d0_Comunicato Ufficiale Nr. 40 del 20.10.2026.pdf",
+          "pages_chars": 110331,
+          "settimo_mentions": 1,
+          "txt": "docs/33669/Comunicato_Ufficiale_Nr._40_del_20.10.2026.txt",
+          "mentions": [
+            {
+              "line": 666,
+              "text": "                         Squadra 1                   Squadra 2                                            Impianto\n Gara Gior.                                                               Orig.   Var. Orig.\n                                                                                               COMUNALE-CAMPO N.1 CUSAGO VIA IV\n28/10/2026   1A   SETTIMO MILANESE           VELA MESERO                          20:00\n                                                                                               NOVEMBRE 9\n\n"
+            }
+          ]
+        },
+        {
+          "name": "03_Programma Gare Coppe.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad7716aa435a_03_Programma Gare Coppe.pdf",
+          "pages_chars": 67905,
+          "settimo_mentions": 2,
+          "txt": "docs/33669/03_Programma_Gare_Coppe.txt",
+          "mentions": [
+            {
+              "line": 693,
+              "text": "\n\n\nVIGHIGNOLO                                FOOTBALL CLUB SEDRIANO      C.S.VIGHIGNOLO E.A.                           11/11/2026    20:00 1A SETTIMO MILANESE FR.VIGHIGNOLO     VIA PACE S.N.C.\nGIRONE G                                                                                                       DATA              ORA                                                                                 STATO GARA\n\n"
+            },
+            {
+              "line": 802,
+              "text": "\n\n\nVIGHIGNOLO                                FOOTBALL CLUB SEDRIANO    C.S.VIGHIGNOLO E.A.                      12/11/2026    20:00 1A SETTIMO MILANESE FR.VIGHIGNOLO     VIA PACE S.N.C.\nGIRONE F                                                                                                 DATA             ORA                                                                                STATO GARA\n\n"
+            }
+          ]
+        },
+        {
+          "name": "01_Coppa_U17_Elite_UV_Tabellone_Quarti.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c22dcc1_01_Coppa_U17_Elite_UV_Tabellone_Quarti.pdf",
+          "pages_chars": 1972,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Coppa_U15_Elite_UW_Tabellone_Quarti.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c234705_02_Coppa_U15_Elite_UW_Tabellone_Quarti.pdf",
+          "pages_chars": 1906,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Regol_Premio Giovani Eccellenza-Promozione 2627.pdf.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c24dd1a_04_Regol_Premio Giovani Eccellenza-Promozione 2627.pdf.pdf",
+          "pages_chars": 13283,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Programma Gare Coppa C5 Femm.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c259d77_05_Programma Gare Coppa C5 Femm.pdf",
+          "pages_chars": 1794,
+          "settimo_mentions": 0,
+          "txt": "docs/33669/05_Programma_Gare_Coppa_C5_Femm.txt"
+        },
+        {
+          "name": "06_Classifche_C5_CU_40 del 20.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c25f039_06_Classifche_C5_CU_40 del 20.10.2026.pdf",
+          "pages_chars": 12710,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "07_Maglie personalizzate CU 40.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33669/6ad769c2716b8_07_Maglie personalizzate CU 40.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-20T20:49:29+00:00"
+    },
+    "33666": {
+      "id": "33666",
+      "kind": "programma-gare",
+      "title": "Programma gare dal 20 al 22 Ottobre 2026 CRL",
+      "number": null,
+      "date": "2026-10-20",
+      "url": "https://www.crlombardia.it/news/33666/programma-gare-dal-20-al-22-ottobre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_20-22_Ottobre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33666/6ad740543b7ff_Programma_Gare_20-22_Ottobre_2026.pdf",
+          "pages_chars": 16106,
+          "settimo_mentions": 0,
+          "txt": "docs/33666/Programma_Gare_20-22_Ottobre_2026.txt"
+        }
+      ],
+      "fetchedAt": "2026-10-20T20:49:29+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-20T09:37:29+00:00",
+  "lastRun": "2026-10-20T20:49:29+00:00",
   "homepage": [
+    "33669",
     "33661",
     "33657",
     "33633",
     "33631",
-    "33623",
+    "33666",
     "33653",
-    "33630",
-    "33619"
+    "33630"
   ],
   "errors": [],
   "notRegional": [
