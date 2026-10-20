@@ -51,6 +51,7 @@ export default function SchedaGara() {
   const [scorersOpen, setScorersOpen] = useState(false);
   const [postNote, setPostNote] = useState('');
   const [referto, setReferto] = useState(null);
+  const announceStats = useRef(false);
   const [reading, setReading] = useState(false);
 
   // I dati in arrivo dal database riempiono la scheda solo se non ci sono
@@ -106,7 +107,16 @@ export default function SchedaGara() {
     key: localKey, savedKey, enabled: canWrite && !!match && hydrated.current,
     save: async () => {
       await persist();
-      if (saved?.closed) refreshStats(players, club.season).catch(() => {});
+      if (!saved?.closed) return;
+      // Gara chiusa: ogni correzione ricalcola le statistiche. Un errore va detto,
+      // altrimenti i profili restano indietro senza che nessuno se ne accorga.
+      try {
+        const r = await refreshStats(players, club.season);
+        if (announceStats.current) toast(`Statistiche ricalcolate (${r.matches} gare chiuse)`);
+      } catch (e) {
+        toast('Statistiche non aggiornate: premi «Ricalcola statistiche» in fondo alla pagina', 'error');
+      }
+      announceStats.current = false;
     }
   });
   pendingRef.current = autosave.pending;
@@ -167,7 +177,8 @@ export default function SchedaGara() {
       } catch (e) { toast(errorText(e), 'error'); }
     }
     setReferto(null);
-    toast('Dati del referto inseriti nella scheda');
+    announceStats.current = !!saved?.closed;
+    toast(saved?.closed ? 'Dati del referto inseriti: ricalcolo le statistiche…' : 'Dati del referto inseriti nella scheda');
   };
 
   if (loading || !match) return <Loading />;
@@ -200,6 +211,15 @@ export default function SchedaGara() {
       {canWrite && !closed && (
         <AfterMatch match={match} events={events} ourGoals={ourGoals} reading={reading} busy={busy} lineup={lineup}
           onPhoto={onRefertoPhoto} onScorers={() => setScorersOpen(true)} onClose={closeMatch} toast={toast} />
+      )}
+
+      {canWrite && closed && (
+        <Card title="Referto arbitrale">
+          <p style={{ fontSize: 13.5, margin: '0 0 10px' }}>
+            Rileggi il referto per correggere sostituzioni e cartellini: ti mostro cosa cambia prima di inserirlo, poi le statistiche dei giocatori si ricalcolano da sole.
+          </p>
+          <RefertoButtons reading={reading} onPhoto={onRefertoPhoto} />
+        </Card>
       )}
 
       {canWrite && (
@@ -568,6 +588,21 @@ function StepRow({ n, done, title, children }) {
   );
 }
 
+function RefertoButtons({ reading, onPhoto, done = false }) {
+  return (
+    <div className="btnrow">
+      {[['📷 Scatta foto', true, done ? 'ghost' : 'primary'], ['🖼️ Dalla galleria', false, done ? 'ghost' : 'secondary']].map(([label, camera, variant]) => (
+        <label key={label} className={`btn btn--${variant} btn--sm`} style={{ display: 'inline-flex', alignItems: 'center', cursor: reading ? 'wait' : 'pointer', opacity: reading ? 0.6 : 1 }}>
+          {reading && camera ? 'Leggo il referto…' : label}
+          {/* Con «capture» Android apre solo la fotocamera: la galleria ha il suo pulsante. */}
+          <input type="file" accept="image/*" {...(camera ? { capture: 'environment' } : {})} disabled={reading} style={{ display: 'none' }}
+            onChange={(e) => { onPhoto(e.target.files?.[0]); e.target.value = ''; }} />
+        </label>
+      ))}
+    </div>
+  );
+}
+
 function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, onScorers, onClose, toast }) {
   const [home, setHome] = useState('');
   const [away, setAway] = useState('');
@@ -586,18 +621,7 @@ function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, o
     } catch (e) { toast(errorText(e), 'error'); }
   };
 
-  const photoButtons = (
-    <div className="btnrow">
-      {[['📷 Scatta foto', true, refertoDone ? 'ghost' : 'primary'], ['🖼️ Dalla galleria', false, refertoDone ? 'ghost' : 'secondary']].map(([label, camera, variant]) => (
-        <label key={label} className={`btn btn--${variant} btn--sm`} style={{ display: 'inline-flex', alignItems: 'center', cursor: reading ? 'wait' : 'pointer', opacity: reading ? 0.6 : 1 }}>
-          {reading && camera ? 'Leggo il referto…' : label}
-          {/* Con «capture» Android apre solo la fotocamera: la galleria ha il suo pulsante. */}
-          <input type="file" accept="image/*" {...(camera ? { capture: 'environment' } : {})} disabled={reading} style={{ display: 'none' }}
-            onChange={(e) => { onPhoto(e.target.files?.[0]); e.target.value = ''; }} />
-        </label>
-      ))}
-    </div>
-  );
+  const photoButtons = <RefertoButtons reading={reading} onPhoto={onPhoto} done={refertoDone} />;
 
   return (
     <Card title="🏁 Dopo la partita">
