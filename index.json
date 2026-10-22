@@ -1566,18 +1566,182 @@
         }
       ],
       "fetchedAt": "2026-10-20T20:49:29+00:00"
+    },
+    "33673": {
+      "id": "33673",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 41 CRL",
+      "number": 41,
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9c7e567_Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf",
+          "pages_chars": 391153,
+          "settimo_mentions": 5,
+          "txt": "docs/33673/Comunicato_Ufficiale_Nr._41_del_22.10.2026.txt",
+          "mentions": [
+            {
+              "line": 1446,
+              "text": "PARTIZAN BONOLA ASD             - POLISPORTIVA OR.PA.S.       3-3      LEO TEAM                        - LUISAGO GRANDATE ASD        2-1\nPRO PESCHIERA BORROMEO          - POLISPORTIVA DI NOVA        2-2      LOMAZZO CALCIO A.S.D.           - MONTESOLARO G.S. A.S.D.     1-1\nQUINTO ROMANO A.S.D.            - SANGIULIANO CVS A R.L.      1-0      OLIMPIA CALCIO CADORAGO         - CASTELLO CITTA DI CANTU     0-7\nSETTIMO MILANESE                - GARIBALDINA 1932            1-3      ZETA MILANO F.C. ASD            - ATLETICO SCHIAFFINO         4-1\n                                                                       (1) - disputata il 17/10/2026\n\n"
+            },
+            {
+              "line": 1773,
+              "text": "                         Squadra 1                      Squadra 2                                           Impianto\n Gara Gior.                                                                 Orig.   Var. Orig.\n                                                                                                 COMUNALE-CAMPO N.1 CUSAGO VIA IV\n28/10/2026   1A   SETTIMO MILANESE             VELA MESERO                          20:00\n                                                                                                 NOVEMBRE 9\n\n"
+            },
+            {
+              "line": 2231,
+              "text": "ARDITA CITTADELLA 1934           - CDA E CAVALLASCA A.S.D.       3-2           CESANO BOSCONE IDROSTAR           - VIGHI 1967                     6-1\n(1) LESMO SSD ARL                - PERTICATO XENIA ASD           0-0           (2) FROG MILANO                   - SUPERGA G.S. A.S.D.             -    R\n(1) NOVEDRATE                    - INVERIGO                      1-2           ORATORIANA VITTUONE ASD           - BUCCINASCO                     2-1\n(1) OLIMPIA CALCIO CADORAGO      - LUISAGO GRANDATE ASD          1-2           POL.D. U.S. CASSOLESE             - SETTIMO MILANESE               7-0\nPONTELAMBRESE A.S.D.             - MONGUZZO 1997                 2-0           QUINTO ROMANO A.S.D.              - VICTORIA MMVII A.S.D.          1-2\nSIRTORESE                        - LIBERTAS SAN BARTOLOMEO       4-1           ROZZANO CALCIO SRL SSD            - FATIMATRACCIA                  5-0\n(1) - disputata il 18/10/2026                                                  (1) - disputata il 18/10/2026"
+            },
+            {
+              "line": 2338,
+              "text": "\nSQUALIFICA PER TRE GARE EFFETTIVE\n\nMONTALTO GIOVANNI          (SETTIMO MILANESE)\n\nPer atto di violenza nei confronti di un calciatore avversario (art.38 comma 1 del nuovo C.G.S.).\n\nSQUALIFICA PER DUE GARE EFFETTIVE\n\nCALZOLARI LORENZO          (FBC AURORA VAREDO)                    FORTUNATO DAVIDE          (SETTIMO MILANESE)\nSCARFATO ALAN              (SETTIMO MILANESE)\n\n\nSQUALIFICA PER UNA GARA EFFETTIVA"
+            },
+            {
+              "line": 2358,
+              "text": "OTTAVIANI MASSIMO          (NUOVA BOLGIANO)                                                 (OSAL NOVATE)\n                                                                  FILIPPO\n                                                                  PAGLICCIA GABRIELE\nHODZIC DZEMAL              (PIANCAMUNO)                                                     (SETTIMO MILANESE)\n                                                                  PATRIZ\nBEYE MAMADOU LAMINE        (VIRTUS RONDINELLE SSDARL)\n"
+            }
+          ]
+        },
+        {
+          "name": "01_Classifiche CU_41 del 22.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9d85d01_01_Classifiche CU_41 del 22.10.2026.pdf",
+          "pages_chars": 150650,
+          "settimo_mentions": 2,
+          "txt": "docs/33673/01_Classifiche_CU_41_del_22.10.2026.txt",
+          "mentions": [
+            {
+              "line": 287,
+              "text": "                                  PRIMA CATEGORIA\nGIRONE A\n                         Squadra                 PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                            15   6   5   0   1   16    5    11   0\nA.C. GARIBALDINA 1932                            13   6   4   1   1   17   10     7   0\nPOL. BUCCINASCO                                  12   6   3   3   0   11    5     6   0\nG.S. VILLA S.S.D.R.L.                            11   6   3   2   1    9    7     2   0"
+            },
+            {
+              "line": 649,
+              "text": "POL. BUCCINASCO                               7   5   2   1   2    7    5     2   0\nU.S. QUINTO ROMANO A.S.D.                     7   6   2   1   3   13   14    -1   0\nA.S.D. VIGHI 1967                             4   5   1   1   3    7   16    -9   0\nU.S. SETTIMO MILANESE                         4   6   1   1   4    7   24   -17   0\nA.C.D. FROG MILANO                            3   5   1   0   4   10   12    -2   0\nA.S.D. FATIMATRACCIA                          3   5   1   0   4    2   18   -16   0\nSUPERGA G.S. A.S.D.                           1   5   0   1   4    7   18   -11   0"
+            }
+          ]
+        },
+        {
+          "name": "02_Convocazione Rappresentativa U17 del 28 Ottobre amichevole Juniores Tritium.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e02d38_02_Convocazione Rappresentativa U17 del 28 Ottobre amichevole Juniores Tritium.pdf",
+          "pages_chars": 3169,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Convocazione Rappresentativa U15 del 27 Ottobre amichevole U16 Mazzo.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e0fbeb_03_Convocazione Rappresentativa U15 del 27 Ottobre amichevole U16 Mazzo.pdf",
+          "pages_chars": 3257,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Convocazione 28 Ottobre 2026 Rappresentativa FEMMINILE.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e1dda5_04_Convocazione 28 Ottobre 2026 Rappresentativa FEMMINILE.pdf",
+          "pages_chars": 3682,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Regolamento Femminile Coppa Italia C5.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e24d1d_05_Regolamento Femminile Coppa Italia C5.pdf",
+          "pages_chars": 13467,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Maglie personalizzate CU41.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e3168f_06_Maglie personalizzate CU41.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "01_SGS Circolare N°8 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e35b7d_01_SGS Circolare  N°8 Stagione 2026-2027.pdf",
+          "pages_chars": 4990,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Incontri informativi.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e4d5b2_02_Incontri informativi.pdf",
+          "pages_chars": 27816,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_26.10.2026_Convocazioni SFT Montichiari.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e61156_03_26.10.2026_Convocazioni SFT Montichiari.pdf",
+          "pages_chars": 3447,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_26.10.2026_Convocazioni SFT Trezzano.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e6881d_04_26.10.2026_Convocazioni SFT Trezzano.pdf",
+          "pages_chars": 3688,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_AMMESSI GRASSROOT LIVELLO E MILANO.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9e68f62_05_AMMESSI GRASSROOT LIVELLO E MILANO.pdf",
+          "pages_chars": 3329,
+          "settimo_mentions": 0
+        }
+      ],
+      "fetchedAt": "2026-10-22T20:45:03+00:00"
+    },
+    "33690": {
+      "id": "33690",
+      "kind": "programma-gare",
+      "title": "Programma gare dal 22 al 26 Ottobre 2026 CRL",
+      "number": null,
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_22-26_Ottobre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33690/6ada28b7bccc5_Programma_Gare_22-26_Ottobre_2026.pdf",
+          "pages_chars": 242228,
+          "settimo_mentions": 7,
+          "txt": "docs/33690/Programma_Gare_22-26_Ottobre_2026.txt",
+          "mentions": [
+            {
+              "line": 129,
+              "text": "PAVIA SSD                   PONTEVECCHIO                            C.S.COMUNALE - CAMPO N.2                        25/10/26 14:30 7A PAVIA                                          VIA STAFFORINI,1\nROSATESE                    UNION CALCIO BASSO PAVES                E C.S. COMUNALE \"LINO DE AMICI\"                 25/10/26 14:30 7A ROSATE                                         VIA GIACOMO LEOPARDI,3\nSIZIANO LANTERNA            VIGEVANO CALCIO 1921                    CENTRO SPORTIVO COMUNALE                        25/10/26 14:30 7A SIZIANO                                        VIA ADAMELLO,2\nVIGHIGNOLO                  VISCONTEA PAVESE U.S.D.                 C.S.VIGHIGNOLO E.A.                             25/10/26 14:30 7A SETTIMO MILANESE FR.VIGHIGNOLO                 VIA PACE S.N.C.\nACCADEMIA CALCIO VITTUONE   ORIONE                                  C.S.COM.\"S.PERTINI\" (E.A.) N.                   25/10/26 15:30 7A VITTUONE                                       VIA SANDRO PERTINI,1\n\n"
+            },
+            {
+              "line": 165,
+              "text": "FROG MILANO                IRIS 1914                               C.S. COMUNALE - CAMPO N.1                       25/10/26 14:30 7A MILANO                                         VIA TERESA NOCE,5\nGARIBALDINA 1932           NEVADA CALCIO                           CAMPO \"G.MASSOLA\"N.1                            25/10/26 14:30 7A MILANO                                         VIA DON MINZONI 4\nLEONE XIII SPORT           QUINTO ROMANO A.S.D.                    C.S.\"LEONE XIII\"- CAMPO 1(E.A                   25/10/26 14:30 7A MILANO                                         VIA ROSSETTI 4\nPOLISPORTIVA DI NOVA       SETTIMO MILANESE                        C.S.COMUNALE CAMPO 1                            25/10/26 14:30 7A NOVA MILANESE                                  VIA GIACOMO BRODOLINI,4\nPOLISPORTIVA OR.PA.S.      PRO PESCHIERA BORROMEO                  C.S.BOVISASCA-CAMPO N.1(E.A.)                   25/10/26 14:30 7A MILANO                                         VIA ASSIETTA,48\nSANGIULIANO CVS A R.L.     VILLA S.S.D.R.L.                        C.S.COMUNALE N.1                                25/10/26 14:30 7A SAN GIULIANO MILANESE-SESTO U.                 VIA TOSCANA 1 SESTO ULTERIAN\n"
+            },
+            {
+              "line": 429,
+              "text": "\n\nFOOTBALL CLUB SEDRIANO      QUINTO ROMANO A.S.D.                    CENTRO SPORTIVO COMUNALE 2 E.                   23/10/26 20:30 7A SEDRIANO                                       VIA CAMPO SPORTIVO,12                 V\nSUPERGA G.S. A.S.D.         SETTIMO MILANESE                        C.S.\"PIETRO BUSCAGLIA\" N.1                      24/10/26 15:00 7A VIGEVANO                                       VIA LONGO SNC\nVICTORIA MMVII A.S.D.       FROG MILANO                             CAMPO SPORTIVO COMUNALE                         24/10/26 15:00 7A NOVIGLIO                                       VIA LEONARDO DA VINCI 2/2\nFATIMATRACCIA               CESANO BOSCONE IDROSTAR                 COMUNALE \"FATIMATRACCIA\"(E.A)                   24/10/26 18:00 7A MILANO                                         VIA CHOPIN 81\nORIONE                      POL.D. U.S. CASSOLESE                   C.S.PARROCCHIALE (E.A.)                         25/10/26 15:00 7A MILANO                                         VIA STROZZI 1\nBUCCINASCO                  ROZZANO CALCIO SRL SSD                  C.S.\"GAETANO SCIREA\"N.1 (E.A)                   25/10/26 16:45 7A BUCCINASCO                                     VIA GRAMSCI SNC\nVIGHI 1967                  ACCADEMIA MILANESE                      C.S.VIGHIGNOLO E.A.                             25/10/26 17:30 7A SETTIMO MILANESE FR.VIGHIGNOLO                 VIA PACE S.N.C.\n\n\n"
+            },
+            {
+              "line": 912,
+              "text": "GIRONE A                                                                                                            DATA       ORA                                                                                      STATO GARA\n\n\nSEGURO A.S.D.               SEMPIONE HALF 1919 SSDSR                L C.S.COMUNALE (E.A)                            24/10/26 17:30 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13\nENOTRIA 1908 SSDARL         ACCADEMIA INTERNAZIONALE                CENTRO SPORTIVO ENOTRIA A                       25/10/26 10:00 7A MILANO                                         VIA C.CAZZANIGA, 26\nSPERANZA AGRATE             SS FRANCO SCARIONI 1925                 COMUNALE \"S.MISSAGLIA\" E.A.                     25/10/26 11:00 7A AGRATE BRIANZA                                 VIA ARCHIMEDE N.2\nALDINI S.S.D.AR.L.          AUSONIA 1931 S.C.A.R.L.                 C.S.ALDINI-RADICE(E.A)                          25/10/26 11:30 7A MILANO                                         VIA ORSINI 78/84"
+            },
+            {
+              "line": 1065,
+              "text": "SANGIULIANO CVS A R.L.      AUSONIA 1931 S.C.A.R.L.                 C.S.COMUNALE N.1                                24/10/26 17:30 7A SAN GIULIANO MILANESE-SESTO U.                 VIA TOSCANA 1 SESTO ULTERIAN\nALDINI S.S.D.AR.L.          VIGEVANO CALCIO 1921                    C.S.ALDINI-RADICE(E.A)                          25/10/26 09:30 7A MILANO                                         VIA ORSINI 78/84\nPRO SESTO 1913 SSD S.R.L.   PAVIA CALCIO 1911                       CAMPO \"BREDA\"B-(E.A)                            25/10/26 09:30 7A SESTO SAN GIOVANNI/PARCO NORD                  VIA XX SETTEMBRE, 162(DEROGA\nSEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              25/10/26 11:00 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13\nCLUB MILANO S.S.D. A R.L.   ACCADEMIA INTERNAZIONALE                COMUNALE \"G.BRERA\"CAMPO1(E.A)                   25/10/26 11:30 7A PERO                                           VIA GIOVANNI XXIII°,6\nSEDRIANO                    SS FRANCO SCARIONI 1925                 CENTRO SPORTIVO COMUNALE 2 E.                   25/10/26 11:30 7A SEDRIANO                                       VIA CAMPO SPORTIVO,12\nSANT ANGELO                 MAZZO 80 A.C. SSD A RL                  C.S.COMUNALE (E.A)                              25/10/26 14:30 7A CASTIRAGA VIDARDO                              PIAZZA DELLO SPORT"
+            },
+            {
+              "line": 1251,
+              "text": "ACCADEMIA PAVESE            RHODENSE S.S.D.A.R.L.                   CAMPO COMUNALE N 2                              25/10/26 09:30 7A SANT'ALESSIO CON VIALONE                       VIA VIALONE SNC\nMAZZO 80 A.C. SSD A RL      ALDINI S.S.D.AR.L.                      C.S.COMUNALE                                    25/10/26 09:30 7A RHO                                            VIA DE GASPERI SNC\nROZZANO CALCIO SRL SSD      SS FRANCO SCARIONI 1925                 C.S.COMUNALE -CAMPO N.2 (EA-D                   25/10/26 09:30 7A ROZZANO                                        VIA MONTE AMIATA 34\nSEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              25/10/26 09:30 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13\nAUSONIA 1931 S.C.A.R.L.     ACCADEMIA INTERNAZIONALE                C.S.AUSONIA 1931(E.A)                           25/10/26 11:15 7A MILANO                                         VIA BONFADINI 18 ANG. VARSAV\nCENTRO SCHUSTER A.S.D.      PAVIA CALCIO 1911                       CENTRO SCHUSTER- CAMPO A                        25/10/26 11:30 7A MILANO                                         VIA MORELL S.J.PADRE LODOV.N\n"
+            },
+            {
+              "line": 1343,
+              "text": "\n\nCIMIANO CALCIO S.S.D. ARL   MAZZO 80 A.C. SSD A RL                  CAMPO \"M.CASADEI\" CAMPO \"A\"                     24/10/26 14:30 7A MILANO                                         VIA DON CALABRIA 16                  V\nSEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              24/10/26 15:00 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13\nACCADEMIA INTERNAZIONALE    AFFORESE G.S.D.                         ACCAD.INTERNAZIONALE N.11(E.A                   24/10/26 15:30 7A MILANO                                         VIA CILEA,51\nBARANZATESE 1948 POL.D.     CIRCOLO GIOVANILE BRESSO                COMUNALE \"G.RAFFIN\"- CAMPO 1                    25/10/26 09:30 7A BARANZATE                                      VIA N.SAURO 160\nCLUB MILANO S.S.D. A R.L.   CENTRO SCHUSTER A.S.D.                  COMUNALE \"G.BRERA\"CAMPO1(E.A)                   25/10/26 09:30 7A PERO                                           VIA GIOVANNI XXIII°,6"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-10-22T20:45:03+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-22T09:37:20+00:00",
+  "lastRun": "2026-10-22T20:45:03+00:00",
   "homepage": [
+    "33673",
     "33669",
     "33661",
     "33657",
     "33633",
-    "33631",
-    "33666",
-    "33653"
+    "33690",
+    "33666"
   ],
   "errors": [],
   "notRegional": [

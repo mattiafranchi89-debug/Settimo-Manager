@@ -1,5 +1,177 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma gare dal 22 al 26 Ottobre 2026 CRL (2026-10-22)
+Pagina: https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 129
+```
+PAVIA SSD                   PONTEVECCHIO                            C.S.COMUNALE - CAMPO N.2                        25/10/26 14:30 7A PAVIA                                          VIA STAFFORINI,1
+ROSATESE                    UNION CALCIO BASSO PAVES                E C.S. COMUNALE "LINO DE AMICI"                 25/10/26 14:30 7A ROSATE                                         VIA GIACOMO LEOPARDI,3
+SIZIANO LANTERNA            VIGEVANO CALCIO 1921                    CENTRO SPORTIVO COMUNALE                        25/10/26 14:30 7A SIZIANO                                        VIA ADAMELLO,2
+VIGHIGNOLO                  VISCONTEA PAVESE U.S.D.                 C.S.VIGHIGNOLO E.A.                             25/10/26 14:30 7A SETTIMO MILANESE FR.VIGHIGNOLO                 VIA PACE S.N.C.
+ACCADEMIA CALCIO VITTUONE   ORIONE                                  C.S.COM."S.PERTINI" (E.A.) N.                   25/10/26 15:30 7A VITTUONE                                       VIA SANDRO PERTINI,1
+
+
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 165
+```
+FROG MILANO                IRIS 1914                               C.S. COMUNALE - CAMPO N.1                       25/10/26 14:30 7A MILANO                                         VIA TERESA NOCE,5
+GARIBALDINA 1932           NEVADA CALCIO                           CAMPO "G.MASSOLA"N.1                            25/10/26 14:30 7A MILANO                                         VIA DON MINZONI 4
+LEONE XIII SPORT           QUINTO ROMANO A.S.D.                    C.S."LEONE XIII"- CAMPO 1(E.A                   25/10/26 14:30 7A MILANO                                         VIA ROSSETTI 4
+POLISPORTIVA DI NOVA       SETTIMO MILANESE                        C.S.COMUNALE CAMPO 1                            25/10/26 14:30 7A NOVA MILANESE                                  VIA GIACOMO BRODOLINI,4
+POLISPORTIVA OR.PA.S.      PRO PESCHIERA BORROMEO                  C.S.BOVISASCA-CAMPO N.1(E.A.)                   25/10/26 14:30 7A MILANO                                         VIA ASSIETTA,48
+SANGIULIANO CVS A R.L.     VILLA S.S.D.R.L.                        C.S.COMUNALE N.1                                25/10/26 14:30 7A SAN GIULIANO MILANESE-SESTO U.                 VIA TOSCANA 1 SESTO ULTERIAN
+
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 429
+```
+
+
+FOOTBALL CLUB SEDRIANO      QUINTO ROMANO A.S.D.                    CENTRO SPORTIVO COMUNALE 2 E.                   23/10/26 20:30 7A SEDRIANO                                       VIA CAMPO SPORTIVO,12                 V
+SUPERGA G.S. A.S.D.         SETTIMO MILANESE                        C.S."PIETRO BUSCAGLIA" N.1                      24/10/26 15:00 7A VIGEVANO                                       VIA LONGO SNC
+VICTORIA MMVII A.S.D.       FROG MILANO                             CAMPO SPORTIVO COMUNALE                         24/10/26 15:00 7A NOVIGLIO                                       VIA LEONARDO DA VINCI 2/2
+FATIMATRACCIA               CESANO BOSCONE IDROSTAR                 COMUNALE "FATIMATRACCIA"(E.A)                   24/10/26 18:00 7A MILANO                                         VIA CHOPIN 81
+ORIONE                      POL.D. U.S. CASSOLESE                   C.S.PARROCCHIALE (E.A.)                         25/10/26 15:00 7A MILANO                                         VIA STROZZI 1
+BUCCINASCO                  ROZZANO CALCIO SRL SSD                  C.S."GAETANO SCIREA"N.1 (E.A)                   25/10/26 16:45 7A BUCCINASCO                                     VIA GRAMSCI SNC
+VIGHI 1967                  ACCADEMIA MILANESE                      C.S.VIGHIGNOLO E.A.                             25/10/26 17:30 7A SETTIMO MILANESE FR.VIGHIGNOLO                 VIA PACE S.N.C.
+
+
+
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 912
+```
+GIRONE A                                                                                                            DATA       ORA                                                                                      STATO GARA
+
+
+SEGURO A.S.D.               SEMPIONE HALF 1919 SSDSR                L C.S.COMUNALE (E.A)                            24/10/26 17:30 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13
+ENOTRIA 1908 SSDARL         ACCADEMIA INTERNAZIONALE                CENTRO SPORTIVO ENOTRIA A                       25/10/26 10:00 7A MILANO                                         VIA C.CAZZANIGA, 26
+SPERANZA AGRATE             SS FRANCO SCARIONI 1925                 COMUNALE "S.MISSAGLIA" E.A.                     25/10/26 11:00 7A AGRATE BRIANZA                                 VIA ARCHIMEDE N.2
+ALDINI S.S.D.AR.L.          AUSONIA 1931 S.C.A.R.L.                 C.S.ALDINI-RADICE(E.A)                          25/10/26 11:30 7A MILANO                                         VIA ORSINI 78/84
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 1065
+```
+SANGIULIANO CVS A R.L.      AUSONIA 1931 S.C.A.R.L.                 C.S.COMUNALE N.1                                24/10/26 17:30 7A SAN GIULIANO MILANESE-SESTO U.                 VIA TOSCANA 1 SESTO ULTERIAN
+ALDINI S.S.D.AR.L.          VIGEVANO CALCIO 1921                    C.S.ALDINI-RADICE(E.A)                          25/10/26 09:30 7A MILANO                                         VIA ORSINI 78/84
+PRO SESTO 1913 SSD S.R.L.   PAVIA CALCIO 1911                       CAMPO "BREDA"B-(E.A)                            25/10/26 09:30 7A SESTO SAN GIOVANNI/PARCO NORD                  VIA XX SETTEMBRE, 162(DEROGA
+SEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              25/10/26 11:00 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13
+CLUB MILANO S.S.D. A R.L.   ACCADEMIA INTERNAZIONALE                COMUNALE "G.BRERA"CAMPO1(E.A)                   25/10/26 11:30 7A PERO                                           VIA GIOVANNI XXIII°,6
+SEDRIANO                    SS FRANCO SCARIONI 1925                 CENTRO SPORTIVO COMUNALE 2 E.                   25/10/26 11:30 7A SEDRIANO                                       VIA CAMPO SPORTIVO,12
+SANT ANGELO                 MAZZO 80 A.C. SSD A RL                  C.S.COMUNALE (E.A)                              25/10/26 14:30 7A CASTIRAGA VIDARDO                              PIAZZA DELLO SPORT
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 1251
+```
+ACCADEMIA PAVESE            RHODENSE S.S.D.A.R.L.                   CAMPO COMUNALE N 2                              25/10/26 09:30 7A SANT'ALESSIO CON VIALONE                       VIA VIALONE SNC
+MAZZO 80 A.C. SSD A RL      ALDINI S.S.D.AR.L.                      C.S.COMUNALE                                    25/10/26 09:30 7A RHO                                            VIA DE GASPERI SNC
+ROZZANO CALCIO SRL SSD      SS FRANCO SCARIONI 1925                 C.S.COMUNALE -CAMPO N.2 (EA-D                   25/10/26 09:30 7A ROZZANO                                        VIA MONTE AMIATA 34
+SEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              25/10/26 09:30 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13
+AUSONIA 1931 S.C.A.R.L.     ACCADEMIA INTERNAZIONALE                C.S.AUSONIA 1931(E.A)                           25/10/26 11:15 7A MILANO                                         VIA BONFADINI 18 ANG. VARSAV
+CENTRO SCHUSTER A.S.D.      PAVIA CALCIO 1911                       CENTRO SCHUSTER- CAMPO A                        25/10/26 11:30 7A MILANO                                         VIA MORELL S.J.PADRE LODOV.N
+
+```
+
+### Programma_Gare_22-26_Ottobre_2026.pdf – riga 1343
+```
+
+
+CIMIANO CALCIO S.S.D. ARL   MAZZO 80 A.C. SSD A RL                  CAMPO "M.CASADEI" CAMPO "A"                     24/10/26 14:30 7A MILANO                                         VIA DON CALABRIA 16                  V
+SEGURO A.S.D.               ENOTRIA 1908 SSDARL                     C.S.COMUNALE (E.A)                              24/10/26 15:00 7A SETTIMO MILANESE LOC. SEGURO                   VIA SANDRO PERTINI 13
+ACCADEMIA INTERNAZIONALE    AFFORESE G.S.D.                         ACCAD.INTERNAZIONALE N.11(E.A                   24/10/26 15:30 7A MILANO                                         VIA CILEA,51
+BARANZATESE 1948 POL.D.     CIRCOLO GIOVANILE BRESSO                COMUNALE "G.RAFFIN"- CAMPO 1                    25/10/26 09:30 7A BARANZATE                                      VIA N.SAURO 160
+CLUB MILANO S.S.D. A R.L.   CENTRO SCHUSTER A.S.D.                  COMUNALE "G.BRERA"CAMPO1(E.A)                   25/10/26 09:30 7A PERO                                           VIA GIOVANNI XXIII°,6
+```
+
+## COMUNICATO UFFICIALE N° 41 CRL (2026-10-22)
+Pagina: https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41
+
+### Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf – riga 1446
+```
+PARTIZAN BONOLA ASD             - POLISPORTIVA OR.PA.S.       3-3      LEO TEAM                        - LUISAGO GRANDATE ASD        2-1
+PRO PESCHIERA BORROMEO          - POLISPORTIVA DI NOVA        2-2      LOMAZZO CALCIO A.S.D.           - MONTESOLARO G.S. A.S.D.     1-1
+QUINTO ROMANO A.S.D.            - SANGIULIANO CVS A R.L.      1-0      OLIMPIA CALCIO CADORAGO         - CASTELLO CITTA DI CANTU     0-7
+SETTIMO MILANESE                - GARIBALDINA 1932            1-3      ZETA MILANO F.C. ASD            - ATLETICO SCHIAFFINO         4-1
+                                                                       (1) - disputata il 17/10/2026
+
+
+```
+
+### Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf – riga 1773
+```
+                         Squadra 1                      Squadra 2                                           Impianto
+ Gara Gior.                                                                 Orig.   Var. Orig.
+                                                                                                 COMUNALE-CAMPO N.1 CUSAGO VIA IV
+28/10/2026   1A   SETTIMO MILANESE             VELA MESERO                          20:00
+                                                                                                 NOVEMBRE 9
+
+
+```
+
+### Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf – riga 2231
+```
+ARDITA CITTADELLA 1934           - CDA E CAVALLASCA A.S.D.       3-2           CESANO BOSCONE IDROSTAR           - VIGHI 1967                     6-1
+(1) LESMO SSD ARL                - PERTICATO XENIA ASD           0-0           (2) FROG MILANO                   - SUPERGA G.S. A.S.D.             -    R
+(1) NOVEDRATE                    - INVERIGO                      1-2           ORATORIANA VITTUONE ASD           - BUCCINASCO                     2-1
+(1) OLIMPIA CALCIO CADORAGO      - LUISAGO GRANDATE ASD          1-2           POL.D. U.S. CASSOLESE             - SETTIMO MILANESE               7-0
+PONTELAMBRESE A.S.D.             - MONGUZZO 1997                 2-0           QUINTO ROMANO A.S.D.              - VICTORIA MMVII A.S.D.          1-2
+SIRTORESE                        - LIBERTAS SAN BARTOLOMEO       4-1           ROZZANO CALCIO SRL SSD            - FATIMATRACCIA                  5-0
+(1) - disputata il 18/10/2026                                                  (1) - disputata il 18/10/2026
+```
+
+### Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf – riga 2338
+```
+
+SQUALIFICA PER TRE GARE EFFETTIVE
+
+MONTALTO GIOVANNI          (SETTIMO MILANESE)
+
+Per atto di violenza nei confronti di un calciatore avversario (art.38 comma 1 del nuovo C.G.S.).
+
+SQUALIFICA PER DUE GARE EFFETTIVE
+
+CALZOLARI LORENZO          (FBC AURORA VAREDO)                    FORTUNATO DAVIDE          (SETTIMO MILANESE)
+SCARFATO ALAN              (SETTIMO MILANESE)
+
+
+SQUALIFICA PER UNA GARA EFFETTIVA
+```
+
+### Comunicato Ufficiale Nr. 41 del 22.10.2026.pdf – riga 2358
+```
+OTTAVIANI MASSIMO          (NUOVA BOLGIANO)                                                 (OSAL NOVATE)
+                                                                  FILIPPO
+                                                                  PAGLICCIA GABRIELE
+HODZIC DZEMAL              (PIANCAMUNO)                                                     (SETTIMO MILANESE)
+                                                                  PATRIZ
+BEYE MAMADOU LAMINE        (VIRTUS RONDINELLE SSDARL)
+
+```
+
+### 01_Classifiche CU_41 del 22.10.2026.pdf – riga 287
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            15   6   5   0   1   16    5    11   0
+A.C. GARIBALDINA 1932                            13   6   4   1   1   17   10     7   0
+POL. BUCCINASCO                                  12   6   3   3   0   11    5     6   0
+G.S. VILLA S.S.D.R.L.                            11   6   3   2   1    9    7     2   0
+```
+
+### 01_Classifiche CU_41 del 22.10.2026.pdf – riga 649
+```
+POL. BUCCINASCO                               7   5   2   1   2    7    5     2   0
+U.S. QUINTO ROMANO A.S.D.                     7   6   2   1   3   13   14    -1   0
+A.S.D. VIGHI 1967                             4   5   1   1   3    7   16    -9   0
+U.S. SETTIMO MILANESE                         4   6   1   1   4    7   24   -17   0
+A.C.D. FROG MILANO                            3   5   1   0   4   10   12    -2   0
+A.S.D. FATIMATRACCIA                          3   5   1   0   4    2   18   -16   0
+SUPERGA G.S. A.S.D.                           1   5   0   1   4    7   18   -11   0
+```
+
 ## COMUNICATO UFFICIALE N° 40 CRL (2026-10-20)
 Pagina: https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40
 
