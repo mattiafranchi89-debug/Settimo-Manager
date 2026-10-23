@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-21T07:59:59+02:00",
-  "lastChecked": "2026-10-21T07:59:59+02:00",
+  "updatedAt": "2026-10-23T07:59:51+02:00",
+  "lastChecked": "2026-10-23T07:59:51+02:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -16,9 +16,47 @@
     "https://www.crlombardia.it/documenti/33661/comunicato-ufficiale-n-39",
     "https://www.crlombardia.it/news/33653/programma-gare-dal-16-al-19-ottobre-2026",
     "https://www.crlombardia.it/news/33666/programma-gare-dal-20-al-22-ottobre-2026",
-    "https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40"
+    "https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40",
+    "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
+    "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026"
   ],
   "items": [
+    {
+      "id": "pg2226-pc-nova",
+      "doc": "Programma gare 22-26 ottobre 2026",
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026",
+      "category": "Prima Categoria girone A",
+      "type": "calendario",
+      "text": "7ª giornata: Polisportiva di Nova – Settimo Milanese (in trasferta), domenica 25/10/2026 alle 14:30 al C.S. Comunale campo 1, via Giacomo Brodolini 4, Nova Milanese."
+    },
+    {
+      "id": "cu41-pc-garibaldina",
+      "doc": "Comunicato Ufficiale n. 41",
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
+      "category": "Prima Categoria girone A",
+      "type": "risultato",
+      "text": "6ª giornata (18/10/2026): Settimo Milanese – Garibaldina 1932 1-3, prima sconfitta stagionale in casa."
+    },
+    {
+      "id": "cu41-giudice",
+      "doc": "Comunicato Ufficiale n. 41",
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Nessun provvedimento a carico del Settimo Milanese per le gare di Prima Categoria del 18 ottobre."
+    },
+    {
+      "id": "cu41-pc-classifica",
+      "doc": "Comunicato Ufficiale n. 41",
+      "date": "2026-10-22",
+      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
+      "category": "Prima Categoria girone A",
+      "type": "classifica",
+      "text": "Classifica dopo la 6ª giornata: Settimo Milanese 1° con 15 punti in 6 gare (5 vinte, 0 pareggiate, 1 persa), 16 gol fatti e 5 subiti; seguono Garibaldina 1932 a 13 e Buccinasco a 12."
+    },
     {
       "id": "pg1619-pc-garibaldina",
       "doc": "Programma gare 16-19 ottobre 2026",
