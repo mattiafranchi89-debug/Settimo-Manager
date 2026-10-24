@@ -216,19 +216,22 @@ export function Attendance({ session, players, user, onClose }) {
 
   // Everyone is present unless listed here. Only absences get selected.
   const [absent, setAbsent] = useState(null);
+  const [touched, setTouched] = useState(false);
   const [busy, setBusy] = useState(false);
 
   /**
    * Si parte dalle assenze già registrate, ma solo quando la lettura è finita:
    * leggere una collezione ancora vuota farebbe ripartire ogni seduta da zero
    * e il salvataggio successivo segnerebbe presenti tutti quanti.
+   * Finché non si tocca nulla si segue ogni aggiornamento: la prima lettura può
+   * venire dalla memoria del telefono, più vecchia di quanto salvato da altri.
    */
   useEffect(() => {
-    if (absent !== null || rowsLoading) return;
+    if (touched || rowsLoading) return;
     const map = {};
     rows.filter((r) => r.status !== 'presente').forEach((r) => { map[r.playerId] = r.status; });
     setAbsent(map);
-  }, [rows, rowsLoading, absent]);
+  }, [rows, rowsLoading, touched]);
 
   if (rowsError) {
     return (
@@ -243,12 +246,12 @@ export function Attendance({ session, players, user, onClose }) {
   }
   if (absent === null) return <Sheet title="Presenze" onClose={onClose}><Loading /></Sheet>;
 
-  const toggle = (pid) => setAbsent((a) => {
+  const toggle = (pid) => { setTouched(true); setAbsent((a) => {
     const next = { ...a };
     if (next[pid]) delete next[pid]; else next[pid] = 'assente';
     return next;
-  });
-  const setReason = (pid, reason) => setAbsent((a) => ({ ...a, [pid]: reason }));
+  }); };
+  const setReason = (pid, reason) => { setTouched(true); setAbsent((a) => ({ ...a, [pid]: reason })); };
 
   const absentCount = Object.keys(absent).length;
   const presentCount = players.length - absentCount;
@@ -290,7 +293,7 @@ export function Attendance({ session, players, user, onClose }) {
         <span className="badge badge--green">Presenti: {presentCount}</span>
         <span className="badge badge--red">Assenti: {absentCount}</span>
         {absentCount > 0 && (
-          <button className="chip" onClick={() => setAbsent({})}>Azzera assenze</button>
+          <button className="chip" onClick={() => { setTouched(true); setAbsent({}); }}>Azzera assenze</button>
         )}
       </div>
 

@@ -1,15 +1,16 @@
 import { useMemo, useState } from 'react';
-import { useCollection, useClub, orderBy } from '../lib/db';
+import { useCollection, useClub, where, orderBy } from '../lib/db';
 import { buildIcs, downloadIcs } from '../lib/ics';
 import { Button } from '../components/ui';
 import { Card, Badge, Empty, Loading } from '../components/ui';
-import { fmtShort, fmtTime, toDate, capitalize } from '../lib/format';
+import { fmtShort, fmtTime, toDate, capitalize, seasonStart } from '../lib/format';
 
 /** Calendario com'era al 9 ottobre 2026 (esperienza classica, vedi CLASSIC_UX_ROLES). */
 export default function CalendarioClassico() {
-  const { data: events, loading } = useCollection('events', useMemo(() => [orderBy('date', 'asc')], []));
   const [filter, setFilter] = useState('tutti');
   const { club } = useClub();
+  // Solo la stagione in corso: le precedenti restano nell'archivio e non pesano sulle letture.
+  const { data: events, loading } = useCollection('events', useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'asc')], [club.season]));
 
   const exportCalendar = (onlyMatches) => {
     const future = events.filter((e) => toDate(e.date) >= new Date() && (!onlyMatches || e.type === 'match'));
