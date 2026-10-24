@@ -52,10 +52,16 @@ export default function Rosa() {
 
   const save = async (form) => {
     try {
-    const { numeroDocumento, ...rest } = form;
+    const { numeroDocumento } = form;
+    // Solo i campi del modulo: il modulo parte dalla scheda com'era all'apertura,
+    // e riscriverla tutta cancellerebbe squalifiche, infortuni o statistiche
+    // aggiornati nel frattempo da altri.
     const payload = {
-      ...rest,
+      fullName: form.fullName,
+      position: form.position,
+      secondaryPosition: form.secondaryPosition || '',
       birthDate: form.birthDate ? new Date(form.birthDate) : null,
+      ...(form.id ? {} : { active: form.active !== false, registered: form.registered !== false }),
       updatedAt: serverTimestamp()
     };
     if (form.id) {

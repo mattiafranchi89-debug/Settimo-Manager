@@ -36,6 +36,8 @@ export default function Importa() {
   }, [players]);
 
   const ctx = useMemo(() => ({ club, findPlayer: (n) => byName[normName(n || '')] || '' }), [club, byName]);
+  // Giocatore già in rosa con quel nome (creato a mano, dal caricamento iniziale o da un'importazione).
+  const playerIdFor = (name) => ctx.findPlayer(name);
 
   const downloadTemplate = () => {
     downloadCsv(schema.file, schema.headers, schema.example);
@@ -64,8 +66,17 @@ export default function Importa() {
         valid.slice(i, i + 400).forEach((r) => {
           const base = { ...r.data, importBatchId: batchId, createdBy: user.uid, createdAt: serverTimestamp() };
           if (schema.collection === 'players') {
-            // Same id as the seed loader, so re-importing updates instead of duplicating.
-            batch.set(doc(db, 'players', slug(r.data.fullName)), { ...base, stats: emptyStats() }, { merge: true });
+            const existing = playerIdFor(r.data.fullName);
+            if (existing) {
+              // Già in rosa: si aggiornano solo i dati anagrafici. Statistiche,
+              // infortunio, archiviazione e importazione d'origine restano: con
+              // «Annulla importazione» il giocatore non deve sparire.
+              const { fullName, position, secondaryPosition, birthDate } = r.data;
+              batch.set(doc(db, 'players', existing), { fullName, position, secondaryPosition, birthDate, updatedAt: serverTimestamp() }, { merge: true });
+            } else {
+              // Same id as the seed loader, so re-importing updates instead of duplicating.
+              batch.set(doc(db, 'players', slug(r.data.fullName)), { ...base, stats: emptyStats() }, { merge: true });
+            }
           } else {
             batch.set(doc(collection(db, schema.collection)), base);
           }
@@ -76,7 +87,7 @@ export default function Importa() {
         // Written outside the batch: it lands in a sub-collection with its own rules.
         await Promise.all(valid
           .filter((r) => r.privateData?.numeroDocumento)
-          .map((r) => saveDocumentNumber(slug(r.data.fullName), r.privateData.numeroDocumento, user.uid)));
+          .map((r) => saveDocumentNumber(playerIdFor(r.data.fullName) || slug(r.data.fullName), r.privateData.numeroDocumento, user.uid)));
       }
 
       await setDoc(doc(db, 'imports', batchId), {

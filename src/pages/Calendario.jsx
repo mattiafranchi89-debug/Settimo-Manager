@@ -2,16 +2,17 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { can } from '../lib/permissions';
-import { useCollection, useClub, orderBy } from '../lib/db';
+import { useCollection, useClub, where, orderBy } from '../lib/db';
 import { buildIcs, downloadIcs } from '../lib/ics';
 import { Button } from '../components/ui';
 import { Card, Badge, Empty, Loading } from '../components/ui';
-import { fmtShort, fmtTime, toDate, capitalize } from '../lib/format';
+import { fmtShort, fmtTime, toDate, capitalize, seasonStart } from '../lib/format';
 
 export default function Calendario() {
-  const { data: events, loading } = useCollection('events', useMemo(() => [orderBy('date', 'asc')], []));
   const [filter, setFilter] = useState('tutti');
   const { club } = useClub();
+  // Solo la stagione in corso: le precedenti restano nell'archivio e non pesano sulle letture.
+  const { data: events, loading } = useCollection('events', useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'asc')], [club.season]));
   const { user } = useAuth();
   const navigate = useNavigate();
   const staff = can(user?.role, 'players.read');

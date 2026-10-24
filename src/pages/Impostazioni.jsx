@@ -20,6 +20,8 @@ import { ROLES } from '../lib/permissions';
 import { can } from '../lib/permissions';
 
 const MAX_LOGO = 2 * 1024 * 1024;
+// Voce del menu dei ruoli che toglie l'accesso invece di cambiare ruolo.
+const OFF = '__revocato';
 const OK_TYPES = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'];
 
 export default function Impostazioni() {
@@ -83,7 +85,9 @@ export default function Impostazioni() {
   const { data: users } = useCollection('users', [], isAdmin);
   const { data: players } = useCollection('players', [], isAdmin);
 
-  const pending = users.filter((u) => u.active === false);
+  // In attesa: registrati e mai abilitati. Chi ha avuto l'accesso revocato non
+  // rientra con «abilita tutti».
+  const pending = users.filter((u) => u.active === false && !u.revokedAt);
 
 
   /** Gives every waiting account the same role in one go. */
@@ -379,16 +383,22 @@ export default function Impostazioni() {
             <div key={u.id} className="prow" style={{ flexWrap: 'wrap' }}>
               <span className="prow__body">
                 <span className="prow__name">{u.name || u.email}</span>
-                <span className="prow__meta"><span>{u.email}</span>{u.active === false && <span>⏳ in attesa di un ruolo</span>}</span>
+                <span className="prow__meta"><span>{u.email}</span>{u.active === false && <span>{u.revokedAt ? '⛔ accesso revocato' : '⏳ in attesa di un ruolo'}</span>}</span>
               </span>
               <div className="btnrow" style={{ gap: 6 }}>
-                <Select value={u.role || 'player'} style={{ minHeight: 38, width: 'auto' }}
+                <Select value={u.active === false ? (u.revokedAt ? OFF : u.role || 'player') : u.role || 'player'} style={{ minHeight: 38, width: 'auto' }}
                   onChange={async (e) => {
-                    await updateDocument('users', u.id, { role: e.target.value, active: true });
-                    await audit(user, 'user.role', u.id, { role: e.target.value });
-                    toast('Ruolo aggiornato');
+                    // Chi lascia la squadra perde l'accesso: un ruolo qualsiasi resterebbe attivo.
+                    const off = e.target.value === OFF;
+                    try {
+                      await updateDocument('users', u.id, off ? { active: false, revokedAt: serverTimestamp() } : { role: e.target.value, active: true, revokedAt: null });
+                      await audit(user, off ? 'user.revoke' : 'user.role', u.id, off ? {} : { role: e.target.value });
+                      toast(off ? 'Accesso revocato' : 'Ruolo aggiornato');
+                    } catch (err) {
+                      toast(u.id === user.uid ? 'Non puoi cambiare il tuo ruolo: lo fa un altro amministratore.' : errorText(err), 'error');
+                    }
                   }}
-                  options={Object.entries(ROLES).map(([v, l]) => ({ value: v, label: l }))} />
+                  options={[...Object.entries(ROLES).map(([v, l]) => ({ value: v, label: l })), { value: OFF, label: '⛔ Accesso revocato' }]} />
                 {['player', 'readonly'].includes(u.role) && (
                   <Select value={u.playerId || ''} style={{ minHeight: 38, width: 'auto' }}
                     onChange={(e) => updateDocument('users', u.id, { playerId: e.target.value })}>
