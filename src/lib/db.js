@@ -134,8 +134,10 @@ export const DEFAULT_CLUB = {
 };
 
 // Ogni salvataggio riuscito avvisa lo staff con una notifica push (vedi notify.js).
-export const setDocument = (path, id, data) =>
-  setDoc(doc(db, path, id), data, { merge: true }).then((r) => { notifyWrite('set', path, id, data); return r; });
+// `opts` di Firestore: di norma fusione; con { mergeFields } i campi elencati
+// si sostituiscono per intero (una mappa non trattiene le chiavi vecchie).
+export const setDocument = (path, id, data, opts = { merge: true }) =>
+  setDoc(doc(db, path, id), data, opts).then((r) => { notifyWrite('set', path, id, data); return r; });
 export const updateDocument = (path, id, data) =>
   updateDoc(doc(db, path, id), data).then((r) => { notifyWrite('update', path, id, data); return r; });
 export const addDocument = (path, data) =>

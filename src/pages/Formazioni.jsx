@@ -36,7 +36,7 @@ export default function Formazioni() {
     setEventId((upcoming || matches[0]).id);
   }, [matches, eventId]);
 
-  const { data: lineups } = useCollection('lineups');
+  const { data: lineups, loading: lineupsLoading } = useCollection('lineups');
   const saved = lineups.find((l) => l.id === eventId);
 
   const [module, setModule] = useState(club.defaultModule || '4-3-1-2');
@@ -53,6 +53,10 @@ export default function Formazioni() {
   const pendingRef = useRef(false);
   const hydratedFor = useRef(null);
   useEffect(() => {
+    // Si parte solo con la partita scelta e le formazioni arrivate da Firestore:
+    // prima, «nessuna formazione salvata» non è ancora un'informazione vera, e
+    // marcarla come caricata farebbe salvare una formazione vuota sopra quella vera.
+    if (!eventId || lineupsLoading) return;
     if (hydratedFor.current === eventId && pendingRef.current) return;
     hydratedFor.current = eventId;
     if (!saved) { setSlots({}); setCaptain(''); setVice(''); setNotes(''); setNumbers({}); return; }
@@ -62,7 +66,7 @@ export default function Formazioni() {
     setVice(saved.vice || '');
     setNotes(saved.notes || '');
     setNumbers(saved.numbers || {});
-  }, [saved, club.defaultModule]);
+  }, [eventId, saved, lineupsLoading, club.defaultModule]);
 
   const match = matches.find((m) => m.id === eventId);
   const callup = useMemo(() => callupFor(callups, eventId, { drafts: true }), [callups, eventId]);
@@ -202,11 +206,16 @@ export default function Formazioni() {
     byId, bench, captain, vice, numbers
   }) : ''), [club, match, module, slotList, slots, byId, bench, captain, vice, numbers]);
 
-  const persist = (extra = {}) => setDocument('lineups', eventId, {
-    eventId, module, slots, captain, vice, notes, numbers,
-    starters, bench: bench.map((p) => p.id),
-    updatedBy: user.uid, updatedAt: serverTimestamp(), ...extra
-  });
+  const persist = (extra = {}) => {
+    const data = {
+      eventId, module, slots, captain, vice, notes, numbers,
+      starters, bench: bench.map((p) => p.id),
+      updatedBy: user.uid, updatedAt: serverTimestamp(), ...extra
+    };
+    // Titolari e numeri si riscrivono interi: con la fusione resterebbero i
+    // giocatori tolti e i numeri vecchi. Gli altri campi (es. «pronta») restano.
+    return setDocument('lineups', eventId, data, { mergeFields: Object.keys(data) });
+  };
 
   // Passaggio di mano: il mister segna la formazione come pronta e chi compila
   // la distinta riceve una notifica, senza messaggi WhatsApp intermedi.
