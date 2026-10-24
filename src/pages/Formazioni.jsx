@@ -11,6 +11,7 @@ import { errorText } from './Rosa';
 import { can, isClassicUx } from '../lib/permissions';
 import { fmtShort, sortPlayers, shortName, toDate } from '../lib/format';
 import { MODULES } from '../lib/modules';
+import { readFormazioneShot, rowsFromShot, planLineup } from '../lib/formazioneShot';
 import { GROUPS, groupOf } from '../lib/format';
 /** Ordinamento in memoria: la query filtra per tipo, senza indici da creare. */
 const byDateDesc = (list) => [...list].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
@@ -79,6 +80,7 @@ export default function Formazioni() {
   const notCalled = callup ? starters.filter((id) => !callup.players?.includes(id)).map((id) => byId[id]).filter(Boolean) : [];
 
   const [picking, setPicking] = useState(null);
+  const [fromChat, setFromChat] = useState(false);
 
   // Due modi di fare la stessa formazione: «Rapida» (lista, per il mister dal
   // telefono) e «Campo» (modulo e posizioni). Salvano lo stesso documento.
@@ -255,7 +257,22 @@ export default function Formazioni() {
             Tocca la posizione sul campo per sostituirl{notCalled.length === 1 ? 'o' : 'i'}.
           </Alert>
         )}
+        {match && can(user?.role, 'lineup.write') && (
+          <Button size="sm" variant="secondary" onClick={() => setFromChat(true)} style={{ marginBottom: 8 }}>
+            📷 Da WhatsApp: carica lo screenshot del mister
+          </Button>
+        )}
       </div>
+
+      {fromChat && (
+        <FromChat players={players} pool={pool} callup={callup} byId={byId} slotList={slotList}
+          onClose={() => setFromChat(false)}
+          onApply={(plan) => {
+            setSlots(plan.slots); setNumbers(plan.numbers); setCaptain(plan.captain); setVice(plan.vice);
+            setPicking(null); setFromChat(false);
+            toast(classic ? 'Formazione compilata: controlla e premi «Salva»' : 'Formazione compilata dallo screenshot');
+          }} />
+      )}
 
       {!classic && <div className="subtabs noprint" style={{ marginTop: 4 }}>
         {[['rapida', 'Rapida'], ['campo', 'Campo e modulo']].map(([k, l]) => (
@@ -632,3 +649,128 @@ function Rapida({ onReady, readyName, isReady, pool, slots, setSlots, slotList, 
     </div>
   );
 }
+
+/**
+ * Screenshot della formazione mandata dal mister su WhatsApp: si legge, si
+ * controlla l'abbinamento riga per riga e si compila la formazione (titolari
+ * nel modulo, numeri, capitano e vice). Da lì il messaggio per la distinta è pronto.
+ */
+function FromChat({ players, pool, callup, byId, slotList, onApply, onClose }) {
+  const [file, setFile] = useState(null);
+  const [reading, setReading] = useState(false);
+  const [error, setError] = useState('');
+  const [rows, setRows] = useState(null);
+  const [doubts, setDoubts] = useState([]);
+
+  const pick = (f) => { if (f?.type?.startsWith('image/')) { setFile(f); setRows(null); setError(''); } };
+  useEffect(() => {
+    const onPaste = (e) => {
+      const f = [...(e.clipboardData?.files || [])].find((x) => x.type.startsWith('image/'));
+      if (f) { e.preventDefault(); pick(f); }
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+  }, []);
+  const preview = useMemo(() => (file ? URL.createObjectURL(file) : ''), [file]);
+  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
+
+  const read = async () => {
+    setReading(true); setError('');
+    try {
+      const data = await readFormazioneShot(file, players);
+      if (!data?.leggibile || !data.righe?.length) setError('Nello screenshot non trovo una formazione: serve la lista con numeri e cognomi.');
+      else { setRows(rowsFromShot(data)); setDoubts((data.dubbi || []).filter(Boolean)); }
+    } catch (e) { setError(e.message); }
+    setReading(false);
+  };
+
+  const plan = useMemo(() => (rows ? planLineup(rows, { byId, slotList, callupIds: callup?.players || null }) : null), [rows, byId, slotList, callup]);
+  const setRow = (key, patch) => setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...patch } : r)));
+  // Prima i convocati, poi il resto della rosa: il mister a volte cambia all'ultimo.
+  const options = useMemo(() => {
+    const called = new Set(pool.map((p) => p.id));
+    return [...sortPlayers(pool), ...sortPlayers(players.filter((p) => !called.has(p.id)))];
+  }, [pool, players]);
+
+  return (
+    <Sheet title="Formazione da WhatsApp" onClose={onClose}>
+      {!rows && (
+        <>
+          <p style={{ fontSize: 13.5, marginTop: 0 }}>
+            Fai lo screenshot della lista che ti ha mandato il mister (numero e cognome per riga, «cap» e «v cap» per le fasce) e caricalo qui.
+          </p>
+          <div className="btnrow" style={{ marginBottom: 10 }}>
+            <label className="btn btn--secondary btn--sm" style={{ cursor: 'pointer' }}>
+              🖼️ Scegli screenshot
+              <input type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ''; }} />
+            </label>
+            {navigator.clipboard?.read && (
+              <Button size="sm" variant="secondary" onClick={async () => {
+                try {
+                  for (const it of await navigator.clipboard.read()) {
+                    const type = it.types.find((t) => t.startsWith('image/'));
+                    if (type) { pick(new File([await it.getType(type)], 'formazione', { type })); return; }
+                  }
+                  setError('Negli appunti non c\'è un\'immagine.');
+                } catch { /* permesso negato: si sceglie dalla galleria */ }
+              }}>📋 Incolla immagine</Button>
+            )}
+          </div>
+          {preview && <img src={preview} alt="Screenshot della formazione" style={{ maxHeight: 220, borderRadius: 8, border: '1px solid var(--line-soft)', display: 'block', marginBottom: 10 }} />}
+          {error && <Alert level="error">{error}</Alert>}
+          <div className="btnrow">
+            <Button disabled={!file || reading} onClick={read}>{reading ? 'Leggo la formazione…' : 'Leggi la formazione'}</Button>
+            <Button variant="ghost" onClick={onClose}>Annulla</Button>
+          </div>
+        </>
+      )}
+
+      {rows && plan && (
+        <>
+          <p style={{ fontSize: 13.5, marginTop: 0 }}>
+            Controlla gli abbinamenti: a sinistra cosa ha scritto il mister, a destra il giocatore. Correggi dove serve.
+          </p>
+          {doubts.length > 0 && <Alert level="info"><b>Da controllare:</b> {doubts.join(' · ')}</Alert>}
+          <div className="plist">
+            {rows.map((r) => (
+              <div key={r.key} className="prow" style={{ flexWrap: 'wrap', gap: 6 }}>
+                <span className="prow__num">{r.number ?? '–'}</span>
+                <span style={{ flex: '1 1 90px', fontSize: 13.5, color: 'var(--muted)' }}>
+                  «{r.text}»{r.captain ? ' · C' : ''}{r.vice ? ' · VC' : ''}
+                </span>
+                <Select value={r.playerId} onChange={(e) => setRow(r.key, { playerId: e.target.value })}
+                  style={{ flex: '2 1 160px', borderColor: r.playerId ? undefined : 'var(--orange, #b45309)' }}>
+                  <option value="">— scegli —</option>
+                  {options.map((p) => <option key={p.id} value={p.id}>{p.fullName}{p.position ? ` (${p.position})` : ''}</option>)}
+                </Select>
+                <Badge tone={r.starter ? 'green' : 'grey'}>{r.starter ? 'titolare' : 'panchina'}</Badge>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ fontSize: 13.5, margin: '10px 0' }}>
+            {plan.starters} titolari · {plan.bench} in panchina
+            {plan.captain && ` · C ${byId[plan.captain]?.fullName}`}{plan.vice && ` · VC ${byId[plan.vice]?.fullName}`}
+          </div>
+          {plan.tooManyStarters && <Alert level="warn">Più di {slotList.length} titolari: entrano in campo solo i primi {slotList.length}.</Alert>}
+          {plan.unmatched.length > 0 && <Alert level="warn">Senza giocatore: {plan.unmatched.map((r) => `«${r.text}»`).join(', ')}. Sceglilo dall'elenco o resterà fuori.</Alert>}
+          {plan.repeated.length > 0 && <Alert level="warn">Lo stesso giocatore è su più righe: {plan.repeated.join(', ')}. Correggi l'abbinamento.</Alert>}
+          {plan.notCalled.length > 0 && (
+            <Alert level="warn">
+              Non nella convocazione: {plan.notCalled.map((p) => p.fullName).join(', ')}. I titolari vanno comunque in campo; chi è in panchina compare nella distinta solo dopo averlo aggiunto alla convocazione.
+            </Alert>
+          )}
+          {plan.notListed.length > 0 && (
+            <Alert level="info">Convocati ma non nella lista del mister: {plan.notListed.map((p) => p.fullName).join(', ')}. Restano in panchina con un numero libero.</Alert>
+          )}
+
+          <div className="btnrow">
+            <Button disabled={!plan.starters} onClick={() => onApply(plan)}>Compila formazione</Button>
+            <Button variant="ghost" onClick={() => setRows(null)}>Altro screenshot</Button>
+          </div>
+        </>
+      )}
+    </Sheet>
+  );
+}
+

@@ -6,6 +6,7 @@
 import { importVapidKey, sendPush } from './webpush.js';
 import { readReferto } from './referto.js';
 import { readTuttocampo } from './tuttocampo.js';
+import { readFormazione } from './formazione.js';
 
 const STAFF = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
 // Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori.
@@ -37,6 +38,7 @@ export default {
       if (url.pathname === '/api/notify' && request.method === 'POST') return await notify(request, env);
       if (url.pathname === '/api/referto' && request.method === 'POST') return await referto(request, env);
       if (url.pathname === '/api/tuttocampo' && request.method === 'POST') return await tuttocampo(request, env);
+      if (url.pathname === '/api/formazione' && request.method === 'POST') return await formazione(request, env);
       return json({ error: 'not_found' }, 404);
     } catch (e) {
       return json({ error: 'internal', message: String(e?.message || e) }, 500);
@@ -83,6 +85,31 @@ async function tuttocampo(request, env) {
   if (!team || !images.length || size > 24_000_000) return json({ error: 'bad_input' }, 400);
   try {
     return json({ data: await readTuttocampo({ images, team }, env) });
+  } catch (e) {
+    return json({ error: 'read_failed', message: String(e?.message || e) }, 502);
+  }
+}
+
+/** Screenshot della formazione del mister → righe abbinate alla rosa. Chi può modificare la formazione. */
+async function formazione(request, env) {
+  if (!env.ANTHROPIC_API_KEY) return json({ error: 'ai_not_configured' }, 503);
+  const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  const claims = await verifyFirebaseToken(token, env.FIREBASE_PROJECT_ID);
+  if (!claims) return json({ error: 'unauthorized' }, 401);
+  const me = await firestore(env.FIREBASE_PROJECT_ID, token).get(`users/${claims.sub}`);
+  if (!me || me.active === false || !['admin', 'head_coach', 'assistant_coach'].includes(me.role)) return json({ error: 'forbidden' }, 403);
+
+  const input = await request.json().catch(() => ({}));
+  const image = typeof input.image === 'string' ? input.image.replace(/^data:[^,]+,/, '') : '';
+  const mediaType = ['image/jpeg', 'image/png', 'image/webp'].includes(input.mediaType) ? input.mediaType : 'image/jpeg';
+  // Solo id e nomi puliti: finiscono nel prompt.
+  const clean = (v, n) => String(v || '').replace(/[\r\n\u2028\u2029]+/g, ' ').trim().slice(0, n);
+  const roster = (Array.isArray(input.roster) ? input.roster : []).slice(0, 80)
+    .map((p) => ({ id: clean(p?.id, 40), name: clean(p?.name, 60), role: clean(p?.role, 20) }))
+    .filter((p) => /^[A-Za-z0-9_-]{1,40}$/.test(p.id) && p.name);
+  if (!image || image.length > 7_000_000 || !roster.length) return json({ error: 'bad_input' }, 400);
+  try {
+    return json({ data: await readFormazione({ image, mediaType, roster }, env) });
   } catch (e) {
     return json({ error: 'read_failed', message: String(e?.message || e) }, 502);
   }
