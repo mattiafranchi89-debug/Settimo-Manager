@@ -122,10 +122,10 @@ export default function Partite() {
           message={`${removing.match.opponent} del ${fmtShort(removing.match.date)}. Verranno rimosse anche ${removing.deps.callups} convocazioni e ${removing.deps.attendance} presenze collegate. L'operazione non è reversibile.`}
           onConfirm={async () => {
             try {
-              const r = await deleteEventCascade(removing.match.id);
+              const r = await deleteEventCascade(removing.match.id, { role: user?.role, season: club.season });
               await audit(user, 'match.delete', removing.match.id, { opponent: removing.match.opponent, deleted: r.deleted });
-              toast('Partita eliminata');
-            } catch (e) { toast(errorText(e), 'error'); }
+              toast(r.statsRefreshed ? 'Partita eliminata e statistiche ricalcolate' : 'Partita eliminata');
+            } catch (e) { toast(e.code ? errorText(e) : e.message, 'error'); }
           }}
           onClose={() => setRemoving(null)}
         />

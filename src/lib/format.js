@@ -34,6 +34,15 @@ export const CALLUP_STATUS = {
 export const groupOf = (pos) => POSITIONS[pos]?.group || 'centrocampisti';
 export const positionLabel = (pos) => POSITIONS[pos]?.label || pos;
 
+/**
+ * Primo giorno della stagione («2026/2027» → 1° luglio 2026). Serve a leggere
+ * solo gli eventi della stagione, in ordine di data, senza indici compositi.
+ */
+export function seasonStart(season = '') {
+  const y = Number(String(season).match(/(\d{4})/)?.[1]);
+  return y ? new Date(y, 6, 1) : new Date(Date.now() - 365 * 86400000);
+}
+
 export function toDate(value) {
   if (!value) return null;
   if (value.toDate) return value.toDate();

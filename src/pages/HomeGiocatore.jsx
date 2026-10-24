@@ -21,8 +21,8 @@ export default function HomeGiocatore() {
   const pid = user?.playerId;
 
   const now = useMemo(() => new Date(), []);
-  const nextQ = useMemo(() => [where('date', '>=', now), orderBy('date', 'asc'), limit(8)], [now]);
-  const pastQ = useMemo(() => [where('date', '<', now), orderBy('date', 'desc'), limit(6)], [now]);
+  const nextQ = useMemo(() => [where('date', '>=', now), orderBy('date', 'asc'), limit(25)], [now]);
+  const pastQ = useMemo(() => [where('date', '<', now), orderBy('date', 'desc'), limit(20)], [now]);
   const { data: upcoming, loading } = useCollection('events', nextQ);
   const { data: past } = useCollection('events', pastQ);
 

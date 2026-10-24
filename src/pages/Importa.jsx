@@ -156,10 +156,10 @@ export default function Importa() {
           message={`Verranno cancellate le ${undoing.count} righe caricate da ${undoing.file} nella sezione ${undoing.label}. Per le partite e gli allenamenti spariscono anche convocazioni e presenze collegate. L'operazione non è reversibile.`}
           onConfirm={async () => {
             try {
-              const n = await deleteImportBatch(undoing.id, undoing.collection);
+              const n = await deleteImportBatch(undoing.id, undoing.collection, { role: user?.role, season: club.season });
               await audit(user, 'bulk.undo', undoing.collection, { batchId: undoing.id, deleted: n });
               toast(`${n} documenti eliminati`);
-            } catch (e) { toast(errorText(e), 'error'); }
+            } catch (e) { toast(e.code ? errorText(e) : e.message, 'error'); }
           }}
           onClose={() => setUndoing(null)}
         />

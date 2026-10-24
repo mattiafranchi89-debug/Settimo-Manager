@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, useDoc, where, limit } from '../lib/db';
+import { useCollection, useClub, useDoc, where, orderBy, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
 import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtTime, fmtDate, toDate, capitalize, positionLabel, sortPlayers } from '../lib/format';
@@ -16,11 +16,11 @@ export default function MiaPagina() {
   const { user } = useAuth();
   const { club } = useClub();
   const { data: me, loading } = useDoc('players', user?.playerId, !!user?.playerId);
-  const { data: callups } = useCollection('callups', useMemo(() => [limit(60)], []), !!user?.playerId);
+  const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(60)], []), !!user?.playerId);
   const { data: matches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []), !!user?.playerId);
   const { data: squad } = useCollection('players', useMemo(() => [where('active', '==', true)], []), !!user?.playerId);
   const { data: myVotes } = useCollection('votes', useMemo(() => [where('voterUid', '==', user?.uid || '-')], [user?.uid]), !!user?.playerId);
-  const { data: matchStats } = useCollection('matchStats', useMemo(() => [limit(60)], []), !!user?.playerId);
+  const { data: matchStats } = useCollection('matchStats', useMemo(() => [orderBy('date', 'desc'), limit(60)], []), !!user?.playerId);
 
   if (!user?.playerId) {
     return (

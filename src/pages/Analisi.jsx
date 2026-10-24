@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, where, limit } from '../lib/db';
+import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
 import { suspendedIn } from '../lib/discipline';
 import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
-import { fmtShort, fmtDate, toDate, sortPlayers } from '../lib/format';
+import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
 import { can } from '../lib/permissions';
 
 /* ----------------------- barre disegnate senza librerie ----------------------- */
@@ -43,7 +43,8 @@ export default function Analisi() {
 
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: matchesAll } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []));
-  const { data: trainingsAll } = useCollection('events', useMemo(() => [where('type', '==', 'training'), limit(300)], []), staff);
+  const { data: seasonEvents } = useCollection('events', useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'desc'), limit(500)], [club.season]), staff);
+  const trainingsAll = useMemo(() => seasonEvents.filter((e) => e.type === 'training'), [seasonEvents]);
   const { data: matchStats } = useCollection('matchStats', [], staff);
   const { data: attendance } = useCollection('attendance', [], staff);
 

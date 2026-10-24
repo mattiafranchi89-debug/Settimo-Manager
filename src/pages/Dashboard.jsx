@@ -32,8 +32,8 @@ export default function Dashboard() {
 
   const nowTs = useMemo(() => new Date(), []);
   const now = nowTs.getTime();
-  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(8)], [nowTs]);
-  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(10)], [nowTs]);
+  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(25)], [nowTs]);
+  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(20)], [nowTs]);
   const { data: upcoming, loading } = useCollection('events', upcomingQ);
   const { data: pastEvents } = useCollection('events', pastQ);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useDoc, useClub, setDocument, updateDocument, serverTimestamp, where, audit } from '../lib/db';
+import { useCollection, useDoc, useClub, replaceFields, updateDocument, serverTimestamp, where, audit } from '../lib/db';
 import { computeMatchTotals, recalculateAllStats, refreshStats, EVENT_TYPES } from '../lib/stats';
 import { Card, Button, Field, Input, Select, Badge, Sheet, Alert, Loading, useToast, ConfirmDialog, Kpi, Textarea } from '../components/ui';
 import { SLOTS, uploadAttachment, saveAttachmentLink, removeAttachment, validateFile, uploadErrorText } from '../lib/attachments';
@@ -24,7 +24,7 @@ export default function SchedaGara() {
 
   const { data: match, loading } = useDoc('events', id);
   const { data: lineup } = useDoc('lineups', id);
-  const { data: saved } = useDoc('matchStats', id);
+  const { data: saved, loading: savedLoading } = useDoc('matchStats', id);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: callups } = useCollection('callups', useMemo(() => [where('eventId', '==', id)], [id]));
   const { data: votes } = useCollection('votes', useMemo(() => [where('eventId', '==', id)], [id]), canWrite);
@@ -54,18 +54,32 @@ export default function SchedaGara() {
   const announceStats = useRef(false);
   const [reading, setReading] = useState(false);
 
-  // I dati in arrivo dal database riempiono la scheda solo se non ci sono
-  // modifiche locali ancora da salvare: così non si perde quello che si sta scrivendo.
-  const pendingRef = useRef(false);
+  // Scheda salvata su Firestore e scheda sullo schermo, confrontabili.
+  const localKey = stableKey({ events, duration, postNote });
+  const remoteKey = stableKey({ events: saved?.events || [], duration: saved?.duration ?? 90, postNote: saved?.postNote || '' });
+  // Ultimo stato in cui schermo e Firestore coincidevano. Da salvare sono solo
+  // le modifiche fatte qui dopo: la scheda appena arrivata dal database, o
+  // salvata da un'altra schermata, si mostra e basta, non si riscrive.
+  const [baseKey, setBaseKey] = useState(null);
+  const remoteRef = useRef(remoteKey);
+  remoteRef.current = remoteKey;
   const hydrated = useRef(false);
+  const dirtyRef = useRef(false);
+  dirtyRef.current = hydrated.current && localKey !== baseKey;
+  useEffect(() => { if (localKey === remoteKey) setBaseKey(localKey); }, [localKey, remoteKey]);
+
+  // I dati in arrivo dal database riempiono la scheda solo se non ci sono
+  // modifiche fatte qui ancora da salvare: così non si perde quello che si sta scrivendo.
+  // Prima che la scheda arrivi da Firestore, «nessuna scheda» non è ancora vero:
+  // partire vuoti farebbe salvare una scheda vuota sopra quella vera.
   useEffect(() => {
-    if (!saved) { hydrated.current = true; return; }
-    if (hydrated.current && pendingRef.current) return;
+    if (savedLoading || dirtyRef.current) return;
     hydrated.current = true;
-    setEvents(saved.events || []);
-    setDuration(saved.duration || 90);
-    setPostNote(saved.postNote || '');
-  }, [saved]);
+    setBaseKey(remoteRef.current);
+    setEvents(saved?.events || []);
+    setDuration(saved?.duration ?? 90);
+    setPostNote(saved?.postNote || '');
+  }, [saved, savedLoading]);
 
   const byId = useMemo(() => Object.fromEntries(players.map((p) => [p.id, p])), [players]);
 
@@ -90,7 +104,9 @@ export default function SchedaGara() {
   const persist = async (closedFlag = saved?.closed || false) => {
     // Solo campi valorizzati: gli eventi letti dal referto possono averne di vuoti.
     const clean = events.map((e) => Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined)));
-    await setDocument('matchStats', id, {
+    // Totali, eventi e distinta si riscrivono interi: con la fusione un giocatore
+    // tolto dalla scheda resterebbe nei totali e nelle statistiche.
+    await replaceFields('matchStats', id, {
       eventId: id, date: match.date, opponent: match.opponent,
       starters, bench, events: clean, duration, totals, closed: closedFlag, postNote,
       conceded, scored: ourGoals, seasonId: match.seasonId || club.season,
@@ -101,10 +117,8 @@ export default function SchedaGara() {
 
   // Salvataggio automatico: niente più «Salva scheda». Se la gara è già chiusa,
   // le statistiche si riallineano da sole dopo ogni correzione.
-  const localKey = stableKey({ events, duration, postNote });
-  const savedKey = stableKey({ events: saved?.events || [], duration: saved?.duration || 90, postNote: saved?.postNote || '' });
   const autosave = useAutosave({
-    key: localKey, savedKey, enabled: canWrite && !!match && hydrated.current,
+    key: localKey, savedKey: baseKey, enabled: canWrite && !!match && hydrated.current,
     save: async () => {
       await persist();
       if (!saved?.closed) return;
@@ -119,7 +133,6 @@ export default function SchedaGara() {
       announceStats.current = false;
     }
   });
-  pendingRef.current = autosave.pending;
 
   const closeMatch = async () => {
     setBusy(true);

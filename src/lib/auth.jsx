@@ -3,7 +3,7 @@ import {
   onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
   createUserWithEmailAndPassword, updateProfile
 } from 'firebase/auth';
-import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, configMissing } from './firebase';
 import { trackVisit } from './usage';
 import { can } from './permissions';
@@ -96,9 +96,14 @@ export function AuthProvider({ children }) {
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(cred.user, { displayName: name });
-        await setDoc(doc(db, 'users', cred.user.uid), {
-          name, email, role: 'player', active: false, createdAt: serverTimestamp()
-        });
+        const ref = doc(db, 'users', cred.user.uid);
+        try {
+          await setDoc(ref, { name, email, role: 'player', active: false, createdAt: serverTimestamp() });
+        } catch {
+          // Il profilo in attesa può averlo già creato l'ascolto qui sopra (con
+          // l'email al posto del nome): le regole lasciano cambiare solo il nome.
+          await updateDoc(ref, { name });
+        }
         return true;
       } catch (e) {
         setAuthError(mapAuthError(e.code));
