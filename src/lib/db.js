@@ -138,6 +138,13 @@ export const DEFAULT_CLUB = {
 // si sostituiscono per intero (una mappa non trattiene le chiavi vecchie).
 export const setDocument = (path, id, data, opts = { merge: true }) =>
   setDoc(doc(db, path, id), data, opts).then((r) => { notifyWrite('set', path, id, data); return r; });
+/**
+ * Riscrive per intero i campi passati (mappe comprese) e lascia stare gli
+ * altri del documento. Un campo undefined si salta: nella maschera dei campi
+ * farebbe fallire il salvataggio.
+ */
+export const replaceFields = (path, id, data) =>
+  setDocument(path, id, data, { mergeFields: Object.keys(data).filter((k) => data[k] !== undefined) });
 export const updateDocument = (path, id, data) =>
   updateDoc(doc(db, path, id), data).then((r) => { notifyWrite('update', path, id, data); return r; });
 export const addDocument = (path, data) =>

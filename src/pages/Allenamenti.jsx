@@ -6,7 +6,7 @@ import { useAuth } from '../lib/auth';
 import { useCollection, useClub, addDocument, setDocument, serverTimestamp, where, orderBy, limit, audit } from '../lib/db';
 import { notifyEvent } from '../lib/notify';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Textarea, Alert, ConfirmDialog } from '../components/ui';
-import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue, toDate } from '../lib/format';
+import { fmtShort, fmtTime, fmtLong, capitalize, sortPlayers, toInputValue, toDate, seasonStart } from '../lib/format';
 import { can, isClassicUx } from '../lib/permissions';
 import { deleteEventCascade } from '../lib/remove';
 import { refreshStats } from '../lib/stats';
@@ -24,12 +24,11 @@ export default function Allenamenti() {
   const canWrite = can(user?.role, 'events.write');
   const canAttend = can(user?.role, 'attendance.write');
 
-  const q = useMemo(() => [where('type', '==', 'training'), limit(200)], []);
+  // Gli eventi della stagione in ordine di data: con il solo filtro per tipo e
+  // un limite, oltre le 200 sedute Firestore ne avrebbe restituite 200 a caso.
+  const q = useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'desc'), limit(500)], [club.season]);
   const { data: events, loading, error } = useCollection('events', q);
-  const sessions = useMemo(
-    () => [...events].sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0)),
-    [events]
-  );
+  const sessions = useMemo(() => events.filter((e) => e.type === 'training'), [events]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: allAttendance } = useCollection('attendance', [], canAttend);
   // Serve al generatore per sapere quali settimane hanno una gara.
@@ -142,10 +141,10 @@ export default function Allenamenti() {
           message={`Allenamento del ${fmtShort(removing.date)}. Verranno rimosse anche le presenze registrate. L'operazione non è reversibile.`}
           onConfirm={async () => {
             try {
-              await deleteEventCascade(removing.id);
+              await deleteEventCascade(removing.id, { role: user?.role, season: club.season });
               await audit(user, 'training.delete', removing.id, {});
               toast('Seduta eliminata');
-            } catch (e) { toast(errorText(e), 'error'); }
+            } catch (e) { toast(e.code ? errorText(e) : e.message, 'error'); }
           }}
           onClose={() => setRemoving(null)}
         />

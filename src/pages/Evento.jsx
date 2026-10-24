@@ -5,6 +5,7 @@ import { useCollection, useDoc, useClub, updateDocument, serverTimestamp, where 
 import { Card, Button, Badge, Empty, Loading, useToast, Alert, Input } from '../components/ui';
 import { capitalize, fmtLong, fmtTime, countdown, toDate, toInputValue, CALLUP_STATUS } from '../lib/format';
 import { can } from '../lib/permissions';
+import { callupFor } from '../lib/callup';
 import { ResultForm } from './Partite';
 import { Attendance } from './Allenamenti';
 import { errorText } from './Rosa';
@@ -52,10 +53,8 @@ function Match({ ev }) {
 
   const callupQ = useMemo(() => [where('eventId', '==', ev.id)], [ev.id]);
   const { data: callups } = useCollection('callups', callupQ);
-  const callup = useMemo(
-    () => [...callups].sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0))[0],
-    [callups]
-  );
+  // La stessa regola del resto dell'app: l'ultima modificata, mai una annullata.
+  const callup = useMemo(() => callupFor(callups, ev.id, { drafts: true }), [callups, ev.id]);
   const { data: lineup } = useDoc('lineups', ev.id);
   const { data: stats } = useDoc('matchStats', ev.id);
 

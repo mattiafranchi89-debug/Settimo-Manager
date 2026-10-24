@@ -155,11 +155,19 @@ export default function ConvocazioneEditor() {
     };
 
     const ref = existing ? doc(db, 'callups', existing.id) : doc(collection(db, 'callups'));
-    await setDoc(ref, payload, { merge: true });
-    await addDoc(collection(db, 'callups', ref.id, 'versions'), {
-      version: payload.version, status, players: selected, logistics,
-      by: user.name, at: serverTimestamp(), reason: overrideReason || null
-    });
+    // Un salvataggio rifiutato (o la rete assente) va detto: altrimenti i
+    // pulsanti restano disattivati e non si capisce cosa è successo.
+    try {
+      await setDoc(ref, payload, { merge: true });
+      await addDoc(collection(db, 'callups', ref.id, 'versions'), {
+        version: payload.version, status, players: selected, logistics,
+        by: user.name, at: serverTimestamp(), reason: overrideReason || null
+      });
+    } catch (e) {
+      setBusy(false);
+      toast(errorText(e), 'error');
+      return null;
+    }
     if (status !== 'bozza') {
       await audit(user, `callup.${status}`, ref.id, {
         opponent: event.opponent, count: selected.length, override: overrideReason || null
@@ -181,19 +189,22 @@ export default function ConvocazioneEditor() {
   const directPhone = (club.convocazionePhone || club.distintaPhone || '').replace(/\D/g, '');
   const directName = club.convocazioneNome || club.distintaNome || directPhone;
 
+  // WhatsApp si apre subito, prima di aspettare il salvataggio: dopo un'attesa
+  // di rete il telefono (iPhone in particolare) blocca l'apertura, e senza
+  // rete al campo il salvataggio non risponde finché non torna la linea.
   const sendDirect = async (reason) => {
-    await persist('condivisa', reason);
     window.open(whatsappLink(directPhone, message), '_blank', 'noopener');
-    toast(`Convocazione inviata a ${directName}`);
+    if (await persist('condivisa', reason)) toast(`Convocazione inviata a ${directName}`);
   };
 
   const shareToGroup = async (reason) => {
     await copyText(message);
-    await persist('condivisa', reason);
-    toast(club.groupLink
-      ? 'Messaggio copiato: tieni premuto nel gruppo e incolla'
-      : 'Messaggio copiato');
     if (club.groupLink) window.open(club.groupLink, '_blank', 'noopener');
+    if (await persist('condivisa', reason)) {
+      toast(club.groupLink
+        ? 'Messaggio copiato: tieni premuto nel gruppo e incolla'
+        : 'Messaggio copiato');
+    }
   };
 
   /** Un solo gesto: condividere è anche pubblicare, avvisi compresi. */
@@ -224,8 +235,7 @@ export default function ConvocazioneEditor() {
   const classic = isClassicUx(user?.role);
   const isHandoff = ['head_coach', 'assistant_coach'].includes(user?.role) && !classic;
   const markReady = withChecks(async (reason) => {
-    await persist('da_revisionare', reason);
-    toast(`Pronta: ${senderName} riceve una notifica per inviarla al gruppo`);
+    if (await persist('da_revisionare', reason)) toast(`Pronta: ${senderName} riceve una notifica per inviarla al gruppo`);
   });
   const waitingForMe = existing?.status === 'da_revisionare' && existing.readyBy !== user?.uid && can(user?.role, 'callup.share');
   const atTime = (v) => (toDate(v) ? fmtTime(v) : '');

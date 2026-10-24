@@ -4,7 +4,7 @@ import { useAutosave, AutosaveBadge } from '../lib/autosave';
 const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined && x[key] !== '').map((key) => [key, x[key]])) : x));
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, setDocument, serverTimestamp, where, limit } from '../lib/db';
+import { useCollection, useClub, replaceFields, serverTimestamp, where, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Badge, Empty, Loading, useToast, Alert, Textarea, Sheet } from '../components/ui';
 import { buildLineupMessage, copyText, shareMessage, whatsappLink, callupFor } from '../lib/callup';
 import { errorText } from './Rosa';
@@ -228,7 +228,7 @@ export default function Formazioni() {
     };
     // Titolari e numeri si riscrivono interi: con la fusione resterebbero i
     // giocatori tolti e i numeri vecchi. Gli altri campi (es. «pronta») restano.
-    return setDocument('lineups', eventId, data, { mergeFields: Object.keys(data) });
+    return replaceFields('lineups', eventId, data);
   };
 
   // Passaggio di mano: il mister segna la formazione come pronta e chi compila

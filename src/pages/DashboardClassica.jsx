@@ -19,8 +19,8 @@ export default function DashboardClassica() {
   const staff = can(user?.role, 'players.read');
 
   const nowTs = useMemo(() => new Date(), []);
-  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(5)], [nowTs]);
-  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(8)], [nowTs]);
+  const upcomingQ = useMemo(() => [where('date', '>=', nowTs), orderBy('date', 'asc'), limit(25)], [nowTs]);
+  const pastQ = useMemo(() => [where('date', '<', nowTs), orderBy('date', 'desc'), limit(20)], [nowTs]);
 
   const { data: upcoming, loading } = useCollection('events', upcomingQ);
   const { data: pastEvents } = useCollection('events', pastQ);
