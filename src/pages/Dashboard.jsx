@@ -5,6 +5,7 @@ import { useCollection, useDoc, useClub, updateDocument, serverTimestamp, where,
 import { Alert } from '../components/ui';
 import { Card, Button, Badge, Empty, Loading } from '../components/ui';
 import { fmtShort, fmtTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
+import { callupFor } from '../lib/callup';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
@@ -46,10 +47,8 @@ export default function Dashboard() {
   // Convocazione della prossima partita, scheda dell'ultima, presenze dell'ultimo allenamento.
   const callupQ = useMemo(() => [where('eventId', '==', nextMatch?.id || '-')], [nextMatch?.id]);
   const { data: nextCallups } = useCollection('callups', callupQ, staff && !!nextMatch);
-  const callup = useMemo(
-    () => [...nextCallups].sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0))[0],
-    [nextCallups]
-  );
+  // Come nel resto dell'app: l'ultima modificata, mai una annullata.
+  const callup = useMemo(() => callupFor(nextCallups, nextMatch?.id, { drafts: true }), [nextCallups, nextMatch?.id]);
   const { data: lastStats } = useDoc('matchStats', lastMatch?.id, staff && !!lastMatch);
   const attQ = useMemo(() => [where('eventId', '==', lastTraining?.id || '-'), limit(1)], [lastTraining?.id]);
   const canAttend = can(role, 'attendance.write');

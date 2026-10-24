@@ -458,12 +458,12 @@ export default function Formazioni() {
         <div className="btnrow" style={{ marginTop: 12 }}>
           <Button disabled={!starters.length}
             onClick={async () => {
-              try {
-                await save();
-                const phone = (club.distintaPhone || '').replace(/\D/g, '');
-                if (phone) window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener');
-                else await shareMessage(lineupMessage, 'Formazione');
-              } catch (e) { toast(errorText(e), 'error'); }
+              // WhatsApp (o la condivisione) si apre subito, nel tocco: dopo
+              // l'attesa del salvataggio il telefono la bloccherebbe.
+              const phone = (club.distintaPhone || '').replace(/\D/g, '');
+              const shared = phone ? window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener') : shareMessage(lineupMessage, 'Formazione');
+              try { await save(); } catch (e) { toast(errorText(e), 'error'); }
+              await shared;
             }}>
             {club.distintaPhone
               ? `Invia a ${club.distintaNome || club.distintaPhone}`
@@ -566,12 +566,12 @@ function Rapida({ onReady, readyName, isReady, pool, slots, setSlots, slotList, 
 
   const send = async () => {
     setSending(true);
-    try {
-      await save();
-      const phone = (club.distintaPhone || '').replace(/\D/g, '');
-      if (phone) window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener');
-      else await shareMessage(lineupMessage, 'Formazione');
-    } catch (e) { toast(errorText(e), 'error'); }
+    // WhatsApp (o la condivisione) si apre subito, nel tocco: dopo l'attesa
+    // del salvataggio il telefono la bloccherebbe.
+    const phone = (club.distintaPhone || '').replace(/\D/g, '');
+    const shared = phone ? window.open(whatsappLink(phone, lineupMessage), '_blank', 'noopener') : shareMessage(lineupMessage, 'Formazione');
+    try { await save(); } catch (e) { toast(errorText(e), 'error'); }
+    await shared;
     setSending(false);
   };
 

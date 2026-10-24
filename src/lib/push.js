@@ -83,6 +83,21 @@ export async function disablePush() {
   await sub.unsubscribe();
 }
 
+/**
+ * All'uscita dall'account il telefono smette di ricevere a nome di chi esce.
+ * L'iscrizione del browser resta: chi entra dopo la riprende col proprio nome
+ * (refreshPushSubscription), senza dover riattivare le notifiche.
+ */
+export async function forgetDeviceSubscription() {
+  try {
+    if (!pushSupported()) return;
+    const reg = await navigator.serviceWorker.getRegistration('/');
+    const sub = reg && (await reg.pushManager.getSubscription());
+    // Senza rete la cancellazione non risponde: l'uscita non deve aspettarla.
+    if (sub) await Promise.race([deleteDoc(doc(db, 'pushSubs', await subId(sub.endpoint))), new Promise((r) => setTimeout(r, 2000))]);
+  } catch { /* non bloccante */ }
+}
+
 /** Ad ogni apertura riallinea l'iscrizione: il telefono può rinnovarla da solo. */
 export async function refreshPushSubscription() {
   try {

@@ -12,6 +12,7 @@ import { deleteEventCascade } from '../lib/remove';
 import { refreshStats } from '../lib/stats';
 import { errorText } from './Rosa';
 import { buildTrainingMessage, copyText } from '../lib/callup';
+import { attendanceSummary, ensureAttendanceSummaries } from '../lib/trainings';
 import { collection, setDoc, serverTimestamp as ts } from 'firebase/firestore';
 
 const MOTIVI = { assente: 'Assente', giustificato: 'Giustificato', infortunato: 'Infortunato' };
@@ -30,7 +31,12 @@ export default function Allenamenti() {
   const { data: events, loading, error } = useCollection('events', q);
   const sessions = useMemo(() => events.filter((e) => e.type === 'training'), [events]);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: allAttendance } = useCollection('attendance', [], canAttend);
+  // Le sedute registrate prima del riepilogo lo ricevono una volta sola.
+  useEffect(() => {
+    if (!canAttend || loading) return;
+    ensureAttendanceSummaries(events.filter((e) => e.type === 'training')).catch((e) => console.warn('riepilogo presenze', e));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canAttend, loading]);
   // Serve al generatore per sapere quali settimane hanno una gara.
   const matchesQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
   const { data: matches } = useCollection('events', matchesQ, canWrite);
@@ -118,7 +124,7 @@ export default function Allenamenti() {
       )}
       {openPast && (
         <div className="plist">
-          {past.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past />)}
+          {past.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past />)}
         </div>
       )}
 
@@ -129,7 +135,7 @@ export default function Allenamenti() {
       )}
       {openUpcoming && (
         <div className="plist">
-          {upcoming.map((s) => <SessionRow key={s.id} s={s} rows={allAttendance} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
+          {upcoming.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
         </div>
       )}
 
@@ -160,10 +166,10 @@ export default function Allenamenti() {
   );
 }
 
-const SessionRow = ({ s, rows = [], onAttend, onDelete, onAnnounce, past }) => {
-  const mine = rows.filter((r) => r.eventId === s.id);
-  const recorded = mine.length > 0;
-  const absent = mine.filter((r) => r.status !== 'presente').length;
+const SessionRow = ({ s, onAttend, onDelete, onAnnounce, past }) => {
+  const sum = s.attendanceSummary;
+  const recorded = (sum?.total || 0) > 0;
+  const absent = recorded ? sum.total - sum.present : 0;
   return (
     <div className="prow">
       <span className="prow__num">{recorded ? '✓' : past ? '!' : '🏃'}</span>
@@ -172,7 +178,7 @@ const SessionRow = ({ s, rows = [], onAttend, onDelete, onAnnounce, past }) => {
         <span className="prow__meta">
           <span>{s.venue}</span>
           {s.focus && <span>🎯 {s.focus}</span>}
-          {recorded && <span>{mine.length - absent} presenti · {absent} assenti</span>}
+          {recorded && <span>{sum.present} presenti · {absent} assenti</span>}
         </span>
       </span>
       {onAnnounce && !past && <button className="iconbtn" aria-label="Avvisa il gruppo" title="Avvisa il gruppo" onClick={onAnnounce}>💬</button>}
@@ -260,13 +266,15 @@ export function Attendance({ session, players, user, onClose }) {
     setBusy(true);
     try {
       const batch = writeBatch(db);
-      players.forEach((p) => {
-        batch.set(doc(db, 'attendance', `${session.id}_${p.id}`), {
-          eventId: session.id, playerId: p.id,
-          status: absent[p.id] || 'presente',
+      const rows = players.map((p) => ({ playerId: p.id, status: absent[p.id] || 'presente' }));
+      rows.forEach((r) => {
+        batch.set(doc(db, 'attendance', `${session.id}_${r.playerId}`), {
+          eventId: session.id, ...r,
           updatedBy: user.uid, updatedAt: serverTimestamp()
         }, { merge: true });
       });
+      // Lo stesso, in breve, sulla seduta: lo leggono statistiche e pagine.
+      batch.update(doc(db, 'events', session.id), { attendanceSummary: attendanceSummary(rows) });
       await batch.commit();
       toast(`Presenze salvate: ${presentCount} presenti, ${absentCount} assenti`);
       notifyEvent('attendance', session.id, { summary: `${presentCount} presenti, ${absentCount} assenti` });

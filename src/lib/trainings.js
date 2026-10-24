@@ -1,7 +1,7 @@
 // Sedute generate da sole nei giorni fissi, così il calendario corrisponde
 // agli allenamenti reali senza doverle creare a mano.
 
-import { collection, doc, getDocs, writeBatch, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, getDocs, query, where, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { toDate } from './format';
 
@@ -35,8 +35,10 @@ export async function ensureUpcomingTrainings({ club, user, weeks = 3 }) {
   const flag = `sm-train-gen-${dayKey(new Date())}`;
   try { if (localStorage.getItem(flag)) return 0; } catch { /* ignorabile */ }
 
-  // Tutti gli eventi (poche centinaia): anche quelli senza stagione contano per i giorni occupati.
-  const snap = await getDocs(collection(db, 'events'));
+  // Solo da oggi in avanti: bastano per i giorni occupati e per l'ultima seduta
+  // in calendario (se non ce ne sono di future si parte da domani comunque).
+  const today0 = new Date(); today0.setHours(0, 0, 0, 0);
+  const snap = await getDocs(query(collection(db, 'events'), where('date', '>=', today0)));
   const events = snap.docs.map((x) => ({ id: x.id, ...x.data() }));
   const trainings = events.filter((e) => e.type === 'training');
   const busyDays = new Set(events.map((e) => toDate(e.date)).filter(Boolean).map(dayKey));
@@ -59,4 +61,64 @@ export async function ensureUpcomingTrainings({ club, user, weeks = 3 }) {
   }
   try { localStorage.setItem(flag, '1'); } catch { /* ignorabile */ }
   return dates.length;
+}
+
+/* ---------------------- riepilogo presenze sulla seduta ---------------------- */
+
+/**
+ * Chi era registrato e chi mancava, salvato sull'evento della seduta insieme
+ * alle presenze. Statistiche e pagine leggono questo invece di tutte le righe
+ * di /attendance: a fine stagione sono migliaia di letture risparmiate a ogni
+ * ricalcolo (il piano gratuito di Firestore ne concede 50.000 al giorno).
+ */
+export function attendanceSummary(rows) {
+  const players = [];
+  const absent = {};
+  rows.forEach((r) => {
+    players.push(r.playerId);
+    if (r.status !== 'presente') absent[r.playerId] = r.status;
+  });
+  return { players, absent, present: players.length - Object.keys(absent).length, total: players.length };
+}
+
+/** Le righe di presenza ricostruite dal riepilogo, nella forma di /attendance. */
+export const rowsFromSummary = (eventId, s) =>
+  (s?.players || []).map((playerId) => ({ eventId, playerId, status: s.absent?.[playerId] || 'presente' }));
+
+/**
+ * Sedute già passate registrate prima del riepilogo: lo calcola dalle presenze
+ * una volta sola e lo salva sull'evento (le volte dopo non si legge più nulla).
+ * Restituisce { [eventId]: riepilogo } per tutte le sedute passate.
+ */
+export async function ensureAttendanceSummaries(sessions) {
+  const now = new Date();
+  const out = {};
+  const missing = [];
+  sessions.forEach((s) => {
+    if (s.type && s.type !== 'training') return;
+    if (s.attendanceSummary) out[s.id] = s.attendanceSummary;
+    else if ((toDate(s.date) || now) < now) missing.push(s.id);
+  });
+  if (!missing.length) return out;
+
+  const rows = [];
+  for (let i = 0; i < missing.length; i += 30) {
+    const snap = await getDocs(query(collection(db, 'attendance'), where('eventId', 'in', missing.slice(i, i + 30))));
+    snap.docs.forEach((d) => rows.push(d.data()));
+  }
+  const byEvent = {};
+  rows.forEach((r) => { (byEvent[r.eventId] ||= []).push(r); });
+  // Anche le sedute senza presenze ricevono un riepilogo vuoto: non si rileggono più.
+  missing.forEach((id) => { out[id] = attendanceSummary(byEvent[id] || []); });
+
+  try {
+    for (let i = 0; i < missing.length; i += 400) {
+      const batch = writeBatch(db);
+      missing.slice(i, i + 400).forEach((id) => batch.update(doc(db, 'events', id), { attendanceSummary: out[id] }));
+      await batch.commit();
+    }
+  } catch (e) {
+    console.warn('riepilogo presenze non salvato', e); // si ricalcola la prossima volta
+  }
+  return out;
 }
