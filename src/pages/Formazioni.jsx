@@ -48,17 +48,31 @@ export default function Formazioni() {
   // I numeri valgono per la singola gara: in Prima Categoria cambiano di domenica in domenica.
   const [numbers, setNumbers] = useState({});
 
-  // I dati salvati riempiono la formazione al cambio di partita, oppure quando
-  // non ci sono modifiche locali in attesa di salvataggio.
-  const pendingRef = useRef(false);
+  // Formazione salvata su Firestore e formazione sullo schermo, confrontabili.
+  const remoteKey = stableKey({ eventId, module: saved ? (saved.module || club.defaultModule) : module, slots: saved?.slots || {}, captain: saved?.captain || '', vice: saved?.vice || '', notes: saved?.notes || '', numbers: saved?.numbers || {} });
+  const localKey = stableKey({ eventId, module, slots, captain, vice, notes, numbers });
+  // Ultimo stato in cui schermo e Firestore coincidevano. Da salvare sono solo
+  // le modifiche fatte qui dopo: se salva un'altra schermata (il telefono, il
+  // PC, un altro dello staff) questa si aggiorna, invece di riscriverci sopra
+  // la sua versione vecchia.
+  const [baseKey, setBaseKey] = useState(null);
+  const remoteRef = useRef(remoteKey);
+  remoteRef.current = remoteKey;
   const hydratedFor = useRef(null);
+  const dirtyRef = useRef(false);
+  dirtyRef.current = hydratedFor.current === eventId && localKey !== baseKey;
+  useEffect(() => { if (localKey === remoteKey) setBaseKey(localKey); }, [localKey, remoteKey]);
+
+  // I dati salvati riempiono la formazione al cambio di partita, oppure quando
+  // non ci sono modifiche fatte qui in attesa di salvataggio.
   useEffect(() => {
     // Si parte solo con la partita scelta e le formazioni arrivate da Firestore:
     // prima, «nessuna formazione salvata» non è ancora un'informazione vera, e
     // marcarla come caricata farebbe salvare una formazione vuota sopra quella vera.
     if (!eventId || lineupsLoading) return;
-    if (hydratedFor.current === eventId && pendingRef.current) return;
+    if (dirtyRef.current) return;
     hydratedFor.current = eventId;
+    setBaseKey(remoteRef.current);
     if (!saved) { setSlots({}); setCaptain(''); setVice(''); setNotes(''); setNumbers({}); return; }
     setModule(saved.module || club.defaultModule);
     setSlots(saved.slots || {});
@@ -229,12 +243,11 @@ export default function Formazioni() {
 
   // Salvataggio automatico a ogni scelta: il pulsante «Salva» non serve più.
   const autosave = useAutosave({
-    key: stableKey({ eventId, module, slots, captain, vice, notes, numbers }),
-    savedKey: stableKey({ eventId, module: saved ? (saved.module || club.defaultModule) : module, slots: saved?.slots || {}, captain: saved?.captain || '', vice: saved?.vice || '', notes: saved?.notes || '', numbers: saved?.numbers || {} }),
+    key: localKey,
+    savedKey: baseKey,
     enabled: !classic && !!eventId && hydratedFor.current === eventId && can(user?.role, 'lineup.write'),
     save: persist
   });
-  pendingRef.current = autosave.pending;
 
   if (loading) return <Loading />;
   if (!matches.length) return <Card><Empty title="Nessuna partita">Aggiungi una gara per costruire la formazione.</Empty></Card>;
