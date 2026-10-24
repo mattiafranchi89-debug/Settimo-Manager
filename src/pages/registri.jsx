@@ -5,12 +5,10 @@ import { useCollection, useClub, addDocument, updateDocument, setDocument, serve
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Alert, Textarea, Kpi, ConfirmDialog } from '../components/ui';
 import { sortPlayers, fmtDate, fmtShort, euro, positionLabel, capitalize } from '../lib/format';
 import { can } from '../lib/permissions';
-import { recalculateAllStats } from '../lib/stats';
+import { refreshStats } from '../lib/stats';
 import { deleteOne } from '../lib/remove';
 import { audit } from '../lib/db';
 import { errorText } from './Rosa';
-import { getDocs, collection } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { cardsOf } from '../lib/discipline';
 
 /* ============================== STATISTICHE ============================== */
@@ -25,9 +23,7 @@ export function Statistiche() {
   const recalc = async () => {
     setBusy(true);
     try {
-      const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [ms, att, callups, ev] = await Promise.all([read('matchStats'), read('attendance'), read('callups'), read('events')]);
-      const r = await recalculateAllStats({ players, matchStats: ms, attendance: att, callups, events: ev, season: club.season });
+      const r = await refreshStats(players, club.season);
       toast(`Aggiornate: ${r.players} giocatori su ${r.matches} gare chiuse`);
     } catch (e) { toast('Ricalcolo non riuscito', 'error'); }
     setBusy(false);

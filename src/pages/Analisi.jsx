@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
@@ -6,6 +6,7 @@ import { suspendedIn } from '../lib/discipline';
 import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
 import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
 import { can } from '../lib/permissions';
+import { ensureAttendanceSummaries } from '../lib/trainings';
 
 /* ----------------------- barre disegnate senza librerie ----------------------- */
 
@@ -45,8 +46,14 @@ export default function Analisi() {
   const { data: matchesAll } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []));
   const { data: seasonEvents } = useCollection('events', useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'desc'), limit(500)], [club.season]), staff);
   const trainingsAll = useMemo(() => seasonEvents.filter((e) => e.type === 'training'), [seasonEvents]);
-  const { data: matchStats } = useCollection('matchStats', [], staff);
-  const { data: attendance } = useCollection('attendance', [], staff);
+  // Solo la stagione: senza filtro gol e note si mescolavano con quelli delle stagioni passate.
+  const { data: matchStats } = useCollection('matchStats', useMemo(() => [where('date', '>=', seasonStart(club.season))], [club.season]), staff);
+  // Le presenze arrivano dal riepilogo salvato su ogni seduta, non da tutte le righe di /attendance.
+  useEffect(() => {
+    if (!can(user?.role, 'attendance.write') || !trainingsAll.length) return;
+    ensureAttendanceSummaries(trainingsAll).catch((e) => console.warn('riepilogo presenze', e));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trainingsAll.length > 0]);
 
   const season = club.season;
   const matches = useMemo(() => matchesAll.filter((m) => !m.seasonId || m.seasonId === season), [matchesAll, season]);
@@ -69,7 +76,7 @@ export default function Analisi() {
       {tab === 'rendimento' && <Rendimento played={played} club={club} />}
       {tab === 'rotazione' && <Rotazione players={players} />}
       {tab === 'impiego' && <Impiego players={players} club={club} />}
-      {tab === 'allenamenti' && <Allenamenti players={players} trainings={trainings} attendance={attendance} />}
+      {tab === 'allenamenti' && <Allenamenti players={players} trainings={trainings} />}
       {tab === 'gol' && <Gol matchStats={matchStats} matches={matches} />}
       {tab === 'disciplina' && <Disciplina players={players} club={club} />}
       {tab === 'note' && <Note matchStats={matchStats} matches={matches} />}
@@ -177,15 +184,15 @@ function Rotazione({ players }) {
 
 /* ----------------------------- allenamenti ----------------------------- */
 
-function Allenamenti({ players, trainings, attendance }) {
+function Allenamenti({ players, trainings }) {
   const past = trainings.filter((t) => toDate(t.date) < new Date());
   const byWeek = {};
   past.forEach((t) => {
-    const rows = attendance.filter((a) => a.eventId === t.id);
-    if (!rows.length) return;
+    const sum = t.attendanceSummary;
+    if (!sum?.total) return;
     const k = isoWeek(toDate(t.date));
     const w = (byWeek[k] ||= { sessions: 0, present: 0, total: 0 });
-    w.sessions += 1; w.present += rows.filter((a) => a.status === 'presente').length; w.total += rows.length;
+    w.sessions += 1; w.present += sum.present; w.total += sum.total;
   });
   const weeks = Object.entries(byWeek).sort(([a], [b]) => a.localeCompare(b)).slice(-12);
 

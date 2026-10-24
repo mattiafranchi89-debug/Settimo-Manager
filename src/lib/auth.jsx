@@ -6,6 +6,7 @@ import {
 import { doc, onSnapshot, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, configMissing } from './firebase';
 import { trackVisit } from './usage';
+import { forgetDeviceSubscription } from './push';
 import { can } from './permissions';
 
 const Ctx = createContext(null);
@@ -114,7 +115,7 @@ export function AuthProvider({ children }) {
       try { await sendPasswordResetEmail(auth, email); return true; }
       catch (e) { setAuthError(mapAuthError(e.code)); return false; }
     },
-    logout: () => signOut(auth)
+    logout: async () => { await forgetDeviceSubscription(); return signOut(auth); }
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

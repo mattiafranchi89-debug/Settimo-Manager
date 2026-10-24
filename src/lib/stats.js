@@ -63,12 +63,20 @@ export function computeMatchTotals({ starters = [], bench = [], events = [], dur
  * only ever reads /players.
  */
 export async function refreshStats(players, season) {
-  const { getDocs, collection } = await import('firebase/firestore');
+  const { getDocs, collection, query, where } = await import('firebase/firestore');
   const { db } = await import('./firebase');
-  const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-  const [matchStats, attendance, callups, events] = await Promise.all([
-    read('matchStats'), read('attendance'), read('callups'), read('events')
+  const { seasonStart } = await import('./format');
+  const { ensureAttendanceSummaries, rowsFromSummary } = await import('./trainings');
+  // Solo la stagione, e le presenze dal riepilogo salvato su ogni seduta: circa
+  // 300 letture invece di tutte le righe di /attendance di tutte le stagioni.
+  const since = seasonStart(season);
+  const read = async (name, field) => (await getDocs(query(collection(db, name), where(field, '>=', since))))
+    .docs.map((d) => ({ id: d.id, ...d.data() }));
+  const [matchStats, callups, events] = await Promise.all([
+    read('matchStats', 'date'), read('callups', 'matchDate'), read('events', 'date')
   ]);
+  const summaries = await ensureAttendanceSummaries(events.filter((e) => e.type === 'training'));
+  const attendance = Object.entries(summaries).flatMap(([eventId, s]) => rowsFromSummary(eventId, s));
   return recalculateAllStats({ players, matchStats, attendance, callups, events, season });
 }
 

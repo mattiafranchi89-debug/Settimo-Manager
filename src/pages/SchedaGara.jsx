@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, replaceFields, updateDocument, serverTimestamp, where, audit } from '../lib/db';
-import { computeMatchTotals, recalculateAllStats, refreshStats, EVENT_TYPES } from '../lib/stats';
+import { computeMatchTotals, refreshStats, EVENT_TYPES } from '../lib/stats';
 import { Card, Button, Field, Input, Select, Badge, Sheet, Alert, Loading, useToast, ConfirmDialog, Kpi, Textarea } from '../components/ui';
 import { SLOTS, uploadAttachment, saveAttachmentLink, removeAttachment, validateFile, uploadErrorText } from '../lib/attachments';
 import { errorText } from './Rosa';
@@ -10,6 +10,7 @@ import { fmtLong, fmtTime, capitalize, sortPlayers, shortName } from '../lib/for
 import { can } from '../lib/permissions';
 import { readRefertoPhoto, ourSide, playersByNumber, proposals, mergeEvents } from '../lib/referto';
 import { useAutosave, AutosaveBadge } from '../lib/autosave';
+import { callupFor } from '../lib/callup';
 
 /** JSON con le chiavi in ordine: Firestore non garantisce l'ordine dei campi. */
 const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined).map((key) => [key, x[key]])) : x));
@@ -87,10 +88,11 @@ export default function SchedaGara() {
   const starters = useMemo(() => (lineup?.starters?.length ? lineup.starters : []), [lineup]);
   const bench = useMemo(() => {
     if (lineup?.bench?.length) return lineup.bench;
-    const c = callups[0];
+    // La convocazione valida (l'ultima, mai una annullata), non la prima trovata.
+    const c = callupFor(callups, id, { drafts: true });
     if (c?.players?.length) return c.players.filter((pid) => !starters.includes(pid));
     return players.map((p) => p.id).filter((pid) => !starters.includes(pid));
-  }, [lineup, callups, players, starters]);
+  }, [lineup, callups, players, starters, id]);
 
   const onSheet = useMemo(() => sortPlayers([...starters, ...bench].map((pid) => byId[pid]).filter(Boolean)), [starters, bench, byId]);
   const totals = useMemo(() => computeMatchTotals({ starters, bench, events, duration }), [starters, bench, events, duration]);
@@ -154,11 +156,7 @@ export default function SchedaGara() {
   const recalc = async () => {
     setBusy(true);
     try {
-      const { getDocs, collection } = await import('firebase/firestore');
-      const { db } = await import('../lib/firebase');
-      const read = async (name) => (await getDocs(collection(db, name))).docs.map((d) => ({ id: d.id, ...d.data() }));
-      const [matchStats, attendance, allCallups, ev] = await Promise.all([read('matchStats'), read('attendance'), read('callups'), read('events')]);
-      const r = await recalculateAllStats({ players, matchStats, attendance, callups: allCallups, events: ev, season: club.season });
+      const r = await refreshStats(players, club.season);
       await audit(user, 'stats.recalculate', 'players', r);
       toast(`Statistiche aggiornate: ${r.players} giocatori, ${r.matches} gare chiuse`);
     } catch (e) {

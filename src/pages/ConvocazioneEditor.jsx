@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { doc, collection, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -66,8 +66,16 @@ export default function ConvocazioneEditor() {
   const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
 
   // hydrate from an existing call-up
+  // Una volta per versione: dopo un proprio salvataggio lo stato è già quello
+  // e non si torna al passo dei convocati; si ricarica solo se l'ha cambiata un altro.
+  const hydratedVersion = useRef(null);
   useEffect(() => {
     if (!existing) return;
+    const v = `${existing.id}:${existing.version || 0}`;
+    if (hydratedVersion.current === v) return;
+    const ownSave = hydratedVersion.current?.startsWith(`${existing.id}:`) && existing.updatedBy === user?.uid;
+    hydratedVersion.current = v;
+    if (ownSave) return;
     setEventId(existing.eventId);
     setSelected(existing.players || []);
     setLogistics(existing.logistics || null);
