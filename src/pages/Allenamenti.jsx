@@ -214,11 +214,21 @@ function SessionForm({ club, onSave, onClose }) {
   );
 }
 
-export function Attendance({ session, players, user, onClose }) {
+export function Attendance({ session, players: squad, user, onClose }) {
   const toast = useToast();
   const { club } = useClub();
   const q = useMemo(() => [where('eventId', '==', session.id)], [session.id]);
   const { data: rows, loading: rowsLoading, error: rowsError } = useCollection('attendance', q);
+
+  // Riaprendo una seduta già registrata, chi è entrato in rosa dopo non va
+  // aggiunto (risulterebbe presente a un allenamento a cui non c'era).
+  const players = useMemo(() => {
+    if (!rows.length) return squad;
+    const recorded = new Set(rows.map((r) => r.playerId));
+    const end = toDate(session.date) ? new Date(toDate(session.date)) : null;
+    if (end) end.setHours(23, 59, 59, 999);
+    return squad.filter((p) => recorded.has(p.id) || !end || !toDate(p.createdAt) || toDate(p.createdAt) <= end);
+  }, [squad, rows, session.date]);
 
   // Everyone is present unless listed here. Only absences get selected.
   const [absent, setAbsent] = useState(null);

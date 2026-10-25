@@ -150,8 +150,15 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
   Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.compMatches = { ...ordinal }; s.compDates = { campionato: [...dates.campionato], coppa: [...dates.coppa], amichevole: [...dates.amichevole] }; });
 
   const trainingIds = new Set(attendance.map((a) => a.eventId));
-  attendance.forEach((a) => { if (stats[a.playerId] && a.status === 'presente') stats[a.playerId].trainingsAttended += 1; });
-  Object.values(stats).forEach((s) => { s.totalTrainings = trainingIds.size; });
+  // Ognuno conta solo le sedute in cui era in rosa: le presenze si registrano
+  // per i giocatori attivi in quel momento, quindi chi è arrivato dopo non ha
+  // righe per le sedute precedenti e non risulta assente a quelle.
+  attendance.forEach((a) => {
+    const s = stats[a.playerId];
+    if (!s) return;
+    s.totalTrainings += 1;
+    if (a.status === 'presente') s.trainingsAttended += 1;
+  });
 
   /**
    * Strisce in corso. Si contano a ritroso dall'ultimo evento e si fermano alla
