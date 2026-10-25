@@ -506,7 +506,10 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
   const chosen = items.filter(isIn);
   const missing = chosen.filter((x) => !ready(x)).length;
   const other = side === 'ospitante' ? 'ospitata' : 'ospitante';
-  const theirCards = [...(data.ammoniti?.[other] || []).map((a) => `🟨 ${a.numero ?? '?'} ${a.nome}`), ...(data.espulsi?.[other] || []).map((a) => `🟥 ${a.numero ?? '?'} ${a.nome}`)];
+  const theirCards = [...(data.ammoniti?.[other] || []).map((a) => `🟨 ${a.numero ?? '?'} ${a.nome || ''}`), ...(data.espulsi?.[other] || []).map((a) => `🟥 ${a.numero ?? '?'} ${a.nome || ''}`)];
+  // Le sostituzioni decidono i minuti: se per noi non ne risulta nessuna va detto, non taciuto.
+  const ourSubs = (data.sostituzioni?.[side] || []).length;
+  const theirSubs = (data.sostituzioni?.[other] || []).length;
 
   const PlayerPick = ({ value, onChange, n }) => (
     <Select value={value || ''} onChange={(e) => onChange(e.target.value || null)} style={{ minHeight: 38, padding: '4px 8px', fontSize: 13.5 }}>
@@ -530,6 +533,12 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
       </div>
 
       {data.dubbi?.length > 0 && <Alert level="warn">Da verificare: {data.dubbi.join(' · ')}</Alert>}
+      {ourSubs === 0 && (
+        <Alert level="warn">
+          Nessuna sostituzione letta per noi{theirSubs ? ` (${theirSubs} per gli avversari: controlla «Noi siamo» qui sotto)` : ''}.
+          Se sul referto ci sono, riprova con una foto dritta e ben illuminata, oppure aggiungile dalla scheda con «Sostituzione».
+        </Alert>
+      )}
 
       {items.length === 0 ? <p style={{ fontSize: 14 }}>Nessuna sostituzione, ammonizione o espulsione per noi sul referto.</p> : (
         <div className="stack" style={{ gap: 8 }}>
@@ -556,7 +565,7 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
               )}
               {(x.type === 'gialla' || x.type === 'rossa') && (
                 <div style={{ marginTop: 8 }}>
-                  <div style={{ fontSize: 12.5, color: 'var(--muted)', marginBottom: 4 }}>Sul referto: {x.number ?? '?'} {x.name}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--muted)', marginBottom: 4 }}>Sul referto: {x.number ?? '?'} {x.name || ''}</div>
                   <PlayerPick value={x.playerId} n={x.number} onChange={(v) => update(x.key, { playerId: v })} />
                 </div>
               )}
