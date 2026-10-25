@@ -35,10 +35,11 @@ export default function Squadra() {
 
   // Media di squadra sugli allenamenti: un dato collettivo, non una classifica.
   const attendance = useMemo(() => {
-    const total = Math.max(...players.map((x) => x.stats?.totalTrainings || 0), 0);
+    // Ognuno sulle sedute da quando è in rosa: presenze totali su sedute totali.
+    const total = players.reduce((a, x) => a + (x.stats?.totalTrainings || 0), 0);
     if (!total) return null;
     const sum = players.reduce((a, x) => a + (x.stats?.trainingsAttended || 0), 0);
-    return Math.round((sum / (total * players.length)) * 100);
+    return Math.round((sum / total) * 100);
   }, [players]);
 
   const scorers = useMemo(

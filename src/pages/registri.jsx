@@ -81,7 +81,7 @@ export function Statistiche() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Statistiche</h1><p>{rows[0]?.matchesPlayedTotal || 0} gare chiuse · {rows[0]?.totalTrainings || 0} sedute</p></div>
+        <div><h1>Statistiche</h1><p>{rows[0]?.matchesPlayedTotal || 0} gare chiuse · {Math.max(0, ...rows.map((r) => r.totalTrainings || 0))} sedute</p></div>
         {canRecalc && <Button size="sm" variant="secondary" onClick={recalc} disabled={busy}>↻ Ricalcola</Button>}
       </div>
 
