@@ -35,7 +35,11 @@ export default function Rosa() {
   const [removing, setRemoving] = useState(null);
   const [detailDoc, setDetailDoc] = useState('');
   const [injuryFor, setInjuryFor] = useState(null);
-  const canInjury = can(user?.role, 'medical.write') || can(user?.role, 'players.write');
+  // Come in firestore.rules (isMedical): il dirigente vedeva i pulsanti ma ogni
+  // salvataggio veniva rifiutato.
+  const canInjury = ['admin', 'head_coach', 'athletic_trainer'].includes(user?.role);
+  // Lo storico è un campo in più: le regole lo lasciano scrivere solo ad amministratore e allenatore.
+  const canHistory = ['admin', 'head_coach'].includes(user?.role);
 
   const writable = can(user?.role, 'players.write');
   const seeMedical = can(user?.role, 'medical.read');
@@ -165,9 +169,11 @@ export default function Rosa() {
                 {writable && (
                   <button className="chip" style={{ minHeight: 32, padding: '4px 10px' }} onClick={async () => {
                     const list = (detail.suspensions || []).filter((x) => x.source !== s.source);
-                    await updateDocument('players', detail.id, { suspensions: list, updatedAt: serverTimestamp() });
-                    setDetail({ ...detail, suspensions: list });
-                    toast('Squalifica tolta');
+                    try {
+                      await updateDocument('players', detail.id, { suspensions: list, updatedAt: serverTimestamp() });
+                      setDetail({ ...detail, suspensions: list });
+                      toast('Squalifica tolta');
+                    } catch (e) { toast(errorText(e), 'error'); }
                   }}>Togli</button>
                 )}
               </div>
@@ -192,11 +198,14 @@ export default function Rosa() {
                 {detail.injury?.active && (
                   <Button size="sm" onClick={async () => {
                     const days = detail.injury.date ? Math.max(1, Math.round((Date.now() - toDate(detail.injury.date).getTime()) / 86400000)) : null;
-                    await updateDocument('players', detail.id, {
-                      injury: { active: false, type: '', date: null, expectedReturn: null, closedAt: new Date() },
-                      injuryHistory: [...(detail.injuryHistory || []), { ...detail.injury, closedAt: new Date(), daysOut: days }],
-                      updatedAt: serverTimestamp()
-                    });
+                    try {
+                      await updateDocument('players', detail.id, {
+                        // L'ultimo infortunio resta leggibile anche senza storico.
+                        injury: { active: false, type: detail.injury.type || '', date: detail.injury.date || null, expectedReturn: null, closedAt: new Date(), daysOut: days },
+                        ...(canHistory ? { injuryHistory: [...(detail.injuryHistory || []), { ...detail.injury, closedAt: new Date(), daysOut: days }] } : {}),
+                        updatedAt: serverTimestamp()
+                      });
+                    } catch (e) { toast(errorText(e), 'error'); return; }
                     await audit(user, 'injury.close', detail.id, { name: detail.fullName, days });
                     setDetail({ ...detail, injury: { active: false } });
                     toast('Rientro registrato');
@@ -219,7 +228,7 @@ export default function Rosa() {
                           const current = suspendedIn(detail);
                           const list = on ? current.filter((k) => k !== key) : [...current, key];
                           const patch = { suspended: list.length > 0, suspendedIn: list, updatedAt: serverTimestamp() };
-                          await updateDocument('players', detail.id, patch);
+                          try { await updateDocument('players', detail.id, patch); } catch (e) { toast(errorText(e), 'error'); return; }
                           await audit(user, list.length > current.length ? 'player.suspend' : 'player.unsuspend', detail.id, { name: detail.fullName, competizione: c.label });
                           setDetail({ ...detail, ...patch });
                           toast(on ? `Squalifica in ${c.label} rimossa` : `Squalificato in ${c.label}`);
@@ -270,7 +279,9 @@ export default function Rosa() {
       {injuryFor && (
         <InjuryForm player={injuryFor} onClose={() => setInjuryFor(null)}
           onSave={async (inj) => {
-            await updateDocument('players', injuryFor.id, { injury: { ...inj, active: true }, updatedAt: serverTimestamp() });
+            try {
+              await updateDocument('players', injuryFor.id, { injury: { ...inj, active: true }, updatedAt: serverTimestamp() });
+            } catch (e) { toast(errorText(e), 'error'); return; }
             await audit(user, 'injury.open', injuryFor.id, { name: injuryFor.fullName, type: inj.type });
             setDetail((d) => (d && d.id === injuryFor.id ? { ...d, injury: { ...inj, active: true } } : d));
             setInjuryFor(null);

@@ -17,8 +17,9 @@ export default function Squadra() {
   const { data: matches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []));
 
   const played = useMemo(
-    () => matches.filter((m) => m.scoreHome != null).sort((a, b) => toDate(b.date) - toDate(a.date)),
-    [matches]
+    // Solo la stagione indicata in testa alla pagina.
+    () => matches.filter((m) => m.scoreHome != null && (!m.seasonId || m.seasonId === club.season)).sort((a, b) => toDate(b.date) - toDate(a.date)),
+    [matches, club.season]
   );
 
   const team = useMemo(() => {
