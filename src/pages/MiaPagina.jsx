@@ -41,7 +41,8 @@ export default function MiaPagina() {
     .filter((eventId) => (callupFor(callups, eventId)?.players || []).includes(me.id))
     .map((eventId) => byEvent[eventId])
     .sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
-  const nextCallup = myCallups.find((m) => toDate(m.date) >= new Date());
+  // La lista va dalla più recente: la prossima è l'ultima tra quelle future.
+  const nextCallup = myCallups.filter((m) => toDate(m.date) >= new Date()).pop();
 
   // Confronto con la squadra: media dei compagni sugli stessi numeri.
   const avg = (k) => {

@@ -88,7 +88,10 @@ export default function Avversari() {
     const ins = buildInsights({ players: ourPlayers, club });
     const al = squadAlerts(ourPlayers, ins, match ? compBucket(match.competition || '') : null);
     const nm = (p) => p.fullName.split(' ').map((w) => w.charAt(0) + w.slice(1).toLowerCase()).slice(0, 2).join(' ');
-    return { form: ourForm(matches), diffidati: al.diffidati.map(nm), squalificati: al.squalificati.map(nm) };
+    // Si confronta con i punti a partita dell'avversario in campionato: solo le
+    // nostre gare di campionato di questa stagione, senza coppa e amichevoli.
+    const league = matches.filter((m) => compBucket(m.competition || '') === 'campionato' && (!m.seasonId || m.seasonId === club.season));
+    return { form: ourForm(league), diffidati: al.diffidati.map(nm), squalificati: al.squalificati.map(nm) };
   }, [ourPlayers, matches, club, match]);
   const tips = useMemo(() => buildSuggestions(scout, { match, us }), [scout, match, us]);
   const [details, setDetails] = useState(false);
@@ -98,9 +101,9 @@ export default function Avversari() {
   // Stesso girone, stesse domeniche: la giornata N dell'avversario si gioca
   // nel weekend della nostra N-esima partita di campionato.
   const roundDates = useMemo(() => matches
-    .filter((m) => compBucket(m.competition || '') === 'campionato' && toDate(m.date))
+    .filter((m) => compBucket(m.competition || '') === 'campionato' && (!m.seasonId || m.seasonId === club.season) && toDate(m.date))
     .sort((a, b) => toDate(a.date) - toDate(b.date))
-    .map((m) => toDate(m.date)), [matches]);
+    .map((m) => toDate(m.date)), [matches, club.season]);
 
   const save = async (patch, message = 'Scheda aggiornata') => {
     try {
