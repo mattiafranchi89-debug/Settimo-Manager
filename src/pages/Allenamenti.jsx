@@ -220,10 +220,10 @@ export function Attendance({ session, players: squad, user, onClose }) {
   const q = useMemo(() => [where('eventId', '==', session.id)], [session.id]);
   const { data: rows, loading: rowsLoading, error: rowsError } = useCollection('attendance', q);
 
-  // Riaprendo una seduta già registrata, chi è entrato in rosa dopo non va
-  // aggiunto (risulterebbe presente a un allenamento a cui non c'era).
+  // Chi è entrato in rosa dopo la seduta non va aggiunto, che la seduta sia già
+  // registrata o la si registri in ritardo: risulterebbe presente a un
+  // allenamento a cui non c'era. Per le sedute future non cambia nulla.
   const players = useMemo(() => {
-    if (!rows.length) return squad;
     const recorded = new Set(rows.map((r) => r.playerId));
     const end = toDate(session.date) ? new Date(toDate(session.date)) : null;
     if (end) end.setHours(23, 59, 59, 999);
