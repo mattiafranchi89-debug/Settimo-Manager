@@ -227,7 +227,10 @@ export function Attendance({ session, players: squad, user, onClose }) {
     const recorded = new Set(rows.map((r) => r.playerId));
     const end = toDate(session.date) ? new Date(toDate(session.date)) : null;
     if (end) end.setHours(23, 59, 59, 999);
-    return squad.filter((p) => recorded.has(p.id) || !end || !toDate(p.createdAt) || toDate(p.createdAt) <= end);
+    const kept = squad.filter((p) => recorded.has(p.id) || !end || !toDate(p.createdAt) || toDate(p.createdAt) <= end);
+    // Se «arrivati dopo» sarebbe mezza rosa, la data di creazione non è quella
+    // d'arrivo (un'importazione l'ha riscritta): meglio non escludere nessuno.
+    return kept.length < squad.length / 2 ? squad : kept;
   }, [squad, rows, session.date]);
 
   // Everyone is present unless listed here. Only absences get selected.
