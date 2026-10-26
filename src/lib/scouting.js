@@ -453,30 +453,80 @@ export function buildScoutInsights(scout = {}, { match, ref = new Date(), h2h = 
 }
 
 /** Testo pronto da incollare su WhatsApp allo staff. */
-export function shareText(scout = {}, { match, insights = [], ref = new Date(), clubName = 'Settimo Milanese' } = {}) {
-  const lines = [`🔍 *Scheda avversario: ${scout.name}*`];
+/** Dati dai comunicati CRL (crl-settimo.json → avversari) per la squadra indicata, se ci sono. */
+export function crlForTeam(avversari = [], name = '', ref = new Date()) {
+  const today = isoDay(ref);
+  return (avversari || []).find((o) => o?.squadra && sameTeam(o.squadra, name) && (!o.data || o.data >= today)) || null;
+}
+
+/**
+ * Riepilogo da condividere (WhatsApp o altre app): sezioni con titolo in
+ * grassetto, una riga per dato, solo ciò che c'è. Il formato *grassetto* e
+ * _corsivo_ è quello di WhatsApp; altrove resta leggibile come testo semplice.
+ */
+export function shareText(scout = {}, { match, insights = [], ref = new Date(), clubName = 'Settimo Milanese', crl = null, h2h = [] } = {}) {
+  const out = [];
+  const section = (title, rows) => { const r = rows.filter(Boolean); if (r.length) out.push('', `*${title}*`, ...r); };
+
+  // Intestazione: chi, quando, dove.
+  out.push(`🔍 *SCHEDA AVVERSARIO*`, `*${(scout.name || '').toUpperCase()}*`);
   if (match) {
     const d = toDate(match.date);
     const when = d ? d.toLocaleString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' }) : '';
-    lines.push(`${match.home === false ? `${scout.name} – ${clubName}` : `${clubName} – ${scout.name}`}${when ? ` · ${when}` : ''}`);
+    out.push('');
+    out.push(`⚽ ${match.home === false ? `${scout.name} – ${clubName}` : `${clubName} – ${scout.name}`} (${match.home === false ? 'in trasferta' : 'in casa'})`);
+    if (when) out.push(`📅 ${when.charAt(0).toUpperCase()}${when.slice(1)}`);
+    if (match.competition) out.push(`🏆 ${match.competition}`);
+    if (match.venue) out.push(`📍 ${match.venue}`);
   }
-  if (insights.length) {
-    lines.push('', '*In sintesi*');
-    insights.forEach((i) => lines.push(`• ${i.text}`));
+
+  const st = scout.standing || {};
+  if (st.pos != null || st.pts != null) {
+    section('📊 Classifica', [
+      `${st.pos ?? '?'}°${st.of ? ` su ${st.of}` : ''} · ${st.pts ?? '?'} punti in ${st.g ?? '?'} gare`,
+      `${st.v ?? '?'} V · ${st.n ?? '?'} N · ${st.p ?? '?'} P${st.gf != null || st.gs != null ? ` · gol ${st.gf ?? '?'}-${st.gs ?? '?'}` : ''}`
+    ]);
   }
+
+  const form = formOf(scout.results || [], 5);
+  if (form.played) {
+    section(`📈 Ultime ${form.played} partite (${form.list.map(outcome).join(' ')})`,
+      form.list.map((r) => `• ${r.date ? `${fmtDay(r.date)} ` : r.round ? `${r.round}ª ` : ''}${r.home ? 'vs' : '@'} ${r.against} ${r.gf}-${r.gs}`));
+  }
+
+  // Chi non ci sarà: dai comunicati ufficiali, poi quanto segnato a mano.
+  const squal = crl?.squalificati || [];
+  const diff = crl?.diffidati || [];
+  const others = (scout.suspended || []).filter((x) => !squal.some((q) => x.toUpperCase().includes(q.nome.split(' ')[0])));
+  if (crl) {
+    section('🟥 Squalificati', [
+      ...squal.map((q) => `• ${teamTitle(q.nome)}${q.ruolo && q.ruolo !== 'calciatore' ? ` (${q.ruolo})` : ''} – ${q.sanzione}${q.doc ? ` _(${q.doc.replace('Comunicato Ufficiale', 'CU')}${q.date ? ` del ${fmtDay(q.date)}` : ''})_` : ''}`),
+      !squal.length && '• nessuno nei comunicati delle ultime settimane'
+    ]);
+    if (diff.length) section('⚠️ Diffidati', [`• ${diff.map((x) => teamTitle(x.nome)).join(', ')}`]);
+  }
+  // Assenze segnate a mano (squalifiche non ancora nei comunicati, infortuni).
+  if (others.length) section(crl ? '🚑 Altri assenti' : '🟥 Assenti', others.map((x) => `• ${x}`));
+
+  if (insights.length) section('💡 In sintesi', insights.map((i) => `• ${i.text}`));
+
   const roster = rosterSummary(scout.players || [], ref);
   if (roster.scorers.length) {
-    lines.push('', '*Marcatori*');
-    roster.scorers.slice(0, 3).forEach((p) => lines.push(`• ${p.name} ${p.goals} gol${p.apps ? ` in ${p.apps} presenze` : ''}`));
+    section('🎯 Marcatori', roster.scorers.slice(0, 3).map((p) => `• ${p.name} – ${p.goals} gol${p.apps ? ` in ${p.apps} presenze` : ''}`));
   }
+
   const n = scout.notes || {};
   const notes = [['Modulo', n.modulo], ['Punti di forza', n.forza], ['Punti deboli', n.debolezza], ['Palle inattive', n.piazzati], ['Da tenere d\'occhio', n.chiave], ['Note', n.altro]]
     .filter(([, v]) => v && v.trim());
-  if (notes.length) {
-    lines.push('', '*Note tecniche*');
-    notes.forEach(([k, v]) => lines.push(`• ${k}: ${v.trim()}`));
+  if (notes.length) section('📝 Note tecniche', notes.map(([k, v]) => `• ${k}: ${v.trim().replace(/\n+/g, ' · ')}`));
+
+  if (h2h.length) {
+    section('🤝 Precedenti', h2h.slice(0, 3).map((r) => `• ${r.date ? r.date.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' }) : ''} ${r.home ? 'in casa' : 'in trasferta'} ${r.us}-${r.them}${r.competition ? ` (${r.competition})` : ''}`));
   }
-  return lines.join('\n');
+
+  const asOf = [st.asOf, crl?.aggiornato && `comunicati CRL ${fmtDay(crl.aggiornato.slice(0, 10))}`].filter(Boolean).join(' · ');
+  out.push('', `_${clubName} · aggiornato il ${ref.toLocaleDateString('it-IT')}${asOf ? ` · fonti: ${asOf}` : ''}_`);
+  return out.join('\n');
 }
 
 /* ---------------- aggiornamento automatico (public/data/avversario.json) ---------------- */
