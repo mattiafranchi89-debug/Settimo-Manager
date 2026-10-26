@@ -7,6 +7,7 @@ import { importVapidKey, sendPush } from './webpush.js';
 import { readReferto } from './referto.js';
 import { readTuttocampo } from './tuttocampo.js';
 import { readFormazione } from './formazione.js';
+import { readAvversario, SECTIONS } from './avversario.js';
 
 const STAFF = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
 // Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori.
@@ -39,6 +40,7 @@ export default {
       if (url.pathname === '/api/referto' && request.method === 'POST') return await referto(request, env);
       if (url.pathname === '/api/tuttocampo' && request.method === 'POST') return await tuttocampo(request, env);
       if (url.pathname === '/api/formazione' && request.method === 'POST') return await formazione(request, env);
+      if (url.pathname === '/api/avversario' && request.method === 'POST') return await avversario(request, env);
       return json({ error: 'not_found' }, 404);
     } catch (e) {
       return json({ error: 'internal', message: String(e?.message || e) }, 500);
@@ -85,6 +87,31 @@ async function tuttocampo(request, env) {
   if (!team || !images.length || size > 24_000_000) return json({ error: 'bad_input' }, 400);
   try {
     return json({ data: await readTuttocampo({ images, team }, env) });
+  } catch (e) {
+    return json({ error: 'read_failed', message: String(e?.message || e) }, 502);
+  }
+}
+
+/** Immagini allegate a una sezione della scheda avversario → dati di quella sezione. Per lo staff. */
+async function avversario(request, env) {
+  if (!env.ANTHROPIC_API_KEY) return json({ error: 'ai_not_configured' }, 503);
+  const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  const claims = await verifyFirebaseToken(token, env.FIREBASE_PROJECT_ID);
+  if (!claims) return json({ error: 'unauthorized' }, 401);
+  const me = await firestore(env.FIREBASE_PROJECT_ID, token).get(`users/${claims.sub}`);
+  if (!me || me.active === false || !STAFF.includes(me.role)) return json({ error: 'forbidden' }, 403);
+
+  const input = await request.json().catch(() => ({}));
+  const section = String(input.section || '');
+  const team = String(input.team || '').replace(/[\r\n\u2028\u2029]+/g, ' ').trim().slice(0, 80);
+  const images = (Array.isArray(input.images) ? input.images : []).slice(0, 8).map((i) => ({
+    data: typeof i?.data === 'string' ? i.data.replace(/^data:[^,]+,/, '') : '',
+    mediaType: ['image/jpeg', 'image/png', 'image/webp'].includes(i?.mediaType) ? i.mediaType : 'image/jpeg'
+  })).filter((i) => i.data);
+  const size = images.reduce((t, i) => t + i.data.length, 0);
+  if (!SECTIONS[section] || !team || !images.length || size > 24_000_000) return json({ error: 'bad_input' }, 400);
+  try {
+    return json({ data: await readAvversario({ section, images, team }, env) });
   } catch (e) {
     return json({ error: 'read_failed', message: String(e?.message || e) }, 502);
   }
