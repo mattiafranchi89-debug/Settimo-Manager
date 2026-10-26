@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-23T07:59:51+02:00",
-  "lastChecked": "2026-10-23T07:59:51+02:00",
+  "updatedAt": "2026-10-26T10:58:29+01:00",
+  "lastChecked": "2026-10-26T10:58:29+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -191,6 +191,28 @@
       "category": "Giudice Sportivo",
       "type": "sanzione",
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
+    }
+  ],
+  "avversari": [
+    {
+      "squadra": "VELA MESERO",
+      "partita": "Coppa Lombardia Prima Categoria – 2° turno, 28/10/2026 ore 20:00, in casa",
+      "data": "2026-10-28",
+      "competizione": "coppa",
+      "aggiornato": "2026-10-26T10:58:29+01:00",
+      "squalificati": [],
+      "diffidati": [
+        {
+          "nome": "ARMONDI NICOLO",
+          "doc": "Comunicato Ufficiale n. 27",
+          "date": "2026-09-22"
+        },
+        {
+          "nome": "MONTEFORTE IVAN",
+          "doc": "Comunicato Ufficiale n. 27",
+          "date": "2026-09-22"
+        }
+      ]
     }
   ]
 }
