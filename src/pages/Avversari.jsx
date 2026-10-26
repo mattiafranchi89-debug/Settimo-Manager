@@ -8,11 +8,11 @@ import { can } from '../lib/permissions';
 import {
   SCOUT_ROLES, scoutId, sameTeam, isoDay, parseRoster, mergeRoster, parseResults, mergeResults, sortResults,
   outcome, formOf, rosterSummary, sortRoster, playerAge, birthYearOf, headToHead, buildScoutInsights,
-  shareText, fmtDay, autoVisible, applyAuto, applyGirone, gironeRow, teamTitle, shortTeam, buildSuggestions, ourForm
+  shareText, crlForTeam, fmtDay, autoVisible, applyAuto, applyGirone, gironeRow, teamTitle, shortTeam, buildSuggestions, ourForm
 } from '../lib/scouting';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { compBucket } from '../lib/discipline';
-import { useAutoOpponent, useGirone } from '../lib/crl';
+import { useAutoOpponent, useGirone, useCrl } from '../lib/crl';
 import { parseTuttocampo } from '../lib/tuttocampoPaste';
 import { readTuttocampoShots, shotsToScout, MAX_SHOTS } from '../lib/tuttocampoShots';
 import { readAvversarioShots, shotsToSection, mergeNotes } from '../lib/avversarioShots';
@@ -40,6 +40,7 @@ export default function Avversari() {
   const { data: autoData } = useAutoOpponent();
   const auto = autoVisible(autoData, now) ? autoData : null;
   const { data: girone } = useGirone();
+  const { data: crlData } = useCrl();
   const upcoming = useMemo(
     () => matches.filter((m) => toDate(m.date) >= now).sort((a, b) => toDate(a.date) - toDate(b.date)),
     [matches, now]
@@ -80,6 +81,8 @@ export default function Avversari() {
     return { home: n.home, date: new Date(`${n.date}T${n.time || '15:00'}:00`), competition: n.competition, venue: n.venue };
   }, [upcoming, name, autoHere]);
   const h2h = useMemo(() => headToHead(matches, name), [matches, name]);
+  // Squalificati e diffidati dai comunicati CRL, se questa è la prossima avversaria.
+  const crlHere = useMemo(() => crlForTeam(crlData?.avversari, name, now), [crlData, name, now]);
   const ref = match ? toDate(match.date) : now;
   const insights = useMemo(() => buildScoutInsights(scout, { match, ref, h2h }), [scout, match, ref, h2h]);
 
@@ -125,7 +128,7 @@ export default function Avversari() {
   };
 
   const share = async () => {
-    const text = shareText(scout, { match, insights, ref, clubName: club.clubName });
+    const text = shareText(scout, { match, insights, ref, clubName: club.clubName, crl: crlHere, h2h });
     try {
       if (navigator.share) await navigator.share({ text });
       else { await navigator.clipboard.writeText(text); toast('Riepilogo copiato: incollalo su WhatsApp'); }
