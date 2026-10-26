@@ -187,7 +187,7 @@ function readTable(rows, refYear) {
   return out;
 }
 
-const playerKey = (name) => teamTokens(name).sort().join(' ') || name.toLowerCase();
+export const playerKey = (name) => teamTokens(name).sort().join(' ') || name.toLowerCase();
 
 /**
  * Trasforma il testo incollato in giocatori. Accetta una riga per giocatore

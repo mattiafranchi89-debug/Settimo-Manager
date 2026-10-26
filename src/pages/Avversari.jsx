@@ -15,6 +15,7 @@ import { compBucket } from '../lib/discipline';
 import { useAutoOpponent, useGirone } from '../lib/crl';
 import { parseTuttocampo } from '../lib/tuttocampoPaste';
 import { readTuttocampoShots, shotsToScout, MAX_SHOTS } from '../lib/tuttocampoShots';
+import { readAvversarioShots, shotsToSection, mergeNotes } from '../lib/avversarioShots';
 
 /**
  * Scheda dell'avversario: classifica, forma, rosa, squalificati e note per
@@ -601,6 +602,118 @@ function NewTeamSheet({ onClose, onCreate }) {
   );
 }
 
+/* ---------------- immagini allegate a una sezione ---------------- */
+
+const SECTION_HINTS = {
+  classifica: 'La classifica del girone: schermata di Tuttocampo, del sito della federazione o foto del comunicato.',
+  risultati: 'Risultati delle giornate o calendario con i punteggi: anche più schermate insieme.',
+  rosa: 'La rosa della squadra: elenco con ruoli, anni di nascita, presenze e gol se ci sono.',
+  assenti: 'Il comunicato del Giudice Sportivo, un post o un messaggio su squalificati e infortunati.',
+  note: 'Cronache, articoli, appunti, lavagne o il modulo visto in un video: ne ricavo le indicazioni tecniche.'
+};
+
+/** Pulsante «📷» per l'intestazione di una sezione. */
+const ImagesButton = ({ onClick }) => (
+  <Button size="sm" variant="secondary" onClick={onClick} aria-label="Da immagini">📷</Button>
+);
+
+/**
+ * Immagini di una sezione: si scelgono o si incollano, Claude legge solo i dati
+ * di quella sezione e della squadra, e si aggiungono alla scheda dopo averli visti.
+ */
+function ImageReader({ section, title, team, refDate = new Date(), preview, onApply, onClose }) {
+  const [shots, setShots] = useState([]);
+  const [reading, setReading] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);
+
+  const addShots = (files) => {
+    const imgs = [...files].filter((f) => f.type.startsWith('image/'));
+    if (!imgs.length) return;
+    setShots((cur) => [...cur, ...imgs].slice(0, MAX_SHOTS));
+    setResult(null); setError('');
+  };
+  useEffect(() => {
+    const onPaste = (e) => {
+      const files = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith('image/'));
+      if (files.length) { e.preventDefault(); addShots(files); }
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+  }, []);
+  const thumbs = useMemo(() => shots.map((f) => URL.createObjectURL(f)), [shots]);
+  useEffect(() => () => thumbs.forEach((u) => URL.revokeObjectURL(u)), [thumbs]);
+
+  const fromClipboard = async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      const files = [];
+      for (const it of items) {
+        const type = it.types.find((t) => t.startsWith('image/'));
+        if (type) files.push(new File([await it.getType(type)], `immagine-${files.length + 1}`, { type }));
+      }
+      if (files.length) addShots(files);
+      else setError('Negli appunti non c\'è un\'immagine.');
+    } catch { setError('Non riesco a leggere gli appunti: usa «Scegli immagini».'); }
+  };
+
+  const read = async () => {
+    setReading(true); setError(''); setResult(null);
+    try { setResult(shotsToSection(section, await readAvversarioShots(shots, team, section), team, refDate)); }
+    catch (e) { setError(e.message); }
+    setReading(false);
+  };
+
+  return (
+    <Sheet title={`${title} da immagini`} onClose={onClose}>
+      <p style={{ fontSize: 13.5, color: 'var(--muted)', marginTop: 0 }}>{SECTION_HINTS[section]} Prendo solo i dati di <b>{team}</b>.</p>
+      <div className="btnrow" style={{ marginBottom: 10 }}>
+        <label className="btn btn--secondary btn--sm" style={{ cursor: 'pointer' }}>
+          📷 Scegli immagini
+          <input type="file" accept="image/*" multiple hidden onChange={(e) => { addShots(e.target.files || []); e.target.value = ''; }} />
+        </label>
+        {navigator.clipboard?.read && <Button size="sm" variant="secondary" onClick={fromClipboard}>📋 Incolla</Button>}
+      </div>
+
+      {shots.length > 0 && (
+        <>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+            {thumbs.map((u, i) => (
+              <div key={u} style={{ position: 'relative', flex: '0 0 auto' }}>
+                <img src={u} alt={`Immagine ${i + 1}`} style={{ height: 96, borderRadius: 8, border: '1px solid var(--line-soft)' }} />
+                <button className="iconbtn" aria-label="Togli immagine" style={{ position: 'absolute', top: 2, right: 2, minHeight: 0, padding: '0 6px' }}
+                  onClick={() => { setShots((cur) => cur.filter((_, j) => j !== i)); setResult(null); }}>✕</button>
+              </div>
+            ))}
+          </div>
+          <div className="btnrow" style={{ marginTop: 8 }}>
+            <Button size="sm" disabled={reading} onClick={read}>
+              {reading ? 'Lettura in corso…' : `Leggi ${shots.length === 1 ? 'l\'immagine' : `le ${shots.length} immagini`}`}
+            </Button>
+            <small style={{ color: 'var(--muted)', alignSelf: 'center' }}>Fino a {MAX_SHOTS} alla volta</small>
+          </div>
+        </>
+      )}
+
+      {error && <Alert level="error">{error}</Alert>}
+      {result && (result.items.length
+        ? <Alert level="ok"><div style={{ fontWeight: 700, marginBottom: 4 }}>Trovato per {team}:</div>{preview(result.items)}</Alert>
+        : <Alert level="warn">Nelle immagini non trovo dati di questa sezione per {team}.</Alert>)}
+      {result?.doubts?.length > 0 && <Alert level="info"><b>Da controllare:</b> {result.doubts.join(' · ')}</Alert>}
+
+      <div className="btnrow">
+        <Button disabled={!result?.items.length || busy || reading}
+          onClick={async () => { setBusy(true); await onApply(result.items); setBusy(false); }}>Aggiungi alla scheda</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+      <small style={{ display: 'block', marginTop: 8, color: 'var(--muted)' }}>
+        Le immagini le legge Claude e non vengono conservate: controlla sempre il riepilogo prima di aggiungere.
+      </small>
+    </Sheet>
+  );
+}
+
 const STANDING_FIELDS = [
   ['pos', 'Posizione'], ['of', 'Squadre nel girone'], ['pts', 'Punti'], ['g', 'Giocate'],
   ['v', 'Vinte'], ['n', 'Pareggiate'], ['p', 'Perse'], ['gf', 'Gol fatti'], ['gs', 'Gol subiti']
@@ -612,9 +725,15 @@ function StandingCard({ scout, canWrite, onSave }) {
   const [form, setForm] = useState({});
   const edit = () => { setForm(Object.fromEntries(STANDING_FIELDS.map(([k]) => [k, st[k] ?? '']))); setOpen(true); };
   const has = st.pos != null || st.pts != null;
+  const [fromImages, setFromImages] = useState(false);
 
   return (
-    <Card title="Classifica" action={canWrite && <Button size="sm" variant="ghost" onClick={edit}>{has ? 'Modifica' : 'Inserisci'}</Button>}>
+    <Card title="Classifica" action={canWrite && (
+      <div className="btnrow" style={{ gap: 4 }}>
+        <Button size="sm" variant="ghost" onClick={edit}>{has ? 'Modifica' : 'Inserisci'}</Button>
+        <ImagesButton onClick={() => setFromImages(true)} />
+      </div>
+    )}>
       {has ? (
         <div className="grid grid--kpi">
           <Kpi value={st.pos ? `${st.pos}°` : '—'} label={st.of ? `su ${st.of} squadre` : 'Posizione'} accent />
@@ -648,6 +767,16 @@ function StandingCard({ scout, canWrite, onSave }) {
           </div>
         </Sheet>
       )}
+      {fromImages && (
+        <ImageReader section="classifica" title="Classifica" team={scout.name} onClose={() => setFromImages(false)}
+          preview={([x]) => <div style={{ fontSize: 13.5 }}>🏆 {x.pos ?? '?'}°{x.of ? ` su ${x.of}` : ''}, {x.pts ?? '?'} punti in {x.g ?? '?'} gare ({x.v ?? '?'}V {x.n ?? '?'}N {x.p ?? '?'}P{x.gf != null || x.gs != null ? `, gol ${x.gf ?? '?'}:${x.gs ?? '?'}` : ''})</div>}
+          onApply={async ([x]) => {
+            // Un dato che l'immagine non mostra non cancella quello già in scheda.
+            const day = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const standing = { ...st, ...Object.fromEntries(Object.entries(x).filter(([, v]) => v != null)), asOf: `da immagine, ${day}` };
+            if (await onSave({ standing }, 'Classifica aggiornata dalle immagini')) setFromImages(false);
+          }} />
+      )}
     </Card>
   );
 }
@@ -657,6 +786,7 @@ function FormCard({ scout, canWrite, onSave, refDate }) {
   const form = formOf(results, 3);
   const [pasting, setPasting] = useState(false);
   const [manual, setManual] = useState(false);
+  const [fromImages, setFromImages] = useState(false);
 
   const remove = (r) => onSave({ results: results.filter((x) => x !== r) }, 'Risultato eliminato');
 
@@ -665,6 +795,7 @@ function FormCard({ scout, canWrite, onSave, refDate }) {
       <div className="btnrow" style={{ gap: 4 }}>
         <Button size="sm" variant="ghost" onClick={() => setManual(true)}>＋</Button>
         <Button size="sm" variant="secondary" onClick={() => setPasting(true)}>Incolla</Button>
+        <ImagesButton onClick={() => setFromImages(true)} />
       </div>
     )}>
       {form.played > 0 && (
@@ -702,6 +833,13 @@ function FormCard({ scout, canWrite, onSave, refDate }) {
       {manual && (
         <ManualResult scout={scout} onClose={() => setManual(false)}
           onSave={async (r) => { if (await onSave({ results: mergeResults(results, [r]) }, 'Risultato aggiunto')) setManual(false); }} />
+      )}
+      {fromImages && (
+        <ImageReader section="risultati" title="Risultati" team={scout.name} refDate={refDate} onClose={() => setFromImages(false)}
+          preview={(list) => sortResults(list).map((r, i) => (
+            <div key={i} style={{ fontSize: 13 }}>{r.round ? `${r.round}ª · ` : ''}{r.date ? fmtDay(r.date) : '—'} · {r.home ? 'vs' : '@'} {r.against} {r.gf}-{r.gs} ({outcome(r)})</div>
+          ))}
+          onApply={async (list) => { if (await onSave({ results: mergeResults(results, list) }, `${list.length} risultati aggiunti dalle immagini`)) setFromImages(false); }} />
       )}
     </Card>
   );
@@ -765,6 +903,7 @@ function RosterCard({ scout, canWrite, onSave, refDate }) {
   const sum = useMemo(() => rosterSummary(players, refDate), [players, refDate]);
   const [pasting, setPasting] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [fromImages, setFromImages] = useState(false);
 
   const savePlayer = async (p, original) => {
     const list = original ? players.map((x) => (x === original ? p : x)) : [...players, p];
@@ -779,6 +918,7 @@ function RosterCard({ scout, canWrite, onSave, refDate }) {
       <div className="btnrow" style={{ gap: 4 }}>
         <Button size="sm" variant="ghost" onClick={() => setEditing({ player: { name: '', role: '' } })}>＋</Button>
         <Button size="sm" variant="secondary" onClick={() => setPasting(true)}>Incolla</Button>
+        <ImagesButton onClick={() => setFromImages(true)} />
       </div>
     )}>
       {players.length ? (
@@ -844,6 +984,20 @@ function RosterCard({ scout, canWrite, onSave, refDate }) {
       {editing && (
         <PlayerSheet initial={editing.player} isNew={!editing.original} onClose={() => setEditing(null)}
           onSave={(p) => savePlayer(p, editing.original)} onRemove={() => removePlayer(editing.original)} />
+      )}
+      {fromImages && (
+        <ImageReader section="rosa" title="Rosa" team={scout.name} refDate={refDate} onClose={() => setFromImages(false)}
+          preview={(list) => (
+            <>
+              <div style={{ fontSize: 13.5, marginBottom: 4 }}>{list.length} giocatori, {list.filter((p) => playerAge(p, refDate) != null).length} con età</div>
+              {list.slice(0, 30).map((p) => (
+                <div key={p.id} style={{ fontSize: 13 }}>
+                  {p.name} · {SCOUT_ROLES[p.role]?.short || '?'} · {birthYearOf(p) || '—'}{p.apps != null ? ` · ${p.apps} pres.` : ''}{p.goals != null ? ` · ${p.goals} gol` : ''}
+                </div>
+              ))}
+            </>
+          )}
+          onApply={async (list) => { if (await onSave({ players: mergeRoster(players, list) }, `${list.length} giocatori dalle immagini`)) setFromImages(false); }} />
       )}
     </Card>
   );
@@ -929,6 +1083,7 @@ function PlayerSheet({ initial, isNew, onSave, onRemove, onClose }) {
 function AbsentCard({ scout, canWrite, onSave }) {
   const list = scout.suspended || [];
   const [value, setValue] = useState('');
+  const [fromImages, setFromImages] = useState(false);
   const add = async () => {
     const v = value.trim();
     if (!v) return;
@@ -936,7 +1091,7 @@ function AbsentCard({ scout, canWrite, onSave }) {
   };
   if (!canWrite && !list.length) return null;
   return (
-    <Card title="Squalificati e assenti">
+    <Card title="Squalificati e assenti" action={canWrite && <ImagesButton onClick={() => setFromImages(true)} />}>
       {list.length ? (
         <div className="chiprow" style={{ flexWrap: 'wrap', marginBottom: canWrite ? 10 : 0 }}>
           {list.map((n, i) => (
@@ -957,6 +1112,14 @@ function AbsentCard({ scout, canWrite, onSave }) {
           <Button size="sm" onClick={add} disabled={!value.trim()}>Aggiungi</Button>
         </div>
       )}
+      {fromImages && (
+        <ImageReader section="assenti" title="Squalificati e assenti" team={scout.name} onClose={() => setFromImages(false)}
+          preview={(items) => items.map((x, i) => <div key={i} style={{ fontSize: 13.5 }}>🚫 {x}</div>)}
+          onApply={async (items) => {
+            const add = items.filter((x) => !list.includes(x));
+            if (await onSave({ suspended: [...list, ...add] }, `${add.length} assenti aggiunti dalle immagini`)) setFromImages(false);
+          }} />
+      )}
     </Card>
   );
 }
@@ -973,6 +1136,7 @@ const NOTE_FIELDS = [
 function NotesCard({ scout, canWrite, onSave }) {
   const [notes, setNotes] = useState(scout.notes || {});
   const [dirty, setDirty] = useState(false);
+  const [fromImages, setFromImages] = useState(false);
   useEffect(() => { if (!dirty) setNotes(scout.notes || {}); }, [scout.notes, dirty]);
   const filled = NOTE_FIELDS.filter(([k]) => notes[k]?.trim());
 
@@ -987,7 +1151,12 @@ function NotesCard({ scout, canWrite, onSave }) {
     );
   }
   return (
-    <Card title="Note tecniche" action={dirty && <Badge tone="orange">Non salvate</Badge>}>
+    <Card title="Note tecniche" action={(
+      <div className="btnrow" style={{ gap: 4 }}>
+        {dirty && <Badge tone="orange">Non salvate</Badge>}
+        <ImagesButton onClick={() => setFromImages(true)} />
+      </div>
+    )}>
       {NOTE_FIELDS.map(([k, label, ph]) => (
         <Field key={k} label={label}>
           <Textarea rows={2} value={notes[k] || ''} placeholder={ph}
@@ -1004,6 +1173,14 @@ function NotesCard({ scout, canWrite, onSave }) {
         if (__url !== undefined) patch.tuttocampoUrl = __url.trim();
         if (await onSave(patch, 'Note salvate')) setDirty(false);
       }}>Salva note</Button>
+      {fromImages && (
+        <ImageReader section="note" title="Note tecniche" team={scout.name} onClose={() => setFromImages(false)}
+          preview={([n]) => NOTE_FIELDS.filter(([k]) => n[k]).map(([k, label]) => <div key={k} style={{ fontSize: 13.5 }}><b>{label}:</b> {n[k]}</div>)}
+          onApply={([n]) => {
+            // Si aggiungono a quelle scritte, da rileggere prima di «Salva note».
+            setNotes((cur) => mergeNotes(cur, n)); setDirty(true); setFromImages(false);
+          }} />
+      )}
     </Card>
   );
 }
