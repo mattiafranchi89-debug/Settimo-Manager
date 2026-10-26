@@ -1730,16 +1730,41 @@
         }
       ],
       "fetchedAt": "2026-10-22T20:45:03+00:00"
+    },
+    "33703": {
+      "id": "33703",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 26 al 29 Ottobre 2026 CRL",
+      "number": null,
+      "date": "2026-10-26",
+      "url": "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_26-29_Ottobre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33703/6adf6f0ab610b_Programma_Gare_26-29_Ottobre_2026.pdf",
+          "pages_chars": 20565,
+          "settimo_mentions": 1,
+          "txt": "docs/33703/Programma_Gare_26-29_Ottobre_2026.txt",
+          "mentions": [
+            {
+              "line": 143,
+              "text": "GIRONE 2D                                                                                               DATA          ORA                                                                         STATO GARA\n\n\nSETTIMO MILANESE           VELA MESERO                      COMUNALE-CAMPO N.1                           28/10/2026 20:00 1A CUSAGO                            VIA IV NOVEMBRE 9                        V\nGIRONE 2E                                                                                               DATA          ORA                                                                         STATO GARA\n\n"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-10-26T21:49:05+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-26T10:30:02+00:00",
+  "lastRun": "2026-10-26T21:49:05+00:00",
   "homepage": [
     "33673",
     "33669",
     "33661",
     "33657",
     "33633",
+    "33703",
     "33690"
   ],
   "errors": [],

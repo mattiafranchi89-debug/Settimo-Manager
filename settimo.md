@@ -1,5 +1,19 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma Gare dal 26 al 29 Ottobre 2026 CRL (2026-10-26)
+Pagina: https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026
+
+### Programma_Gare_26-29_Ottobre_2026.pdf – riga 143
+```
+GIRONE 2D                                                                                               DATA          ORA                                                                         STATO GARA
+
+
+SETTIMO MILANESE           VELA MESERO                      COMUNALE-CAMPO N.1                           28/10/2026 20:00 1A CUSAGO                            VIA IV NOVEMBRE 9                        V
+GIRONE 2E                                                                                               DATA          ORA                                                                         STATO GARA
+
+
+```
+
 ## Programma gare dal 22 al 26 Ottobre 2026 CRL (2026-10-22)
 Pagina: https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026
 
