@@ -1,5 +1,19 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 42 CRL (2026-10-27)
+Pagina: https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42
+
+### Comunicato Ufficiale Nr.42 del 27.10.2026.pdf – riga 251
+```
+                         Squadra 1              Squadra 2                                                     Impianto
+ Gara Gior.                                                            Orig.       Var. Orig.
+                                                                                                   COMUNALE-CAMPO N.1 CUSAGO VIA IV
+28/10/2026   1A   SETTIMO MILANESE       VELA MESERO                               20:00
+                                                                                                   NOVEMBRE 9
+
+
+```
+
 ## Programma Gare dal 26 al 29 Ottobre 2026 CRL (2026-10-26)
 Pagina: https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026
 

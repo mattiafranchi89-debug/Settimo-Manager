@@ -1754,16 +1754,59 @@
         }
       ],
       "fetchedAt": "2026-10-26T21:49:05+00:00"
+    },
+    "33706": {
+      "id": "33706",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 42 CRL",
+      "number": 42,
+      "date": "2026-10-27",
+      "url": "https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr.42 del 27.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33706/6ae0a6e67128a_Comunicato Ufficiale Nr.42 del 27.10.2026.pdf",
+          "pages_chars": 57509,
+          "settimo_mentions": 1,
+          "txt": "docs/33706/Comunicato_Ufficiale_Nr.42_del_27.10.2026.txt",
+          "mentions": [
+            {
+              "line": 251,
+              "text": "                         Squadra 1              Squadra 2                                                     Impianto\n Gara Gior.                                                            Orig.       Var. Orig.\n                                                                                                   COMUNALE-CAMPO N.1 CUSAGO VIA IV\n28/10/2026   1A   SETTIMO MILANESE       VELA MESERO                               20:00\n                                                                                                   NOVEMBRE 9\n\n"
+            }
+          ]
+        },
+        {
+          "name": "Classifica C5 CU_42 del 27.10.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33706/6ae0a6e67cbc4_Classifica C5 CU_42 del 27.10.2026.pdf",
+          "pages_chars": 12701,
+          "settimo_mentions": 0,
+          "txt": "docs/33706/Classifica_C5_CU_42_del_27.10.2026.txt"
+        },
+        {
+          "name": "Programma Gare Coppe.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33706/6ae0a6e68b934_Programma Gare Coppe.pdf",
+          "pages_chars": 9463,
+          "settimo_mentions": 0,
+          "txt": "docs/33706/Programma_Gare_Coppe.txt"
+        },
+        {
+          "name": "Maglie Personalizzate CU_42.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33706/6ae0a6e694d0e_Maglie Personalizzate CU_42.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-10-27T21:28:02+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-27T10:02:07+00:00",
+  "lastRun": "2026-10-27T21:28:02+00:00",
   "homepage": [
+    "33706",
     "33673",
     "33669",
     "33661",
     "33657",
-    "33633",
     "33703",
     "33690"
   ],
