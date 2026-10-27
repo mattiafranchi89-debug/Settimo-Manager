@@ -1,30 +1,40 @@
 {
-  "generatedAt": "2026-10-10T12:45:00+02:00",
-  "availableFrom": "2026-10-10",
+  "generatedAt": "2026-10-27T08:00:32+01:00",
+  "availableFrom": "2026-10-27",
   "lastMatch": {
-    "date": "2026-10-08",
-    "opponent": "Cassolese",
-    "home": true,
-    "score": "2-1",
-    "competition": "Coppa Lombardia Prima Categoria"
+    "date": "2026-10-25",
+    "opponent": "Polisportiva di Nova",
+    "home": false,
+    "score": "",
+    "competition": "Prima Categoria girone A – 7ª giornata"
   },
   "next": {
-    "opponent": "Leone XIII Sport",
-    "date": "2026-10-11",
-    "time": "14:30",
-    "home": false,
-    "venue": "C.S. \"Leone XIII\" – Campo 1 (sintetico)",
-    "address": "Via Rossetti 4, Milano",
-    "competition": "Prima Categoria girone A – 5ª giornata"
+    "opponent": "Vela Mesero",
+    "date": "2026-10-28",
+    "time": "20:00",
+    "home": true,
+    "venue": "Comunale – Campo n. 1, Cusago",
+    "address": "Via IV Novembre 9, Cusago",
+    "competition": "Coppa Lombardia Prima Categoria – 2° turno (girone 2D), gara unica"
   },
-  "standing": { "pos": 14, "of": 16, "pts": 2, "g": 4, "v": 0, "n": 2, "p": 2, "gf": 6, "gs": 11, "asOf": "Comunicato Ufficiale n. 34 dell'08/10/2026" },
+  "standing": { "pos": 11, "of": 16, "pts": 6, "g": 6, "v": 1, "n": 3, "p": 2, "gf": 7, "gs": 13, "asOf": "Comunicato Ufficiale n. 41 del 22/10/2026 (Prima Categoria girone J)" },
   "results": [
-    { "date": "2026-10-04", "home": false, "against": "Pro Peschiera Borromeo", "gf": 0, "gs": 4, "competition": "" }
+    { "date": "2026-10-18", "home": true, "against": "Football Club Parabiago", "gf": 1, "gs": 6, "competition": "" },
+    { "date": "2026-10-11", "home": false, "against": "Nerviano", "gf": 1, "gs": 3, "competition": "" },
+    { "date": "2026-10-04", "home": true, "against": "Turbighese 1921", "gf": 2, "gs": 1, "competition": "" },
+    { "date": "2026-09-30", "home": true, "against": "U.S. Castelnovetto", "gf": 2, "gs": 1, "competition": "Coppa" },
+    { "date": "2026-09-27", "home": false, "against": "Mocchetti S.V.O.", "gf": 1, "gs": 1, "competition": "" },
+    { "date": "2026-09-16", "home": false, "against": "Gropello San Giorgio", "gf": 3, "gs": 0, "competition": "Coppa" }
   ],
-  "suspended": ["Borroni Edoardo Ambrogi – 1 giornata (gare del 4/10)"],
-  "notes": "Ancora senza vittorie dopo 4 giornate. I risultati delle prime tre giornate non sono nei comunicati controllati.",
+  "suspended": [],
+  "notes": "Vela Mesero ha vinto il girone 16 di Coppa a punteggio pieno (2 vittorie, 5-1) ma in campionato è 11ª nel girone J con una sola vittoria in 6 gare, 13 gol subiti e due sconfitte di fila (1-6 in casa col Parabiago capolista). Nessuno squalificato a carico: Monteforte Ivan (2 gare dal 4/10) e Armondi Nicolò (1 gara dall'11/10) hanno avuto squalifiche di campionato ormai scontate, ma entrambi risultano diffidati in Coppa dal CU n. 27 (gare del 16/09): un'ammonizione mercoledì costerebbe loro il turno successivo. Mancano ancora nella cache i risultati del 25/10 (Calcio Canegrate–Vela Mesero, posticipata alle 18:30, e Nova–Settimo) e il relativo Giudice Sportivo, attesi nel prossimo comunicato.",
   "sources": [
+    { "label": "Comunicato Ufficiale n. 41 – Classifiche", "url": "https://www.crlombardia.it/storage/uploads/files/33673/6ada0b9d85d01_01_Classifiche CU_41 del 22.10.2026.pdf" },
+    { "label": "Comunicato Ufficiale n. 41", "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41" },
+    { "label": "Comunicato Ufficiale n. 37", "url": "https://www.crlombardia.it/documenti/33633/comunicato-ufficiale-n-37" },
     { "label": "Comunicato Ufficiale n. 34", "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34" },
-    { "label": "Programma gare 9-12 ottobre", "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026" }
+    { "label": "Comunicato Ufficiale n. 33", "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33" },
+    { "label": "Comunicato Ufficiale n. 27", "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27" },
+    { "label": "Programma gare 26-29 ottobre", "url": "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026" }
   ]
 }
