@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-26T10:58:29+01:00",
-  "lastChecked": "2026-10-26T10:58:29+01:00",
+  "updatedAt": "2026-10-27T08:00:25+01:00",
+  "lastChecked": "2026-10-27T08:00:25+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -18,9 +18,19 @@
     "https://www.crlombardia.it/news/33666/programma-gare-dal-20-al-22-ottobre-2026",
     "https://www.crlombardia.it/documenti/33669/comunicato-ufficiale-n-40",
     "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
-    "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026"
+    "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026",
+    "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026"
   ],
   "items": [
+    {
+      "id": "pg2629-coppa-velamesero",
+      "doc": "Programma gare 26-29 ottobre 2026",
+      "date": "2026-10-26",
+      "url": "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "calendario",
+      "text": "Coppa Lombardia, secondo turno (girone 2D, gara unica): Settimo Milanese – Vela Mesero (in casa), mercoledì 28/10/2026 alle 20:00 al campo comunale n. 1 di Cusago, via IV Novembre 9."
+    },
     {
       "id": "pg2226-pc-nova",
       "doc": "Programma gare 22-26 ottobre 2026",
@@ -199,7 +209,7 @@
       "partita": "Coppa Lombardia Prima Categoria – 2° turno, 28/10/2026 ore 20:00, in casa",
       "data": "2026-10-28",
       "competizione": "coppa",
-      "aggiornato": "2026-10-26T10:58:29+01:00",
+      "aggiornato": "2026-10-27T08:00:25+01:00",
       "squalificati": [],
       "diffidati": [
         {
