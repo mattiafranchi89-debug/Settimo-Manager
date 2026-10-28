@@ -22,7 +22,7 @@ export default function DisciplineRows({ player, insight }) {
             <span>
               <b>{COMPS[key].label}</b>
               <span style={{ color: 'var(--muted)', marginLeft: 8 }}>🟨 {d.yellow} · 🟥 {d.red}</span>
-              <small style={{ display: 'block', color: 'var(--muted)' }}>squalifica ogni {d.per} ammonizioni o dopo un'espulsione</small>
+              <small style={{ display: 'block', color: 'var(--muted)' }}>squalifica {d.rule} o dopo un'espulsione</small>
             </span>
             {status}
           </div>

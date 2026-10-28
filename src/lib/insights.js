@@ -4,23 +4,30 @@
  * the heavy aggregation runs once, when an administrator recalculates.
  */
 
-import { cardsOf, isSuspendedFor, pendingSuspension } from './discipline';
+import { cardsOf, isSuspendedFor, pendingSuspension, parseThresholds, thresholdAfter, thresholdsText, LEAGUE_THRESHOLDS } from './discipline';
 
-/** Soglie di squalifica: un numero (solo campionato) oppure la configurazione della società. */
+/**
+ * Soglie di squalifica: la configurazione della società oppure, per
+ * compatibilità, un numero (campionato, ogni N ammonizioni). Il campionato
+ * segue la regola progressiva LND; la coppa una soglia fissa.
+ */
 function thresholds(cfg) {
-  if (typeof cfg === 'object' && cfg) return { league: Number(cfg.cardsPerSuspension) || 4, cup: Number(cfg.cupCardsPerSuspension) || 2 };
-  return { league: Number(cfg) || 4, cup: 2 };
+  if (typeof cfg === 'object' && cfg) {
+    return { league: parseThresholds(cfg.cardThresholds) || LEAGUE_THRESHOLDS, cup: [Number(cfg.cupCardsPerSuspension) || 2] };
+  }
+  return { league: parseThresholds(cfg) || LEAGUE_THRESHOLDS, cup: [2] };
 }
-const discipline = ({ y, r }, per) => {
-  const toSuspension = per - (y % per);
-  return { yellow: y, red: r, toSuspension, diffidato: y > 0 && toSuspension === 1, per };
+const discipline = ({ y, r }, list) => {
+  const next = thresholdAfter(list, y);
+  const toSuspension = next - y;
+  return { yellow: y, red: r, toSuspension, diffidato: y > 0 && toSuspension === 1, next, rule: thresholdsText(list) };
 };
 
 /**
  * `cfg` è la configurazione della società (soglie di campionato e di coppa)
- * oppure, per compatibilità, il solo numero di ammonizioni del campionato.
+ * oppure, per compatibilità, le sole soglie del campionato.
  */
-export function playerInsight(player, cfg = 4) {
+export function playerInsight(player, cfg) {
   const s = player?.stats || {};
   const t = thresholds(cfg);
   const cards = cardsOf(s);
@@ -60,8 +67,8 @@ export function playerInsight(player, cfg = 4) {
   };
 }
 
-export function buildInsights({ players, cardsPerSuspension = 4, cupCardsPerSuspension = 2, club }) {
-  const cfg = club || { cardsPerSuspension, cupCardsPerSuspension };
+export function buildInsights({ players, cardThresholds, cupCardsPerSuspension = 2, club }) {
+  const cfg = club || { cardThresholds, cupCardsPerSuspension };
   const out = {};
   players.forEach((p) => { out[p.id] = playerInsight(p, cfg); });
   return out;

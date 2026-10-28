@@ -112,7 +112,8 @@ export const DEFAULT_CLUB = {
   colors: { primary: '#D40000', primaryDark: '#A80000' },
   homeStadium: 'Centro Sportivo Comunale, Settimo Milanese',
   maxCallup: 20,
-  cardsPerSuspension: 4,
+  // Campionato: squalifica alla 5ª, 9ª, 12ª, 14ª ammonizione, poi a ogni ammonizione.
+  cardThresholds: [5, 9, 12, 14, 15],
   // Coppa Lombardia: soglia propria, i cartellini non si sommano al campionato.
   cupCardsPerSuspension: 2,
   distintaPhone: '',
