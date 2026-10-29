@@ -436,6 +436,25 @@ table.data tr:last-child td { border-bottom: none; }
 .report__table td:first-child { white-space: normal; }
 .report__bar { display: block; width: 100%; max-width: 90px; margin-top: 3px; height: 6px; background: var(--grey-50); border-radius: 4px; overflow: hidden; vertical-align: middle; }
 .report__bar span { display: block; height: 100%; background: var(--red); }
+.report__list { margin: 0 0 4px; padding-left: 18px; font-size: 14px; }
+.report__list li { margin: 3px 0; }
+.report__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 700px) { .report__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.report__fact { border: 1px solid var(--line-soft); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+.report__fact b { font-family: var(--display); font-size: 20px; line-height: 1.1; }
+.report__fact span { font-size: 12px; color: var(--muted); }
+.report__bands { display: grid; grid-template-columns: 56px 1fr 1fr; gap: 4px 8px; align-items: center; font-size: 13px; }
+.report__band { position: relative; height: 16px; background: var(--grey-50); border-radius: 5px; overflow: hidden; }
+.report__band span { display: block; height: 100%; }
+.report__band--for span { background: var(--green); }
+.report__band--against span { background: var(--red); }
+.report__band em { position: absolute; right: 6px; top: 0; font-style: normal; font-size: 11px; line-height: 16px; }
+.report__prog { display: flex; flex-wrap: wrap; gap: 4px; }
+.report__step { display: flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 2px; border-radius: 8px; font-size: 11px; }
+.report__step b { font-size: 15px; }
+.report__step--V { background: #e3f4ea; color: #146c3a; }
+.report__step--N { background: #fff1de; color: #9a5300; }
+.report__step--P { background: #fde4e4; color: #a80000; }
 .report__foot { text-align: center; color: var(--muted); font-size: 12px; margin: 16px 0; }
 @media print {
   .report { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -447,4 +466,6 @@ table.data tr:last-child td { border-bottom: none; }
   .report table.data td, .report table.data th { padding-top: 3px; padding-bottom: 3px; }
   .report table.data tr { break-inside: avoid; }
   .report .stack { gap: 3px !important; }
+  .report .report__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .report .report__fact, .report .report__bands, .report .report__prog { break-inside: avoid; }
 }

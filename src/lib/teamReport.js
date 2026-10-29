@@ -4,6 +4,7 @@
 
 import { toDate } from './format';
 import { compBucket } from './discipline';
+import { gironeRow } from './scouting';
 
 export const PERIODS = {
   stagione: { label: 'Stagione' },
@@ -147,4 +148,141 @@ export function injuryReport(players = [], now = new Date()) {
       };
     })
     .sort((a, b) => (a.expectedReturn?.getTime() ?? Infinity) - (b.expectedReturn?.getTime() ?? Infinity) || a.name.localeCompare(b.name));
+}
+
+/* ------------------------------ performance ------------------------------ */
+
+const BANDS = ['1-15', '16-30', '31-45+', '46-60', '61-75', '76-90+'];
+const bandOf = (minute, duration = 90) => {
+  const m = Number(minute) || duration;
+  if (m <= 45) return Math.min(2, Math.floor((Math.max(1, m) - 1) / 15));
+  return Math.min(5, 3 + Math.floor((m - 46) / 15));
+};
+const record = (rows) => {
+  const v = rows.filter((r) => r.pts === 3).length, n = rows.filter((r) => r.pts === 1).length;
+  const pts = rows.reduce((a, r) => a + r.pts, 0);
+  return {
+    played: rows.length, v, n, p: rows.length - v - n, pts,
+    gf: rows.reduce((a, r) => a + r.us, 0), gs: rows.reduce((a, r) => a + r.them, 0),
+    ppg: rows.length ? pts / rows.length : null
+  };
+};
+
+/**
+ * Le prestazioni oltre il risultato: per competizione, strisce, situazioni di
+ * gara (chi segna per primo, rimonte), minuti dei gol, peso della panchina,
+ * disciplina di squadra e confronto con il girone. Le analisi sui minuti dei
+ * gol usano solo le gare in cui i gol registrati tornano con il risultato.
+ */
+export function performanceReport({ trend, matchStats = [], girone = null, clubName = '', withStanding = true }) {
+  const rows = trend.rows;
+  const byComp = {
+    campionato: record(rows.filter((r) => compBucket(r.competition) === 'campionato')),
+    coppa: record(rows.filter((r) => compBucket(r.competition) === 'coppa'))
+  };
+
+  // Strisce: dalla gara più recente all'indietro, e la serie di vittorie più lunga.
+  const back = [...rows].reverse();
+  const run = (ok) => { let k = 0; for (const r of back) { if (!ok(r)) break; k += 1; } return k; };
+  let bestWins = 0, cur = 0;
+  rows.forEach((r) => { cur = r.pts === 3 ? cur + 1 : 0; bestWins = Math.max(bestWins, cur); });
+  const margin = (r) => r.us - r.them;
+  const biggestWin = rows.filter((r) => margin(r) > 0).sort((a, b) => margin(b) - margin(a) || b.us - a.us)[0] || null;
+  const worstLoss = rows.filter((r) => margin(r) < 0).sort((a, b) => margin(a) - margin(b))[0] || null;
+  const streaks = {
+    unbeaten: run((r) => r.pts > 0), wins: run((r) => r.pts === 3), noWin: run((r) => r.pts < 3),
+    scoring: run((r) => r.us > 0), cleanSheets: run((r) => r.them === 0), bestWins
+  };
+  const goals = {
+    perGame: rows.length ? trend.gf / rows.length : null, againstPerGame: rows.length ? trend.gs / rows.length : null,
+    failedToScore: rows.filter((r) => r.us === 0).length, cleanSheets: trend.cleanSheets,
+    bigWins: rows.filter((r) => margin(r) >= 2).length, oneGoalGames: rows.filter((r) => Math.abs(margin(r)) === 1).length
+  };
+
+  // Gare con scheda chiusa e gol registrati coerenti con il risultato.
+  const statsOf = Object.fromEntries(matchStats.filter((m) => m.closed).map((m) => [m.eventId || m.id, m]));
+  const scored = BANDS.map(() => 0), conceded = BANDS.map(() => 0);
+  const situations = { first: [], behind: [], goalless: 0, timed: 0 };
+  let pointsFromBehind = 0, pointsLostFromAhead = 0;
+  const lateGoals = { for: 0, against: 0 };
+  let benchGoals = 0, ownGoals = 0, yellows = 0, reds = 0, withSheet = 0;
+  const scorers = new Set();
+  const starters = {};
+  const mvp = {};
+  rows.forEach((r) => {
+    const m = statsOf[r.id];
+    if (!m) return;
+    withSheet += 1;
+    Object.entries(m.totals || {}).forEach(([pid, t]) => {
+      yellows += t.yellow || 0; reds += t.red || 0;
+      if (t.goals) { scorers.add(pid); ownGoals += t.goals; if (!t.started) benchGoals += t.goals; }
+      if (t.started) starters[pid] = (starters[pid] || 0) + 1;
+    });
+    if (m.mvp?.playerId) mvp[m.mvp.playerId] = (mvp[m.mvp.playerId] || 0) + 1;
+    const ev = (m.events || []).filter((e) => e.type === 'gol' || e.type === 'gol_subito');
+    const ours = ev.filter((e) => e.type === 'gol').length, theirs = ev.length - ours;
+    if (ours !== r.us || theirs !== r.them || ev.some((e) => e.minute == null)) return;
+    situations.timed += 1;
+    const dur = Number(m.duration) || 90;
+    let us = 0, them = 0, wasBehind = false, wasAhead = false;
+    [...ev].sort((a, b) => a.minute - b.minute).forEach((e, k) => {
+      const mine = e.type === 'gol';
+      (mine ? scored : conceded)[bandOf(e.minute, dur)] += 1;
+      if (e.minute > dur - 15) lateGoals[mine ? 'for' : 'against'] += 1;
+      if (k === 0) (mine ? situations.first : situations.behind).push(r);
+      if (mine) us += 1; else them += 1;
+      if (us < them) wasBehind = true;
+      if (us > them) wasAhead = true;
+    });
+    if (!ev.length) situations.goalless += 1;
+    if (wasBehind) pointsFromBehind += r.pts;
+    if (wasAhead) pointsLostFromAhead += 3 - r.pts;
+  });
+  const half = (list, from, to) => list.slice(from, to).reduce((a, b) => a + b, 0);
+
+  // Confronto con il girone: attacco e difesa fra tutte, risultati con le prime e le ultime.
+  let league = null;
+  const table = girone?.standing?.rows || [];
+  const us = withStanding ? gironeRow(girone, clubName) : null;
+  if (us && table.length) {
+    const sorted = [...table].sort((a, b) => a.pos - b.pos);
+    const idx = sorted.indexOf(us);
+    const topHalf = Math.ceil(table.length / 2);
+    const vs = { top: [], bottom: [] };
+    rows.filter((r) => compBucket(r.competition) === 'campionato').forEach((r) => {
+      const o = gironeRow(girone, r.opponent);
+      if (o && o !== us) (o.pos <= topHalf ? vs.top : vs.bottom).push(r);
+    });
+    league = {
+      pos: us.pos, of: table.length, pts: us.pts, asOf: girone.standing.asOf,
+      attackRank: 1 + table.filter((t) => t.gf > us.gf).length,
+      defenseRank: 1 + table.filter((t) => t.gs < us.gs).length,
+      gapAbove: idx > 0 ? sorted[idx - 1].pts - us.pts : null,
+      gapBelow: idx >= 0 && idx < sorted.length - 1 ? us.pts - sorted[idx + 1].pts : null,
+      leaderGap: sorted[0] && sorted[0] !== us ? sorted[0].pts - us.pts : 0,
+      top: record(vs.top), bottom: record(vs.bottom), topHalf
+    };
+  }
+
+  // Punti giornata per giornata in campionato (cumulati).
+  let tot = 0;
+  const progression = rows.filter((r) => compBucket(r.competition) === 'campionato').map((r) => ({ ...r, cum: (tot += r.pts) }));
+
+  return {
+    byComp, streaks, goals, biggestWin, worstLoss, progression, league,
+    bands: BANDS.map((label, i) => ({ label, scored: scored[i], conceded: conceded[i] })),
+    halves: { scored: [half(scored, 0, 3), half(scored, 3, 6)], conceded: [half(conceded, 0, 3), half(conceded, 3, 6)] },
+    situations: {
+      timed: situations.timed,
+      first: record(situations.first), behind: record(situations.behind),
+      pointsFromBehind, pointsLostFromAhead
+    },
+    lateGoals,
+    sheet: {
+      matches: withSheet, scorers: scorers.size, benchGoals, ownGoals,
+      yellows, reds, cardsPerGame: withSheet ? (yellows + reds) / withSheet : null,
+      startersUsed: Object.keys(starters).length,
+      mvp: Object.entries(mvp).sort((a, b) => b[1] - a[1]).slice(0, 3)
+    }
+  };
 }
