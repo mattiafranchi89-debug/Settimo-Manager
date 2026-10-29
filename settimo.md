@@ -1,5 +1,121 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma Gare dal 29 Ottobre al 02 Novembre 2026 CRL (2026-10-29)
+Pagina: https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 152
+```
+PARTIZAN BONOLA ASD         FROG MILANO                        C.S.COMUNALE "LA SPEZIA"(E.A)                 01/11/2026     17:00   8A MILANO                                 VIA FAMAGOSTA,79
+PRO PESCHIERA BORROMEO      BUCCINASCO                         CAMPO COMUNALE DI LINATE                      01/11/2026     14:30 8A PESCHIERA BORROMEO FRAZ.LINATE           VIA PASCOLI SNC
+QUINTO ROMANO A.S.D.        GARIBALDINA 1932                   C.S. "QUINTO ROMANO" N.1(E.A.                 01/11/2026     14:30 8A MILANO - QUINTO ROMANO                   VIA VITTORIO DE SICA,14
+SETTIMO MILANESE            POLISPORTIVA OR.PA.S.              C.S."S.PERTINI" - CAMPO N.1                   01/11/2026     14:30 8A CORNAREDO                                VIA DELLO SPORT N.1
+VILLA S.S.D.R.L.            LEONE XIII SPORT                   C.S.COM. "G.MAURO" (E.A.)                     01/11/2026     15:00 8A MILANO                                   VIA USSI 18
+GIRONE B                                                                                                   DATA           ORA                                                                                     STATO GARA
+
+```
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 379
+```
+ORATORIANA VITTUONE ASD     ORIONE                             ORATORIO SAN LUIGI -CAMPO N.1                 31/10/2026     17:30 8A VITTUONE                                 VIA BIXIO,17
+POL.D. U.S. CASSOLESE       SUPERGA G.S. A.S.D.                CAMPO SPORTIVO COMUNALE N.1                   31/10/2026     14:30 8A CASSOLNOVO                               VIA GENOVA
+QUINTO ROMANO A.S.D.        VIGHI 1967                         C.S. "QUINTO ROMANO" N.1(E.A.                 31/10/2026     17:30 8A MILANO - QUINTO ROMANO                   VIA VITTORIO DE SICA,14
+SETTIMO MILANESE            VICTORIA MMVII A.S.D.              C.S."S.PERTINI" - CAMPO N.1                   31/10/2026     15:00 8A CORNAREDO                                VIA DELLO SPORT N.1
+ACCADEMIA MILANESE          FATIMATRACCIA                      C.S.COMUNALE A.MORATTI N.1                    01/11/2026     14:30 8A VERMEZZO CON ZELO                        VIA ADA NEGRI, 9
+GIRONE G                                                                                                   DATA           ORA                                                                                    STATO GARA
+
+```
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 596
+```
+ARDOR BOLLATE POL. ASD      TRIESTINA 1946                     C.S.ORATORIALE "MONS.G.SALA"                  31/10/2026     16:30 8A BOLLATE                                  VIA REPUBBLICA 6                        V
+CENTRO GIOV. BOFFALORESE    O.SA.F. A.S.D. G.S.O.              C.S.COMUNALE "UMBERTO RE" N.1                 31/10/2026     15:00 8A BOFFALORA SOPRA TICINO                   VIA GIULINI S.N.C.
+FOOTBALL CLUB PARABIAGO     S.C. UNITED A.S.D.                 C.S."LIBERO FERRARIO" (E.A)                   31/10/2026     18:30 8A PARABIAGO                                VIA MARCONI ANG.VIA ALFIERI
+VIGHI 1967                  SOLESE A.S.D.                      C.S.VIGHIGNOLO E.A.                           31/10/2026     16:00 8A SETTIMO MILANESE FR.VIGHIGNOLO           VIA PACE S.N.C.                         V
+VIGOR F.C. A.S.D.           BASE 96 SEVESO                     C.S.COMUNALE "ENRICO TOTI"                    31/10/2026     16:00 8A PADERNO DUGNANO                          VIA RENATO SERRA SNC
+
+
+```
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 627
+```
+OLTREPO FBC                 BAGGIO SECONDO                     C.S.COMUNALE "CODEVILLA"                      01/11/2026     15:00 8A CODEVILLA LOC.CASCINA FORNACE            VIA PER VOGHERA,7
+PAVIA CALCIO 1911           ROZZANO CALCIO SRL SSD             C.S.COMUNALE                                  01/11/2026     14:30 8A CARBONARA AL TICINO                      VIA XXV APRILE
+POL.D. U.S. CASSOLESE       LA SPEZIA CALCIO                   CAMPO SPORTIVO COMUNALE N.1                   01/11/2026     10:00 8A CASSOLNOVO                               VIA GENOVA
+REAL TREZZANO               MILANO ARENA SPORT SSDARL          C.S.VIGHIGNOLO E.A.                           01/11/2026     14:30 8A SETTIMO MILANESE FR.VIGHIGNOLO           VIA PACE S.N.C.                           V
+GIRONE C                                                                                                   DATA           ORA                                                                                     STATO GARA
+
+
+```
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 696
+```
+FRIGIROLA 1952              SETTALESE                        C.S.COMUNALE "FRIGIROLA"                      01/11/2026     17:00   8A PAVIA                                  VIA SCARENZIO,4                           V
+POL. SAN BIAGIO A.S.D.      MONTANASO LOMBARDO               C.S. COMUNALE "EDWARD BREDA"                  01/11/2026     14:30 8A CODOGNO                                  VIA DUCA D'AOSTA                          V
+VICTORIA MMVII A.S.D.       FISSIRAGA A.S.D.                 CAMPO SPORTIVO COMUNALE                       01/11/2026     10:00 8A NOVIGLIO                                 VIA LEONARDO DA VINCI 2/2
+VIGHIGNOLO                  ROGOREDO 1984 A.S.D.             C.S.VIGHIGNOLO E.A.                           01/11/2026     11:00   8A SETTIMO MILANESE FR.VIGHIGNOLO         VIA PACE S.N.C.
+GIRONE D                                                                                                 DATA           ORA                                                                                     STATO GARA
+
+
+```
+
+### Programma Gare dal 29 Ottobre al 02 Novembre 2026.pdf – riga 1549
+```
+GIRONE A                                                                                                   DATA           ORA                                                                                     STATO GARA
+
+
+ALCIONE MILANO SSD A RL     LESMO SSD ARL                      C.S.COMUNALE (E.A)                            31/10/2026     18:00 6A SETTIMO MILANESE LOC. SEGURO             VIA SANDRO PERTINI 13
+BORGARELLO                  BRESSO CALCIO S.R.L.               C.S. COMUNALE "TINO LIBERALI"                 31/10/2026     16:00 6A BORGARELLO                               VIA DEI MEZZANI,3
+LEONE XIII SPORT            FOOTBALL CLUB SEDRIANO             C.S."LEONE XIII"- CAMPO 1(E.A                 31/10/2026     18:15   6A MILANO                                 VIA ROSSETTI 4
+RIOZZESE A R.L.             ARSAGHESE         SQ.B             C.S.COMUNALE CAMPO 2 E.A.                     01/11/2026     11:30   6A CERRO AL LAMBRO FRAZ. RIOZZO           VIA IV NOVEMBRE
+```
+
+## COMUNICATO UFFICIALE N° 43 CRL (2026-10-29)
+Pagina: https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43
+
+### Comunicato Ufficiale Nr.43 del 29.10.2026.pdf – riga 1392
+```
+FROG MILANO                     - IRIS 1914                   4-0        CASTELLO CITTA DI CANTU     - LA DOMINANTE                  4-0
+GARIBALDINA 1932                - NEVADA CALCIO               1-2        ITALA A.S.D.                - BRIANTEA CALCIO A.S.D.        8-1
+LEONE XIII SPORT                - QUINTO ROMANO A.S.D.        3-4        LUISAGO GRANDATE ASD        - LOMAZZO CALCIO A.S.D.         2-1
+POLISPORTIVA DI NOVA            - SETTIMO MILANESE            2-3        MONTESOLARO G.S. A.S.D.     - PRO LISSONE CALCIO            2-2
+POLISPORTIVA OR.PA.S.           - PRO PESCHIERA BORROMEO      3-2        OLIMPIA CALCIO CADORAGO     - VIRTUS CALCIO CERMENATE       0-1
+SANGIULIANO CVS A R.L.          - VILLA S.S.D.R.L.            2-2        TRIUGGESE                   - GIUSSANO CALCIO A.S.D.        2-0
+
+```
+
+### Comunicato Ufficiale Nr.43 del 29.10.2026.pdf – riga 2328
+```
+GSO SAN GIORGIO               - ARDITA CITTADELLA 1934         0-4       FATIMATRACCIA                   - CESANO BOSCONE IDROSTAR    2-2
+INVERIGO                      - ALTO LARIO CALCIO A.S.D.       1-3       (2) FOOTBALL CLUB SEDRIANO      - QUINTO ROMANO A.S.D.       6-0
+(1) LIBERTAS SAN BARTOLOMEO - NOVEDRATE                        1-1       (1) ORIONE                      - POL.D. U.S. CASSOLESE      5-2
+LUISAGO GRANDATE ASD          - SIRTORESE                      3-2       SUPERGA G.S. A.S.D.             - SETTIMO MILANESE           1-5
+(1) MONGUZZO 1997             - OLIMPIA CALCIO CADORAGO        2-2       VICTORIA MMVII A.S.D.           - FROG MILANO                2-3
+(1) PONTELAMBRESE A.S.D.      - LESMO SSD ARL                  1-0       (1) VIGHI 1967                  - ACCADEMIA MILANESE         0-0
+(1) - disputata il 25/10/2026                                            (1) - disputata il 25/10/2026
+```
+
+### Classifiche CU_43.pdf – riga 271
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            18   7   6   0   1   19    7    12   0
+A.C. GARIBALDINA 1932                            13   7   4   1   2   18   12     6   0
+A.C.D. FROG MILANO                               12   7   3   3   1   14    9     5   0
+POL. BUCCINASCO                                  12   7   3   3   1   11    6     5   0
+```
+
+### Classifiche CU_43.pdf – riga 632
+```
+POL.D. U.S. CASSOLESE                         9   6   3   0   3   16   11     5   0
+A.C.D. FROG MILANO                            9   7   3   0   4   19   15     4   0
+U.S. QUINTO ROMANO A.S.D.                     7   7   2   1   4   13   20    -7   0
+U.S. SETTIMO MILANESE                         7   7   2   1   4   12   25   -13   0
+POL. BUCCINASCO                               7   6   2   1   3    9   12    -3   0
+A.S.D. VIGHI 1967                             5   6   1   2   3    7   16    -9   0
+A.S.D. FATIMATRACCIA                          4   6   1   1   4    4   20   -16   0
+```
+
 ## COMUNICATO UFFICIALE N° 42 CRL (2026-10-27)
 Pagina: https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42
 
