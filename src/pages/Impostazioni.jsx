@@ -240,7 +240,7 @@ export default function Impostazioni() {
         <div className="row2">
           <Field label="Massimo convocati"><Input type="number" min="11" max="30" value={form.maxCallup} onChange={set('maxCallup')} /></Field>
           <Field label="Squalifica alla N-esima ammonizione · campionato" hint="Prima Categoria: 5, 9, 12, 14, 15 (dopo l'ultima, a ogni ammonizione). Un'espulsione squalifica sempre.">
-            <Input inputMode="numeric" value={Array.isArray(form.cardThresholds) ? form.cardThresholds.join(', ') : form.cardThresholds ?? ''} onChange={set('cardThresholds')} />
+            <Input value={Array.isArray(form.cardThresholds) ? form.cardThresholds.join(', ') : form.cardThresholds ?? ''} onChange={set('cardThresholds')} />
           </Field>
           <Field label="Ammonizioni per squalifica · Coppa Lombardia" hint="Coppa: 2. Non fa cumulo con il campionato.">
             <Input type="number" min="1" max="10" value={form.cupCardsPerSuspension ?? 2} onChange={set('cupCardsPerSuspension')} />
