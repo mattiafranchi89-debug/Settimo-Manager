@@ -19,7 +19,6 @@ import { can } from '../lib/permissions';
  */
 const one = (x) => (x == null ? '—' : x.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 const tone = (pct) => (pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--orange)' : 'var(--red)');
-const first = (name = '') => name.split(' ')[0];
 const num = (x) => (x == null ? 0 : Math.round(x * 100) / 100);
 const dm = (d) => d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
 
