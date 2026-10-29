@@ -422,3 +422,29 @@ table.data tr:last-child td { border-bottom: none; }
   100% { transform: translateX(320%); }
 }
 #splash.is-hidden { opacity: 0; pointer-events: none; }
+
+/* ---------- report per la squadra ---------- */
+.report__head { display: flex; gap: 12px; align-items: center; margin: 4px 0 14px; }
+.report__head img { width: 56px; height: 56px; object-fit: contain; }
+.report__head h1 { font-family: var(--display); font-size: 22px; margin: 0; text-transform: uppercase; letter-spacing: .02em; }
+.report__head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.report h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 14px 0 6px; }
+.report__two { display: grid; gap: 12px; }
+@media (min-width: 700px) { .report__two { grid-template-columns: 1fr 1fr; } }
+.report__two h3 { margin-top: 0; }
+.report__table td, .report__table th { padding-left: 6px; padding-right: 6px; }
+.report__table td:first-child { white-space: normal; }
+.report__bar { display: block; width: 100%; max-width: 90px; margin-top: 3px; height: 6px; background: var(--grey-50); border-radius: 4px; overflow: hidden; vertical-align: middle; }
+.report__bar span { display: block; height: 100%; background: var(--red); }
+.report__foot { text-align: center; color: var(--muted); font-size: 12px; margin: 16px 0; }
+@media print {
+  .report { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .report .grid--kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .report .kpi__value { font-size: 22px; }
+  .report .card { margin-bottom: 10px; break-inside: auto; }
+  .report .card__head, .report .grid--kpi, .report h3 { break-inside: avoid; break-after: avoid; }
+  .report table.data { font-size: 11px; }
+  .report table.data td, .report table.data th { padding-top: 3px; padding-bottom: 3px; }
+  .report table.data tr { break-inside: avoid; }
+  .report .stack { gap: 3px !important; }
+}
