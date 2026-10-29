@@ -51,6 +51,7 @@ const Importa = lazyPage(() => import('./pages/Importa'));
 const Diagnostica = lazyPage(() => import('./pages/Diagnostica'));
 const Registro = lazyPage(() => import('./pages/Registro'));
 const Analisi = lazyPage(() => import('./pages/Analisi'));
+const Report = lazyPage(() => import('./pages/Report'));
 const Avversari = lazyPage(() => import('./pages/Avversari'));
 const Comunicati = lazyPage(() => import('./pages/Comunicati'));
 const Evento = lazyPage(() => import('./pages/Evento'));
@@ -161,6 +162,8 @@ function App() {
         <Route path="evento/:id" element={<Protected perm="players.read"><Evento /></Protected>} />
         <Route path="comunicati" element={<Protected perm="scouting.read"><Comunicati /></Protected>} />
         <Route path="analisi" element={<Protected perm="players.read"><Analisi /></Protected>} />
+        {/* Raggiungibile dal pulsante in Analisi. */}
+        <Route path="report" element={<Protected perm="players.read"><Report /></Protected>} />
         <Route path="io" element={<MiaPagina />} />
         <Route path="cassa" element={<Cassa />} />
         <Route path="squadra" element={<Squadra />} />

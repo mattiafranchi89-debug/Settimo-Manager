@@ -3,29 +3,11 @@ import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
 import { suspendedIn } from '../lib/discipline';
-import { Card, Kpi, Badge, Empty, Loading, Alert } from '../components/ui';
+import { Card, Kpi, Badge, Empty, Loading, Alert, Bars, Button } from '../components/ui';
+import { Link } from 'react-router-dom';
 import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
 import { can } from '../lib/permissions';
 import { ensureAttendanceSummaries } from '../lib/trainings';
-
-/* ----------------------- barre disegnate senza librerie ----------------------- */
-
-function Bars({ rows, max, unit = '', tone = 'var(--red)' }) {
-  const top = max || Math.max(1, ...rows.map((r) => r.value));
-  return (
-    <div className="stack" style={{ gap: 6 }}>
-      {rows.map((r) => (
-        <div key={r.label} style={{ display: 'grid', gridTemplateColumns: '92px 1fr 48px', gap: 8, alignItems: 'center', fontSize: 13 }}>
-          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.label}</span>
-          <span style={{ background: 'var(--grey-50)', borderRadius: 6, height: 14, overflow: 'hidden' }}>
-            <span style={{ display: 'block', height: '100%', width: `${Math.min(100, (r.value / top) * 100)}%`, background: r.color || tone, borderRadius: 6 }} />
-          </span>
-          <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.value}{unit}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -66,6 +48,7 @@ export default function Analisi() {
     <>
       <div className="pagehead">
         <div><h1>Andamento squadra</h1><p>Stagione {season} · {played.length} gare con risultato</p></div>
+        {staff && <Button as={Link} to="/report" size="sm" variant="secondary">📄 Report per la squadra</Button>}
       </div>
       <div className="chiprow">
         {TABS.filter(([k]) => staff || ['rendimento', 'rotazione', 'disciplina'].includes(k)).filter(([k]) => k !== 'impiego' || staff).map(([k, l]) => (

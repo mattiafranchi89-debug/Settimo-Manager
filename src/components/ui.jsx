@@ -130,3 +130,22 @@ export function ToastProvider({ children }) {
     </ToastCtx.Provider>
   );
 }
+
+/* ----------------------- barre disegnate senza librerie ----------------------- */
+
+export function Bars({ rows, max, unit = '', tone = 'var(--red)', labelWidth = 92 }) {
+  const top = max || Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="stack" style={{ gap: 6 }}>
+      {rows.map((r) => (
+        <div key={r.label} style={{ display: 'grid', gridTemplateColumns: `${labelWidth}px 1fr 48px`, gap: 8, alignItems: 'center', fontSize: 13 }}>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.label}</span>
+          <span style={{ background: 'var(--grey-50)', borderRadius: 6, height: 14, overflow: 'hidden' }}>
+            <span style={{ display: 'block', height: '100%', width: `${Math.min(100, (r.value / top) * 100)}%`, background: r.color || tone, borderRadius: 6 }} />
+          </span>
+          <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.value}{unit}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
