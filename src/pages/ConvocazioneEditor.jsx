@@ -66,13 +66,18 @@ export default function ConvocazioneEditor() {
   // Assenze non giustificate negli allenamenti dall'ultima partita: solo un avviso.
   const [openedAt] = useState(() => new Date());
   const week = useMemo(() => trainingWindow(event, allEvents, openedAt), [event, allEvents, openedAt]);
-  const weekQ = useMemo(() => (week ? [where('date', '>=', week.from), where('date', '<', week.to)] : []),
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-    [week?.from?.getTime(), week?.to?.getTime()]);
-  const { data: weekEvents } = useCollection('events', weekQ, !!week);
+  const fromMs = week ? week.from.getTime() : null;
+  const toMs = week ? week.to.getTime() : null;
+  const weekQ = useMemo(() => (fromMs === null ? [] : [where('date', '>=', new Date(fromMs)), where('date', '<', new Date(toMs))]), [fromMs, toMs]);
+  const { data: weekEvents } = useCollection('events', weekQ, fromMs !== null);
   const [unexcused, setUnexcused] = useState({});
   useEffect(() => {
-    const sessions = weekEvents.filter((e) => e.type === 'training' && !e.cancelled);
+    // Solo le sedute della finestra di questa partita: cambiando gara la query
+    // precedente resta in memoria (anche se la nuova gara non ha una finestra).
+    const sessions = fromMs === null ? [] : weekEvents.filter((e) => {
+      const at = toDate(e.date)?.getTime();
+      return e.type === 'training' && !e.cancelled && at >= fromMs && at < toMs;
+    });
     if (!sessions.length) { setUnexcused({}); return undefined; }
     let alive = true;
     ensureAttendanceSummaries(sessions)
@@ -80,7 +85,7 @@ export default function ConvocazioneEditor() {
       // Senza i riepiloghi delle sedute vecchie si usano almeno quelli già salvati.
       .catch(() => { if (alive) setUnexcused(unexcusedAbsences(sessions, {})); });
     return () => { alive = false; };
-  }, [weekEvents]);
+  }, [weekEvents, fromMs, toMs]);
   // Diffide e squalifiche contano solo nella competizione della partita.
   const bucket = event ? compBucket(event.competition) : null;
   const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
