@@ -71,16 +71,19 @@ export function fixturePatch(match, f) {
   };
   if (!old || old.getTime() !== start.getTime()) {
     patch.date = start;
+    // Il ritrovo segue l'inizio; se mancava o non era plausibile (es. mezzanotte), 75 minuti prima.
     const meeting = toDate(match.meetingTime);
-    if (meeting && old) patch.meetingTime = new Date(meeting.getTime() + (start - old));
+    const lead = meeting && old ? old - meeting : null;
+    patch.meetingTime = lead != null && lead > 0 && lead <= 4 * 3600000
+      ? new Date(start.getTime() - lead)
+      : new Date(start.getTime() - 75 * 60000);
   }
-  // Campo e indirizzo ufficiali: anche quando il CRL sposta la gara su un altro campo.
-  if (f.venue && f.venue !== match.venue) {
-    patch.venue = f.venue;
-    if (f.address) patch.venueAddress = [f.address, f.city].filter(Boolean).join(', ');
-  } else if (!match.venueAddress && f.address) {
-    patch.venueAddress = [f.address, f.city].filter(Boolean).join(', ');
-  }
+  // Campo e indirizzo: si completano se mancano, e si sostituiscono solo se il CRL
+  // sposta la gara in un altro comune (un indirizzo scritto meglio a mano resta).
+  const crlAddress = [f.address, f.city].filter(Boolean).join(', ');
+  const otherTown = f.city && match.venueAddress && !match.venueAddress.toLowerCase().includes(f.city.toLowerCase());
+  if (f.venue && (!match.venue || otherTown)) patch.venue = f.venue;
+  if (crlAddress && (!match.venueAddress || otherTown)) patch.venueAddress = crlAddress;
   return patch;
 }
 
@@ -93,7 +96,8 @@ export async function syncFixtures(user) {
   const res = await fetch(FIXTURES_URL, { cache: 'no-store' }).catch(() => null);
   const data = res?.ok ? await res.json().catch(() => null) : null;
   if (!data?.fixtures?.length) return [];
-  const flag = `sm-fixtures-${data.generatedAt}`;
+  // v2: dopo la correzione dei nomi con spazi («Or. Pa. S.») si riallinea anche chi aveva già girato.
+  const flag = `sm-fixtures-v2-${data.generatedAt}`;
   try { if (localStorage.getItem(flag)) return []; } catch { /* ignorabile */ }
 
   const today0 = new Date(); today0.setHours(0, 0, 0, 0);
