@@ -303,6 +303,10 @@ function readings(perf, trend) {
   if (league && league.defenseRank === 1) out.push('Miglior difesa del girone.');
   if (league && league.attackRank === 1) out.push('Miglior attacco del girone.');
   if (league && league.top.played >= 2 && league.bottom.played >= 2 && (league.top.ppg ?? 0) + 0.5 < (league.bottom.ppg ?? 0)) out.push(`Con le squadre della parte alta facciamo ${avg(league.top.ppg)} punti a gara contro ${avg(league.bottom.ppg)} con quelle della parte bassa.`);
+  const top = perf.causes?.groups?.[0];
+  if (top && perf.causes.known >= 3 && top.n / perf.causes.known >= 0.4) {
+    out.push(`${Math.round((top.n / perf.causes.known) * 100)}% dei gol subiti nasce da ${top.label.toLowerCase()}: è lì che si lavora in settimana.`);
+  }
   if (sheet.cardsPerGame >= 3) out.push(`${avg(sheet.cardsPerGame)} cartellini a partita: troppe ammonizioni evitabili.`);
   return out;
 }
@@ -382,6 +386,17 @@ function Performance({ perf, trend, players }) {
             <Fact value={situations.pointsFromBehind} label="punti recuperati da sotto" />
             <Fact value={situations.pointsLostFromAhead} label="punti persi da avanti" />
           </div>
+        </>
+      )}
+
+      {perf.causes.known > 0 && (
+        <>
+          <h3>Come nascono i gol subiti</h3>
+          <Bars rows={perf.causes.causes.slice(0, 6).map((x) => ({ label: x.label, value: x.n, color: 'var(--red)' }))} labelWidth={170} />
+          <p><small>
+            {perf.causes.groups.map((g) => `${g.label} ${Math.round((g.n / perf.causes.known) * 100)}%`).join(' · ')}
+            {perf.causes.missing > 0 ? ` · ${perf.causes.missing} gol senza causa indicata` : ''}
+          </small></p>
         </>
       )}
 
