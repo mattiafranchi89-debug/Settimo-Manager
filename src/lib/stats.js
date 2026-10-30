@@ -2,6 +2,18 @@ import { writeBatch, doc } from 'firebase/firestore';
 import { db } from './firebase';
 import { callupFor } from './callup';
 import { compBucket } from './discipline';
+import { computeMatchTotals, sheetTotals } from './matchTotals';
+
+export { computeMatchTotals, sheetTotals };
+
+/**
+ * Versione del calcolo salvata con le statistiche: quando il modo di contare
+ * cambia, i giocatori con una versione più vecchia si ricalcolano da soli.
+ * 2: subentrati negli ultimi istanti contati, amichevoli a parte, sedute future escluse.
+ */
+export const STATS_VERSION = 2;
+export const needsRecalc = (players = []) =>
+  players.some((p) => p.stats && (p.stats.matchesPlayedTotal || 0) + (p.stats.totalTrainings || 0) > 0 && (p.stats.v || 0) < STATS_VERSION);
 
 export const EVENT_TYPES = {
   gol: { label: 'Gol', emoji: '⚽' },
@@ -11,51 +23,6 @@ export const EVENT_TYPES = {
   sostituzione: { label: 'Sostituzione', emoji: '🔁' },
   gol_subito: { label: 'Gol subito', emoji: '🥅', noPlayer: true }
 };
-
-/**
- * Per-player totals for one match.
- * `starters` and `bench` are arrays of player ids; `events` are
- * { minute, type, playerId, playerInId? } sorted by minute.
- * Minutes: starters play until subbed out / sent off or full time;
- * substitutes play from the minute they came on.
- */
-export function computeMatchTotals({ starters = [], bench = [], events = [], duration = 90 }) {
-  const t = {};
-  const ensure = (pid) => (t[pid] ||= { minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0, started: false, played: false });
-
-  const enteredAt = {};
-  const leftAt = {};
-  starters.forEach((pid) => { enteredAt[pid] = 0; ensure(pid).started = true; });
-
-  // Minuto mancante (eventi letti dal referto): in fondo, come a fine gara.
-  const at = (e) => (e.minute == null ? duration : e.minute);
-  [...events].sort((a, b) => at(a) - at(b)).forEach((e) => {
-    if (e.type === 'gol_subito' || !e.playerId) return;
-    const s = ensure(e.playerId);
-    switch (e.type) {
-      case 'gol': s.goals += 1; break;
-      case 'assist': s.assists += 1; break;
-      case 'gialla': s.yellow += 1; if (s.yellow >= 2 && leftAt[e.playerId] == null) leftAt[e.playerId] = at(e); break;
-      case 'rossa': s.red += 1; if (leftAt[e.playerId] == null) leftAt[e.playerId] = at(e); break;
-      case 'sostituzione':
-        if (leftAt[e.playerId] == null) leftAt[e.playerId] = at(e);
-        if (e.playerInId) { enteredAt[e.playerInId] = at(e); ensure(e.playerInId); }
-        break;
-      default: break;
-    }
-  });
-
-  Object.keys(enteredAt).forEach((pid) => {
-    const out = leftAt[pid] ?? duration;
-    const mins = Math.max(0, Math.min(duration, out) - enteredAt[pid]);
-    const s = ensure(pid);
-    s.minutes = mins;
-    s.played = mins > 0 || s.started;
-  });
-  bench.forEach((pid) => ensure(pid));
-
-  return t;
-}
 
 /**
  * Runs a full recalculation after a staff action that changes the figures.
@@ -90,7 +57,11 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
   const seasonOf = Object.fromEntries(events.map((e) => [e.id, e.seasonId]));
   const inSeason = (docSeason, eventId) => !season || (docSeason || seasonOf[eventId] || season) === season;
   matchStats = matchStats.filter((m) => inSeason(m.seasonId, m.eventId));
-  attendance = attendance.filter((a) => inSeason(null, a.eventId));
+  // Solo sedute già arrivate: le presenze segnate in anticipo (assenze già
+  // comunicate per una seduta futura) non contano finché non è il giorno.
+  const endOfToday = new Date(); endOfToday.setHours(23, 59, 59, 999);
+  const sessionDay = Object.fromEntries(events.map((e) => [e.id, e.date?.toDate ? e.date.toDate() : e.date ? new Date(e.date) : null]));
+  attendance = attendance.filter((a) => inSeason(null, a.eventId) && !(sessionDay[a.eventId] > endOfToday));
   callups = (callups || []).filter((c) => inSeason(c.seasonId, c.eventId));
   const stats = {};
   const base = () => ({
@@ -104,14 +75,21 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     compDates: { campionato: [], coppa: [], amichevole: [] },
     // Pre-computed so the squad pages only ever read /players.
     lastMatchMinutes: 0, lastPlayedAt: null, minutesLast3: 0, totalTrainings: 0, matchesPlayedTotal: 0,
+    // Gare ufficiali chiuse (campionato e coppa): la base di presenze, minuti e gol.
+    officialMatches: 0,
+    // Le amichevoli non entrano nei numeri della stagione: si tengono a parte.
+    friendly: { appearances: 0, minutes: 0, goals: 0, assists: 0 },
     // Strisce in corso, contate dall'ultimo evento all'indietro.
-    trainingStreak: 0, startStreak: 0
+    trainingStreak: 0, startStreak: 0,
+    v: STATS_VERSION
   });
   // avgRating is kept in the shape for existing documents but no longer computed:
   // post-match ratings were removed from the application.
   players.forEach((p) => { stats[p.id] = base(); });
 
-  const closed = matchStats.filter((m) => m.closed && m.totals).sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+  const closed = matchStats.filter((m) => m.closed && (m.totals || m.events)).sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+  // Totali ricalcolati dagli eventi di ogni scheda (vedi sheetTotals).
+  const totalsOf = new Map(closed.map((m) => [m, sheetTotals(m)]));
   const lastThree = closed.slice(-3);
   const toDate = (v) => (v?.toDate ? v.toDate() : v ? new Date(v) : null);
 
@@ -123,16 +101,24 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     const n = ++ordinal[bucket];
     const d = toDate(m.date);
     if (d && !Number.isNaN(d.getTime())) dates[bucket].push(d.toISOString().slice(0, 10));
-    Object.entries(m.totals).forEach(([pid, s]) => {
+    const official = bucket !== 'amichevole';
+    Object.entries(totalsOf.get(m)).forEach(([pid, s]) => {
       const acc = stats[pid];
       if (!acc) return;
-      if (s.played) acc.appearances += 1;
-      if (s.started) acc.starts += 1; else if (s.played) acc.subs += 1;
-      acc.minutes += s.minutes || 0;
-      acc.goals += s.goals || 0;
-      acc.assists += s.assists || 0;
-      acc.yellowCards += s.yellow || 0;
-      acc.redCards += s.red || 0;
+      if (official) {
+        if (s.played) acc.appearances += 1;
+        if (s.started) acc.starts += 1; else if (s.played) acc.subs += 1;
+        acc.minutes += s.minutes || 0;
+        acc.goals += s.goals || 0;
+        acc.assists += s.assists || 0;
+        acc.yellowCards += s.yellow || 0;
+        acc.redCards += s.red || 0;
+      } else {
+        if (s.played) acc.friendly.appearances += 1;
+        acc.friendly.minutes += s.minutes || 0;
+        acc.friendly.goals += s.goals || 0;
+        acc.friendly.assists += s.assists || 0;
+      }
       acc.cards[bucket].y += s.yellow || 0;
       acc.cards[bucket].r += s.red || 0;
       // Storico dei cartellini per gara (n = numero d'ordine della gara nella competizione).
@@ -142,12 +128,14 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     });
   });
 
+  // Carico recente: le ultime tre gare chiuse, amichevoli comprese.
   lastThree.forEach((m) => {
-    Object.entries(m.totals).forEach(([pid, s]) => {
+    Object.entries(totalsOf.get(m)).forEach(([pid, s]) => {
       if (stats[pid]) stats[pid].minutesLast3 += s.minutes || 0;
     });
   });
-  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.compMatches = { ...ordinal }; s.compDates = { campionato: [...dates.campionato], coppa: [...dates.coppa], amichevole: [...dates.amichevole] }; });
+  const official = ordinal.campionato + ordinal.coppa;
+  Object.values(stats).forEach((s) => { s.matchesPlayedTotal = closed.length; s.officialMatches = official; s.compMatches = { ...ordinal }; s.compDates = { campionato: [...dates.campionato], coppa: [...dates.coppa], amichevole: [...dates.amichevole] }; });
 
   const trainingIds = new Set(attendance.map((a) => a.eventId));
   // Ognuno conta solo le sedute in cui era in rosa: le presenze si registrano
@@ -184,7 +172,7 @@ export async function recalculateAllStats({ players, matchStats, attendance, cal
     // Partite consecutive da titolare: si interrompe anche quando non è in distinta.
     let starts = 0;
     for (let k = closed.length - 1; k >= 0; k--) {
-      if (!closed[k].totals?.[pid]?.started) break;
+      if (!totalsOf.get(closed[k])?.[pid]?.started) break;
       starts += 1;
     }
     s.startStreak = starts;

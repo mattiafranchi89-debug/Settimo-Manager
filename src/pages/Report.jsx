@@ -52,7 +52,8 @@ export default function Report() {
   const players = playersAll;
   const trend = useMemo(() => teamTrend(matches, from, now), [matches, from, now]);
   const att = useMemo(() => trainingReport(trainings, players, from, now), [trainings, players, from, now]);
-  const mins = useMemo(() => minutesReport(matchStats, players, from, now), [matchStats, players, from, now]);
+  const compOf = useMemo(() => Object.fromEntries(matches.map((m) => [m.id, m.competition || ''])), [matches]);
+  const mins = useMemo(() => minutesReport(matchStats, players, from, now, compOf), [matchStats, players, from, now, compOf]);
   const injured = useMemo(() => injuryReport(players, now), [players, now]);
   const insights = useMemo(() => buildInsights({ players, club }), [players, club]);
   const standing = useMemo(() => gironeRow(girone, club.clubName), [girone, club.clubName]);
@@ -207,7 +208,7 @@ export default function Report() {
         {!mins.matches ? <Empty title="Nessuna scheda gara chiusa nel periodo" /> : (
           <>
             <div className="grid grid--kpi">
-              <Kpi value={mins.matches} label="Gare con scheda chiusa" accent />
+              <Kpi value={mins.matches} label="Gare ufficiali con scheda chiusa" accent />
               <Kpi value={mins.used} label="Giocatori impiegati" />
               <Kpi value={mins.scorers[0]?.goals ?? '—'} label={mins.scorers[0] ? `Gol di ${mins.scorers[0].name}` : 'Miglior marcatore'} />
               <Kpi value={mins.assistmen[0]?.assists ?? '—'} label={mins.assistmen[0] ? `Assist di ${mins.assistmen[0].name}` : 'Più assist'} />
@@ -229,7 +230,7 @@ export default function Report() {
                 </tbody>
               </table>
             </div>
-            <p><small>⚽ gol, 🎯 assist. Gare giocate (da titolare tra parentesi). % sui {mins.available} minuti disponibili nelle gare chiuse del periodo.</small></p>
+            <p><small>⚽ gol, 🎯 assist. Gare giocate (da titolare tra parentesi). % sui {mins.available} minuti disponibili nelle gare ufficiali chiuse del periodo (amichevoli escluse).</small></p>
           </>
         )}
       </Card>

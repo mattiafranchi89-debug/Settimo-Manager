@@ -17,7 +17,8 @@ export default function MiaPagina() {
   const { club } = useClub();
   const { data: me, loading } = useDoc('players', user?.playerId, !!user?.playerId);
   const { data: callups } = useCollection('callups', useMemo(() => [orderBy('matchDate', 'desc'), limit(60)], []), !!user?.playerId);
-  const { data: matches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []), !!user?.playerId);
+  // Solo la stagione: le convocazioni contate sono quelle di quest'anno.
+  const { data: matches } = useCollection('events', useMemo(() => [where('seasonId', '==', club.season), where('type', '==', 'match')], [club.season]), !!user?.playerId);
   const { data: squad } = useCollection('players', useMemo(() => [where('active', '==', true)], []), !!user?.playerId);
   const { data: myVotes } = useCollection('votes', useMemo(() => [where('voterUid', '==', user?.uid || '-')], [user?.uid]), !!user?.playerId);
   const { data: matchStats } = useCollection('matchStats', useMemo(() => [orderBy('date', 'desc'), limit(60)], []), !!user?.playerId);
@@ -98,6 +99,9 @@ export default function MiaPagina() {
             <tr><th>Convocazioni</th><td>{myCallups.length}</td></tr>
             <tr><th>Da titolare</th><td>{s.starts || 0}</td></tr>
             <tr><th>Subentrato</th><td>{s.subs || 0}</td></tr>
+            {s.friendly?.appearances > 0 && (
+              <tr><th>Amichevoli</th><td>{s.friendly.appearances} {s.friendly.appearances === 1 ? 'presenza' : 'presenze'} · {s.friendly.minutes}′{s.friendly.goals ? ` · ${s.friendly.goals} gol` : ''}</td></tr>
+            )}
             <tr><th>Ultima partita</th><td>{i.lastPlayed ? `${fmtDate(i.lastPlayed)} · ${i.lastMinutes}′` : 'nessuna'}</td></tr>
             <tr><th>Presenza agli allenamenti</th><td>{i.attendancePct != null ? `${i.attendancePct}%` : '—'}</td></tr>
           </tbody>

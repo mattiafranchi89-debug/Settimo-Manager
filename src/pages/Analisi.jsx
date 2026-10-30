@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../lib/auth';
 import { useCollection, useClub, where, orderBy, limit } from '../lib/db';
 import { playerInsight } from '../lib/insights';
-import { suspendedIn } from '../lib/discipline';
+import { suspendedIn, compBucket } from '../lib/discipline';
 import { Card, Kpi, Badge, Empty, Loading, Alert, Bars, Button } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
@@ -25,7 +25,7 @@ export default function Analisi() {
   const [tab, setTab] = useState('rendimento');
 
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: matchesAll } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []));
+  const { data: matchesAll } = useCollection('events', useMemo(() => [where('seasonId', '==', club.season), where('type', '==', 'match')], [club.season]));
   const { data: seasonEvents } = useCollection('events', useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'desc'), limit(500)], [club.season]), staff);
   const trainingsAll = useMemo(() => seasonEvents.filter((e) => e.type === 'training'), [seasonEvents]);
   // Solo la stagione: senza filtro gol e note si mescolavano con quelli delle stagioni passate.
@@ -41,13 +41,17 @@ export default function Analisi() {
   const matches = useMemo(() => matchesAll.filter((m) => !m.seasonId || m.seasonId === season), [matchesAll, season]);
   const trainings = useMemo(() => trainingsAll.filter((m) => !m.seasonId || m.seasonId === season), [trainingsAll, season]);
   const played = useMemo(() => matches.filter((m) => m.scoreHome != null).sort((a, b) => toDate(a.date) - toDate(b.date)), [matches]);
+  // Bilancio, punti e analisi dei gol: solo gare ufficiali, come in classifica e nel report.
+  const official = useMemo(() => played.filter((m) => compBucket(m.competition) !== 'amichevole'), [played]);
+  const competitionOf = useMemo(() => Object.fromEntries(matches.map((m) => [m.id, m.competition || ''])), [matches]);
+  const officialStats = useMemo(() => matchStats.filter((m) => compBucket(m.competition || competitionOf[m.eventId] || '') !== 'amichevole'), [matchStats, competitionOf]);
 
   if (loading) return <Loading />;
 
   return (
     <>
       <div className="pagehead">
-        <div><h1>Andamento squadra</h1><p>Stagione {season} · {played.length} gare con risultato</p></div>
+        <div><h1>Andamento squadra</h1><p>Stagione {season} · {official.length} gare ufficiali con risultato</p></div>
         {staff && <Button as={Link} to="/report" size="sm" variant="secondary">📄 Report per la squadra</Button>}
       </div>
       <div className="chiprow">
@@ -56,11 +60,11 @@ export default function Analisi() {
         ))}
       </div>
 
-      {tab === 'rendimento' && <Rendimento played={played} club={club} />}
-      {tab === 'rotazione' && <Rotazione players={players} />}
+      {tab === 'rendimento' && <Rendimento played={official} friendlies={played.length - official.length} club={club} />}
+      {tab === 'rotazione' && <Rotazione players={players} matchStats={officialStats} />}
       {tab === 'impiego' && <Impiego players={players} club={club} />}
       {tab === 'allenamenti' && <Allenamenti players={players} trainings={trainings} />}
-      {tab === 'gol' && <Gol matchStats={matchStats} matches={matches} />}
+      {tab === 'gol' && <Gol matchStats={officialStats} matches={matches} />}
       {tab === 'disciplina' && <Disciplina players={players} club={club} />}
       {tab === 'note' && <Note matchStats={matchStats} matches={matches} />}
     </>
@@ -69,10 +73,10 @@ export default function Analisi() {
 
 /* ------------------------------- rendimento ------------------------------- */
 
-function Rendimento({ played, club }) {
+function Rendimento({ played, friendlies = 0, club }) {
   const rows = played.map((m) => {
-    const us = m.home === false ? m.scoreAway : m.scoreHome;
-    const them = m.home === false ? m.scoreHome : m.scoreAway;
+    const us = Number(m.home === false ? m.scoreAway : m.scoreHome);
+    const them = Number(m.home === false ? m.scoreHome : m.scoreAway);
     const pts = us > them ? 3 : us === them ? 1 : 0;
     return { m, us, them, pts, home: m.home !== false };
   });
@@ -122,7 +126,7 @@ function Rendimento({ played, club }) {
         </Card>
       )}
 
-      <Card title="Tutte le gare">
+      <Card title="Gare ufficiali">
         <div className="tablewrap">
           <table className="data">
             <thead><tr><th>Data</th><th>Avversario</th><th>Ris.</th><th>Pt</th></tr></thead>
@@ -133,6 +137,7 @@ function Rendimento({ played, club }) {
             </tbody>
           </table>
         </div>
+              {friendlies > 0 && <p><small>Amichevoli escluse da bilancio e punti: {friendlies}.</small></p>}
       </Card>
     </>
   );
@@ -140,9 +145,12 @@ function Rendimento({ played, club }) {
 
 /* -------------------------------- rotazione -------------------------------- */
 
-function Rotazione({ players }) {
-  const total = Math.max(1, ...players.map((p) => p.stats?.matchesPlayedTotal || 0));
-  const possible = total * 90;
+function Rotazione({ players, matchStats = [] }) {
+  // Minuti disponibili: la durata vera delle gare ufficiali chiuse (90, 95…);
+  // senza schede caricate, 90 per ogni gara ufficiale.
+  const sheets = matchStats.filter((m) => m.closed);
+  const total = Math.max(1, sheets.length || Math.max(0, ...players.map((p) => p.stats?.officialMatches ?? p.stats?.matchesPlayedTotal ?? 0)));
+  const possible = sheets.length ? sheets.reduce((a, m) => a + (Number(m.duration) || 90), 0) : total * 90;
   const rows = sortPlayers(players).map((p) => ({ p, minutes: p.stats?.minutes || 0, pct: Math.round(((p.stats?.minutes || 0) / possible) * 100) }))
     .sort((a, b) => b.minutes - a.minutes);
   if (!rows.some((r) => r.minutes)) return <Card><Empty title="Nessun minutaggio">Chiudi le schede gara per popolare la rotazione.</Empty></Card>;
@@ -213,18 +221,19 @@ function Allenamenti({ players, trainings }) {
 
 /* ---------------------------------- gol ---------------------------------- */
 
-function Gol({ matchStats, matches }) {
+function Gol({ matchStats }) {
   const closed = matchStats.filter((m) => m.closed);
   const bands = ['1-15', '16-30', '31-45', '46-60', '61-75', '76-90+'];
   const scored = bands.map(() => 0), conceded = bands.map(() => 0);
+  // Gol senza minuto (es. letti dal referto): contati a parte, non spariscono.
+  const untimed = { scored: 0, conceded: 0 };
   closed.forEach((m) => (m.events || []).forEach((e) => {
     if (e.type !== 'gol' && e.type !== 'gol_subito') return;
-    const idx = Math.min(5, Math.max(0, Math.floor((e.minute - 1) / 15)));
-    (e.type === 'gol' ? scored : conceded)[idx] += 1;
+    const mine = e.type === 'gol';
+    if (e.minute == null || e.minute === '' || Number.isNaN(Number(e.minute))) { untimed[mine ? 'scored' : 'conceded'] += 1; return; }
+    const idx = Math.min(5, Math.max(0, Math.floor((Number(e.minute) - 1) / 15)));
+    (mine ? scored : conceded)[idx] += 1;
   }));
-  const scorers = {};
-  closed.forEach((m) => Object.entries(m.totals || {}).forEach(([pid, s]) => { if (s.goals) scorers[pid] = (scorers[pid] || 0) + s.goals; }));
-  const byId = Object.fromEntries(matches.map((m) => [m.id, m]));
   if (!closed.length) return <Card><Empty title="Nessuna gara chiusa">Chiudi le schede gara per vedere quando segniamo e subiamo.</Empty></Card>;
   const max = Math.max(1, ...scored, ...conceded);
   return (
@@ -234,7 +243,7 @@ function Gol({ matchStats, matches }) {
       </Card>
       <Card title="Gol subiti per fascia di minuti">
         <Bars rows={bands.map((b, i) => ({ label: b, value: conceded[i] }))} max={max} tone="var(--red)" />
-        <p><small>Registrali dalla scheda gara con «Gol subito». Se una fascia domina, è lì che si lavora in settimana.</small></p>
+        <p><small>Registrali dalla scheda gara con «Gol subito». Se una fascia domina, è lì che si lavora in settimana.{untimed.scored + untimed.conceded > 0 ? ` Senza minuto: ${untimed.scored} fatti, ${untimed.conceded} subiti.` : ''} Solo gare ufficiali.</small></p>
       </Card>
     </>
   );

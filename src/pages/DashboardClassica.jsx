@@ -6,6 +6,7 @@ import { Card, Kpi, Button, Badge, Empty, Loading, Alert } from '../components/u
 import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong, euro } from '../lib/format';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
+import { useStatsUpgrade } from '../lib/useStatsUpgrade';
 
 /**
  * Dashboard com'era al 9 ottobre 2026, per chi usa l'esperienza classica
@@ -42,6 +43,7 @@ export default function DashboardClassica() {
     [players, club]
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
+  useStatsUpgrade(players, user?.role, club.season);
 
   // Compleanni nei prossimi sette giorni: piccola cosa, fa gruppo.
   const birthdays = useMemo(() => {
