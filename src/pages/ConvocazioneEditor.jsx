@@ -10,7 +10,7 @@ import {
   Alert, Loading, useToast, ConfirmDialog
 } from '../components/ui';
 import {
-  GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate
+  GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate, plausibleMeeting
 } from '../lib/format';
 import { validateCallup, summarise, buildMessage, copyText, whatsappLink } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
@@ -91,9 +91,21 @@ export default function ConvocazioneEditor() {
     setLogistics({
       venue: event.venue || club.homeStadium,
       venueAddress: event.venueAddress || '',
-      meetingTime: toInputValue(event.meetingTime)
+      meetingTime: toInputValue(plausibleMeeting(event.date, event.meetingTime))
     });
   }, [event, club, logistics]);
+
+  // Ritrovo salvato nella bozza ma non plausibile per l'inizio attuale (mezzanotte,
+  // o dopo il fischio perché l'orario della partita è cambiato): quello della
+  // partita se va bene, altrimenti 75 minuti prima.
+  useEffect(() => {
+    if (!event?.date || !logistics?.meetingTime) return;
+    const fixed = plausibleMeeting(event.date, logistics.meetingTime);
+    if (fixed && toInputValue(fixed) !== logistics.meetingTime) {
+      const better = plausibleMeeting(event.date, event.meetingTime);
+      setLogistics((l) => ({ ...l, meetingTime: toInputValue(better) }));
+    }
+  }, [event?.date, event?.meetingTime, logistics?.meetingTime]);
 
 
   const selectedPlayers = useMemo(() => players.filter((p) => selected.includes(p.id)), [players, selected]);

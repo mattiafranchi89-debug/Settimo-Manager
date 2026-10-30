@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { updateDocument, audit } from './db';
-import { toDate } from './format';
+import { toDate, plausibleMeeting } from './format';
 import { sameTeam } from './scouting';
 import { compBucket } from './discipline';
 
@@ -63,8 +63,14 @@ export function fixtureFor(match, fixtures = []) {
  * (dopo, una correzione a mano resta). Il ritrovo si sposta con l'inizio.
  */
 export function fixturePatch(match, f) {
-  if (!f || match.kickoffSync?.ref === fixtureRef(f)) return null;
+  if (!f) return null;
   const start = fixtureStart(f);
+  if (match.kickoffSync?.ref === fixtureRef(f)) {
+    // Già allineata: si corregge solo un ritrovo rimasto non plausibile (es. 00:00).
+    const at = toDate(match.date) || start;
+    const meeting = plausibleMeeting(at, match.meetingTime);
+    return meeting.getTime() !== toDate(match.meetingTime)?.getTime() ? { meetingTime: meeting } : null;
+  }
   const old = toDate(match.date);
   const patch = {
     kickoffSync: { ref: fixtureRef(f), source: f.source || 'Programma gare CRL', url: f.url || '', published: f.published || '' }
@@ -77,6 +83,10 @@ export function fixturePatch(match, f) {
     patch.meetingTime = lead != null && lead > 0 && lead <= 4 * 3600000
       ? new Date(start.getTime() - lead)
       : new Date(start.getTime() - 75 * 60000);
+  } else {
+    // Orario già giusto ma ritrovo assente o non plausibile: 75 minuti prima.
+    const meeting = plausibleMeeting(start, match.meetingTime);
+    if (meeting.getTime() !== toDate(match.meetingTime)?.getTime()) patch.meetingTime = meeting;
   }
   // Campo e indirizzo: si completano se mancano, e si sostituiscono solo se il CRL
   // sposta la gara in un altro comune (un indirizzo scritto meglio a mano resta).
@@ -97,7 +107,7 @@ export async function syncFixtures(user) {
   const data = res?.ok ? await res.json().catch(() => null) : null;
   if (!data?.fixtures?.length) return [];
   // v2: dopo la correzione dei nomi con spazi («Or. Pa. S.») si riallinea anche chi aveva già girato.
-  const flag = `sm-fixtures-v2-${data.generatedAt}`;
+  const flag = `sm-fixtures-v3-${data.generatedAt}`;
   try { if (localStorage.getItem(flag)) return []; } catch { /* ignorabile */ }
 
   const today0 = new Date(); today0.setHours(0, 0, 0, 0);
