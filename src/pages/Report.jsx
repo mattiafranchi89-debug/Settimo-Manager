@@ -198,7 +198,7 @@ export default function Report() {
             )}
             <h3>Giocatore per giocatore</h3>
             <Bars rows={att.rows.map((r) => ({ label: `${r.name} (${r.present}/${r.total})`, value: r.pct, color: tone(r.pct) }))} max={100} unit="%" labelWidth={170} />
-            <p><small>Percentuale sulle sedute da quando ognuno è in rosa. Verde dall'80%, arancione dal 60%.</small></p>
+            <p><small>Percentuale sulle sedute da quando ognuno è in rosa: ogni assenza conta, anche giustificata o per infortunio. Verde dall'80%, arancione dal 60%.</small></p>
           </>
         )}
       </Card>

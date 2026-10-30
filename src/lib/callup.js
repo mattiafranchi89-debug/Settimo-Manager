@@ -238,3 +238,38 @@ export function logisticsPatch(event, logistics) {
   if (meeting && !Number.isNaN(meeting.getTime()) && (!old || old.getTime() !== meeting.getTime())) patch.meetingTime = meeting;
   return Object.keys(patch).length ? patch : null;
 }
+
+/* ---------------- assenze non giustificate prima della convocazione ---------------- */
+
+const DAY_MS = 86400000;
+
+/**
+ * La settimana di lavoro che porta alla partita: dall'ultima gara giocata
+ * prima di questa (altrimenti dai sette giorni prima) fino a oggi, senza
+ * andare oltre l'inizio della partita. Null se non c'è niente da guardare.
+ */
+export function trainingWindow(match, matches = [], now = new Date()) {
+  const at = toDate(match?.date);
+  if (!at) return null;
+  const prev = matches.map((m) => toDate(m.date)).filter((d) => d && d < at).sort((a, b) => b - a)[0];
+  const from = prev || new Date(at.getTime() - 7 * DAY_MS);
+  const to = new Date(Math.min(at.getTime(), now.getTime()));
+  return to > from ? { from, to } : null;
+}
+
+/**
+ * Chi è stato segnato «assente» (non giustificato né infortunato) nelle
+ * sedute indicate: { idGiocatore: [date] }. Serve solo all'avviso in
+ * convocazione: nella percentuale di presenza ogni assenza conta allo stesso modo.
+ */
+export function unexcusedAbsences(trainings = [], summaries = {}) {
+  const out = {};
+  trainings.forEach((t) => {
+    const s = summaries[t.id] || t.attendanceSummary;
+    Object.entries(s?.absent || {}).forEach(([pid, status]) => {
+      if (status === 'assente') (out[pid] ||= []).push(toDate(t.date));
+    });
+  });
+  Object.values(out).forEach((list) => list.sort((a, b) => a - b));
+  return out;
+}
