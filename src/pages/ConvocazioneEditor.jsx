@@ -12,7 +12,8 @@ import {
 import {
   GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate, plausibleMeeting
 } from '../lib/format';
-import { validateCallup, summarise, buildMessage, copyText, whatsappLink, logisticsPatch } from '../lib/callup';
+import { validateCallup, summarise, buildMessage, copyText, whatsappLink, logisticsPatch, trainingWindow, unexcusedAbsences } from '../lib/callup';
+import { ensureAttendanceSummaries } from '../lib/trainings';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { compBucket, isSuspendedFor, COMPS } from '../lib/discipline';
 import { can, isClassicUx } from '../lib/permissions';
@@ -61,9 +62,35 @@ export default function ConvocazioneEditor() {
   const [busy, setBusy] = useState(false);
 
   const event = useMemo(() => events.find((e) => e.id === eventId), [events, eventId]);
+
+  // Assenze non giustificate negli allenamenti dall'ultima partita: solo un avviso.
+  const [openedAt] = useState(() => new Date());
+  const week = useMemo(() => trainingWindow(event, allEvents, openedAt), [event, allEvents, openedAt]);
+  const fromMs = week ? week.from.getTime() : null;
+  const toMs = week ? week.to.getTime() : null;
+  const weekQ = useMemo(() => (fromMs === null ? [] : [where('date', '>=', new Date(fromMs)), where('date', '<', new Date(toMs))]), [fromMs, toMs]);
+  const { data: weekEvents } = useCollection('events', weekQ, fromMs !== null);
+  const [unexcused, setUnexcused] = useState({});
+  useEffect(() => {
+    // Solo le sedute della finestra di questa partita: cambiando gara la query
+    // precedente resta in memoria (anche se la nuova gara non ha una finestra).
+    const sessions = fromMs === null ? [] : weekEvents.filter((e) => {
+      const at = toDate(e.date)?.getTime();
+      return e.type === 'training' && !e.cancelled && at >= fromMs && at < toMs;
+    });
+    if (!sessions.length) { setUnexcused({}); return undefined; }
+    let alive = true;
+    ensureAttendanceSummaries(sessions)
+      .then((summaries) => { if (alive) setUnexcused(unexcusedAbsences(sessions, summaries)); })
+      // Senza i riepiloghi delle sedute vecchie si usano almeno quelli già salvati.
+      .catch(() => { if (alive) setUnexcused(unexcusedAbsences(sessions, {})); });
+    return () => { alive = false; };
+  }, [weekEvents, fromMs, toMs]);
   // Diffide e squalifiche contano solo nella competizione della partita.
   const bucket = event ? compBucket(event.competition) : null;
   const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
+  const absentees = useMemo(() => players.filter((p) => unexcused[p.id]?.length).map((p) => ({ p, dates: unexcused[p.id] })), [players, unexcused]);
+  const absenceText = (list) => list.map(({ p, dates }) => `${p.fullName} (${dates.map((d) => fmtShort(d)).join(', ')})`).join('; ');
 
   // hydrate from an existing call-up
   // Una volta per versione: dopo un proprio salvataggio lo stato è già quello
@@ -357,7 +384,7 @@ export default function ConvocazioneEditor() {
             </div>
           </Card>
 
-          {(alerts.diffidati.length > 0 || alerts.squalificati.length > 0 || alerts.dimenticati.length > 0) && (
+          {(alerts.diffidati.length > 0 || alerts.squalificati.length > 0 || alerts.dimenticati.length > 0 || absentees.length > 0) && (
             <Card title="Da tenere d'occhio">
               {alerts.squalificati.length > 0 && (
                 <Alert level="error">
@@ -367,6 +394,12 @@ export default function ConvocazioneEditor() {
               {alerts.diffidati.length > 0 && (
                 <Alert level="warn">
                   In diffida{bucket && COMPS[bucket] ? ` in ${COMPS[bucket].label}` : ''}: alla prossima ammonizione saltano una gara. {alerts.diffidati.map((p) => p.fullName).join(', ')}.
+                </Alert>
+              )}
+              {absentees.length > 0 && (
+                <Alert level="warn">
+                  Assenti senza giustificazione agli allenamenti{week ? ` dal ${fmtShort(week.from)}` : ''}: {absenceText(absentees)}.
+                  {absentees.some(({ p }) => selected.includes(p.id)) && ` Già tra i convocati: ${absentees.filter(({ p }) => selected.includes(p.id)).map(({ p }) => p.fullName).join(', ')}.`}
                 </Alert>
               )}
               {alerts.dimenticati.length > 0 && (
@@ -434,6 +467,11 @@ export default function ConvocazioneEditor() {
       {/* ---------- step 3: message ---------- */}
       {step === 2 && event && (
         <>
+          {absentees.some(({ p }) => selected.includes(p.id)) && (
+            <Alert level="warn">
+              Tra i convocati, assenti senza giustificazione agli allenamenti della settimana: {absenceText(absentees.filter(({ p }) => selected.includes(p.id)))}.
+            </Alert>
+          )}
           <Card title="Messaggio WhatsApp" action={<Badge tone="grey">{message.length} caratteri</Badge>}>
             <div className="msgbox">{message}</div>
 

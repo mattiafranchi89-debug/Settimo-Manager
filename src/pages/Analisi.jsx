@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
 import { can } from '../lib/permissions';
 import { ensureAttendanceSummaries } from '../lib/trainings';
+import { concededByCause } from '../lib/goalCauses';
 
 const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -245,7 +246,29 @@ function Gol({ matchStats }) {
         <Bars rows={bands.map((b, i) => ({ label: b, value: conceded[i] }))} max={max} tone="var(--red)" />
         <p><small>Registrali dalla scheda gara con «Gol subito». Se una fascia domina, è lì che si lavora in settimana.{untimed.scored + untimed.conceded > 0 ? ` Senza minuto: ${untimed.scored} fatti, ${untimed.conceded} subiti.` : ''} Solo gare ufficiali.</small></p>
       </Card>
+      <ConcededCauses sheets={closed} />
     </>
+  );
+}
+
+/** Come nascono i gol subiti: dalla causa scelta nella scheda gara. */
+function ConcededCauses({ sheets }) {
+  const c = concededByCause(sheets);
+  if (!c.total) return null;
+  return (
+    <Card title="Come nascono i gol subiti">
+      {c.known === 0 ? (
+        <p style={{ margin: 0 }}><small>Nessun gol subito con la causa: indicala nella scheda gara, accanto a ogni «Gol subito».</small></p>
+      ) : (
+        <>
+          <Bars rows={c.causes.map((x) => ({ label: x.label, value: x.n }))} tone="var(--red)" labelWidth={170} />
+          <p><small>
+            {c.groups.map((g) => `${g.label} ${g.n} (${Math.round((g.n / c.known) * 100)}%)`).join(' · ')}
+            {c.missing > 0 ? ` · senza causa: ${c.missing} su ${c.total}` : ''}
+          </small></p>
+        </>
+      )}
+    </Card>
   );
 }
 

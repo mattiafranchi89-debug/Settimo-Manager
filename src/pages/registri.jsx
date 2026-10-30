@@ -123,7 +123,7 @@ export function Statistiche() {
           </table>
         </div>
       </Card>
-      <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita ufficiale chiusa (campionato e coppa); le amichevoli sono a parte, in grigio («+1»). Chi entra dalla panchina ha sempre la presenza, anche nel recupero. Gli allenamenti contano solo le sedute già svolte. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
+      <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita ufficiale chiusa (campionato e coppa); le amichevoli sono a parte, in grigio («+1»). Chi entra dalla panchina ha sempre la presenza, anche nel recupero. Gli allenamenti contano solo le sedute già svolte, e ogni assenza pesa allo stesso modo (anche giustificata o per infortunio). Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
     </>
   );
 }

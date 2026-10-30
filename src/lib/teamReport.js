@@ -6,6 +6,7 @@ import { toDate } from './format';
 import { compBucket } from './discipline';
 import { gironeRow } from './scouting';
 import { sheetTotals } from './matchTotals';
+import { concededByCause } from './goalCauses';
 
 export const PERIODS = {
   stagione: { label: 'Stagione' },
@@ -271,12 +272,15 @@ export function performanceReport({ trend, matchStats = [], girone = null, clubN
     };
   }
 
+  // Come nascono i gol subiti (causa scelta nella scheda gara), solo gare ufficiali del periodo.
+  const causes = concededByCause(rows.map((r) => statsOf[r.id]).filter(Boolean));
+
   // Punti giornata per giornata in campionato (cumulati).
   let tot = 0;
   const progression = rows.filter((r) => compBucket(r.competition) === 'campionato').map((r) => ({ ...r, cum: (tot += r.pts) }));
 
   return {
-    byComp, streaks, goals, biggestWin, worstLoss, progression, league,
+    byComp, streaks, goals, biggestWin, worstLoss, progression, league, causes,
     bands: BANDS.map((label, i) => ({ label, scored: scored[i], conceded: conceded[i] })),
     halves: { scored: [half(scored, 0, 3), half(scored, 3, 6)], conceded: [half(conceded, 0, 3), half(conceded, 3, 6)] },
     situations: {

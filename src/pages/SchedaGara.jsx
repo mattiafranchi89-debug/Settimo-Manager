@@ -11,6 +11,7 @@ import { can } from '../lib/permissions';
 import { readRefertoPhoto, ourSide, playersByNumber, proposals, mergeEvents } from '../lib/referto';
 import { useAutosave, AutosaveBadge } from '../lib/autosave';
 import { callupFor } from '../lib/callup';
+import { GOAL_CAUSES, CAUSE_GROUPS, causeLabel } from '../lib/goalCauses';
 
 /** JSON con le chiavi in ordine: Firestore non garantisce l'ordine dei campi. */
 const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined).map((key) => [key, x[key]])) : x));
@@ -50,6 +51,7 @@ export default function SchedaGara() {
   const [closing, setClosing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [scorersOpen, setScorersOpen] = useState(false);
+  const [concededOpen, setConcededOpen] = useState(false);
   const [postNote, setPostNote] = useState('');
   const [referto, setReferto] = useState(null);
   const announceStats = useRef(false);
@@ -101,6 +103,15 @@ export default function SchedaGara() {
 
   const addEvent = (e) => { setEvents((v) => [...v, { ...e, id: Math.random().toString(36).slice(2) }]); setAdding(null); };
   const removeEvent = (eid) => { setEvents((v) => v.filter((e) => e.id !== eid)); };
+  /**
+   * Causa (e minuto) di un gol subito. Un gol arrivato dal referto, una volta
+   * completato a mano, non è più «del referto»: rileggendo il referto resta.
+   */
+  const patchEvent = (eid, patch) => setEvents((v) => v.map((e) => {
+    if (e.id !== eid) return e;
+    const { source, ...rest } = { ...e, ...patch };
+    return Object.fromEntries(Object.entries(rest).filter(([, x]) => x !== null && x !== undefined && x !== ''));
+  }));
 
   /** Scrive la scheda. Lancia l'errore: chi chiama decide come mostrarlo. */
   const persist = async (closedFlag = saved?.closed || false) => {
@@ -221,7 +232,7 @@ export default function SchedaGara() {
 
       {canWrite && !closed && (
         <AfterMatch match={match} events={events} ourGoals={ourGoals} reading={reading} busy={busy} lineup={lineup}
-          onPhoto={onRefertoPhoto} onScorers={() => setScorersOpen(true)} onClose={closeMatch} toast={toast} />
+          onPhoto={onRefertoPhoto} onScorers={() => setScorersOpen(true)} onConceded={() => setConcededOpen(true)} onClose={closeMatch} toast={toast} />
       )}
 
       {canWrite && closed && (
@@ -250,12 +261,15 @@ export default function SchedaGara() {
       <Card title="Cronologia" action={<small>{events.length} eventi</small>}>
         {events.length === 0 ? <p><small>Nessun evento registrato. Segna gol, cartellini e sostituzioni man mano che succedono.</small></p> : (
           <div className="plist">
-            {[...events].sort((a, b) => a.minute - b.minute).map((e) => (
+            {[...events].sort((a, b) => (a.minute ?? 999) - (b.minute ?? 999)).map((e) => (
               <div key={e.id} className="prow">
                 <span className="prow__num">{e.minute == null ? '?' : e.minute}'</span>
                 <span className="prow__body">
                   <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : e.og ? 'Autogol avversario' : (byId[e.playerId]?.fullName || '—')}</span>
                   {e.type === 'sostituzione' && <span className="prow__meta"><span>entra {byId[e.playerInId]?.fullName || '—'}</span></span>}
+                  {e.type === 'gol_subito' && (canWrite
+                    ? <CauseSelect compact value={e.cause} onChange={(cause) => patchEvent(e.id, { cause })} />
+                    : e.cause && <span className="prow__meta"><span>{causeLabel(e.cause)}</span></span>)}
                 </span>
                 {canWrite && <button className="iconbtn" aria-label="Rimuovi" onClick={() => removeEvent(e.id)}>✕</button>}
               </div>
@@ -339,6 +353,12 @@ export default function SchedaGara() {
           onClose={() => setScorersOpen(false)} />
       )}
 
+      {concededOpen && (
+        <ConcededSheet events={events}
+          onSave={(rows) => { rows.forEach((r) => patchEvent(r.id, { minute: r.minute === '' ? null : Number(r.minute), cause: r.cause || null })); setConcededOpen(false); toast('Gol subiti aggiornati'); }}
+          onClose={() => setConcededOpen(false)} />
+      )}
+
       {closing && (
         <ConfirmDialog title="Chiudere la gara?" confirmLabel="Chiudi gara"
           message={`Con ${ourGoals} gol registrati e ${events.length} eventi. La gara resterà modificabile, ma da ora entra nel conteggio stagionale.`}
@@ -350,6 +370,7 @@ export default function SchedaGara() {
 
 function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
   const [minute, setMinute] = useState('');
+  const [cause, setCause] = useState('');
   const [playerId, setPlayerId] = useState('');
   const [playerInId, setPlayerInId] = useState('');
   const onPitch = players.filter((p) => totals[p.id]?.played || totals[p.id]?.started);
@@ -368,6 +389,11 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
         </Select>
       </Field>
       )}
+      {type === 'gol_subito' && (
+        <Field label="Come è nato" hint="Facoltativo: serve all'analisi dei gol subiti.">
+          <CauseSelect value={cause} onChange={(v) => setCause(v || '')} />
+        </Field>
+      )}
       {type === 'sostituzione' && (
         <Field label="Entra">
           <Select value={playerInId} onChange={(e) => setPlayerInId(e.target.value)}>
@@ -377,7 +403,48 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
         </Field>
       )}
       <div className="btnrow">
-        <Button disabled={!ok} onClick={() => onSave({ type, minute: Number(minute), playerId: noPlayer ? null : playerId, playerInId: playerInId || null })}>Registra</Button>
+        <Button disabled={!ok} onClick={() => onSave({ type, minute: Number(minute), playerId: noPlayer ? null : playerId, playerInId: playerInId || null, ...(cause ? { cause } : {}) })}>Registra</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+    </Sheet>
+  );
+}
+
+/** Menù delle cause di un gol subito, raggruppate (transizioni, palle inattive…). */
+function CauseSelect({ value, onChange, compact = false }) {
+  return (
+    <Select value={value || ''} onChange={(e) => onChange(e.target.value || null)} aria-label="Causa del gol subito"
+      style={compact ? { marginTop: 4, minHeight: 34, padding: '4px 8px', fontSize: 13, width: 'auto', maxWidth: '100%' } : undefined}>
+      <option value="">{compact ? 'Causa del gol…' : 'Non indicata'}</option>
+      {CAUSE_GROUPS.map((g) => (
+        <optgroup key={g.key} label={g.label}>
+          {GOAL_CAUSES.filter((c) => c.group === g.key).map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+        </optgroup>
+      ))}
+    </Select>
+  );
+}
+
+/** Tutti i gol subiti della gara in un colpo: minuto (facoltativo) e causa. */
+function ConcededSheet({ events, onSave, onClose }) {
+  const goals = events.filter((e) => e.type === 'gol_subito').sort((a, b) => (a.minute ?? 999) - (b.minute ?? 999));
+  const [rows, setRows] = useState(() => goals.map((g) => ({ id: g.id, minute: g.minute == null ? '' : String(g.minute), cause: g.cause || '' })));
+  const set = (i, patch) => setRows((r) => r.map((x, k) => (k === i ? { ...x, ...patch } : x)));
+  return (
+    <Sheet title="🥅 Come sono nati i gol subiti" onClose={onClose}>
+      <div className="stack" style={{ gap: 10 }}>
+        {rows.map((r, i) => (
+          <div key={r.id} className="card" style={{ padding: 10, margin: 0 }}>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>Gol subito {i + 1}</div>
+            <div className="row2">
+              <CauseSelect value={r.cause} onChange={(v) => set(i, { cause: v || '' })} />
+              <Input type="number" inputMode="numeric" min="0" max="120" placeholder="Minuto" value={r.minute} onChange={(e) => set(i, { minute: e.target.value })} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="btnrow" style={{ marginTop: 12 }}>
+        <Button onClick={() => onSave(rows)}>Salva</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
     </Sheet>
@@ -623,7 +690,7 @@ function RefertoButtons({ reading, onPhoto, done = false }) {
   );
 }
 
-function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, onScorers, onClose, toast }) {
+function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, onScorers, onConceded, onClose, toast }) {
   const [home, setHome] = useState('');
   const [away, setAway] = useState('');
   const [editScore, setEditScore] = useState(false);
@@ -686,7 +753,21 @@ function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, o
           )}
       </StepRow>
 
-      <StepRow n={4} done={false} title="Chiudi la partita">
+      {(() => {
+        const against = events.filter((e) => e.type === 'gol_subito');
+        const withCause = against.filter((e) => e.cause).length;
+        return against.length > 0 && (
+          <StepRow n={4} done={withCause === against.length} title="Gol subiti: come sono nati">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 14 }}>{withCause} su {against.length} con la causa</span>
+              <Button size="sm" variant={withCause === against.length ? 'ghost' : 'primary'} onClick={onConceded}>{withCause ? 'Modifica' : 'Indica la causa'}</Button>
+            </div>
+            <small style={{ color: 'var(--muted)' }}>Facoltativo: serve all'analisi dei gol subiti.</small>
+          </StepRow>
+        );
+      })()}
+
+      <StepRow n={events.some((e) => e.type === 'gol_subito') ? 5 : 4} done={false} title="Chiudi la partita">
         {hasScore && ourGoals !== us && (
           <small style={{ display: 'block', color: 'var(--red)', marginBottom: 6 }}>
             Gol registrati {ourGoals}, risultato {us}: controlla prima di chiudere.
