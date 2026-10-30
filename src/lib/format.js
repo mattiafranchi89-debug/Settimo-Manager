@@ -92,6 +92,19 @@ export function countdown(target) {
 }
 
 // Local datetime <-> input[type=datetime-local] value
+/**
+ * Ritrovo plausibile per una partita: quello indicato se cade entro 4 ore
+ * prima dell'inizio, altrimenti (mancante, a mezzanotte, dopo il fischio)
+ * 75 minuti prima. Null se manca l'inizio.
+ */
+export function plausibleMeeting(start, meeting) {
+  const s = toDate(start);
+  if (!s) return null;
+  const m = toDate(meeting);
+  const lead = m ? s - m : null;
+  return lead > 0 && lead <= 4 * 3600000 ? m : new Date(s.getTime() - 75 * 60000);
+}
+
 export function toInputValue(v) {
   const d = toDate(v);
   if (!d) return '';
