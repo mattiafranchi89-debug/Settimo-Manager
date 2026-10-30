@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { suspendedIn } from '../lib/discipline';
+import { suspendedIn, compBucket } from '../lib/discipline';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, where, limit } from '../lib/db';
+import { useCollection, useClub, where } from '../lib/db';
 import { Card, Kpi, Badge, Empty, Loading } from '../components/ui';
 import { GROUPS, groupOf, positionLabel, sortPlayers, toDate } from '../lib/format';
 
@@ -14,19 +14,21 @@ export default function Squadra() {
   const { user } = useAuth();
   const { club } = useClub();
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
-  const { data: matches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), limit(120)], []));
+  // Le gare della stagione, tutte: con un limite fisso, dopo qualche stagione
+  // le più recenti potevano restare fuori dal conteggio.
+  const { data: matches } = useCollection('events', useMemo(() => [where('seasonId', '==', club.season), where('type', '==', 'match')], [club.season]));
 
   const played = useMemo(
-    // Solo la stagione indicata in testa alla pagina.
-    () => matches.filter((m) => m.scoreHome != null && (!m.seasonId || m.seasonId === club.season)).sort((a, b) => toDate(b.date) - toDate(a.date)),
+    // Solo la stagione indicata in testa alla pagina, e solo gare ufficiali: le amichevoli non fanno bilancio.
+    () => matches.filter((m) => m.scoreHome != null && compBucket(m.competition) !== 'amichevole' && (!m.seasonId || m.seasonId === club.season)).sort((a, b) => toDate(b.date) - toDate(a.date)),
     [matches, club.season]
   );
 
   const team = useMemo(() => {
     let fatti = 0, subiti = 0, v = 0, n = 0, p = 0;
     played.forEach((m) => {
-      const us = m.home === false ? m.scoreAway : m.scoreHome;
-      const them = m.home === false ? m.scoreHome : m.scoreAway;
+      const us = Number(m.home === false ? m.scoreAway : m.scoreHome);
+      const them = Number(m.home === false ? m.scoreHome : m.scoreAway);
       fatti += us; subiti += them;
       if (us > them) v++; else if (us === them) n++; else p++;
     });

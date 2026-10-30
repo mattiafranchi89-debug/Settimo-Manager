@@ -5,6 +5,7 @@
 import { toDate } from './format';
 import { compBucket } from './discipline';
 import { gironeRow } from './scouting';
+import { sheetTotals } from './matchTotals';
 
 export const PERIODS = {
   stagione: { label: 'Stagione' },
@@ -103,12 +104,17 @@ export function trainingReport(trainings = [], players = [], from, to) {
   };
 }
 
-/** Minuti, presenze, gol e assist dalle schede gara chiuse nel periodo. */
-export function minutesReport(matchStats = [], players = [], from, to) {
-  const closed = matchStats.filter((m) => m.closed && m.totals && inRange(m.date, from, to));
+/**
+ * Minuti, presenze, gol e assist dalle schede gara chiuse nel periodo, solo
+ * gare ufficiali come le statistiche dei giocatori (`compOf`: competizione per
+ * gara, per le schede che non la riportano).
+ */
+export function minutesReport(matchStats = [], players = [], from, to, compOf = {}) {
+  const closed = matchStats.filter((m) => m.closed && (m.totals || m.events) && inRange(m.date, from, to)
+    && compBucket(m.competition || compOf[m.eventId || m.id] || '') !== 'amichevole');
   const available = closed.reduce((a, m) => a + (Number(m.duration) || 90), 0);
   const by = {};
-  closed.forEach((m) => Object.entries(m.totals).forEach(([pid, s]) => {
+  closed.forEach((m) => Object.entries(sheetTotals(m)).forEach(([pid, s]) => {
     const r = (by[pid] ||= { minutes: 0, apps: 0, starts: 0, goals: 0, assists: 0 });
     r.minutes += s.minutes || 0;
     if (s.played) r.apps += 1;
@@ -213,7 +219,7 @@ export function performanceReport({ trend, matchStats = [], girone = null, clubN
     const m = statsOf[r.id];
     if (!m) return;
     withSheet += 1;
-    Object.entries(m.totals || {}).forEach(([pid, t]) => {
+    Object.entries(sheetTotals(m)).forEach(([pid, t]) => {
       yellows += t.yellow || 0; reds += t.red || 0;
       if (t.goals) { scorers.add(pid); ownGoals += t.goals; if (!t.started) benchGoals += t.goals; }
       if (t.started) starters[pid] = (starters[pid] || 0) + 1;

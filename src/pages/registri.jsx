@@ -10,6 +10,7 @@ import { deleteOne } from '../lib/remove';
 import { audit } from '../lib/db';
 import { errorText } from './Rosa';
 import { cardsOf } from '../lib/discipline';
+import { useStatsUpgrade } from '../lib/useStatsUpgrade';
 
 /* ============================== STATISTICHE ============================== */
 export function Statistiche() {
@@ -19,6 +20,7 @@ export function Statistiche() {
   const [busy, setBusy] = useState(false);
   const canRecalc = can(user?.role, 'matchstats.write');
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
+  useStatsUpgrade(players, user?.role, club.season);
 
   const recalc = async () => {
     setBusy(true);
@@ -81,7 +83,7 @@ export function Statistiche() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Statistiche</h1><p>{rows[0]?.matchesPlayedTotal || 0} gare chiuse · {Math.max(0, ...rows.map((r) => r.totalTrainings || 0))} sedute</p></div>
+        <div><h1>Statistiche</h1><p>{rows[0]?.officialMatches ?? rows[0]?.matchesPlayedTotal ?? 0} gare ufficiali chiuse · {Math.max(0, ...rows.map((r) => r.totalTrainings || 0))} sedute</p></div>
         {canRecalc && <Button size="sm" variant="secondary" onClick={recalc} disabled={busy}>↻ Ricalcola</Button>}
       </div>
 
@@ -109,9 +111,9 @@ export function Statistiche() {
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td>{r.fullName}</td>
-                  <td>{r.appearances || 0}</td>
+                  <td>{r.appearances || 0}{r.friendly?.appearances ? <small style={{ color: 'var(--muted)' }}> +{r.friendly.appearances}</small> : null}</td>
                   <td>{r.minutes || 0}</td>
-                  <td>{r.goals || 0}</td>
+                  <td>{r.goals || 0}{r.friendly?.goals ? <small style={{ color: 'var(--muted)' }}> +{r.friendly.goals}</small> : null}</td>
                   <td>{r.cd.campionato.y} · {r.cd.coppa.y}</td>
                   <td>{r.cd.campionato.r} · {r.cd.coppa.r}</td>
                   <td>{r.att} <small>({r.attPct}%)</small></td>
@@ -121,7 +123,7 @@ export function Statistiche() {
           </table>
         </div>
       </Card>
-      <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita chiusa. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
+      <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita ufficiale chiusa (campionato e coppa); le amichevoli sono a parte, in grigio («+1»). Chi entra dalla panchina ha sempre la presenza, anche nel recupero. Gli allenamenti contano solo le sedute già svolte. Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
     </>
   );
 }
