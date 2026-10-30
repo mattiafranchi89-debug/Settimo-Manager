@@ -9,9 +9,14 @@ name: Cache comunicati CRL
 
 on:
   schedule:
-    # Orari UTC: 04:40 e 17:40 = 06:40 e 19:40 in Italia (05:40 e 18:40 con l'ora solare)
+    # Orari UTC: 04:40 e 17:40 = 06:40 e 19:40 in Italia (05:40 e 18:40 con l'ora solare).
+    # GitHub avvia le esecuzioni programmate anche con ore di ritardo (in ottobre
+    # quella delle 04:40 partiva verso le 10-11): due giri in più, di notte e a
+    # metà giornata, tengono freschi i dati per le attività del mattino.
     - cron: "40 4 * * *"
     - cron: "40 17 * * *"
+    - cron: "10 0 * * *"
+    - cron: "10 11 * * *"
   workflow_dispatch:
     inputs:
       backfill:

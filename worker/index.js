@@ -153,7 +153,8 @@ async function notify(request, env) {
   const payload = {
     title: String(input.title || 'Settimo Milanese').slice(0, 80),
     body: String(input.body || '').slice(0, 240),
-    url: typeof input.url === 'string' && input.url.startsWith('/') ? input.url.slice(0, 300) : '/',
+    // Solo pagine dell'app: «//sito» porterebbe fuori al tocco della notifica.
+    url: typeof input.url === 'string' && /^\/(?![/\\])/.test(input.url) ? input.url.slice(0, 300) : '/',
     tag: String(input.tag || '').slice(0, 80) || undefined,
     urgent: !!input.urgent
   };
@@ -270,7 +271,7 @@ function firestore(projectId, token) {
       const out = [];
       let pageToken = '';
       do {
-        const r = await fetch(`${base}/${collection}?pageSize=300${pageToken ? `&pageToken=${pageToken}` : ''}`, { headers });
+        const r = await fetch(`${base}/${collection}?pageSize=300${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`, { headers });
         if (!r.ok) throw new Error(`Firestore ${collection}: ${r.status}`);
         const j = await r.json();
         (j.documents || []).forEach((d) => out.push(toDoc(d)));

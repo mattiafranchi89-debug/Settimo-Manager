@@ -220,3 +220,21 @@ export async function copyText(text) {
     return ok;
   }
 }
+
+/**
+ * Campo, indirizzo e ritrovo della convocazione inviata da riportare sulla
+ * partita: i giocatori li leggono in app dalla partita, e devono coincidere
+ * con il messaggio arrivato su WhatsApp. Null se sono già uguali.
+ */
+export function logisticsPatch(event, logistics) {
+  if (!event || !logistics) return null;
+  const patch = {};
+  const venue = (logistics.venue || '').trim();
+  const address = (logistics.venueAddress || '').trim();
+  if (venue && venue !== (event.venue || '')) patch.venue = venue;
+  if (address && address !== (event.venueAddress || '')) patch.venueAddress = address;
+  const meeting = logistics.meetingTime ? new Date(logistics.meetingTime) : null;
+  const old = toDate(event.meetingTime);
+  if (meeting && !Number.isNaN(meeting.getTime()) && (!old || old.getTime() !== meeting.getTime())) patch.meetingTime = meeting;
+  return Object.keys(patch).length ? patch : null;
+}
