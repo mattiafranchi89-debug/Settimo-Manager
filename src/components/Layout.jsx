@@ -8,12 +8,14 @@ import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
 import { refreshPushSubscription } from '../lib/push';
 import { syncFixtures } from '../lib/fixtures';
+import { ensureUpcomingTrainings } from '../lib/trainings';
+import { newVersionAvailable } from '../lib/version';
 import { useToast } from './ui';
 import { fmtShort, fmtTime } from '../lib/format';
 
 export default function Layout({ theme, toggleTheme }) {
   const { user, logout } = useAuth();
-  const { club } = useClub();
+  const { club, loading: clubLoading } = useClub();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [more, setMore] = useState(false);
@@ -37,13 +39,38 @@ export default function Layout({ theme, toggleTheme }) {
   // Chi salva firma le notifiche; l'iscrizione del telefono si riallinea a ogni apertura.
   useEffect(() => { setNotifyUser(user); }, [user]);
   useEffect(() => { if (user?.uid) refreshPushSubscription(); }, [user?.uid]);
-  // Orari ufficiali dai programmi gare del CRL: chi gestisce il calendario li allinea aprendo l'app.
+  // Lavori di calendario per chi lo gestisce: le sedute delle prossime tre
+  // settimane nei giorni fissi e gli orari ufficiali dai programmi gare del CRL.
+  // Le sedute aspettano la configurazione della società: con i valori di
+  // partenza si creerebbero nei giorni e all'ora sbagliati.
   const toast = useToast();
+  const [update, setUpdate] = useState(false);
+  const manager = !!user?.uid && can(user.role, 'events.write');
   useEffect(() => {
-    if (!user?.uid || !can(user.role, 'events.write')) return;
-    syncFixtures(user)
-      .then((changed) => changed.forEach((c) => toast(`Orario ufficiale CRL: ${c.opponent} ${fmtShort(c.to)} alle ${fmtTime(c.to)}`)))
-      .catch((e) => console.warn('orari CRL', e));
+    if (!manager || clubLoading) return;
+    ensureUpcomingTrainings({ club, user }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manager, clubLoading]);
+  useEffect(() => {
+    const syncTimes = () => {
+      if (!manager) return;
+      syncFixtures(user)
+        .then((changed) => changed.forEach((c) => toast(`Orario ufficiale CRL: ${c.opponent} ${fmtShort(c.to)} alle ${fmtTime(c.to)}`)))
+        .catch((e) => console.warn('orari CRL', e));
+    };
+    syncTimes();
+    // L'app installata resta aperta in memoria per giorni: al ritorno in primo
+    // piano si cerca una versione nuova e si riallineano gli orari.
+    let last = Date.now();
+    const onShow = () => {
+      if (document.visibilityState !== 'visible' || Date.now() - last < 5 * 60000) return;
+      last = Date.now();
+      newVersionAvailable().then((v) => v && setUpdate(true)).catch(() => {});
+      syncTimes();
+    };
+    document.addEventListener('visibilitychange', onShow);
+    const timer = setInterval(onShow, 30 * 60000);
+    return () => { document.removeEventListener('visibilitychange', onShow); clearInterval(timer); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uid, user?.role]);
 
@@ -85,6 +112,12 @@ export default function Layout({ theme, toggleTheme }) {
         </nav>
 
         <main className="main">
+          {update && (
+            <div className="updatebar" role="status">
+              <span>È disponibile una versione nuova dell'app.</span>
+              <Button size="sm" onClick={() => window.location.reload()}>Aggiorna</Button>
+            </div>
+          )}
           {subTabs.length > 0 && (
             <nav className="subtabs" aria-label="Sezioni">
               {subTabs.map((t) => (

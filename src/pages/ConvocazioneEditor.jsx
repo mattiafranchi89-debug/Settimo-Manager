@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { doc, collection, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, collection, addDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useCollection, useDoc, useClub, where, orderBy, limit, audit } from '../lib/db';
@@ -12,7 +12,7 @@ import {
 import {
   GROUPS, groupOf, sortPlayers, fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate, plausibleMeeting
 } from '../lib/format';
-import { validateCallup, summarise, buildMessage, copyText, whatsappLink } from '../lib/callup';
+import { validateCallup, summarise, buildMessage, copyText, whatsappLink, logisticsPatch } from '../lib/callup';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { compBucket, isSuspendedFor, COMPS } from '../lib/discipline';
 import { can, isClassicUx } from '../lib/permissions';
@@ -89,7 +89,8 @@ export default function ConvocazioneEditor() {
   useEffect(() => {
     if (!event || logistics) return;
     setLogistics({
-      venue: event.venue || club.homeStadium,
+      // Il campo di casa solo per le gare in casa: in trasferta si lascia vuoto da compilare.
+      venue: event.venue || (event.home !== false ? club.homeStadium : ''),
       venueAddress: event.venueAddress || '',
       meetingTime: toInputValue(plausibleMeeting(event.date, event.meetingTime))
     });
@@ -187,6 +188,11 @@ export default function ConvocazioneEditor() {
       setBusy(false);
       toast(errorText(e), 'error');
       return null;
+    }
+    // Inviata al gruppo: ritrovo e campo del messaggio diventano quelli della partita in app.
+    if (status === 'condivisa' || status === 'pubblicata') {
+      const patch = logisticsPatch(event, logistics);
+      if (patch) await updateDoc(doc(db, 'events', eventId), { ...patch, updatedAt: serverTimestamp() }).catch((e) => console.warn('logistica non riportata sulla partita', e));
     }
     if (status !== 'bozza') {
       await audit(user, `callup.${status}`, ref.id, {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useCollection, useClub, addDocument, updateDocument, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
+import { useCollection, useDoc, useClub, addDocument, updateDocument, setDocument, serverTimestamp, where, orderBy, limit } from '../lib/db';
 import { Card, Button, Field, Input, Select, Sheet, Badge, Empty, Loading, useToast, Alert, Textarea, Kpi, ConfirmDialog } from '../components/ui';
 import { sortPlayers, fmtDate, fmtShort, euro, positionLabel, capitalize } from '../lib/format';
 import { can } from '../lib/permissions';
@@ -232,8 +232,9 @@ export function QuoteMulte() {
   const toast = useToast();
   const canManage = can(user?.role, 'finance.write');
   const { data: payments, loading } = useCollection('payments');
-  const { data: fines } = useCollection('fines');
-  const { data: players } = useCollection('players');
+  const { data: fines, loading: loadingFines } = useCollection('fines');
+  const { data: players, loading: loadingPlayers } = useCollection('players');
+  const { data: cassa, loading: loadingCassa } = useDoc('config', 'cassa', canManage);
   const [adding, setAdding] = useState(null);
   const [removing, setRemoving] = useState(null);
 
@@ -243,7 +244,9 @@ export function QuoteMulte() {
 
   // Aggregato per la pagina Cassa, visibile alla squadra: importi per persona, niente causali.
   useEffect(() => {
-    if (!canManage || loading || !players.length) return;
+    // Tutto caricato, multe comprese: con l'elenco ancora vuoto la Cassa della
+    // squadra mostrava per un attimo zero euro raccolti.
+    if (!canManage || loading || loadingFines || loadingPlayers || loadingCassa || !players.length) return;
     const byPlayer = {};
     fines.forEach((f) => {
       const p = players.find((x) => x.id === f.playerId);
@@ -255,11 +258,15 @@ export function QuoteMulte() {
       collected: fines.filter((f) => f.status === 'saldato').reduce((s, f) => s + (f.amount || 0), 0),
       open: fines.filter((f) => f.status !== 'saldato').reduce((s, f) => s + (f.amount || 0), 0),
       count: fines.length,
-      contributors: Object.values(byPlayer).filter((c) => c.amount > 0),
-      updatedAt: serverTimestamp()
+      contributors: Object.values(byPlayer).filter((c) => c.amount > 0)
     };
-    setDocument('config', 'cassa', summary).catch(() => {});
-  }, [canManage, loading, fines, players]);
+    // Si riscrive solo se cambia: ogni scrittura arriva a tutti i telefoni aperti sulla Cassa.
+    // (Firestore restituisce i campi in un altro ordine: si confrontano i valori.)
+    const people = (list = []) => list.map((c) => `${c.name}:${c.amount}`).join('|');
+    const same = cassa && ['collected', 'open', 'count'].every((k) => cassa[k] === summary[k])
+      && people(cassa.contributors) === people(summary.contributors);
+    if (!same) setDocument('config', 'cassa', { ...summary, updatedAt: serverTimestamp() }).catch(() => {});
+  }, [canManage, loading, loadingFines, loadingPlayers, loadingCassa, cassa, fines, players]);
 
   const add = async (kind, form) => {
     await addDocument(kind, {

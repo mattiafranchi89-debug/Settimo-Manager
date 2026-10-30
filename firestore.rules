@@ -127,8 +127,10 @@ service cloud.firestore {
     }
 
     // ---------- match documents (referee report, team sheets) ----------
+    // Le distinte riportano i documenti d'identità dei tesserati: le vede chi
+    // apre la scheda gara (staff e direttore sportivo), non tutta la squadra.
     match /matchFiles/{docId} {
-      allow read: if active();
+      allow read: if isStaff() || (active() && role() == 'sporting_director');
       allow write: if isStaff();
     }
 

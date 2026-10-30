@@ -105,7 +105,7 @@ export default function Rosa() {
         </div>
         <div className="btnrow">
           {writable && <Button size="sm" variant="secondary" onClick={() => navigate('/importa?tipo=giocatori')}>⬆ Importa</Button>}
-          {writable && <Button size="sm" onClick={() => setEditing({ ...EMPTY })}>＋ Giocatore</Button>}
+          {can(user?.role, 'players.create') && <Button size="sm" onClick={() => setEditing({ ...EMPTY })}>＋ Giocatore</Button>}
         </div>
       </div>
 

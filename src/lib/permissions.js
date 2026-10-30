@@ -25,6 +25,8 @@ const MATRIX = {
   // La rosa completa, con infortuni e scadenze, resta allo staff.
   'players.read': [...STAFF_ROLES, 'sporting_director'],
   'players.write': ['admin', 'head_coach', 'team_manager'],
+  // Nuovi giocatori: firestore.rules consente di crearli solo all'amministratore.
+  'players.create': ['admin'],
   'players.archive': ['admin'],
   'players.delete': ['admin'],
   'events.delete': ['admin', 'head_coach', 'team_manager'],

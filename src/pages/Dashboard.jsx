@@ -12,7 +12,6 @@ import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 import { refreshStats } from '../lib/stats';
-import { ensureUpcomingTrainings } from '../lib/trainings';
 import { suspendedIn, COMPS, suspensionProposals } from '../lib/discipline';
 
 const DAY = 86400000;
@@ -65,13 +64,6 @@ export default function Dashboard() {
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
-
-  // Le sedute delle prossime tre settimane si creano da sole nei giorni fissi.
-  useEffect(() => {
-    if (!can(role, 'events.write') || !club.season || !user?.uid) return;
-    ensureUpcomingTrainings({ club, user }).catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role, club.season, user?.uid]);
 
   // Una volta sola: le statistiche calcolate prima della divisione campionato/coppa
   // (senza `cards`) si ricalcolano da sole, senza dover premere «Ricalcola».

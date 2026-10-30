@@ -51,7 +51,16 @@ export default function Importa() {
     const { headers, rows } = parseCsv(text);
     if (!rows.length) { setPreview({ rows: [], headers, empty: true }); return; }
     const missingCols = schema.required.filter((h) => !headers.includes(h));
-    setPreview({ rows: validateRows(schema, rows, ctx), headers, missingCols });
+    const checked = validateRows(schema, rows, ctx);
+    // Le regole consentono di creare giocatori solo all'amministratore: per gli
+    // altri si aggiornano quelli già in rosa e i nuovi si segnalano subito, invece
+    // di far fallire tutto il caricamento al momento di confermare.
+    if (schema.collection === 'players' && !can(user?.role, 'players.create')) {
+      checked.forEach((r) => {
+        if (r.data && !r.errors.length && !ctx.findPlayer(r.data.fullName)) r.errors.push('giocatore non in rosa: i nuovi li aggiunge l\'amministratore');
+      });
+    }
+    setPreview({ rows: checked, headers, missingCols });
   };
 
   const commit = async () => {
@@ -152,7 +161,9 @@ export default function Importa() {
                   <span className="prow__name">{imp.label}</span>
                   <span className="prow__meta"><span>{imp.file}</span><span>{imp.by}</span></span>
                 </span>
-                <Button size="sm" variant="ghost" onClick={() => setUndoing(imp)}>Elimina</Button>
+                {(imp.collection !== 'players' || can(user?.role, 'players.delete')) && (
+                  <Button size="sm" variant="ghost" onClick={() => setUndoing(imp)}>Elimina</Button>
+                )}
               </div>
             ))}
           </div>

@@ -138,6 +138,8 @@ npm run deploy               # build + hosting + regole
 
 Solo le regole: `npm run deploy:rules`.
 
+Le regole non partono con Cloudflare: dopo una modifica a `firestore.rules` o `storage.rules` vanno pubblicate a mano (`npm run deploy:rules`, oppure copiate nella console Firebase, sezioni Firestore → Regole e Storage → Regole).
+
 ### Cloud Functions (facoltative)
 
 `functions/index.js` contiene due automazioni: la risposta a un link di conferma finisce subito in `availability` senza l'azione manuale «Importa risposte dai link», e ogni notte i link scaduti vengono revocati. Servono il piano Blaze e Node 20.

@@ -114,7 +114,7 @@ small { font-size: 12.5px; color: var(--muted); }
   max-width: 1180px; margin: 0 auto; width: 100%;
 }
 
-.pagehead { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.pagehead { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .pagehead p { color: var(--muted); font-size: 13.5px; margin: 0; }
 
 /* ---------- bottom navigation (mobile) ---------- */
@@ -214,7 +214,7 @@ small { font-size: 12.5px; color: var(--muted); }
 /* ---------- player rows / selection cards ---------- */
 .plist { display: flex; flex-direction: column; gap: 8px; }
 .grouphead {
-  display: flex; align-items: baseline; gap: 8px; margin: 16px 0 8px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 16px 0 8px;
   font-family: var(--display); font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
   padding-bottom: 5px; border-bottom: 2px solid var(--red);
 }
@@ -383,9 +383,16 @@ table.data tr:last-child td { border-bottom: none; }
   .sidebar__cta { margin-bottom: 14px; }
 }
 
+/* ---------- versione nuova disponibile ---------- */
+.updatebar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 12px; padding: 10px 12px; border-radius: var(--r);
+  background: var(--blue-bg); color: var(--ink); font-size: 14px;
+}
+
 /* ---------- print (distinta gara, report) ---------- */
 @media print {
-  .topbar, .tabbar, .fab, .sidebar, .noprint { display: none !important; }
+  .topbar, .tabbar, .fab, .sidebar, .noprint, .updatebar { display: none !important; }
   body { background: #fff; font-size: 12px; }
   .main { padding: 0; max-width: none; }
   .card { box-shadow: none; border: 1px solid #999; break-inside: avoid; }
@@ -455,6 +462,7 @@ table.data tr:last-child td { border-bottom: none; }
 .report__step--V { background: #e3f4ea; color: #146c3a; }
 .report__step--N { background: #fff1de; color: #9a5300; }
 .report__step--P { background: #fde4e4; color: #a80000; }
+.report .badge { white-space: normal; text-align: left; }
 .report__foot { text-align: center; color: var(--muted); font-size: 12px; margin: 16px 0; }
 @media print {
   .report { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

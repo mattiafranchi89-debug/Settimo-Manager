@@ -2,11 +2,14 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     function signedIn() { return request.auth != null; }
-    function role() {
-      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;
+    function profile() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
     }
+    function role() { return profile().role; }
+    // Come in firestore.rules: un account disattivato non conta più, qualunque ruolo avesse.
+    function active() { return signedIn() && profile().get('active', true) != false; }
     function isStaff() {
-      return signedIn() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager'];
+      return active() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager'];
     }
     function validImage() {
       return request.resource.size < 3 * 1024 * 1024
@@ -15,7 +18,7 @@ service firebase.storage {
 
     match /club/{fileName} {
       allow read: if true;                                   // logo is shown on the public confirmation page
-      allow write: if signedIn() && role() == 'admin' && validImage();
+      allow write: if active() && role() == 'admin' && validImage();
     }
     match /players/{playerId}/{fileName} {
       allow read: if signedIn();
