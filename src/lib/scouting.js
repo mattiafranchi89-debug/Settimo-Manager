@@ -29,8 +29,15 @@ const teamTokens = (name = '') =>
   name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\./g, '')
     .split(/[^a-z0-9]+/).filter((t) => t.length > 1 && !GENERIC.has(t));
 
+// Il nome senza sigle generiche, spazi e punti: «Or. Pa. S.» e «OR.PA.S.» diventano entrambi «orpas».
+const compactName = (name = '') =>
+  name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .split(/[^a-z0-9]+/).filter((t) => t && !GENERIC.has(t)).join('');
+
 /** 0..1: quanto due nomi indicano la stessa squadra ("Leone XIII" ≈ "SSDARL Leone XIII Sport"). */
 export function teamSimilarity(a, b) {
+  const ca = compactName(a);
+  if (ca.length >= 3 && ca === compactName(b)) return 1;
   const ta = teamTokens(a), tb = new Set(teamTokens(b));
   if (!ta.length || !tb.size) return 0;
   const common = ta.filter((t) => tb.has(t)).length;
