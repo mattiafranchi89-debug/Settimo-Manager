@@ -7,6 +7,9 @@ import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
 import { refreshPushSubscription } from '../lib/push';
+import { syncFixtures } from '../lib/fixtures';
+import { useToast } from './ui';
+import { fmtShort, fmtTime } from '../lib/format';
 
 export default function Layout({ theme, toggleTheme }) {
   const { user, logout } = useAuth();
@@ -34,6 +37,15 @@ export default function Layout({ theme, toggleTheme }) {
   // Chi salva firma le notifiche; l'iscrizione del telefono si riallinea a ogni apertura.
   useEffect(() => { setNotifyUser(user); }, [user]);
   useEffect(() => { if (user?.uid) refreshPushSubscription(); }, [user?.uid]);
+  // Orari ufficiali dai programmi gare del CRL: chi gestisce il calendario li allinea aprendo l'app.
+  const toast = useToast();
+  useEffect(() => {
+    if (!user?.uid || !can(user.role, 'events.write')) return;
+    syncFixtures(user)
+      .then((changed) => changed.forEach((c) => toast(`Orario ufficiale CRL: ${c.opponent} ${fmtShort(c.to)} alle ${fmtTime(c.to)}`)))
+      .catch((e) => console.warn('orari CRL', e));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid, user?.role]);
 
   const go = (to) => { setMore(false); navigate(to); };
 

@@ -2,7 +2,9 @@
 # salva il testo sul ramo `crl-cache` (non su main, così Cloudflare non
 # ricompila il sito). I task programmati di Claude leggono da quel ramo.
 # Dai comunicati ricava anche classifica e risultati di Prima Categoria
-# girone A (public/data/girone.json su main), usati dalla scheda Avversari.
+# girone A (public/data/girone.json su main), usati dalla scheda Avversari,
+# e dai programmi gare data, ora e campo delle partite del Settimo
+# (public/data/fixtures.json), con cui l'app allinea il calendario.
 name: Cache comunicati CRL
 
 on:
@@ -70,16 +72,18 @@ jobs:
           git commit -q -m "Cache CRL $(TZ=Europe/Rome date '+%d/%m %H:%M') [skip ci]" || { echo "Nessuna modifica"; exit 0; }
           git push -q origin HEAD:crl-cache
 
-      - name: Classifica e risultati del girone (main)
+      - name: Classifica, risultati e prossime partite (main)
         working-directory: src
         run: |
           set -e
           python3 -I scripts/crl_girone.py ../cache public/data/girone.json
-          git add public/data/girone.json
-          if git diff --cached --quiet; then echo "Girone invariato"; exit 0; fi
+          # Data, ora e campo ufficiali delle partite del Settimo dai programmi gare.
+          python3 -I scripts/crl_fixtures.py ../cache public/data/fixtures.json
+          git add public/data/girone.json public/data/fixtures.json
+          if git diff --cached --quiet; then echo "Girone e partite invariati"; exit 0; fi
           git config user.name "crl-cache bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -q -m "Girone A: classifica e risultati dai comunicati CRL"
+          git commit -q -m "Girone A e partite del Settimo dai comunicati CRL"
           for i in 1 2 3; do
             git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
             sleep 10

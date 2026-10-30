@@ -61,6 +61,16 @@ export function thresholdsText(list) {
 }
 
 /**
+ * Ammonizioni che valgono per la diffida: quelle di una gara finita con
+ * l'espulsione (doppia ammonizione o rosso diretto) restano assorbite dalla
+ * squalifica e non si sommano. Senza storico per gara: il totale.
+ */
+export function countedYellows({ y = 0, hist } = {}) {
+  if (!hist) return y;
+  return hist.reduce((a, h) => a + (h.r > 0 || h.y >= 2 ? 0 : h.y || 0), 0);
+}
+
+/**
  * Squalifica automatica da scontare: scatta con un'espulsione (anche per doppia
  * ammonizione nella stessa gara) o quando le ammonizioni raggiungono una soglia
  * (`per`: elenco di soglie o, per compatibilità, ogni N ammonizioni).

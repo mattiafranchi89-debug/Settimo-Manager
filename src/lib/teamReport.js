@@ -259,7 +259,8 @@ export function performanceReport({ trend, matchStats = [], girone = null, clubN
       defenseRank: 1 + table.filter((t) => t.gs < us.gs).length,
       gapAbove: idx > 0 ? sorted[idx - 1].pts - us.pts : null,
       gapBelow: idx >= 0 && idx < sorted.length - 1 ? us.pts - sorted[idx + 1].pts : null,
-      leaderGap: sorted[0] && sorted[0] !== us ? sorted[0].pts - us.pts : 0,
+      leader: sorted[0] === us,
+      leaderGap: sorted[0] ? sorted[0].pts - us.pts : 0,
       top: record(vs.top), bottom: record(vs.bottom), topHalf
     };
   }

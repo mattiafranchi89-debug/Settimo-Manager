@@ -45,6 +45,7 @@ La matrice dei permessi vive in un solo file (`permissions.js`) e le regole Fire
 | `matchStats/{eventId}` | scheda gara | `events[]` (gol, assist, cartellini, cambi), `totals` per giocatore, `closed` |
 | `ratings/{eventId}_{playerId}` | voto | `value`, `note`, autore |
 | `public/data/crl-settimo.json` | file statico | estratti dei comunicati CRL che citano la società (vedi sotto) |
+| `public/data/fixtures.json` | file statico | data, ora e campo ufficiali delle partite del Settimo dai programmi gare CRL (vedi sotto) |
 | `scouting/{slug}` | scheda avversario | `standing`, `results[]`, `players[]`, `suspended[]`, `notes`, `tuttocampoUrl` |
 | `documents`, `payments`, `fines` | — | scadenze e partite economiche |
 | `auditLogs/{id}` | log | append-only: pubblicazioni, forzature, cambi ruolo |
@@ -167,6 +168,23 @@ così Cloudflare ricompila il sito. Schema di ogni voce:
 ```
 
 Sono dati pubblici del CRL, per questo stanno in un file statico e non in Firestore.
+
+## Orari ufficiali delle partite
+
+La GitHub Action «Cache comunicati CRL» legge, insieme ai comunicati, i
+«Programma gare» del CRL e scrive in `public/data/fixtures.json` data, ora
+d'inizio, campo, località e indirizzo delle gare del Settimo (Prima
+Categoria girone A e Coppa Lombardia Prima Categoria; script
+`scripts/crl_fixtures.py`). Vale il programma pubblicato per ultimo, quindi
+anticipi e posticipi entrano da soli.
+
+All'apertura dell'app, chi può modificare il calendario allinea le prossime
+partite non ancora giocate (stessa competizione, stesso avversario, data
+entro dieci giorni): inizio, ritrovo spostato della stessa differenza,
+campo e indirizzo. Un cambio d'orario arriva a tutti come notifica e finisce
+nel registro. Una correzione fatta a mano dopo l'allineamento resta finché
+il CRL non pubblica un dato diverso. In «Partite» compaiono le gare ufficiali
+non ancora in calendario, da aggiungere con un tocco.
 
 ## Aggiornamento automatico dell'avversario
 

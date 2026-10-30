@@ -7,6 +7,8 @@ import { fmtShort, fmtTime, fmtLong, capitalize, toInputValue, toDate } from '..
 import { can, isClassicUx } from '../lib/permissions';
 import { deleteEventCascade, countEventDependencies } from '../lib/remove';
 import { errorText } from './Rosa';
+import { useFixtures, fixtureFor, fixtureStart, missingFixtures } from '../lib/fixtures';
+import { teamTitle } from '../lib/scouting';
 
 export default function Partite() {
   const { user } = useAuth();
@@ -27,6 +29,9 @@ export default function Partite() {
   const [result, setResult] = useState(null);
   const [removing, setRemoving] = useState(null);
   const canDelete = can(user?.role, 'events.delete');
+  const fixtureData = useFixtures();
+  const fixtures = useMemo(() => fixtureData?.fixtures || [], [fixtureData]);
+  const missing = useMemo(() => missingFixtures(fixtures, matches), [fixtures, matches]);
 
   const askDelete = async (m) => {
     const deps = await countEventDependencies(m.id);
@@ -72,7 +77,10 @@ export default function Partite() {
         <span className="prow__num">{past ? (m.scoreHome != null ? `${m.scoreHome}-${m.scoreAway}` : '—') : '⚽'}</span>
         <span className="prow__body">
           <span className="prow__name">{m.home === false ? `${m.opponent} (T)` : m.opponent}</span>
-          <span className="prow__meta"><span>{capitalize(fmtShort(m.date))} · {fmtTime(m.date)}</span><span>{m.competition}</span></span>
+          <span className="prow__meta">
+            <span>{capitalize(fmtShort(m.date))} · {fmtTime(m.date)}</span><span>{m.competition}</span>
+            {!past && m.kickoffSync && <span title={m.kickoffSync.source}>✓ orario CRL</span>}
+          </span>
         </span>
         <span aria-hidden="true" style={{ color: 'var(--muted)', fontSize: 18 }}>›</span>
       </button>
@@ -109,6 +117,23 @@ export default function Partite() {
         </Empty></Card>
       )}
 
+      {canWrite && missing.length > 0 && (
+        <Card title="Dai programmi gare del CRL">
+          <p style={{ marginTop: 0 }}><small>Gare ufficiali non ancora in calendario: aggiungile con data, ora e campo già compilati.</small></p>
+          <div className="plist">
+            {missing.map((f) => (
+              <div key={`${f.competition}-${f.round}-${f.opponent}`} className="prow">
+                <span className="prow__body">
+                  <span className="prow__name">{teamTitle(f.opponent)}{f.home ? '' : ' (T)'}</span>
+                  <span className="prow__meta"><span>{capitalize(fmtShort(fixtureStart(f)))} · {f.time}</span><span>{f.competition}{f.round ? ` · ${f.round.replace('A', 'ª').replace('R', 'ª rit.')}` : ''}</span></span>
+                </span>
+                <Button size="sm" onClick={() => setEditing(fromFixture(f, club))}>Aggiungi</Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {next.length > 0 && <div className="grouphead">In calendario</div>}
       <div className="plist">{next.map((m) => <Row key={m.id} m={m} />)}</div>
       {played.length > 0 && <div className="grouphead">Giocate</div>}
@@ -131,7 +156,8 @@ export default function Partite() {
         />
       )}
 
-      {editing && <MatchForm club={club} initial={editing} onSave={save} onClose={() => setEditing(null)} />}
+      {editing && <MatchForm club={club} initial={editing} onSave={save} onClose={() => setEditing(null)}
+        official={editing.id ? fixtureFor({ ...editing, date: new Date(editing.date) }, fixtures) : null} />}
       {result && <ResultForm match={result} onClose={() => setResult(null)} onSave={async (r) => {
         await updateDocument('events', result.id, { ...r, updatedAt: serverTimestamp() });
         toast('Risultato registrato'); setResult(null);
@@ -146,12 +172,24 @@ const emptyForm = (club) => ({
   meetingTime: ''
 });
 
+/** Nuova partita compilata dal programma gare del CRL. */
+const fromFixture = (f, club) => {
+  const start = fixtureStart(f);
+  const meeting = new Date(start.getTime() - 75 * 60000);
+  const comp = (club.competitions || []).find((c) => c.toLowerCase().includes(f.competition.toLowerCase().split(' ')[0])) || f.competition;
+  return {
+    opponent: teamTitle(f.opponent), competition: comp, home: f.home ? 'casa' : 'trasferta',
+    date: toInputValue(start), venue: f.venue || '', venueAddress: [f.address, f.city].filter(Boolean).join(', '),
+    meetingTime: toInputValue(meeting)
+  };
+};
+
 const toForm = (m) => ({
   ...m, home: m.home === false ? 'trasferta' : 'casa',
   date: toInputValue(m.date), meetingTime: toInputValue(m.meetingTime)
 });
 
-function MatchForm({ club, initial, onSave, onClose }) {
+function MatchForm({ club, initial, onSave, onClose, official }) {
   const [form, setForm] = useState(initial);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -170,7 +208,16 @@ function MatchForm({ club, initial, onSave, onClose }) {
         <Field label="Competizione"><Select value={form.competition} onChange={set('competition')} options={club.competitions || []} /></Field>
         <Field label="Campo"><Select value={form.home} onChange={set('home')} options={['casa', 'trasferta']} /></Field>
       </div>
-      <Field label="Data e orario di inizio"><Input type="datetime-local" value={form.date} onChange={set('date')} /></Field>
+      <Field label="Data e orario di inizio"
+        hint={official ? `Ufficiale CRL: ${fmtShort(fixtureStart(official))} alle ${official.time}, ${official.venue}${official.city ? ` (${official.city})` : ''} · ${official.source}` : undefined}>
+        <Input type="datetime-local" value={form.date} onChange={set('date')} />
+      </Field>
+      {official && toInputValue(fixtureStart(official)) !== form.date && (
+        <Button size="sm" variant="secondary" style={{ marginBottom: 12 }} onClick={() => setForm((f) => ({
+          ...f, date: toInputValue(fixtureStart(official)), venue: official.venue || f.venue,
+          venueAddress: [official.address, official.city].filter(Boolean).join(', ') || f.venueAddress
+        }))}>Usa data, ora e campo del CRL</Button>
+      )}
       <Field label="Impianto"><Input value={form.venue} onChange={set('venue')} /></Field>
       <Field label="Indirizzo" hint="Genera il link a Google Maps nella convocazione: via, numero e città.">
         <Input value={form.venueAddress} onChange={set('venueAddress')} placeholder="Via Gramsci SNC, Buccinasco" />

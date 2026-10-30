@@ -389,7 +389,7 @@ function Performance({ perf, trend, players }) {
           <h3>Nel girone</h3>
           <div className="report__facts">
             <Fact value={`${league.pos}°`} label={`su ${league.of}, ${league.pts} punti`} />
-            <Fact value={league.leaderGap ? `-${league.leaderGap}` : 'vetta'} label={league.leaderGap ? 'punti dalla capolista' : 'siamo primi'} />
+            <Fact value={league.leader ? 'vetta' : league.leaderGap ? `-${league.leaderGap}` : '='} label={league.leader ? 'siamo primi' : league.leaderGap ? 'punti dalla capolista' : 'a pari punti con la capolista'} />
             {league.gapBelow != null && <Fact value={`+${league.gapBelow}`} label="punti su chi ci segue" />}
             <Fact value={`${league.attackRank}°`} label="attacco del girone" />
             <Fact value={`${league.defenseRank}°`} label="difesa del girone" />

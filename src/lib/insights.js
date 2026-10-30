@@ -4,7 +4,7 @@
  * the heavy aggregation runs once, when an administrator recalculates.
  */
 
-import { cardsOf, isSuspendedFor, pendingSuspension, parseThresholds, thresholdAfter, thresholdsText, LEAGUE_THRESHOLDS } from './discipline';
+import { cardsOf, countedYellows, isSuspendedFor, pendingSuspension, parseThresholds, thresholdAfter, thresholdsText, LEAGUE_THRESHOLDS } from './discipline';
 
 /**
  * Soglie di squalifica: la configurazione della società oppure, per
@@ -17,10 +17,13 @@ function thresholds(cfg) {
   }
   return { league: parseThresholds(cfg) || LEAGUE_THRESHOLDS, cup: [2] };
 }
-const discipline = ({ y, r }, list) => {
-  const next = thresholdAfter(list, y);
-  const toSuspension = next - y;
-  return { yellow: y, red: r, toSuspension, diffidato: y > 0 && toSuspension === 1, next, rule: thresholdsText(list) };
+// `yellow` è il totale da mostrare; soglie e diffida contano solo le ammonizioni
+// che fanno cumulo (non quelle delle gare finite con l'espulsione).
+const discipline = (cards, list) => {
+  const counted = countedYellows(cards);
+  const next = thresholdAfter(list, counted);
+  const toSuspension = next - counted;
+  return { yellow: cards.y, red: cards.r, counted, toSuspension, diffidato: counted > 0 && toSuspension === 1, next, rule: thresholdsText(list) };
 };
 
 /**
