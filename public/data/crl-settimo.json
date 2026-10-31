@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-29T08:00:26+01:00",
-  "lastChecked": "2026-10-29T08:00:26+01:00",
+  "updatedAt": "2026-10-31T08:00:47+01:00",
+  "lastChecked": "2026-10-31T08:00:47+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -20,9 +20,47 @@
     "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41",
     "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026",
     "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026",
-    "https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42"
+    "https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42",
+    "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43",
+    "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026"
   ],
   "items": [
+    {
+      "id": "pg2902-pc-orpas",
+      "doc": "Programma gare 29/10–02/11/2026",
+      "date": "2026-10-29",
+      "url": "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026",
+      "category": "Prima Categoria girone A",
+      "type": "calendario",
+      "text": "8ª giornata: Settimo Milanese – Polisportiva OR.PA.S. (in casa), domenica 01/11/2026 alle 14:30 al C.S. \"S. Pertini\" campo n. 1, via dello Sport 1, Cornaredo."
+    },
+    {
+      "id": "cu43-pc-nova",
+      "doc": "Comunicato Ufficiale n. 43",
+      "date": "2026-10-29",
+      "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43",
+      "category": "Prima Categoria girone A",
+      "type": "risultato",
+      "text": "7ª giornata (25/10/2026): Polisportiva di Nova – Settimo Milanese 2-3, vittoria in trasferta."
+    },
+    {
+      "id": "cu43-giudice",
+      "doc": "Comunicato Ufficiale n. 43",
+      "date": "2026-10-29",
+      "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Nessun provvedimento a carico del Settimo Milanese per le gare di Prima Categoria del 25 ottobre."
+    },
+    {
+      "id": "cu43-pc-classifica",
+      "doc": "Comunicato Ufficiale n. 43",
+      "date": "2026-10-29",
+      "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43",
+      "category": "Prima Categoria girone A",
+      "type": "classifica",
+      "text": "Classifica dopo la 7ª giornata: Settimo Milanese 1° con 18 punti in 7 gare (6 vinte, 0 pareggiate, 1 persa), 19 gol fatti e 7 subiti; seguono Garibaldina 1932 a 13, Frog Milano e Buccinasco a 12."
+    },
     {
       "id": "pg2629-coppa-velamesero",
       "doc": "Programma gare 26-29 ottobre 2026",
@@ -204,5 +242,25 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ],
-  "avversari": []
+  "avversari": [
+    {
+      "squadra": "POLISPORTIVA OR.PA.S.",
+      "partita": "Prima Categoria – 8ª giornata, 01/11/2026 ore 14:30, in casa",
+      "data": "2026-11-01",
+      "competizione": "campionato",
+      "aggiornato": "2026-10-31T08:00:47+01:00",
+      "squalificati": [
+        {
+          "nome": "MOTTA TOMMASO",
+          "ruolo": "calciatore",
+          "sanzione": "fino al 9/12/2026",
+          "competizione": "campionato",
+          "doc": "Comunicato Ufficiale n. 41",
+          "date": "2026-10-22",
+          "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41"
+        }
+      ],
+      "diffidati": []
+    }
+  ]
 }
