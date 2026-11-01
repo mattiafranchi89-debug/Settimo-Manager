@@ -1266,28 +1266,3 @@ Pagina: https://www.crlombardia.it/documenti/33402/comunicato-ufficiale-n-20
 
 
 ```
-
-## COMUNICATO UFFICIALE N° 19 (2026-09-01)
-Pagina: https://www.crlombardia.it/documenti/33381/comunicato-ufficiale-n-19
-
-### Comunicato Ufficiale Nr.19 del 01.09.2026.pdf – riga 752
-```
-13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                17:00   15:30
-                                                                                                        VIA ASSIETTA,48
-13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                     16:30   14:30
-19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE              20/09/2026   20:30   15:30
-
-
-
-```
-
-### Comunicato Ufficiale Nr.19 del 01.09.2026.pdf – riga 1636
-```
-                         Squadra 1                 Squadra 2                                                       Impianto
- Gara Gior.                                                                Orig.       Var. Orig.
-                                                                                                       C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
-19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
-                                                                                                       SICA,14
-
-
-```

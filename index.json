@@ -413,58 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33381": {
-      "id": "33381",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 19",
-      "number": 19,
-      "date": "2026-09-01",
-      "url": "https://www.crlombardia.it/documenti/33381/comunicato-ufficiale-n-19",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr.19 del 01.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea53c3aa1_Comunicato Ufficiale Nr.19 del 01.09.2026.pdf",
-          "pages_chars": 216403,
-          "settimo_mentions": 2,
-          "txt": "docs/33381/Comunicato_Ufficiale_Nr.19_del_01.09.2026.txt",
-          "mentions": [
-            {
-              "line": 752,
-              "text": "13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                17:00   15:30\n                                                                                                        VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
-            },
-            {
-              "line": 1636,
-              "text": "                         Squadra 1                 Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
-            }
-          ]
-        },
-        {
-          "name": "1_Allievi U17 Reg.li GirE 010926.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5416222_1_Allievi U17 Reg.li GirE 010926.pdf",
-          "pages_chars": 11438,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "2_Coppa Italia Calcio a 5 Serie C1.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5423b1c_2_Coppa Italia Calcio a 5 Serie C1.pdf",
-          "pages_chars": 2558,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "3_Coppa Lombardia Calcioa 5 Serie C2.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea542aedc_3_Coppa Lombardia Calcioa 5 Serie C2.pdf",
-          "pages_chars": 5385,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Numerazione Fissa.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33381/6a96ea5436506_Numerazione Fissa.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33402": {
       "id": "33402",
       "kind": "comunicato",
@@ -1924,7 +1872,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-10-31T20:38:50+00:00",
+  "lastRun": "2026-11-01T05:52:56+00:00",
   "homepage": [
     "33714",
     "33706",
