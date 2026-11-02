@@ -1869,18 +1869,36 @@
         }
       ],
       "fetchedAt": "2026-10-29T21:58:38+00:00"
+    },
+    "33741": {
+      "id": "33741",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 02 al 05 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-02",
+      "url": "https://www.crlombardia.it/news/33741/programma-gare-dal-02-al-05-novembre-2026",
+      "files": [
+        {
+          "name": "Programma Gare dal 02 al 05 Novembre 2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33741/6ae8acf673a52_Programma Gare dal 02 al 05 Novembre 2026.pdf",
+          "pages_chars": 61395,
+          "settimo_mentions": 0,
+          "txt": "docs/33741/Programma_Gare_dal_02_al_05_Novembre_2026.txt"
+        }
+      ],
+      "fetchedAt": "2026-11-02T20:44:26+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-02T12:52:08+00:00",
+  "lastRun": "2026-11-02T20:44:26+00:00",
   "homepage": [
     "33714",
     "33706",
     "33673",
     "33669",
     "33661",
-    "33730",
-    "33703"
+    "33741",
+    "33730"
   ],
   "errors": [],
   "notRegional": [
