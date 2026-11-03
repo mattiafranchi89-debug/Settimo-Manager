@@ -1853,16 +1853,85 @@
         }
       ],
       "fetchedAt": "2026-11-02T20:44:26+00:00"
+    },
+    "33743": {
+      "id": "33743",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 44 CRL",
+      "number": 44,
+      "date": "2026-11-03",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 44 del 03.11.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f2fe12f3c_Comunicato Ufficiale Nr. 44 del 03.11.26.pdf",
+          "pages_chars": 95376,
+          "settimo_mentions": 3,
+          "txt": "docs/33743/Comunicato_Ufficiale_Nr._44_del_03.11.26.txt",
+          "mentions": [
+            {
+              "line": 391,
+              "text": "\n\n                     GIRONE 2C - 1 Giornata - A                                                 GIRONE 2D - 1 Giornata - A\nCALCIO CANEGRATE                  - FOOTBALL CLUB PARABIAGO      1-3         SETTIMO MILANESE                - VELA MESERO                   1-4\n\n\n                     GIRONE 2E - 1 Giornata - A                                                 GIRONE 2F - 1 Giornata - A"
+            },
+            {
+              "line": 493,
+              "text": "\nSQUALIFICA PER UNA GARA EFFETTIVA PER RECIDIVITA' IN AMMONIZIONE (II INFR)\n\nBELTRAMI LORENZO           (BREBBIA 2019)                           PUGLIESE LUCA           (SETTIMO MILANESE)\n\n\nI AMMONIZIONE DIFFIDA"
+            },
+            {
+              "line": 610,
+              "text": "PARISIO GIOVANNI           (PRALBOINO G.S.D.)                      BARRA LUCA               (REAL TREZZANO)\nGRIMALDI STEFANO           (REAL TREZZANO)                         ZORDAN MANUEL            (REAL TREZZANO)\nLABONI MATTEO              (SERGNANESE A.S.D.)                     RECANATI STEFANO         (SERGNANESE A.S.D.)\nCORAZZA ALESSIO            (SETTIMO MILANESE)                      FUMAGALLI GIULIO MARIA   (SIRTORESE)\nCRISCIONE SIMONE           (TICINIA ROBECCHETTO)                   MINERVINI CRISTIAN       (TICINIA ROBECCHETTO)\nMONELLI MARCO              (TICINIA ROBECCHETTO)                   RUSSO FRANCESCO          (TICINIA ROBECCHETTO)\nAMADASI MATTEO             (TRIUGGESE)                             NOVARA TOMMASO           (TRIUGGESE)"
+            }
+          ]
+        },
+        {
+          "name": "Maglie Personalizzate CU44.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f314ea6c3_Maglie Personalizzate CU44.zip",
+          "skipped": "non è un PDF"
+        },
+        {
+          "name": "Classifiche C5 _CU44.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f2fe4ae8d_Classifiche C5 _CU44.pdf",
+          "pages_chars": 12702,
+          "settimo_mentions": 0,
+          "txt": "docs/33743/Classifiche_C5__CU44.txt"
+        },
+        {
+          "name": "01_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f2fe5f1f7_01_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "pages_chars": 12122,
+          "settimo_mentions": 1,
+          "txt": "docs/33743/01_Coppa_PrimaCategoria_K1_Tabellone.txt",
+          "mentions": [
+            {
+              "line": 33,
+              "text": "G. 14 - FOOTBALL CLUB PARABIAGO\n                                                                                                      Vincente 3-B\n                                                        2-D\nG. 15 - SETTIMO MILANESE\n\n                                                        G. 16 - VELA MESERO\n"
+            }
+          ]
+        },
+        {
+          "name": "02_Esordienti Misti C5.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f2fe6bcc4_02_Esordienti Misti C5.pdf",
+          "pages_chars": 12002,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Pulcini Misti C5.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33743/6ae9f2fe7b8e6_03_Pulcini Misti C5.pdf",
+          "pages_chars": 11128,
+          "settimo_mentions": 0
+        }
+      ],
+      "fetchedAt": "2026-11-03T18:22:53+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-03T12:20:22+00:00",
+  "lastRun": "2026-11-03T18:22:53+00:00",
   "homepage": [
+    "33743",
     "33714",
     "33706",
     "33673",
     "33669",
-    "33661",
     "33741",
     "33730"
   ],

@@ -1,5 +1,52 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 44 CRL (2026-11-03)
+Pagina: https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44
+
+### Comunicato Ufficiale Nr. 44 del 03.11.26.pdf – riga 391
+```
+
+
+                     GIRONE 2C - 1 Giornata - A                                                 GIRONE 2D - 1 Giornata - A
+CALCIO CANEGRATE                  - FOOTBALL CLUB PARABIAGO      1-3         SETTIMO MILANESE                - VELA MESERO                   1-4
+
+
+                     GIRONE 2E - 1 Giornata - A                                                 GIRONE 2F - 1 Giornata - A
+```
+
+### Comunicato Ufficiale Nr. 44 del 03.11.26.pdf – riga 493
+```
+
+SQUALIFICA PER UNA GARA EFFETTIVA PER RECIDIVITA' IN AMMONIZIONE (II INFR)
+
+BELTRAMI LORENZO           (BREBBIA 2019)                           PUGLIESE LUCA           (SETTIMO MILANESE)
+
+
+I AMMONIZIONE DIFFIDA
+```
+
+### Comunicato Ufficiale Nr. 44 del 03.11.26.pdf – riga 610
+```
+PARISIO GIOVANNI           (PRALBOINO G.S.D.)                      BARRA LUCA               (REAL TREZZANO)
+GRIMALDI STEFANO           (REAL TREZZANO)                         ZORDAN MANUEL            (REAL TREZZANO)
+LABONI MATTEO              (SERGNANESE A.S.D.)                     RECANATI STEFANO         (SERGNANESE A.S.D.)
+CORAZZA ALESSIO            (SETTIMO MILANESE)                      FUMAGALLI GIULIO MARIA   (SIRTORESE)
+CRISCIONE SIMONE           (TICINIA ROBECCHETTO)                   MINERVINI CRISTIAN       (TICINIA ROBECCHETTO)
+MONELLI MARCO              (TICINIA ROBECCHETTO)                   RUSSO FRANCESCO          (TICINIA ROBECCHETTO)
+AMADASI MATTEO             (TRIUGGESE)                             NOVARA TOMMASO           (TRIUGGESE)
+```
+
+### 01_Coppa_PrimaCategoria_K1_Tabellone.pdf – riga 33
+```
+G. 14 - FOOTBALL CLUB PARABIAGO
+                                                                                                      Vincente 3-B
+                                                        2-D
+G. 15 - SETTIMO MILANESE
+
+                                                        G. 16 - VELA MESERO
+
+```
+
 ## Programma Gare dal 02 al 05 Novembre 2026 CRL (2026-11-02)
 Pagina: https://www.crlombardia.it/news/33741/programma-gare-dal-02-al-05-novembre-2026
 Nessuna menzione del Settimo Milanese.
