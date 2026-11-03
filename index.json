@@ -413,40 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33402": {
-      "id": "33402",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 20",
-      "number": 20,
-      "date": "2026-09-03",
-      "url": "https://www.crlombardia.it/documenti/33402/comunicato-ufficiale-n-20",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr.20 del 03.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33402/6a99876d6d39e_Comunicato Ufficiale Nr.20 del 03.09.2026.pdf",
-          "pages_chars": 301435,
-          "settimo_mentions": 2,
-          "txt": "docs/33402/Comunicato_Ufficiale_Nr.20_del_03.09.2026.txt",
-          "mentions": [
-            {
-              "line": 965,
-              "text": "13/09/2026   1A   GARIBALDINA 1932           FROG MILANO                                 17:00   15:30\n                                                                                                         VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT           CENTRO SCHUSTER A.S.D.                      16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.       SETTIMO MILANESE               20/09/2026   20:30   15:30\n\n\n"
-            },
-            {
-              "line": 2071,
-              "text": "                         Squadra 1                   Squadra 2                                                     Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Numerazione Fissa.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33402/6a99876dd58f9_Numerazione Fissa.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33422": {
       "id": "33422",
       "kind": "comunicato",
@@ -1890,7 +1856,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-02T20:44:26+00:00",
+  "lastRun": "2026-11-03T00:01:50+00:00",
   "homepage": [
     "33714",
     "33706",
