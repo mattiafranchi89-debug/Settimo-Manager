@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T21:58:54+00:00",
+  "generatedAt": "2026-11-03T18:23:06+00:00",
   "competition": "Prima Categoria girone A",
   "season": "2026/2027",
   "standing": {
@@ -1346,6 +1346,71 @@
       "ag": 2,
       "source": "Comunicato Ufficiale n. 43",
       "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
+    },
+    {
+      "competition": "Coppa Lombardia",
+      "girone": "2F",
+      "round": 1,
+      "leg": "A",
+      "date": "2026-10-28",
+      "home": "AUSONIA ACADEMY",
+      "away": "CARUGATE CALCIO ASD",
+      "hg": 2,
+      "ag": 3,
+      "source": "Comunicato Ufficiale n. 44",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
+    },
+    {
+      "competition": "Coppa Lombardia",
+      "girone": "2H",
+      "round": 1,
+      "leg": "A",
+      "date": "2026-10-28",
+      "home": "BUCCINASCO",
+      "away": "VILLA S.S.D.R.L.",
+      "hg": 3,
+      "ag": 2,
+      "source": "Comunicato Ufficiale n. 44",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
+    },
+    {
+      "competition": "Coppa Lombardia",
+      "girone": "2E",
+      "round": 1,
+      "leg": "A",
+      "date": "2026-10-28",
+      "home": "POLISPORTIVA DI NOVA",
+      "away": "TRIUGGESE",
+      "hg": 1,
+      "ag": 2,
+      "source": "Comunicato Ufficiale n. 44",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
+    },
+    {
+      "competition": "Coppa Lombardia",
+      "girone": "2D",
+      "round": 1,
+      "leg": "A",
+      "date": "2026-10-28",
+      "home": "SETTIMO MILANESE",
+      "away": "VELA MESERO",
+      "hg": 1,
+      "ag": 4,
+      "source": "Comunicato Ufficiale n. 44",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
+    },
+    {
+      "competition": "Coppa Lombardia",
+      "girone": "2N",
+      "round": 1,
+      "leg": "A",
+      "date": "2026-10-29",
+      "home": "CENTRO SCHUSTER A.S.D.",
+      "away": "LIBERTAS CASIRATESE POL.D",
+      "hg": 2,
+      "ag": 3,
+      "source": "Comunicato Ufficiale n. 44",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
     }
   ]
 }
