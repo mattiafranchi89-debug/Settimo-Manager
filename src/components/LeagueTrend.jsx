@@ -7,16 +7,16 @@ import { resultChecks, applyOfficialResult, appScore } from '../lib/results';
 import { compBucket } from '../lib/discipline';
 import { toDate, fmtShort } from '../lib/format';
 
-/** Meglio, peggio o stabile: sotto un quarto di punto (o di gol) la differenza non conta. */
-function Delta({ now, before, lowerIsBetter = false, fmt = n1 }) {
+/** Meglio, peggio o stabile: sotto la soglia (un quarto di punto o di gol, o punti percentuali) la differenza non conta. */
+export function Delta({ now, before, lowerIsBetter = false, fmt = n1, threshold = 0.25 }) {
   if (now == null || before == null) return null;
   const diff = now - before;
-  if (Math.abs(diff) < 0.25) return <Badge tone="grey">= stabile · prima {fmt(before)}</Badge>;
+  if (Math.abs(diff) < threshold) return <Badge tone="grey">= stabile · prima {fmt(before)}</Badge>;
   const better = lowerIsBetter ? diff < 0 : diff > 0;
   return <Badge tone={better ? 'green' : 'red'}>{better ? '▲ meglio' : '▼ peggio'} · prima {fmt(before)}</Badge>;
 }
 
-function Tile({ value, label, children, accent = false }) {
+export function Tile({ value, label, children, accent = false }) {
   return (
     <div className={`kpi ${accent ? 'kpi--accent' : ''}`}>
       <div className="kpi__value">{value}</div>

@@ -216,6 +216,31 @@ Calcoli in `src/lib/trend.js`, pagina in `src/components/LeagueTrend.jsx`.
 La classifica giornata per giornata è ricostruita dai risultati (punti, poi
 differenza reti): l'ordine ufficiale può differire per gli scontri diretti.
 
+## Situazioni di gara e impatto dei giocatori
+
+Due schede di Andamento (solo staff) leggono le schede gara chiuse delle gare
+ufficiali con risultato.
+
+- **Partite** (`src/lib/gameStates.js`, `src/components/GameSituations.jsx`):
+  minuti in vantaggio, in parità e sotto, vittorie-pareggi-sconfitte quando
+  segniamo o subiamo per primi, punti persi da vantaggio e presi da sotto, gol
+  degli ultimi 15', con la tendenza (ultime 3 o 5 gare contro le precedenti)
+  e una barra per ogni partita. Una gara si ricostruisce solo se i gol della
+  scheda tornano con il risultato e hanno tutti il minuto: le altre compaiono
+  in «Gare da completare» con il motivo.
+- **Giocatori** (`src/lib/playerImpact.js`, `src/components/PlayerImpact.jsx`):
+  gol fatti e subiti con il giocatore in campo (con le regole del minutaggio:
+  chi entra al minuto del gol c'è, chi esce no), differenza reti ogni 90' e
+  confronto con quando non è in campo (almeno 270'); punti a partita con lui
+  titolare e senza; rendimento per modulo (dalla formazione salvata); gol e
+  assist dei subentrati e gol fatti e subiti prima e dopo il primo cambio.
+  Servono anche i minuti di cambi ed espulsioni.
+
+Anche i nostri gol hanno la causa («Come è nato»: in «Gol», in «Chi ha
+segnato?» e nella cronologia), con le stesse chiavi dei gol subiti e
+l'etichetta vista da noi (es. «Palla recuperata alta»). In Andamento › Gol:
+come nascono i nostri gol e il bilancio delle palle inattive.
+
 ## Risultati ufficiali delle partite
 
 All'apertura dell'app, chi gestisce il calendario completa da solo i

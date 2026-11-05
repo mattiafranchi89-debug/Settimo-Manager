@@ -279,6 +279,9 @@ export default function SchedaGara() {
                   {e.type === 'gol_subito' && (canWrite
                     ? <CauseSelect compact value={e.cause} onChange={(cause) => patchEvent(e.id, { cause })} />
                     : e.cause && <span className="prow__meta"><span>{causeLabel(e.cause)}</span></span>)}
+                  {e.type === 'gol' && !e.og && (canWrite
+                    ? <CauseSelect compact mine value={e.cause} onChange={(cause) => patchEvent(e.id, { cause })} />
+                    : e.cause && <span className="prow__meta"><span>{causeLabel(e.cause, true)}</span></span>)}
                 </span>
                 {canWrite && <button className="iconbtn" aria-label="Rimuovi" onClick={() => removeEvent(e.id)}>✕</button>}
               </div>
@@ -399,9 +402,9 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
         </Select>
       </Field>
       )}
-      {type === 'gol_subito' && (
-        <Field label="Come è nato" hint="Facoltativo: serve all'analisi dei gol subiti.">
-          <CauseSelect value={cause} onChange={(v) => setCause(v || '')} />
+      {(type === 'gol_subito' || type === 'gol') && (
+        <Field label="Come è nato" hint={`Facoltativo: serve all'analisi dei gol ${type === 'gol' ? 'fatti' : 'subiti'}.`}>
+          <CauseSelect mine={type === 'gol'} value={cause} onChange={(v) => setCause(v || '')} />
         </Field>
       )}
       {type === 'sostituzione' && (
@@ -471,14 +474,14 @@ function StaffCardForm({ club, onSave, onClose }) {
 }
 
 /** Menù delle cause di un gol subito, raggruppate (transizioni, palle inattive…). */
-function CauseSelect({ value, onChange, compact = false }) {
+function CauseSelect({ value, onChange, compact = false, mine = false }) {
   return (
-    <Select value={value || ''} onChange={(e) => onChange(e.target.value || null)} aria-label="Causa del gol subito"
+    <Select value={value || ''} onChange={(e) => onChange(e.target.value || null)} aria-label={mine ? 'Come è nato il gol' : 'Causa del gol subito'}
       style={compact ? { marginTop: 4, minHeight: 34, padding: '4px 8px', fontSize: 13, width: 'auto', maxWidth: '100%' } : undefined}>
       <option value="">{compact ? 'Causa del gol…' : 'Non indicata'}</option>
       {CAUSE_GROUPS.map((g) => (
         <optgroup key={g.key} label={g.label}>
-          {GOAL_CAUSES.filter((c) => c.group === g.key).map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          {GOAL_CAUSES.filter((c) => c.group === g.key).map((c) => <option key={c.key} value={c.key}>{mine ? c.mine || c.label : c.label}</option>)}
         </optgroup>
       ))}
     </Select>
@@ -858,7 +861,7 @@ function AfterMatch({ match, events, ourGoals, reading, busy, lineup, onPhoto, o
 function ScorersSheet({ match, events, onSheet, lineup, onSave, onClose }) {
   const us = ourScore(match) ?? 1;
   const have = events.filter((e) => e.type === 'gol').length;
-  const [rows, setRows] = useState(() => Array.from({ length: Math.max(1, us - have) }, () => ({ playerId: '', assistId: '', minute: '' })));
+  const [rows, setRows] = useState(() => Array.from({ length: Math.max(1, us - have) }, () => ({ playerId: '', assistId: '', minute: '', cause: '' })));
   const set = (i, patch) => setRows((r) => r.map((x, k) => (k === i ? { ...x, ...patch } : x)));
   const label = (p) => `${lineup?.numbers?.[p.id] ? `${lineup.numbers[p.id]} · ` : ''}${p.fullName}`;
   const ok = rows.every((r) => r.playerId);
@@ -869,7 +872,7 @@ function ScorersSheet({ match, events, onSheet, lineup, onSave, onClose }) {
     rows.forEach((r) => {
       const minute = r.minute === '' ? null : Number(r.minute);
       if (r.playerId === 'og') list.push({ id: rid(), type: 'gol', minute, og: true });
-      else list.push({ id: rid(), type: 'gol', minute, playerId: r.playerId });
+      else list.push({ id: rid(), type: 'gol', minute, playerId: r.playerId, ...(r.cause ? { cause: r.cause } : {}) });
       if (r.assistId) list.push({ id: rid(), type: 'assist', minute, playerId: r.assistId });
     });
     onSave(list);
@@ -893,12 +896,15 @@ function ScorersSheet({ match, events, onSheet, lineup, onSave, onClose }) {
               </Select>
               <Input type="number" inputMode="numeric" min="0" max="120" placeholder="Minuto" value={r.minute} onChange={(e) => set(i, { minute: e.target.value })} />
             </div>
+            {r.playerId !== 'og' && (
+              <div style={{ marginTop: 6 }}><CauseSelect mine value={r.cause} onChange={(v) => set(i, { cause: v || '' })} /></div>
+            )}
           </div>
         ))}
       </div>
       <div className="btnrow" style={{ marginTop: 12 }}>
         <Button disabled={!ok} onClick={save}>Inserisci {rows.length === 1 ? 'il gol' : `i ${rows.length} gol`}</Button>
-        <Button variant="ghost" onClick={() => setRows((x) => [...x, { playerId: '', assistId: '', minute: '' }])}>＋ un altro gol</Button>
+        <Button variant="ghost" onClick={() => setRows((x) => [...x, { playerId: '', assistId: '', minute: '', cause: '' }])}>＋ un altro gol</Button>
       </div>
     </Sheet>
   );

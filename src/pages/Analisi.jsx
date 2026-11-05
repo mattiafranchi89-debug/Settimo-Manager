@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom';
 import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/format';
 import { can } from '../lib/permissions';
 import { ensureAttendanceSummaries } from '../lib/trainings';
-import { concededByCause } from '../lib/goalCauses';
+import { goalsByCause, setPieceBalance } from '../lib/goalCauses';
 import LeagueTrend from '../components/LeagueTrend';
+import GameSituations from '../components/GameSituations';
+import PlayerImpact from '../components/PlayerImpact';
 
 const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -19,7 +21,7 @@ const isoWeek = (d) => {
 };
 
 // «Campionato» per prima: in 30 secondi come stiamo andando rispetto al girone.
-const TABS = [['campionato', 'Campionato'], ['rendimento', 'Rendimento'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
+const TABS = [['campionato', 'Campionato'], ['rendimento', 'Rendimento'], ['partite', 'Partite'], ['giocatori', 'Giocatori'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
 
 export default function Analisi() {
   const { user } = useAuth();
@@ -64,6 +66,8 @@ export default function Analisi() {
       </div>
 
       {tab === 'campionato' && <LeagueTrend club={club} matches={matches} user={user} canFix={can(user?.role, 'events.write')} />}
+      {tab === 'partite' && <GameSituations matches={matches} sheets={officialStats} />}
+      {tab === 'giocatori' && <PlayerImpact matches={matches} sheets={officialStats} players={players} />}
       {tab === 'rendimento' && <Rendimento played={official} friendlies={played.length - official.length} club={club} />}
       {tab === 'rotazione' && <Rotazione players={players} matchStats={officialStats} />}
       {tab === 'impiego' && <Impiego players={players} club={club} />}
@@ -249,28 +253,50 @@ function Gol({ matchStats }) {
         <Bars rows={bands.map((b, i) => ({ label: b, value: conceded[i] }))} max={max} tone="var(--red)" />
         <p><small>Registrali dalla scheda gara con «Gol subito». Se una fascia domina, è lì che si lavora in settimana.{untimed.scored + untimed.conceded > 0 ? ` Senza minuto: ${untimed.scored} fatti, ${untimed.conceded} subiti.` : ''} Solo gare ufficiali.</small></p>
       </Card>
-      <ConcededCauses sheets={closed} />
+      <GoalCauses sheets={closed} type="gol" />
+      <GoalCauses sheets={closed} type="gol_subito" />
+      <SetPieces sheets={closed} />
     </>
   );
 }
 
 /** Come nascono i gol subiti: dalla causa scelta nella scheda gara. */
-function ConcededCauses({ sheets }) {
-  const c = concededByCause(sheets);
+/** Come nascono i gol fatti («gol») o subiti («gol_subito»), dalla causa scelta nella scheda gara. */
+function GoalCauses({ sheets, type }) {
+  const mine = type === 'gol';
+  const c = goalsByCause(sheets, type);
   if (!c.total) return null;
   return (
-    <Card title="Come nascono i gol subiti">
+    <Card title={mine ? 'Come nascono i nostri gol' : 'Come nascono i gol subiti'}>
       {c.known === 0 ? (
-        <p style={{ margin: 0 }}><small>Nessun gol subito con la causa: indicala nella scheda gara, accanto a ogni «Gol subito».</small></p>
+        <p style={{ margin: 0 }}><small>Nessun gol {mine ? 'fatto' : 'subito'} con la causa: indicala nella scheda gara, accanto a ogni «{mine ? 'Gol' : 'Gol subito'}».</small></p>
       ) : (
         <>
-          <Bars rows={c.causes.map((x) => ({ label: x.label, value: x.n }))} tone="var(--red)" labelWidth={170} />
+          <Bars rows={c.causes.map((x) => ({ label: x.label, value: x.n }))} tone={mine ? 'var(--green)' : 'var(--red)'} labelWidth={170} />
           <p><small>
             {c.groups.map((g) => `${g.label} ${g.n} (${Math.round((g.n / c.known) * 100)}%)`).join(' · ')}
             {c.missing > 0 ? ` · senza causa: ${c.missing} su ${c.total}` : ''}
           </small></p>
         </>
       )}
+    </Card>
+  );
+}
+
+/** Palle inattive (angoli, punizioni, rimesse, rigori): quanti gol fatti e subiti. */
+function SetPieces({ sheets }) {
+  const b = setPieceBalance(sheets);
+  if (!b.scored && !b.conceded) return null;
+  const net = b.scored - b.conceded;
+  return (
+    <Card title="Palle inattive">
+      <div className="grid grid--kpi">
+        <Kpi value={b.scored} label="gol fatti da palla inattiva" />
+        <Kpi value={b.conceded} label="gol subiti da palla inattiva" tone={b.conceded > b.scored ? 'red' : undefined} />
+      </div>
+      <p style={{ margin: '8px 0 0' }}><small>
+        Bilancio {net > 0 ? `+${net}` : net}: {net > 0 ? 'le palle inattive ci fanno guadagnare' : net < 0 ? 'sulle palle inattive perdiamo più di quanto guadagniamo' : 'in pari'}. Contano solo i gol con la causa indicata nella scheda gara.
+      </small></p>
     </Card>
   );
 }
