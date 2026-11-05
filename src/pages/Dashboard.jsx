@@ -66,8 +66,7 @@ export default function Dashboard() {
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
   // Staff squalificato o in diffida: cartellini delle schede gara e comunicati CRL.
-  const recentMatches = useMemo(() => [...pastEvents, ...upcoming].filter((e) => e.type === 'match'), [pastEvents, upcoming]);
-  const staffPeople = useStaffDiscipline({ club, matches: recentMatches, enabled: staff });
+  const staffPeople = useStaffDiscipline({ club, enabled: staff });
   // Solo le competizioni con partite in programma: dopo l'eliminazione la coppa non è un avviso.
   const staffWatch = useMemo(
     () => staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))]),

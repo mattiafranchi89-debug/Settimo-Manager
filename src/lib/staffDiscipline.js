@@ -244,13 +244,16 @@ export function useDisciplina(enabled = true) {
 }
 
 /**
- * Disciplina dello staff per una pagina: schede della stagione e comunicati
- * si leggono qui, le partite (per le giornate scontate) le passa la pagina.
+ * Disciplina dello staff per una pagina: schede e partite della stagione e
+ * comunicati si leggono qui. Tutte le partite, non solo le recenti: una gara
+ * con il risultato ma senza scheda chiusa deve continuare a contare come scontata.
  */
-export function useStaffDiscipline({ club, matches = [], enabled = true }) {
+export function useStaffDiscipline({ club, enabled = true }) {
   const { data: file } = useDisciplina(enabled);
   const sheetsQ = useMemo(() => [where('date', '>=', seasonStart(club?.season))], [club?.season]);
   const { data: sheets } = useCollection('matchStats', sheetsQ, enabled);
+  const matchesQ = useMemo(() => [where('type', '==', 'match'), where('seasonId', '==', club?.season || '')], [club?.season]);
+  const { data: matches } = useCollection('events', matchesQ, enabled);
   return useMemo(
     () => (enabled ? staffDiscipline({ club, sheets, matches, provvedimenti: file?.provvedimenti || [] }) : []),
     [enabled, club, sheets, matches, file]

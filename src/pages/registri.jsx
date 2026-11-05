@@ -25,8 +25,7 @@ export function Statistiche() {
   useStatsUpgrade(players, user?.role, club.season);
   // Staff: cartellini dalle schede gara, squalifiche dai comunicati (solo per chi vede la rosa).
   const seesStaff = can(user?.role, 'players.read');
-  const { data: seasonMatches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), where('seasonId', '==', club.season)], [club.season]), seesStaff);
-  const staffPeople = useStaffDiscipline({ club, matches: seasonMatches, enabled: seesStaff });
+  const staffPeople = useStaffDiscipline({ club, enabled: seesStaff });
 
   const recalc = async () => {
     setBusy(true);

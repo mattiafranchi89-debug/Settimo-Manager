@@ -93,7 +93,7 @@ export default function ConvocazioneEditor() {
   const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
   const absentees = useMemo(() => players.filter((p) => unexcused[p.id]?.length).map((p) => ({ p, dates: unexcused[p.id] })), [players, unexcused]);
   // Staff fermo o in diffida per questa gara (stessa competizione; «fino al» vale per ogni gara).
-  const staffPeople = useStaffDiscipline({ club, matches: allEvents });
+  const staffPeople = useStaffDiscipline({ club });
   const staffWatch = useMemo(() => staffAlerts(staffPeople, bucket, event ? dayIso(event.date) : null), [staffPeople, bucket, event]);
   const absenceText = (list) => list.map(({ p, dates }) => `${p.fullName} (${dates.map((d) => fmtShort(d)).join(', ')})`).join('; ');
 
