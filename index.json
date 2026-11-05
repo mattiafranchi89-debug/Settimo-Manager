@@ -1922,18 +1922,186 @@
         }
       ],
       "fetchedAt": "2026-11-03T18:22:53+00:00"
+    },
+    "33746": {
+      "id": "33746",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 45 CRL",
+      "number": 45,
+      "date": "2026-11-05",
+      "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 45 del 05.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c0f6f424_Comunicato Ufficiale Nr. 45 del 05.11.2026.pdf",
+          "pages_chars": 454684,
+          "settimo_mentions": 3,
+          "txt": "docs/33746/Comunicato_Ufficiale_Nr._45_del_05.11.2026.txt",
+          "mentions": [
+            {
+              "line": 1142,
+              "text": "PARTIZAN BONOLA ASD             - FROG MILANO                4-3      LEO TEAM                        - CASSINA RIZZARDI            1-0\nPRO PESCHIERA BORROMEO          - BUCCINASCO                 1-1      LOMAZZO CALCIO A.S.D.           - ATLETICO SCHIAFFINO         1-1\nQUINTO ROMANO A.S.D.            - GARIBALDINA 1932           0-0      OLIMPIA CALCIO CADORAGO         - ITALA A.S.D.                0-0\nSETTIMO MILANESE                - POLISPORTIVA OR.PA.S.      1-1      PRO LISSONE CALCIO              - LUISAGO GRANDATE ASD        2-3\nVILLA S.S.D.R.L.                - LEONE XIII SPORT           2-0      ZETA MILANO F.C. ASD            - TRIUGGESE                   5-3\n                                                                      (1) - disputata il 31/10/2026\n"
+            },
+            {
+              "line": 1667,
+              "text": "(1) LESMO SSD ARL                    - CDA E CAVALLASCA A.S.D.      5-2        ORATORIANA VITTUONE ASD           - ORIONE                      2-1\n(1) NOVEDRATE                        - LUISAGO GRANDATE ASD         1-1        POL.D. U.S. CASSOLESE             - SUPERGA G.S. A.S.D.         4-1\n(1) OLIMPIA CALCIO CADORAGO          - PONTELAMBRESE A.S.D.         3-5        QUINTO ROMANO A.S.D.              - VIGHI 1967                  1-1\nSIRTORESE                            - MONGUZZO 1997                5-0        SETTIMO MILANESE                  - VICTORIA MMVII A.S.D.       2-3\n(1) - disputata il 01/11/2026                                                  (1) - disputata il 01/11/2026\n\n"
+            },
+            {
+              "line": 1717,
+              "text": "nello spogliatoio dell'arbitro.Mancanza di un numero adeguato di palloni per lo svolgimento della gara (solo\ndue) e costretto l'arbitro ad un lungo tempo di recupero.\n\nEuro 70,00 SETTIMO MILANESE\nPer mancato controllo di sicurezza ai cancelli di ingresso al recinto di gioco,al termine della gara.\n\nDIRIGENTI"
+            }
+          ]
+        },
+        {
+          "name": "Classifiche CU_45 del 05.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c10a8e01_Classifiche CU_45 del 05.11.2026.pdf",
+          "pages_chars": 149169,
+          "settimo_mentions": 2,
+          "txt": "docs/33746/Classifiche_CU_45_del_05.11.2026.txt",
+          "mentions": [
+            {
+              "line": 254,
+              "text": "                                  PRIMA CATEGORIA\nGIRONE A\n                         Squadra                 PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                            19   8   6   1   1   20    8    12   0\nG.S. VILLA S.S.D.R.L.                            15   8   4   3   1   13    9     4   0\nA.C. GARIBALDINA 1932                            14   8   4   2   2   18   12     6   0\nPOL. BUCCINASCO                                  13   8   3   4   1   12    7     5   0"
+            },
+            {
+              "line": 618,
+              "text": "A.C.D. FROG MILANO                            9   8   3   0   5   20   17     3   0\nU.S. QUINTO ROMANO A.S.D.                     8   8   2   2   4   14   21    -7   0\nPOL. BUCCINASCO                               7   7   2   1   4   10   17    -7   0\nU.S. SETTIMO MILANESE                         7   8   2   1   5   14   28   -14   0\nA.S.D. VIGHI 1967                             6   7   1   3   3    8   17    -9   0\nA.S.D. FATIMATRACCIA                          4   7   1   1   5    4   22   -18   0\nSUPERGA G.S. A.S.D.                           1   8   0   1   7   10   33   -23   0"
+            }
+          ]
+        },
+        {
+          "name": "01_Graduatoria_Unica_U18_Elite_CU45.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c1164cc9_01_Graduatoria_Unica_U18_Elite_CU45.pdf",
+          "pages_chars": 14055,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c117ff9d_02_Coppa_PrimaCategoria_K1_Tabellone.pdf",
+          "pages_chars": 11937,
+          "settimo_mentions": 1,
+          "txt": "docs/33746/02_Coppa_PrimaCategoria_K1_Tabellone.txt",
+          "mentions": [
+            {
+              "line": 33,
+              "text": "G. 14 - FOOTBALL CLUB PARABIAGO\n                                                                                                      Vincente 3-B\n                                                        2-D\nG. 15 - SETTIMO MILANESE\n\n                                                        VELA MESERO\n"
+            }
+          ]
+        },
+        {
+          "name": "03_Convocazione 11 NOVEMBRE 2026 Rappresentativa FEMMINILE.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c1180031_03_Convocazione 11 NOVEMBRE 2026  Rappresentativa FEMMINILE.pdf",
+          "pages_chars": 3353,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "01_SGS Circolare N°10 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c118af7e_01_SGS Circolare  N°10 Stagione 2026-2027.pdf",
+          "pages_chars": 2927,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Incontri informativi.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c119a20b_02_Incontri informativi.pdf",
+          "pages_chars": 56238,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_09.11.2026_Convocazioni SFT Montichiari.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11a304c_03_09.11.2026_Convocazioni SFT Montichiari.pdf",
+          "pages_chars": 4038,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_09.11.2026_Convocazioni SFT Trezzano.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11b2b50_04_09.11.2026_Convocazioni SFT Trezzano.pdf",
+          "pages_chars": 4138,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Convocazione Raduno Longobarda 12 Novembre 2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11c37b2_05_Convocazione Raduno Longobarda 12 Novembre 2026.pdf",
+          "pages_chars": 4681,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Attivita S.G.S. Settembre e Ottobre 2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11c746e_06_Attivita S.G.S. Settembre e Ottobre 2026.pdf",
+          "pages_chars": 25521,
+          "settimo_mentions": 2,
+          "txt": "docs/33746/06_Attivita_S.G.S._Settembre_e_Ottobre_2026.txt",
+          "mentions": [
+            {
+              "line": 235,
+              "text": "11/10/2026   14:00   ACCADEMIA INTER    Verifica Gara U13 Maschile –      Via Francesco Cilea, Milano (MI)\n                                        ACCADEMIA INTER vs PRO\n                                        SESTO\n17/10/2026   17.00   Seguro             Verifica Gara U.13 Autunnale      Via Pertini, 13 - Settimo Milanese (MI)\n                                        Girone 3\n17/10/2026   14.30   PCG Bresso         Verifica Gara U14 (PCG Bresso -   Via Maggiore Giuseppe Galliano, 6, 20091\n                                        Rhodense Gir.A)                   Bresso MI"
+            },
+            {
+              "line": 255,
+              "text": "                     Academy\n21/10/2026   19.00   Cesano Boscone     Visita Club                       Via Vespucci 36, Cesano Boscone (MI)\n                     Idrostar\n23/10/2026   18.00   Vighignolo         Visita Club                       Via Pace, 2 - Settimo Milanese (MI)\n23/10/2026   17.30   Enotria 1908       Visita Club                       Via Carlo Cazzaniga, 26 - Milano\n24/10/2026   13.30   GS Villa           VERIFICA GARA (Villa - Alcione    Via Ussi 18, Milano\n                                        Gir.33 Pulcini)"
+            }
+          ]
+        },
+        {
+          "name": "07_Attivita S.G.S. dal 09.11.2026 al 15.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11d44a3_07_Attivita S.G.S. dal 09.11.2026 al 15.11.2026.pdf",
+          "pages_chars": 3229,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU45.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c11e6dbc_Maglie personalizzate CU45.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-11-05T18:40:40+00:00"
+    },
+    "33756": {
+      "id": "33756",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 05 al 09 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-05",
+      "url": "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_05-09_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33756/6aec9d3425300_Programma_Gare_05-09_Novembre_2026.pdf",
+          "pages_chars": 229269,
+          "settimo_mentions": 4,
+          "txt": "docs/33756/Programma_Gare_05-09_Novembre_2026.txt",
+          "mentions": [
+            {
+              "line": 246,
+              "text": "GIRONE A                                                                                              DATA    ORA                                                                                      STATO GARA\n\n\nBUCCINASCO                 SETTIMO MILANESE                    C.S.\"GAETANO SCIREA\"N.1 (E.A)          08/11/26 14:30   9A    BUCCINASCO                            VIA GRAMSCI SNC\n\nCENTRO SCHUSTER A.S.D.     PARTIZAN BONOLA ASD                 CENTRO SCHUSTER- CAMPO A               08/11/26 14:30   9A    MILANO                                VIA MORELL S.J.PADRE LODOV.N.2\n"
+            },
+            {
+              "line": 659,
+              "text": "GIRONE F                                                                                                DATA    ORA                                                                                 STATO GARA\n\n\nFOOTBALL CLUB SEDRIANO      SETTIMO MILANESE                     C.S.COMUNALE\"L.MAGISTRELLI\"N.          07/11/26 15:00   9A    BAREGGIO                              VIA GIACOMO MATTEOTTI, 39\n\nVICTORIA MMVII A.S.D.       SUPERGA G.S. A.S.D.                  CAMPO SPORTIVO COMUNALE                07/11/26 15:00   9A    NOVIGLIO                              VIA LEONARDO DA VINCI 2/2\n"
+            },
+            {
+              "line": 671,
+              "text": "\nBUCCINASCO                  ACCADEMIA MILANESE                   C.S.\"GAETANO SCIREA\"N.1 (E.A)          08/11/26 16:45   9A    BUCCINASCO                            VIA GRAMSCI SNC\n\nVIGHI 1967                  FROG MILANO                          C.S.VIGHIGNOLO E.A.                    08/11/26 17:30   9A    SETTIMO MILANESE FR.VIGHIGNOLO        VIA PACE S.N.C.\n\n\n"
+            },
+            {
+              "line": 2405,
+              "text": "GIRONE A                                                                                                DATA    ORA                                                                                    STATO GARA\n\n\nALCIONE MILANO SSD A RL    LEONE XIII SPORT                      C.S.COMUNALE (E.A)                     07/11/26 18:00    7A   SETTIMO MILANESE LOC. SEGURO          VIA SANDRO PERTINI 13\n\nARSAGHESE        SQ.B      BORGARELLO                            C.S. COMUNALE \"C.SPERONI\" N.1          08/11/26 09:30    7A   ARSAGO SEPRIO                         VIA GABRIELE D'ANNUNZIO, 52\n"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-11-05T18:40:40+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-05T12:43:37+00:00",
+  "lastRun": "2026-11-05T18:40:40+00:00",
   "homepage": [
+    "33746",
     "33743",
     "33714",
     "33706",
     "33673",
-    "33669",
-    "33741",
-    "33730"
+    "33756",
+    "33741"
   ],
   "errors": [],
   "notRegional": [

@@ -1,5 +1,143 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma Gare dal 05 al 09 Novembre 2026 CRL (2026-11-05)
+Pagina: https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026
+
+### Programma_Gare_05-09_Novembre_2026.pdf – riga 246
+```
+GIRONE A                                                                                              DATA    ORA                                                                                      STATO GARA
+
+
+BUCCINASCO                 SETTIMO MILANESE                    C.S."GAETANO SCIREA"N.1 (E.A)          08/11/26 14:30   9A    BUCCINASCO                            VIA GRAMSCI SNC
+
+CENTRO SCHUSTER A.S.D.     PARTIZAN BONOLA ASD                 CENTRO SCHUSTER- CAMPO A               08/11/26 14:30   9A    MILANO                                VIA MORELL S.J.PADRE LODOV.N.2
+
+```
+
+### Programma_Gare_05-09_Novembre_2026.pdf – riga 659
+```
+GIRONE F                                                                                                DATA    ORA                                                                                 STATO GARA
+
+
+FOOTBALL CLUB SEDRIANO      SETTIMO MILANESE                     C.S.COMUNALE"L.MAGISTRELLI"N.          07/11/26 15:00   9A    BAREGGIO                              VIA GIACOMO MATTEOTTI, 39
+
+VICTORIA MMVII A.S.D.       SUPERGA G.S. A.S.D.                  CAMPO SPORTIVO COMUNALE                07/11/26 15:00   9A    NOVIGLIO                              VIA LEONARDO DA VINCI 2/2
+
+```
+
+### Programma_Gare_05-09_Novembre_2026.pdf – riga 671
+```
+
+BUCCINASCO                  ACCADEMIA MILANESE                   C.S."GAETANO SCIREA"N.1 (E.A)          08/11/26 16:45   9A    BUCCINASCO                            VIA GRAMSCI SNC
+
+VIGHI 1967                  FROG MILANO                          C.S.VIGHIGNOLO E.A.                    08/11/26 17:30   9A    SETTIMO MILANESE FR.VIGHIGNOLO        VIA PACE S.N.C.
+
+
+
+```
+
+### Programma_Gare_05-09_Novembre_2026.pdf – riga 2405
+```
+GIRONE A                                                                                                DATA    ORA                                                                                    STATO GARA
+
+
+ALCIONE MILANO SSD A RL    LEONE XIII SPORT                      C.S.COMUNALE (E.A)                     07/11/26 18:00    7A   SETTIMO MILANESE LOC. SEGURO          VIA SANDRO PERTINI 13
+
+ARSAGHESE        SQ.B      BORGARELLO                            C.S. COMUNALE "C.SPERONI" N.1          08/11/26 09:30    7A   ARSAGO SEPRIO                         VIA GABRIELE D'ANNUNZIO, 52
+
+```
+
+## COMUNICATO UFFICIALE N° 45 CRL (2026-11-05)
+Pagina: https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45
+
+### Comunicato Ufficiale Nr. 45 del 05.11.2026.pdf – riga 1142
+```
+PARTIZAN BONOLA ASD             - FROG MILANO                4-3      LEO TEAM                        - CASSINA RIZZARDI            1-0
+PRO PESCHIERA BORROMEO          - BUCCINASCO                 1-1      LOMAZZO CALCIO A.S.D.           - ATLETICO SCHIAFFINO         1-1
+QUINTO ROMANO A.S.D.            - GARIBALDINA 1932           0-0      OLIMPIA CALCIO CADORAGO         - ITALA A.S.D.                0-0
+SETTIMO MILANESE                - POLISPORTIVA OR.PA.S.      1-1      PRO LISSONE CALCIO              - LUISAGO GRANDATE ASD        2-3
+VILLA S.S.D.R.L.                - LEONE XIII SPORT           2-0      ZETA MILANO F.C. ASD            - TRIUGGESE                   5-3
+                                                                      (1) - disputata il 31/10/2026
+
+```
+
+### Comunicato Ufficiale Nr. 45 del 05.11.2026.pdf – riga 1667
+```
+(1) LESMO SSD ARL                    - CDA E CAVALLASCA A.S.D.      5-2        ORATORIANA VITTUONE ASD           - ORIONE                      2-1
+(1) NOVEDRATE                        - LUISAGO GRANDATE ASD         1-1        POL.D. U.S. CASSOLESE             - SUPERGA G.S. A.S.D.         4-1
+(1) OLIMPIA CALCIO CADORAGO          - PONTELAMBRESE A.S.D.         3-5        QUINTO ROMANO A.S.D.              - VIGHI 1967                  1-1
+SIRTORESE                            - MONGUZZO 1997                5-0        SETTIMO MILANESE                  - VICTORIA MMVII A.S.D.       2-3
+(1) - disputata il 01/11/2026                                                  (1) - disputata il 01/11/2026
+
+
+```
+
+### Comunicato Ufficiale Nr. 45 del 05.11.2026.pdf – riga 1717
+```
+nello spogliatoio dell'arbitro.Mancanza di un numero adeguato di palloni per lo svolgimento della gara (solo
+due) e costretto l'arbitro ad un lungo tempo di recupero.
+
+Euro 70,00 SETTIMO MILANESE
+Per mancato controllo di sicurezza ai cancelli di ingresso al recinto di gioco,al termine della gara.
+
+DIRIGENTI
+```
+
+### Classifiche CU_45 del 05.11.2026.pdf – riga 254
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            19   8   6   1   1   20    8    12   0
+G.S. VILLA S.S.D.R.L.                            15   8   4   3   1   13    9     4   0
+A.C. GARIBALDINA 1932                            14   8   4   2   2   18   12     6   0
+POL. BUCCINASCO                                  13   8   3   4   1   12    7     5   0
+```
+
+### Classifiche CU_45 del 05.11.2026.pdf – riga 618
+```
+A.C.D. FROG MILANO                            9   8   3   0   5   20   17     3   0
+U.S. QUINTO ROMANO A.S.D.                     8   8   2   2   4   14   21    -7   0
+POL. BUCCINASCO                               7   7   2   1   4   10   17    -7   0
+U.S. SETTIMO MILANESE                         7   8   2   1   5   14   28   -14   0
+A.S.D. VIGHI 1967                             6   7   1   3   3    8   17    -9   0
+A.S.D. FATIMATRACCIA                          4   7   1   1   5    4   22   -18   0
+SUPERGA G.S. A.S.D.                           1   8   0   1   7   10   33   -23   0
+```
+
+### 02_Coppa_PrimaCategoria_K1_Tabellone.pdf – riga 33
+```
+G. 14 - FOOTBALL CLUB PARABIAGO
+                                                                                                      Vincente 3-B
+                                                        2-D
+G. 15 - SETTIMO MILANESE
+
+                                                        VELA MESERO
+
+```
+
+### 06_Attivita S.G.S. Settembre e Ottobre 2026.pdf – riga 235
+```
+11/10/2026   14:00   ACCADEMIA INTER    Verifica Gara U13 Maschile –      Via Francesco Cilea, Milano (MI)
+                                        ACCADEMIA INTER vs PRO
+                                        SESTO
+17/10/2026   17.00   Seguro             Verifica Gara U.13 Autunnale      Via Pertini, 13 - Settimo Milanese (MI)
+                                        Girone 3
+17/10/2026   14.30   PCG Bresso         Verifica Gara U14 (PCG Bresso -   Via Maggiore Giuseppe Galliano, 6, 20091
+                                        Rhodense Gir.A)                   Bresso MI
+```
+
+### 06_Attivita S.G.S. Settembre e Ottobre 2026.pdf – riga 255
+```
+                     Academy
+21/10/2026   19.00   Cesano Boscone     Visita Club                       Via Vespucci 36, Cesano Boscone (MI)
+                     Idrostar
+23/10/2026   18.00   Vighignolo         Visita Club                       Via Pace, 2 - Settimo Milanese (MI)
+23/10/2026   17.30   Enotria 1908       Visita Club                       Via Carlo Cazzaniga, 26 - Milano
+24/10/2026   13.30   GS Villa           VERIFICA GARA (Villa - Alcione    Via Ussi 18, Milano
+                                        Gir.33 Pulcini)
+```
+
 ## COMUNICATO UFFICIALE N° 44 CRL (2026-11-03)
 Pagina: https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44
 
