@@ -4,7 +4,9 @@
 # Dai comunicati ricava anche classifica e risultati di Prima Categoria
 # girone A (public/data/girone.json su main), usati dalla scheda Avversari,
 # e dai programmi gare data, ora e campo delle partite del Settimo
-# (public/data/fixtures.json), con cui l'app allinea il calendario.
+# (public/data/fixtures.json), con cui l'app allinea il calendario. Dalle
+# decisioni del Giudice Sportivo ricava i provvedimenti a carico del Settimo,
+# staff compreso (public/data/disciplina.json).
 name: Cache comunicati CRL
 
 on:
@@ -77,18 +79,20 @@ jobs:
           git commit -q -m "Cache CRL $(TZ=Europe/Rome date '+%d/%m %H:%M') [skip ci]" || { echo "Nessuna modifica"; exit 0; }
           git push -q origin HEAD:crl-cache
 
-      - name: Classifica, risultati e prossime partite (main)
+      - name: Classifica, risultati, prossime partite e provvedimenti (main)
         working-directory: src
         run: |
           set -e
           python3 -I scripts/crl_girone.py ../cache public/data/girone.json
           # Data, ora e campo ufficiali delle partite del Settimo dai programmi gare.
           python3 -I scripts/crl_fixtures.py ../cache public/data/fixtures.json
-          git add public/data/girone.json public/data/fixtures.json
-          if git diff --cached --quiet; then echo "Girone e partite invariati"; exit 0; fi
+          # Ammonizioni, squalifiche e inibizioni di giocatori e staff del Settimo.
+          python3 -I scripts/crl_disciplina.py ../cache public/data/disciplina.json
+          git add public/data/girone.json public/data/fixtures.json public/data/disciplina.json
+          if git diff --cached --quiet; then echo "Girone, partite e provvedimenti invariati"; exit 0; fi
           git config user.name "crl-cache bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -q -m "Girone A e partite del Settimo dai comunicati CRL"
+          git commit -q -m "Girone A, partite e provvedimenti del Settimo dai comunicati CRL"
           for i in 1 2 3; do
             git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
             sleep 10

@@ -7,6 +7,7 @@ import { getDocs, collection } from 'firebase/firestore';
 import { downloadCsv } from '../lib/bulk';
 import { refreshStats } from '../lib/stats';
 import { parseThresholds, LEAGUE_THRESHOLDS } from '../lib/discipline';
+import { CLUB_STAFF } from '../lib/staffDiscipline';
 import { ConfirmDialog } from '../components/ui';
 import { fmtDateTime, toDate } from '../lib/format';
 import { errorText } from './Rosa';
@@ -230,9 +231,10 @@ export default function Impostazioni() {
       </Card>
 
       <Card title="Staff">
-        {Object.entries({ head_coach: 'Allenatore', assistant_coach: 'Vice allenatore', team_manager: 'Dirigente accompagnatore', athletic_trainer: 'Preparatore atletico', gk_coach: 'Preparatore portieri' }).map(([k, label]) => (
+        {Object.entries(CLUB_STAFF).map(([k, { label }]) => (
           <Field key={k} label={label}><Input value={form.staff?.[k] || ''} onChange={setStaff(k)} /></Field>
         ))}
+        <p><small>Nome e cognome come sul tesserino: servono anche per i cartellini allo staff nella scheda gara e per riconoscere ammonizioni e squalifiche nei comunicati CRL.</small></p>
       </Card>
 
       <Card title="Default di gara">

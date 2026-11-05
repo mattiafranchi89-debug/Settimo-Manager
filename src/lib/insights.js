@@ -11,7 +11,7 @@ import { cardsOf, countedYellows, isSuspendedFor, pendingSuspension, parseThresh
  * compatibilità, un numero (campionato, ogni N ammonizioni). Il campionato
  * segue la regola progressiva LND; la coppa una soglia fissa.
  */
-function thresholds(cfg) {
+export function thresholds(cfg) {
   if (typeof cfg === 'object' && cfg) {
     return { league: parseThresholds(cfg.cardThresholds) || LEAGUE_THRESHOLDS, cup: [Number(cfg.cupCardsPerSuspension) || 2] };
   }

@@ -36,6 +36,21 @@ const SUBS = {
     }
   }
 };
+// Tecnici, dirigenti e altri tesserati in panchina: per diffide e squalifiche dello staff.
+const STAFF = {
+  type: 'array',
+  description: 'Una voce per ogni riga compilata della sezione PROVVEDIMENTI (tecnici, dirigenti e altri tesserati) di quella società',
+  items: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['nome', 'qualifica', 'provvedimento'],
+    properties: {
+      nome: { type: 'string', description: 'Cognome e nome come scritti, anche se incerti' },
+      qualifica: { type: 'string', description: 'Qualifica scritta (allenatore, dirigente, massaggiatore, medico…), stringa vuota se non scritta' },
+      provvedimento: { type: 'string', description: '"ammonizione" per il cartellino giallo, "espulsione" per espulsione o allontanamento' }
+    }
+  }
+};
 const SIDES = (schema) => ({
   type: 'object', additionalProperties: false, required: ['ospitante', 'ospitata'],
   properties: { ospitante: schema, ospitata: schema }
@@ -45,7 +60,7 @@ const SCHEMA = {
   type: 'object',
   additionalProperties: false,
   // Le sostituzioni prima dei cartellini: sono la parte più lunga e la più importante per i minuti.
-  required: ['leggibile', 'competizione', 'data', 'ospitante', 'ospitata', 'risultato', 'sostituzioni', 'ammoniti', 'espulsi', 'dubbi'],
+  required: ['leggibile', 'competizione', 'data', 'ospitante', 'ospitata', 'risultato', 'sostituzioni', 'ammoniti', 'espulsi', 'provvedimenti', 'dubbi'],
   properties: {
     leggibile: { type: 'boolean', description: 'false se la foto non è un referto o non si legge' },
     competizione: { type: 'string', description: 'Campo CAMPIONATO, es. "Coppa Lombardia 1ª categoria"' },
@@ -59,12 +74,14 @@ const SCHEMA = {
     sostituzioni: SIDES(SUBS),
     ammoniti: SIDES(PEOPLE),
     espulsi: SIDES(PEOPLE),
+    provvedimenti: SIDES(STAFF),
     dubbi: { type: 'array', items: { type: 'string' }, description: 'Cifre o nomi di lettura incerta, in italiano, brevi' }
   }
 };
 
 const PROMPT = `Questa è la foto del referto arbitrale di una partita di calcio dilettantistico (modulo AIA - C.R.A. Lombardia, LND), compilato a mano. La foto può essere ruotata di lato o capovolta: leggila nel verso giusto.
-Il modulo è diviso in due colonne: a sinistra la SOCIETÀ OSPITANTE, a destra la SOCIETÀ OSPITATA, per tutte le sezioni. Sezioni: GIOCATORI AMMONITI, GIOCATORI ESPULSI, PROVVEDIMENTI per tecnici e dirigenti (da ignorare), GIOCATORI SOSTITUITI.
+Il modulo è diviso in due colonne: a sinistra la SOCIETÀ OSPITANTE, a destra la SOCIETÀ OSPITATA, per tutte le sezioni. Sezioni: GIOCATORI AMMONITI, GIOCATORI ESPULSI, PROVVEDIMENTI per tecnici, dirigenti e altri tesserati, GIOCATORI SOSTITUITI.
+Nei PROVVEDIMENTI riporta per ogni società ogni riga compilata: nome, qualifica (allenatore, dirigente, massaggiatore…) e provvedimento ("ammonizione" o "espulsione", che comprende l'allontanamento). Non mettere lì i giocatori, e non mettere i tecnici tra i giocatori ammoniti o espulsi.
 La tabella GIOCATORI SOSTITUITI ha per ogni società le colonne USCITO, ENTRATO, AL MINUTO, TEMPO: riporta ogni riga compilata di entrambe le società, anche cinque o più righe per parte.
 Trascrivi esattamente ciò che è scritto, senza dedurre nulla:
 - righe vuote o barrate = nessun dato (liste vuote);

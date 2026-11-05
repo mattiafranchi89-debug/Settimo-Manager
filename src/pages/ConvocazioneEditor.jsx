@@ -16,6 +16,8 @@ import { validateCallup, summarise, buildMessage, copyText, whatsappLink, logist
 import { ensureAttendanceSummaries } from '../lib/trainings';
 import { buildInsights, insightLine, squadAlerts } from '../lib/insights';
 import { compBucket, isSuspendedFor, COMPS } from '../lib/discipline';
+import { useStaffDiscipline, staffAlerts, dayIso } from '../lib/staffDiscipline';
+import { staffAlertText } from '../components/Discipline';
 import { can, isClassicUx } from '../lib/permissions';
 import { errorText } from './Rosa';
 
@@ -90,6 +92,9 @@ export default function ConvocazioneEditor() {
   const bucket = event ? compBucket(event.competition) : null;
   const alerts = useMemo(() => squadAlerts(players, insights, bucket), [players, insights, bucket]);
   const absentees = useMemo(() => players.filter((p) => unexcused[p.id]?.length).map((p) => ({ p, dates: unexcused[p.id] })), [players, unexcused]);
+  // Staff fermo o in diffida per questa gara (stessa competizione; «fino al» vale per ogni gara).
+  const staffPeople = useStaffDiscipline({ club });
+  const staffWatch = useMemo(() => staffAlerts(staffPeople, bucket, event ? dayIso(event.date) : null), [staffPeople, bucket, event]);
   const absenceText = (list) => list.map(({ p, dates }) => `${p.fullName} (${dates.map((d) => fmtShort(d)).join(', ')})`).join('; ');
 
   // hydrate from an existing call-up
@@ -384,7 +389,8 @@ export default function ConvocazioneEditor() {
             </div>
           </Card>
 
-          {(alerts.diffidati.length > 0 || alerts.squalificati.length > 0 || alerts.dimenticati.length > 0 || absentees.length > 0) && (
+          {(alerts.diffidati.length > 0 || alerts.squalificati.length > 0 || alerts.dimenticati.length > 0 || absentees.length > 0
+            || staffWatch.squalificati.length > 0 || staffWatch.diffidati.length > 0) && (
             <Card title="Da tenere d'occhio">
               {alerts.squalificati.length > 0 && (
                 <Alert level="error">
@@ -394,6 +400,16 @@ export default function ConvocazioneEditor() {
               {alerts.diffidati.length > 0 && (
                 <Alert level="warn">
                   In diffida{bucket && COMPS[bucket] ? ` in ${COMPS[bucket].label}` : ''}: alla prossima ammonizione saltano una gara. {alerts.diffidati.map((p) => p.fullName).join(', ')}.
+                </Alert>
+              )}
+              {staffWatch.squalificati.length > 0 && (
+                <Alert level="error">
+                  Staff squalificato per questa gara: {staffAlertText(staffWatch.squalificati)}. Non può andare in panchina né in distinta.
+                </Alert>
+              )}
+              {staffWatch.diffidati.length > 0 && (
+                <Alert level="warn">
+                  Staff in diffida{bucket && COMPS[bucket] ? ` in ${COMPS[bucket].label}` : ''}: alla prossima ammonizione salta una gara. {staffWatch.diffidati.map(({ person }) => `${person.name} (${person.roleLabel.toLowerCase()})`).join(', ')}.
                 </Alert>
               )}
               {absentees.length > 0 && (

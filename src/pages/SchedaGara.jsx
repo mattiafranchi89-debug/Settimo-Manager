@@ -12,6 +12,7 @@ import { readRefertoPhoto, ourSide, playersByNumber, proposals, mergeEvents } fr
 import { useAutosave, AutosaveBadge } from '../lib/autosave';
 import { callupFor } from '../lib/callup';
 import { GOAL_CAUSES, CAUSE_GROUPS, causeLabel } from '../lib/goalCauses';
+import { STAFF_ROLES, staffOptions, roleFromText } from '../lib/staffDiscipline';
 
 /** JSON con le chiavi in ordine: Firestore non garantisce l'ordine dei campi. */
 const stableKey = (v) => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().filter((key) => x[key] !== undefined).map((key) => [key, x[key]])) : x));
@@ -192,7 +193,9 @@ export default function SchedaGara() {
   };
 
   const applyReferto = async ({ items, score }) => {
-    setEvents((v) => mergeEvents(v, items.map(({ type, minute, playerId, playerInId }) => ({ type, minute, playerId, playerInId }))));
+    setEvents((v) => mergeEvents(v, items.map(({ type, minute, playerId, playerInId, card, staffName, staffRole }) => (type === 'staff'
+      ? { type, minute, card, staffName, staffRole: staffRole || undefined }
+      : { type, minute, playerId, playerInId }))));
     if (score && score.home !== '' && score.away !== '') {
       try {
         await updateDocument('events', id, { scoreHome: Number(score.home), scoreAway: Number(score.away), updatedAt: serverTimestamp() });
@@ -250,6 +253,7 @@ export default function SchedaGara() {
             {Object.entries(EVENT_TYPES).map(([k, v]) => (
               <Button key={k} variant={k === 'gol' ? 'primary' : 'secondary'} size="sm" onClick={() => setAdding(k)}>{v.emoji} {v.label}</Button>
             ))}
+            <Button variant="secondary" size="sm" onClick={() => setAdding('staff')}>🟨 Staff</Button>
           </div>
           <div className="row2" style={{ marginTop: 12 }}>
             <Field label="Durata gara (minuti)"><Input type="number" min="40" max="120" value={duration} onChange={(e) => setDuration(Number(e.target.value))} /></Field>
@@ -265,7 +269,12 @@ export default function SchedaGara() {
               <div key={e.id} className="prow">
                 <span className="prow__num">{e.minute == null ? '?' : e.minute}'</span>
                 <span className="prow__body">
-                  <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : e.og ? 'Autogol avversario' : (byId[e.playerId]?.fullName || '—')}</span>
+                  {e.type === 'staff' ? (
+                    <>
+                      <span className="prow__name" style={{ whiteSpace: 'normal' }}>{e.card === 'rossa' ? '🟥' : '🟨'} {e.staffName}</span>
+                      <span className="prow__meta"><span>{STAFF_ROLES[e.staffRole] || 'Staff'} · {e.card === 'rossa' ? 'espulsione' : 'ammonizione'}</span></span>
+                    </>
+                  ) : <span className="prow__name">{EVENT_TYPES[e.type]?.emoji} {EVENT_TYPES[e.type]?.noPlayer ? EVENT_TYPES[e.type].label : e.og ? 'Autogol avversario' : (byId[e.playerId]?.fullName || '—')}</span>}
                   {e.type === 'sostituzione' && <span className="prow__meta"><span>entra {byId[e.playerInId]?.fullName || '—'}</span></span>}
                   {e.type === 'gol_subito' && (canWrite
                     ? <CauseSelect compact value={e.cause} onChange={(cause) => patchEvent(e.id, { cause })} />
@@ -337,10 +346,11 @@ export default function SchedaGara() {
         </div>
       )}
 
-      {adding && (
+      {adding && adding !== 'staff' && (
         <EventForm type={adding} players={onSheet} totals={totals} starters={starters} bench={bench} byId={byId}
           onSave={addEvent} onClose={() => setAdding(null)} />
       )}
+      {adding === 'staff' && <StaffCardForm club={club} onSave={addEvent} onClose={() => setAdding(null)} />}
 
       {referto && (
         <RefertoReview data={referto} match={match} club={club} lineup={lineup} onSheet={onSheet} byId={byId}
@@ -404,6 +414,56 @@ function EventForm({ type, players, totals, bench, byId, onSave, onClose }) {
       )}
       <div className="btnrow">
         <Button disabled={!ok} onClick={() => onSave({ type, minute: Number(minute), playerId: noPlayer ? null : playerId, playerInId: playerInId || null, ...(cause ? { cause } : {}) })}>Registra</Button>
+        <Button variant="ghost" onClick={onClose}>Annulla</Button>
+      </div>
+    </Sheet>
+  );
+}
+
+/**
+ * Cartellino a un componente dello staff: conta per le sue diffide e
+ * squalifiche, non per i giocatori. In campionato il comunicato pubblica le
+ * ammonizioni dello staff solo dalla diffida: senza la scheda non si sanno.
+ */
+function StaffCardForm({ club, onSave, onClose }) {
+  const options = staffOptions(club);
+  const [who, setWho] = useState(options[0]?.k || 'altro');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('dirigente');
+  const [card, setCard] = useState('gialla');
+  const [minute, setMinute] = useState('');
+  const known = options.find((o) => o.k === who);
+  const person = known ? { name: known.name, role: known.role } : { name: name.trim(), role };
+
+  return (
+    <Sheet title="🟨 Cartellino allo staff" onClose={onClose}>
+      <Field label="Chi">
+        <Select value={who} onChange={(e) => setWho(e.target.value)}>
+          {options.map((o) => <option key={o.k} value={o.k}>{o.name} · {o.label}</option>)}
+          <option value="altro">Un'altra persona…</option>
+        </Select>
+      </Field>
+      {!known && (
+        <div className="row2">
+          <Field label="Nome e cognome"><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></Field>
+          <Field label="Ruolo">
+            <Select value={role} onChange={(e) => setRole(e.target.value)}>
+              {Object.entries(STAFF_ROLES).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+            </Select>
+          </Field>
+        </div>
+      )}
+      <div className="chiprow" style={{ marginBottom: 10 }}>
+        {[['gialla', '🟨 Ammonizione'], ['rossa', '🟥 Espulsione']].map(([k, label]) => (
+          <button key={k} type="button" className={`chip ${card === k ? 'chip--on' : ''}`} onClick={() => setCard(k)}>{label}</button>
+        ))}
+      </div>
+      <Field label="Minuto" hint="Facoltativo.">
+        <Input type="number" min="0" max="120" inputMode="numeric" value={minute} onChange={(e) => setMinute(e.target.value)} />
+      </Field>
+      <p><small>Conta per diffide e squalifiche dello staff, con le soglie dei giocatori: in campionato diffida alla 4ª ammonizione e squalifica alla 5ª, in coppa alla 2ª. Giornate e scadenze arrivano poi dal comunicato.</small></p>
+      <div className="btnrow">
+        <Button disabled={!person.name} onClick={() => onSave({ type: 'staff', card, staffName: person.name, staffRole: person.role, minute: minute === '' ? null : Number(minute) })}>Registra</Button>
         <Button variant="ghost" onClick={onClose}>Annulla</Button>
       </div>
     </Sheet>
@@ -562,14 +622,15 @@ const KIND = { sostituzione: '🔁 Sostituzione', gialla: '🟨 Ammonizione', ro
 function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onClose }) {
   const [side, setSide] = useState(() => ourSide(data, club.clubName, match));
   const byNumber = useMemo(() => playersByNumber(lineup?.numbers), [lineup]);
-  const [items, setItems] = useState(() => proposals(data, ourSide(data, club.clubName, match), byNumber));
+  const staff = useMemo(() => staffOptions(club), [club]);
+  const [items, setItems] = useState(() => proposals(data, ourSide(data, club.clubName, match), byNumber, staffOptions(club)));
   const [include, setInclude] = useState({});
   const [score, setScore] = useState({ home: data.risultato?.ospitante ?? '', away: data.risultato?.ospitata ?? '' });
 
-  const changeSide = (s) => { setSide(s); setItems(proposals(data, s, byNumber)); setInclude({}); };
+  const changeSide = (s) => { setSide(s); setItems(proposals(data, s, byNumber, staff)); setInclude({}); };
   const update = (key, patch) => setItems((list) => list.map((x) => (x.key === key ? { ...x, ...patch } : x)));
   const isIn = (x) => include[x.key] ?? true;
-  const ready = (x) => x.type === 'gol_subito' || (x.playerId && (x.type !== 'sostituzione' || x.playerInId));
+  const ready = (x) => x.type === 'gol_subito' || (x.type === 'staff' ? !!x.staffName : x.playerId && (x.type !== 'sostituzione' || x.playerInId));
   const chosen = items.filter(isIn);
   const missing = chosen.filter((x) => !ready(x)).length;
   const other = side === 'ospitante' ? 'ospitata' : 'ospitante';
@@ -614,7 +675,7 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
               <div className="spread">
                 <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 600, fontSize: 14 }}>
                   <input type="checkbox" checked={isIn(x)} onChange={(e) => setInclude((v) => ({ ...v, [x.key]: e.target.checked }))} />
-                  {KIND[x.type]}
+                  {x.type === 'staff' ? (x.card === 'rossa' ? '🟥 Espulsione staff' : '🟨 Ammonizione staff') : KIND[x.type]}
                 </label>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
                   min <Input type="number" inputMode="numeric" value={x.minute ?? ''} placeholder="?" onChange={(e) => update(x.key, { minute: e.target.value === '' ? null : Number(e.target.value) })}
@@ -637,6 +698,19 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
                 </div>
               )}
               {x.type === 'gol_subito' && <div style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 4 }}>Dal risultato: il minuto non è sul referto.</div>}
+              {x.type === 'staff' && (
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--muted)', marginBottom: 4 }}>Sul referto: {x.name}{x.qualifica ? ` · ${x.qualifica}` : ''}</div>
+                  <Select value={x.staffKey || ''} style={{ minHeight: 38, padding: '4px 8px', fontSize: 13.5 }}
+                    onChange={(e) => {
+                      const o = staff.find((p) => p.k === e.target.value);
+                      update(x.key, o ? { staffKey: o.k, staffName: o.name, staffRole: o.role } : { staffKey: '', staffName: x.name, staffRole: roleFromText(x.qualifica) });
+                    }}>
+                    <option value="">{x.name} (come sul referto)</option>
+                    {staff.map((o) => <option key={o.k} value={o.k}>{o.name} · {o.label}</option>)}
+                  </Select>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -644,7 +718,7 @@ function RefertoReview({ data, match, club, lineup, onSheet, byId, onApply, onCl
 
       {theirCards.length > 0 && <p style={{ fontSize: 12.5, color: 'var(--muted)' }}>Avversari (non salvati): {theirCards.join(' · ')}</p>}
       <p style={{ fontSize: 12.5, color: 'var(--muted)' }}>
-        I marcatori non sono sul referto: aggiungili con «Gol». Ammonizioni ed espulsioni non hanno il minuto: se lo conosci, scrivilo.
+        I marcatori non sono sul referto: aggiungili con «Gol». Ammonizioni ed espulsioni non hanno il minuto: se lo conosci, scrivilo. I cartellini allo staff contano per le sue diffide e squalifiche, non per i giocatori.
       </p>
       <div className="btnrow">
         <Button disabled={missing > 0} onClick={() => onApply({ items: chosen, score })}>
