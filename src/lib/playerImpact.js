@@ -15,10 +15,12 @@ const isNum = (v) => v !== null && v !== undefined && v !== '' && !Number.isNaN(
  * Chi era in campo e quando, con le regole del minutaggio: i titolari dal
  * primo minuto, chi entra dal minuto del cambio; si esce con il cambio,
  * l'espulsione o la seconda ammonizione. Null se un cambio, un'espulsione o
- * una seconda ammonizione non ha il minuto: la partita non si ricostruisce.
+ * una seconda ammonizione non ha il minuto, o se la scheda non ha la distinta
+ * (le schede vecchie con i soli totali): la partita non si ricostruisce.
  */
 export function onPitch(sheet) {
-  const ev = sheet?.events || [];
+  if (!Array.isArray(sheet?.starters) || !sheet.starters.length) return null;
+  const ev = sheet.events || [];
   const yellows = {};
   for (const e of ev) {
     if (e.type === 'gialla' && e.playerId) yellows[e.playerId] = (yellows[e.playerId] || 0) + 1;
@@ -42,6 +44,19 @@ export function onPitch(sheet) {
 /** In campo al minuto del gol: chi entra in quel minuto c'è, chi esce no. */
 const onAt = (iv, min) => iv.from <= min && min < iv.to;
 
+/**
+ * Titolari e giocatori in distinta. Le schede vecchie senza distinta dicono
+ * chi è partito titolare nei totali salvati; null se la scheda non lo dice.
+ */
+function lineupOf(sheet) {
+  if (Array.isArray(sheet?.starters) && sheet.starters.length) {
+    return { starters: sheet.starters, squad: [...new Set([...sheet.starters, ...(sheet.bench || [])])] };
+  }
+  const t = sheet?.totals || {};
+  const starters = Object.keys(t).filter((pid) => t[pid]?.started);
+  return starters.length ? { starters, squad: Object.keys(t) } : null;
+}
+
 /** Le gare ufficiali con risultato e scheda chiusa, in ordine. */
 function officialSheets(matches, sheets) {
   const sheetOf = new Map(sheets.filter((s) => s.closed).map((s) => [s.eventId || s.id, s]));
@@ -62,7 +77,7 @@ export function playerImpact(matches = [], sheets = []) {
   const get = (pid) => (out[pid] ||= { pid, minutes: 0, gf: 0, ga: 0, starts: 0, startPts: 0, otherGames: 0, otherPts: 0 });
   let teamMinutes = 0, teamGf = 0, teamGa = 0, games = 0;
   all.forEach(({ sheet, res }) => {
-    [...new Set([...(sheet.starters || []), ...(sheet.bench || [])])].forEach((pid) => get(pid));
+    (lineupOf(sheet)?.squad || []).forEach((pid) => get(pid));
     const t = timedGoals(sheet, res);
     const iv = t && onPitch(sheet);
     if (!iv) return;
@@ -73,10 +88,12 @@ export function playerImpact(matches = [], sheets = []) {
       t.goals.forEach((g) => { if (onAt(x, g.min)) { if (g.mine) p.gf += 1; else p.ga += 1; } });
     });
   });
-  // Titolare o no: su tutte le gare con la scheda chiusa, anche senza minuti dei gol.
+  // Titolare o no: su tutte le gare con la scheda chiusa, anche senza minuti dei
+  // gol; una scheda che non dice chi è partito titolare resta fuori dal confronto.
+  const lineups = all.map(({ sheet, res }) => ({ lineup: lineupOf(sheet), res })).filter((x) => x.lineup);
   Object.values(out).forEach((p) => {
-    all.forEach(({ sheet, res }) => {
-      if ((sheet.starters || []).includes(p.pid)) { p.starts += 1; p.startPts += res.pts; } else { p.otherGames += 1; p.otherPts += res.pts; }
+    lineups.forEach(({ lineup, res }) => {
+      if (lineup.starters.includes(p.pid)) { p.starts += 1; p.startPts += res.pts; } else { p.otherGames += 1; p.otherPts += res.pts; }
     });
   });
   const players = Object.values(out).map((p) => {
