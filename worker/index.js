@@ -38,6 +38,7 @@ export default {
       }
       if (url.pathname === '/api/notify' && request.method === 'POST') return await notify(request, env);
       if (url.pathname === '/api/referto' && request.method === 'POST') return await referto(request, env);
+      if (url.pathname === '/api/referto-file' && request.method === 'POST') return await refertoFile(request, env);
       if (url.pathname === '/api/tuttocampo' && request.method === 'POST') return await tuttocampo(request, env);
       if (url.pathname === '/api/formazione' && request.method === 'POST') return await formazione(request, env);
       if (url.pathname === '/api/avversario' && request.method === 'POST') return await avversario(request, env);
@@ -47,6 +48,32 @@ export default {
     }
   }
 };
+
+/**
+ * Un referto già caricato tra gli allegati della partita, letto dal server:
+ * il browser non può scaricarlo direttamente (CORS di Storage) per
+ * ridimensionarlo e rileggerlo. Solo file delle partite del progetto.
+ */
+async function refertoFile(request, env) {
+  const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  const claims = await verifyFirebaseToken(token, env.FIREBASE_PROJECT_ID);
+  if (!claims) return json({ error: 'unauthorized' }, 401);
+  const me = await firestore(env.FIREBASE_PROJECT_ID, token).get(`users/${claims.sub}`);
+  if (!me || me.active === false || !['admin', 'head_coach', 'assistant_coach'].includes(me.role)) return json({ error: 'forbidden' }, 403);
+
+  const input = await request.json().catch(() => ({}));
+  let src;
+  try { src = new URL(String(input.url || '')); } catch { return json({ error: 'bad_url' }, 400); }
+  const bucket = decodeURIComponent(src.pathname.split('/')[3] || '');
+  const object = decodeURIComponent(src.pathname.split('/o/')[1] || '');
+  if (src.protocol !== 'https:' || src.hostname !== 'firebasestorage.googleapis.com'
+    || !bucket.startsWith(`${env.FIREBASE_PROJECT_ID}.`) || !object.startsWith('matches/')) return json({ error: 'bad_url' }, 400);
+  const res = await fetch(src.toString());
+  if (!res.ok) return json({ error: 'not_found' }, 404);
+  const type = res.headers.get('content-type') || 'application/octet-stream';
+  if (Number(res.headers.get('content-length') || 0) > 12 * 1024 * 1024) return json({ error: 'too_large' }, 413);
+  return new Response(res.body, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } });
+}
 
 /** Foto del referto → dati strutturati. Solo per chi compila le schede gara. */
 async function referto(request, env) {

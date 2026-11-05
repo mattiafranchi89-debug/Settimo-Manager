@@ -109,3 +109,18 @@ export async function readRefertoPhoto(file) {
   }
   return out.data;
 }
+
+/** Chi può far leggere un referto al server (stessi ruoli del worker). */
+export const REFERTO_ROLES = ['admin', 'head_coach', 'assistant_coach'];
+
+/** Un referto già tra gli allegati della partita: scaricato dal worker, poi letto come una foto nuova. */
+export async function readStoredReferto(att) {
+  const token = await auth.currentUser?.getIdToken();
+  const res = await fetch('/api/referto-file', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ url: att.url })
+  });
+  if (!res.ok) throw new Error(res.status === 404 ? 'file non trovato' : `file non scaricato (${res.status})`);
+  return readRefertoPhoto(await res.blob());
+}
