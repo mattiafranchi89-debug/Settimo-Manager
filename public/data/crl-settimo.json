@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-31T08:00:47+01:00",
-  "lastChecked": "2026-10-31T08:00:47+01:00",
+  "updatedAt": "2026-11-05T07:59:18+01:00",
+  "lastChecked": "2026-11-05T07:59:18+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -22,9 +22,29 @@
     "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026",
     "https://www.crlombardia.it/documenti/33706/comunicato-ufficiale-n-42",
     "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43",
-    "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026"
+    "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026",
+    "https://www.crlombardia.it/news/33741/programma-gare-dal-02-al-05-novembre-2026",
+    "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
   ],
   "items": [
+    {
+      "id": "cu44-coppa-velamesero",
+      "doc": "Comunicato Ufficiale n. 44",
+      "date": "2026-11-03",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44",
+      "category": "Coppa Lombardia Prima Categoria",
+      "type": "risultato",
+      "text": "Secondo turno, girone 2D, gara unica (28/10/2026): Settimo Milanese – Vela Mesero 1-4; il Settimo è eliminato e ai turni successivi passa il Vela Mesero."
+    },
+    {
+      "id": "cu44-giudice-coppa",
+      "doc": "Comunicato Ufficiale n. 44",
+      "date": "2026-11-03",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Coppa Lombardia, gara del 28/10/2026 con il Vela Mesero: l'allenatore Pugliese Luca è squalificato per una gara effettiva per recidività in ammonizione (II infrazione); il calciatore Corazza Alessio riceve la prima ammonizione con diffida. Nessuna squalifica per i calciatori del Settimo."
+    },
     {
       "id": "pg2902-pc-orpas",
       "doc": "Programma gare 29/10–02/11/2026",
@@ -242,25 +262,5 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ],
-  "avversari": [
-    {
-      "squadra": "POLISPORTIVA OR.PA.S.",
-      "partita": "Prima Categoria – 8ª giornata, 01/11/2026 ore 14:30, in casa",
-      "data": "2026-11-01",
-      "competizione": "campionato",
-      "aggiornato": "2026-10-31T08:00:47+01:00",
-      "squalificati": [
-        {
-          "nome": "MOTTA TOMMASO",
-          "ruolo": "calciatore",
-          "sanzione": "fino al 9/12/2026",
-          "competizione": "campionato",
-          "doc": "Comunicato Ufficiale n. 41",
-          "date": "2026-10-22",
-          "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41"
-        }
-      ],
-      "diffidati": []
-    }
-  ]
+  "avversari": []
 }
