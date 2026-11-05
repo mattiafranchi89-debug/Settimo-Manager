@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T20:19:44+00:00",
+  "generatedAt": "2026-11-05T18:41:10+00:00",
   "team": "SETTIMO MILANESE",
   "fixtures": [
     {
@@ -81,6 +81,22 @@
       "published": "2026-10-29",
       "source": "Programma Gare dal 29 Ottobre al 02 Novembre 2026 CRL",
       "url": "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026"
+    },
+    {
+      "competition": "Prima Categoria",
+      "girone": "A",
+      "round": "9A",
+      "date": "2026-11-08",
+      "time": "14:30",
+      "home": false,
+      "opponent": "BUCCINASCO",
+      "venue": "C.S.\"GAETANO SCIREA\"N.1 (E.A)",
+      "city": "BUCCINASCO",
+      "address": "VIA GRAMSCI SNC",
+      "status": "",
+      "published": "2026-11-05",
+      "source": "Programma Gare dal 05 al 09 Novembre 2026 CRL",
+      "url": "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026"
     }
   ]
 }
