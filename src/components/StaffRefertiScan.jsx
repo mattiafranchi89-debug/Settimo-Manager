@@ -27,36 +27,50 @@ export default function StaffRefertiScan({ club, user, onClose, toast }) {
     .filter((f) => byMatch[f.eventId] && f.url && (toDate(byMatch[f.eventId].date) || 0) < new Date())
     .sort((a, b) => toDate(byMatch[a.eventId].date) - toDate(byMatch[b.eventId].date)), [files, byMatch]);
 
+  /** Un referto: provvedimenti allo staff, già confrontati con la scheda. Mai un'eccezione. */
+  const readOne = async (f) => {
+    const match = byMatch[f.eventId];
+    if (f.kind === 'link' || !/^image\//.test(f.contentType || '') || /heic/i.test(f.contentType || '')) {
+      return { match, f, fatal: true, error: f.kind === 'link' ? 'è un link esterno, non un file' : 'formato non leggibile (serve una foto JPG o PNG)' };
+    }
+    try {
+      const data = await readStoredReferto(f);
+      if (!data?.leggibile) return { match, f, error: 'la foto non si legge bene: riprova, o ricarica dalla scheda gara una foto dritta e illuminata' };
+      const side = ourSide(data, club.clubName, match);
+      const items = proposals(data, side, {}, staff).filter((x) => x.type === 'staff');
+      const have = (sheetOf(match.id)?.events || []).filter((e) => e.type === 'staff');
+      // Già in scheda (stessa persona, stesso cartellino): non si propone di nuovo.
+      const used = new Set();
+      items.forEach((x) => {
+        const k = have.findIndex((e, j) => !used.has(j) && e.card === x.card && samePerson(e.staffName || '', x.staffName));
+        if (k >= 0) { used.add(k); x.already = true; }
+      });
+      return { match, f, items, on: Object.fromEntries(items.map((x) => [x.key, !x.already])) };
+    } catch (e) {
+      console.warn('referto', match.id, e);
+      // Un errore di programma (in inglese) non dice nulla a chi usa l'app.
+      return { match, f, error: e instanceof TypeError || e instanceof ReferenceError || !e?.message ? 'lettura non riuscita: riprova' : e.message };
+    }
+  };
+
   const run = async () => {
     setBusy(true);
     const out = [];
     for (let i = 0; i < todo.length; i++) {
-      const f = todo[i];
-      const match = byMatch[f.eventId];
-      setProgress(`${i + 1} di ${todo.length}: ${match.opponent || ''}`);
-      if (f.kind === 'link' || !/^image\//.test(f.contentType || '') || /heic/i.test(f.contentType || '')) {
-        out.push({ match, error: f.kind === 'link' ? 'è un link esterno, non un file' : 'formato non leggibile (serve una foto JPG o PNG)' });
-        continue;
-      }
-      try {
-        const data = await readStoredReferto(f);
-        if (!data?.leggibile) { out.push({ match, error: 'referto non leggibile' }); continue; }
-        const side = ourSide(data, club.clubName, match);
-        const items = proposals(data, side, {}, staff).filter((x) => x.type === 'staff');
-        const have = (sheetOf(match.id)?.events || []).filter((e) => e.type === 'staff');
-        // Già in scheda (stessa persona, stesso cartellino): non si propone di nuovo.
-        const used = new Set();
-        items.forEach((x) => {
-          const k = have.findIndex((e, j) => !used.has(j) && e.card === x.card && samePerson(e.staffName || '', x.staffName));
-          if (k >= 0) { used.add(k); x.already = true; }
-        });
-        out.push({ match, items, on: Object.fromEntries(items.map((x) => [x.key, !x.already])) });
-      } catch (e) {
-        out.push({ match, error: e.message || 'lettura non riuscita' });
-      }
+      setProgress(`${i + 1} di ${todo.length}: ${byMatch[todo[i].eventId].opponent || ''}`);
+      out.push(await readOne(todo[i]));
       setRows([...out]);
     }
-    setRows(out);
+    setProgress(null);
+    setBusy(false);
+  };
+
+  /** Solo quella partita, senza rileggere tutto. */
+  const retry = async (mi) => {
+    setBusy(true);
+    setProgress(`di nuovo: ${rows[mi].match.opponent || ''}`);
+    const row = await readOne(rows[mi].f);
+    setRows((list) => list.map((r, i) => (i === mi ? row : r)));
     setProgress(null);
     setBusy(false);
   };
@@ -113,7 +127,12 @@ export default function StaffRefertiScan({ club, user, onClose, toast }) {
                     <b>{r.match.opponent}</b>
                     <small style={{ color: 'var(--muted)' }}>{fmtShort(r.match.date)} · {r.match.competition}</small>
                   </div>
-                  {r.error && <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>⚠️ {r.error}</div>}
+                  {r.error && (
+                    <div className="spread" style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4, gap: 8 }}>
+                      <span>⚠️ {r.error}</span>
+                      {!r.fatal && <Button size="sm" variant="ghost" disabled={busy} onClick={() => retry(mi)}>Riprova</Button>}
+                    </div>
+                  )}
                   {r.items && !r.items.length && <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Nessun provvedimento allo staff sul referto.</div>}
                   {r.items?.length > 0 && !sheet && <div style={{ fontSize: 13, color: 'var(--red)', marginTop: 4 }}>Scheda gara non compilata: aprila e carica lì il referto.</div>}
                   {r.items?.length > 0 && sheet && !sheet.closed && <div style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 4 }}>Scheda ancora aperta: conta quando la chiudi.</div>}
