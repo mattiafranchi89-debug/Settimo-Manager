@@ -38,7 +38,7 @@ export const CLUB_STAFF = {
 
 const COMP_KEYS = ['campionato', 'coppa'];
 
-const tokensOf = (s = '') => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').split(/[^a-z]+/).filter((t) => t.length > 1);
+const tokensOf = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').split(/[^a-z]+/).filter((t) => t.length > 1);
 
 /** «PUGLIESE LUCA» e «Luca Pugliese» sono la stessa persona; un secondo nome in più non cambia nulla. */
 export function samePerson(a = '', b = '') {
@@ -64,8 +64,9 @@ export function matchStaff(name = '', options = []) {
 }
 
 /** Qualifica scritta sul referto → ruolo. */
-export function roleFromText(s = '') {
-  const t = s.toLowerCase();
+export function roleFromText(s) {
+  // Dal referto un campo non scritto arriva come null.
+  const t = String(s || '').toLowerCase();
   if (/allen|tecnic|mister/.test(t)) return 'allenatore';
   if (/massagg|fisio/.test(t)) return 'massaggiatore';
   if (/medic/.test(t)) return 'medico';
