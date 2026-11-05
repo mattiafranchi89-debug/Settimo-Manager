@@ -3,6 +3,7 @@
 
 import { auth } from './firebase';
 import { teamSimilarity } from './scouting';
+import { samePerson, matchStaff, roleFromText } from './staffDiscipline';
 
 /** «AL MINUTO 10, TEMPO 2» → 55'. Se l'arbitro ha scritto il minuto assoluto (es. 70) resta com'è. */
 export function absoluteMinute(minuto, tempo) {
@@ -30,8 +31,9 @@ export function playersByNumber(numbers = {}) {
 /**
  * Proposte di eventi per la scheda gara, tutte da confermare.
  * minute null = non scritto sul referto (ammonizioni ed espulsioni non hanno minuto).
+ * `staff` (facoltativo): le persone di Impostazioni, per riconoscere i nomi dei provvedimenti.
  */
-export function proposals(data, side, byNumber) {
+export function proposals(data, side, byNumber, staff = []) {
   const pid = (n) => (n == null ? null : byNumber[String(n)] || null);
   const list = [];
   (data?.sostituzioni?.[side] || []).forEach((s) => list.push({
@@ -41,15 +43,26 @@ export function proposals(data, side, byNumber) {
   }));
   (data?.ammoniti?.[side] || []).forEach((a) => list.push({ type: 'gialla', minute: null, number: a.numero, name: a.nome, playerId: pid(a.numero) }));
   (data?.espulsi?.[side] || []).forEach((a) => list.push({ type: 'rossa', minute: null, number: a.numero, name: a.nome, playerId: pid(a.numero) }));
+  // Provvedimenti a tecnici e dirigenti: contano per la disciplina dello staff.
+  (data?.provvedimenti?.[side] || []).filter((a) => a.nome?.trim()).forEach((a) => {
+    const known = matchStaff(a.nome, staff);
+    list.push({
+      type: 'staff', minute: null, card: /espul|allontan|ross/i.test(a.provvedimento || '') ? 'rossa' : 'gialla',
+      name: a.nome.trim(), qualifica: a.qualifica || '',
+      staffKey: known?.k || '', staffName: known?.name || a.nome.trim(), staffRole: known?.role || roleFromText(a.qualifica)
+    });
+  });
   const theirs = side === 'ospitante' ? data?.risultato?.ospitata : data?.risultato?.ospitante;
   for (let i = 0; i < (Number(theirs) || 0); i++) list.push({ type: 'gol_subito', minute: null });
-  return list.map((p, i) => ({ ...p, key: `${p.type}-${i}`, ok: p.type === 'gol_subito' || (!!p.playerId && (p.type !== 'sostituzione' || !!p.playerInId)) }));
+  return list.map((p, i) => ({ ...p, key: `${p.type}-${i}`, ok: p.type === 'gol_subito' || (p.type === 'staff' ? !!p.staffName : !!p.playerId && (p.type !== 'sostituzione' || !!p.playerInId)) }));
 }
 
 /** Nuovi eventi: tolti quelli di un referto precedente, saltati i doppioni di quelli inseriti a mano. */
 export function mergeEvents(current = [], incoming = []) {
   const manual = current.filter((e) => e.source !== 'referto');
-  const same = (a, b) => a.type === b.type && (a.playerId || null) === (b.playerId || null) && (a.playerInId || null) === (b.playerInId || null);
+  const same = (a, b) => a.type === b.type && (a.type === 'staff'
+    ? a.card === b.card && samePerson(a.staffName || '', b.staffName || '')
+    : (a.playerId || null) === (b.playerId || null) && (a.playerInId || null) === (b.playerInId || null));
   const manualGoalsAgainst = manual.filter((e) => e.type === 'gol_subito').length;
   let skipGoals = manualGoalsAgainst;
   const add = incoming.filter((e) => {

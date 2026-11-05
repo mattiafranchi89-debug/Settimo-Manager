@@ -8,11 +8,12 @@ import { fmtShort, fmtTime, countdown, toDate, capitalize, fmtLong, euro } from 
 import { callupFor } from '../lib/callup';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
+import { useStaffDiscipline, staffAlerts, ROLE_SHORT } from '../lib/staffDiscipline';
 import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
-import { suspendedIn, COMPS, suspensionProposals } from '../lib/discipline';
+import { suspendedIn, COMPS, suspensionProposals, compBucket } from '../lib/discipline';
 
 const DAY = 86400000;
 const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -64,6 +65,14 @@ export default function Dashboard() {
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   const injured = players.filter((p) => p.injury?.active);
+  // Staff squalificato o in diffida: cartellini delle schede gara e comunicati CRL.
+  const recentMatches = useMemo(() => [...pastEvents, ...upcoming].filter((e) => e.type === 'match'), [pastEvents, upcoming]);
+  const staffPeople = useStaffDiscipline({ club, matches: recentMatches, enabled: staff });
+  // Solo le competizioni con partite in programma: dopo l'eliminazione la coppa non è un avviso.
+  const staffWatch = useMemo(
+    () => staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))]),
+    [staffPeople, upcoming]
+  );
 
   // Statistiche contate con un metodo più vecchio: si ricalcolano da sole.
   useStatsUpgrade(players, role, club.season);
@@ -168,6 +177,8 @@ export default function Dashboard() {
     // Campionato e coppa non fanno cumulo: l'etichetta dice dove vale.
     ...alerts.squalificati.map((p) => ({ id: `s-${p.id}`, tone: 'red', label: `🟥 ${short(p.fullName)}${compTag([...new Set([...suspendedIn(p), ...(insights[p.id]?.autoSuspendedIn || [])])])}` })),
     ...alerts.diffidati.map((p) => ({ id: `d-${p.id}`, tone: 'orange', label: `🟨 ${short(p.fullName)} · diffida${compTag(insights[p.id]?.diffidaIn || [], true)}` })),
+    ...staffWatch.squalificati.map(({ person, list }) => ({ id: `ss-${person.name}`, tone: 'red', label: `🟥 ${person.name} · ${ROLE_SHORT[person.role] || 'staff'}${list.some((s) => s.comp == null) ? '' : compTag([...new Set(list.map((s) => s.comp))])}` })),
+    ...staffWatch.diffidati.map(({ person, comps }) => ({ id: `sd-${person.name}`, tone: 'orange', label: `🟨 ${person.name} · ${ROLE_SHORT[person.role] || 'staff'} · diffida${compTag(comps, true)}` })),
     ...injured.map((p) => ({ id: `i-${p.id}`, tone: 'grey', label: `🩹 ${short(p.fullName)}` }))
   ];
 

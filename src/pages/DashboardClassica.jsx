@@ -7,6 +7,9 @@ import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong,
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
+import { useStaffDiscipline, staffAlerts } from '../lib/staffDiscipline';
+import { compBucket } from '../lib/discipline';
+import { staffAlertText } from '../components/Discipline';
 
 /**
  * Dashboard com'era al 9 ottobre 2026, per chi usa l'esperienza classica
@@ -44,6 +47,13 @@ export default function DashboardClassica() {
   );
   const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
   useStatsUpgrade(players, user?.role, club.season);
+  const recentMatches = useMemo(() => [...pastEvents, ...upcoming].filter((e) => e.type === 'match'), [pastEvents, upcoming]);
+  const staffPeople = useStaffDiscipline({ club, matches: recentMatches, enabled: staff });
+  // Solo le competizioni con partite in programma: dopo l'eliminazione la coppa non è un avviso.
+  const staffWatch = useMemo(
+    () => staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))]),
+    [staffPeople, upcoming]
+  );
 
   // Compleanni nei prossimi sette giorni: piccola cosa, fa gruppo.
   const birthdays = useMemo(() => {
@@ -114,6 +124,12 @@ export default function DashboardClassica() {
           )}
           {alerts.diffidati.length > 0 && (
             <Alert level="warn">In diffida: {alerts.diffidati.map((p) => p.fullName).join(', ')} — alla prossima ammonizione saltano una gara.</Alert>
+          )}
+          {staffWatch.squalificati.length > 0 && (
+            <Alert level="error">Staff squalificato: {staffAlertText(staffWatch.squalificati)}.</Alert>
+          )}
+          {staffWatch.diffidati.length > 0 && (
+            <Alert level="warn">Staff in diffida: {staffWatch.diffidati.map(({ person, comps }) => `${person.name} (${comps.map((c) => (c === 'coppa' ? 'coppa' : 'campionato')).join(' e ')})`).join(', ')} — alla prossima ammonizione salta una gara.</Alert>
           )}
           {alerts.dimenticati.length > 0 && (
             <Alert level="info">Si allenano ma non giocano da tempo: {alerts.dimenticati.map((p) => p.fullName).join(', ')}.</Alert>

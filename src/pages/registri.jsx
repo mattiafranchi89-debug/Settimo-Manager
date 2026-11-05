@@ -11,6 +11,8 @@ import { audit } from '../lib/db';
 import { errorText } from './Rosa';
 import { cardsOf } from '../lib/discipline';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
+import { useStaffDiscipline } from '../lib/staffDiscipline';
+import { StaffDiscipline } from '../components/Discipline';
 
 /* ============================== STATISTICHE ============================== */
 export function Statistiche() {
@@ -21,6 +23,10 @@ export function Statistiche() {
   const canRecalc = can(user?.role, 'matchstats.write');
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   useStatsUpgrade(players, user?.role, club.season);
+  // Staff: cartellini dalle schede gara, squalifiche dai comunicati (solo per chi vede la rosa).
+  const seesStaff = can(user?.role, 'players.read');
+  const { data: seasonMatches } = useCollection('events', useMemo(() => [where('type', '==', 'match'), where('seasonId', '==', club.season)], [club.season]), seesStaff);
+  const staffPeople = useStaffDiscipline({ club, matches: seasonMatches, enabled: seesStaff });
 
   const recalc = async () => {
     setBusy(true);
@@ -124,6 +130,13 @@ export function Statistiche() {
         </div>
       </Card>
       <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita ufficiale chiusa (campionato e coppa); le amichevoli sono a parte, in grigio («+1»). Chi entra dalla panchina ha sempre la presenza, anche nel recupero. Gli allenamenti contano solo le sedute già svolte, e ogni assenza pesa allo stesso modo (anche giustificata o per infortunio). Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
+
+      {seesStaff && (
+        <Card title="Staff · ammonizioni e squalifiche">
+          <StaffDiscipline people={staffPeople} />
+          <p style={{ marginTop: 12 }}><small>Le ammonizioni dello staff si segnano nella scheda gara («🟨 Staff») o arrivano dal referto: in campionato il comunicato le pubblica solo dalla diffida in poi. Squalifiche e inibizioni arrivano dai comunicati CRL, controllati più volte al giorno. Soglie come per i giocatori, campionato e coppa separati; una squalifica a gare si sconta giocando le gare di quella competizione, una «fino al» vale per ogni gara.</small></p>
+        </Card>
+      )}
     </>
   );
 }

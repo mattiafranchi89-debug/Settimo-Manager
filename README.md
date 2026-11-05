@@ -42,10 +42,11 @@ La matrice dei permessi vive in un solo file (`permissions.js`) e le regole Fire
 | `callups/{id}` | convocazione | `players[]`, `logistics`, `message`, `status`, `version` |
 | `callups/{id}/versions/{v}` | storico | append-only: chi, quando, cosa è cambiato |
 | `lineups/{eventId}` | formazione | `module`, `slots`, `captain`, panchina |
-| `matchStats/{eventId}` | scheda gara | `events[]` (gol, assist, cartellini, cambi), `totals` per giocatore, `closed` |
+| `matchStats/{eventId}` | scheda gara | `events[]` (gol, assist, cartellini, cambi, cartellini allo staff), `totals` per giocatore, `closed` |
 | `ratings/{eventId}_{playerId}` | voto | `value`, `note`, autore |
 | `public/data/crl-settimo.json` | file statico | estratti dei comunicati CRL che citano la società (vedi sotto) |
 | `public/data/fixtures.json` | file statico | data, ora e campo ufficiali delle partite del Settimo dai programmi gare CRL (vedi sotto) |
+| `public/data/disciplina.json` | file statico | provvedimenti del Giudice Sportivo a carico del Settimo, staff compreso, dai comunicati CRL (vedi sotto) |
 | `scouting/{slug}` | scheda avversario | `standing`, `results[]`, `players[]`, `suspended[]`, `notes`, `tuttocampoUrl` |
 | `documents`, `payments`, `fines` | — | scadenze e partite economiche |
 | `auditLogs/{id}` | log | append-only: pubblicazioni, forzature, cambi ruolo |
@@ -187,6 +188,37 @@ campo e indirizzo. Un cambio d'orario arriva a tutti come notifica e finisce
 nel registro. Una correzione fatta a mano dopo l'allineamento resta finché
 il CRL non pubblica un dato diverso. In «Partite» compaiono le gare ufficiali
 non ancora in calendario, da aggiungere con un tocco.
+
+## Disciplina dello staff
+
+Allenatori, dirigenti, preparatori, massaggiatori, medici e assistente
+arbitro di parte hanno ammonizioni, diffide e squalifiche come i giocatori,
+con le stesse soglie e con campionato e coppa separati.
+
+- **Cartellini in gara**: nella scheda gara, «🟨 Staff» (persona di
+  Impostazioni › Staff o un'altra), oppure dal referto, che ora legge anche
+  la sezione «Provvedimenti» per tecnici e dirigenti. Servono perché in
+  campionato il comunicato pubblica le ammonizioni dello staff solo dalla
+  diffida (4ª) in poi. Contano le schede chiuse; non toccano i totali dei
+  giocatori.
+- **Comunicati**: la GitHub Action «Cache comunicati CRL» legge le decisioni
+  del Giudice Sportivo di Prima Categoria e Coppa Lombardia Prima Categoria e
+  scrive in `public/data/disciplina.json` ogni voce del Settimo (sezione,
+  persona, ammonizione con il numero dell'infrazione, squalifica a gare o
+  «fino al», inibizione; script `scripts/crl_disciplina.py`). Il file è
+  cumulativo e riparte a ogni stagione.
+- **Calcolo** (`src/lib/staffDiscipline.js`): le ammonizioni del comunicato
+  fanno da base a quelle delle schede; una squalifica a gare si sconta con le
+  gare della stessa competizione giocate dopo il comunicato (scheda chiusa o
+  risultato registrato), una «fino al» vale per ogni gara fino a quella data.
+  Una squalifica automatica della scheda (espulsione o soglia raggiunta) lascia
+  il posto alla decisione del comunicato sulla stessa gara.
+- **Dove si vede**: Statistiche (scheda «Staff»), Home (etichette in
+  «Attenzione»; nella versione classica, avvisi) e Convocazioni («Da tenere
+  d'occhio»: chi non può andare in panchina per quella gara e chi è in diffida).
+
+I nomi si riconoscono indipendentemente dall'ordine («PUGLIESE LUCA» = «Luca
+Pugliese»): in Impostazioni › Staff vanno scritti come sul tesserino.
 
 ## Aggiornamento automatico dell'avversario
 
