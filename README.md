@@ -189,6 +189,42 @@ nel registro. Una correzione fatta a mano dopo l'allineamento resta finché
 il CRL non pubblica un dato diverso. In «Partite» compaiono le gare ufficiali
 non ancora in calendario, da aggiungere con un tocco.
 
+## Andamento rispetto al campionato
+
+Andamento › **Campionato** (la prima scheda) legge solo dati ufficiali:
+classifica e risultati di tutto il girone in `public/data/girone.json`
+(GitHub Action «Cache comunicati CRL», script `scripts/crl_girone.py`).
+Calcoli in `src/lib/trend.js`, pagina in `src/components/LeagueTrend.jsx`.
+
+- **Lettura in poche frasi**: tendenza delle ultime giornate (ultime 3 fino
+  alla 9ª, poi ultime 5) contro quelle prima, con la voce che pesa di più
+  (attacco o difesa), posizione e ritmo necessario. Con meno di 10 giornate
+  avverte che il campione è piccolo.
+- **Sei numeri con la freccia**: posizione e distacco, punti, gol fatti e
+  subiti a partita, proiezione a fine stagione (al ritmo della stagione e a
+  quello recente), partite senza subire gol.
+- **Corsa al vertice**: punti giornata per giornata nostri e della seconda
+  (o della prima), con il ritmo che serve per chiudere davanti a lei se tiene
+  il suo; dati anche in tabella.
+- **Forma del girone**: classifica delle ultime 5 gare di ogni squadra.
+- **Contro chi facciamo punti**: fasce della classifica di oggi, casa e
+  trasferta.
+- **Calendario**: le prossime gare con posizione, ritmo e forma
+  dell'avversaria (difficoltà alta/media/bassa) e la forza media delle
+  avversarie che restano, confrontata con quella delle inseguitrici.
+
+La classifica giornata per giornata è ricostruita dai risultati (punti, poi
+differenza reti): l'ordine ufficiale può differire per gli scontri diretti.
+
+## Risultati ufficiali delle partite
+
+All'apertura dell'app, chi gestisce il calendario completa da solo i
+risultati mancanti delle partite giocate (campionato e coppa) con quelli dei
+comunicati (`src/lib/results.js`: stessa competizione, stesso avversario,
+data entro tre giorni; fonte e registro annotati). Un risultato diverso da
+quello ufficiale non si sovrascrive: compare in Andamento › Campionato,
+«Risultati da controllare», e si corregge con un tocco.
+
 ## Disciplina dello staff
 
 Allenatori, dirigenti, preparatori, massaggiatori, medici e assistente

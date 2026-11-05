@@ -9,6 +9,7 @@ import { fmtShort, fmtDate, toDate, sortPlayers, seasonStart } from '../lib/form
 import { can } from '../lib/permissions';
 import { ensureAttendanceSummaries } from '../lib/trainings';
 import { concededByCause } from '../lib/goalCauses';
+import LeagueTrend from '../components/LeagueTrend';
 
 const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -17,13 +18,14 @@ const isoWeek = (d) => {
   return `${t.getUTCFullYear()}-${String(Math.ceil(((t - start) / 86400000 + 1) / 7)).padStart(2, '0')}`;
 };
 
-const TABS = [['rendimento', 'Rendimento'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
+// «Campionato» per prima: in 30 secondi come stiamo andando rispetto al girone.
+const TABS = [['campionato', 'Campionato'], ['rendimento', 'Rendimento'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
 
 export default function Analisi() {
   const { user } = useAuth();
   const { club } = useClub();
   const staff = can(user?.role, 'attendance.write') || can(user?.role, 'matchstats.write');
-  const [tab, setTab] = useState('rendimento');
+  const [tab, setTab] = useState('campionato');
 
   const { data: players, loading } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
   const { data: matchesAll } = useCollection('events', useMemo(() => [where('seasonId', '==', club.season), where('type', '==', 'match')], [club.season]));
@@ -56,11 +58,12 @@ export default function Analisi() {
         {staff && <Button as={Link} to="/report" size="sm" variant="secondary">📄 Report per la squadra</Button>}
       </div>
       <div className="chiprow">
-        {TABS.filter(([k]) => staff || ['rendimento', 'rotazione', 'disciplina'].includes(k)).filter(([k]) => k !== 'impiego' || staff).map(([k, l]) => (
+        {TABS.filter(([k]) => staff || ['campionato', 'rendimento', 'rotazione', 'disciplina'].includes(k)).filter(([k]) => k !== 'impiego' || staff).map(([k, l]) => (
           <button key={k} className={`chip ${tab === k ? 'chip--on' : ''}`} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
+      {tab === 'campionato' && <LeagueTrend club={club} matches={matches} user={user} canFix={can(user?.role, 'events.write')} />}
       {tab === 'rendimento' && <Rendimento played={official} friendlies={played.length - official.length} club={club} />}
       {tab === 'rotazione' && <Rotazione players={players} matchStats={officialStats} />}
       {tab === 'impiego' && <Impiego players={players} club={club} />}

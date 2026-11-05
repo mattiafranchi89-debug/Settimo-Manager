@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
@@ -8,6 +8,7 @@ import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
 import { refreshPushSubscription } from '../lib/push';
 import { syncFixtures } from '../lib/fixtures';
+import { syncResults } from '../lib/results';
 import { ensureUpcomingTrainings } from '../lib/trainings';
 import { newVersionAvailable } from '../lib/version';
 import { useToast } from './ui';
@@ -51,6 +52,24 @@ export default function Layout({ theme, toggleTheme }) {
     ensureUpcomingTrainings({ club, user }).catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager, clubLoading]);
+  // Risultati ufficiali dai comunicati CRL: i mancanti si completano da soli.
+  // Aspetta la stagione della società: con quella di partenza non troverebbe le partite.
+  const resultsAt = useRef(0);
+  useEffect(() => {
+    if (!manager || clubLoading) return undefined;
+    const run = () => {
+      if (Date.now() - resultsAt.current < 5 * 60000) return;
+      resultsAt.current = Date.now();
+      syncResults(user, club)
+        .then((filled) => filled.forEach((f) => toast(`Risultato ufficiale CRL inserito: ${f.us}-${f.them} con ${f.opponent}`)))
+        .catch((e) => console.warn('risultati CRL', e));
+    };
+    run();
+    const onShow = () => { if (document.visibilityState === 'visible') run(); };
+    document.addEventListener('visibilitychange', onShow);
+    return () => document.removeEventListener('visibilitychange', onShow);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manager, clubLoading, club.season]);
   useEffect(() => {
     const syncTimes = () => {
       if (!manager) return;
