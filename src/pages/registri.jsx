@@ -13,6 +13,8 @@ import { cardsOf } from '../lib/discipline';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
 import { useStaffDiscipline } from '../lib/staffDiscipline';
 import { StaffDiscipline } from '../components/Discipline';
+import StaffRefertiScan from '../components/StaffRefertiScan';
+import { REFERTO_ROLES } from '../lib/referto';
 
 /* ============================== STATISTICHE ============================== */
 export function Statistiche() {
@@ -26,6 +28,7 @@ export function Statistiche() {
   // Staff: cartellini dalle schede gara, squalifiche dai comunicati (solo per chi vede la rosa).
   const seesStaff = can(user?.role, 'players.read');
   const staffPeople = useStaffDiscipline({ club, enabled: seesStaff });
+  const [scanOpen, setScanOpen] = useState(false);
 
   const recalc = async () => {
     setBusy(true);
@@ -131,11 +134,13 @@ export function Statistiche() {
       <p><small>Tocca un'intestazione per ordinare, toccala di nuovo per invertire. Presenze, minuti, gol e cartellini vengono dalla scheda gara di ogni partita ufficiale chiusa (campionato e coppa); le amichevoli sono a parte, in grigio («+1»). Chi entra dalla panchina ha sempre la presenza, anche nel recupero. Gli allenamenti contano solo le sedute già svolte, e ogni assenza pesa allo stesso modo (anche giustificata o per infortunio). Il ricalcolo riparte sempre da zero: puoi lanciarlo quante volte vuoi.</small></p>
 
       {seesStaff && (
-        <Card title="Staff · ammonizioni e squalifiche">
+        <Card title="Staff · ammonizioni e squalifiche"
+          action={REFERTO_ROLES.includes(user?.role) && <Button size="sm" variant="secondary" onClick={() => setScanOpen(true)}>📄 Dai referti</Button>}>
           <StaffDiscipline people={staffPeople} />
           <p style={{ marginTop: 12 }}><small>Le ammonizioni dello staff si segnano nella scheda gara («🟨 Staff») o arrivano dal referto: in campionato il comunicato le pubblica solo dalla diffida in poi. Squalifiche e inibizioni arrivano dai comunicati CRL, controllati più volte al giorno. Soglie come per i giocatori, campionato e coppa separati; una squalifica a gare si sconta giocando le gare di quella competizione, una «fino al» vale per ogni gara.</small></p>
         </Card>
       )}
+      {scanOpen && <StaffRefertiScan club={club} user={user} toast={toast} onClose={() => setScanOpen(false)} />}
     </>
   );
 }
