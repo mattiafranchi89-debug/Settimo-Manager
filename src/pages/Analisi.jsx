@@ -12,6 +12,7 @@ import { goalsByCause, setPieceBalance } from '../lib/goalCauses';
 import LeagueTrend from '../components/LeagueTrend';
 import GameSituations from '../components/GameSituations';
 import PlayerImpact from '../components/PlayerImpact';
+import Availability from '../components/Availability';
 
 const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -21,7 +22,7 @@ const isoWeek = (d) => {
 };
 
 // «Campionato» per prima: in 30 secondi come stiamo andando rispetto al girone.
-const TABS = [['campionato', 'Campionato'], ['rendimento', 'Rendimento'], ['partite', 'Partite'], ['giocatori', 'Giocatori'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
+const TABS = [['campionato', 'Campionato'], ['rendimento', 'Rendimento'], ['partite', 'Partite'], ['giocatori', 'Giocatori'], ['disponibilita', 'Disponibilità'], ['rotazione', 'Rotazione'], ['impiego', 'Impiego'], ['allenamenti', 'Allenamenti'], ['gol', 'Gol'], ['disciplina', 'Disciplina'], ['note', 'Note']];
 
 export default function Analisi() {
   const { user } = useAuth();
@@ -56,7 +57,7 @@ export default function Analisi() {
   return (
     <>
       <div className="pagehead">
-        <div><h1>Andamento squadra</h1><p>Stagione {season} · {official.length} gare ufficiali con risultato</p></div>
+        <div><h1>Andamento squadra</h1><p>Stagione {season} · {official.length === 1 ? '1 gara ufficiale' : `${official.length} gare ufficiali`} con risultato</p></div>
         {staff && <Button as={Link} to="/report" size="sm" variant="secondary">📄 Report per la squadra</Button>}
       </div>
       <div className="chiprow">
@@ -68,6 +69,7 @@ export default function Analisi() {
       {tab === 'campionato' && <LeagueTrend club={club} matches={matches} user={user} canFix={can(user?.role, 'events.write')} />}
       {tab === 'partite' && <GameSituations matches={matches} sheets={officialStats} />}
       {tab === 'giocatori' && <PlayerImpact matches={matches} sheets={officialStats} players={players} />}
+      {tab === 'disponibilita' && <Availability matches={matches} trainings={trainings} sheets={officialStats} players={players} club={club} />}
       {tab === 'rendimento' && <Rendimento played={official} friendlies={played.length - official.length} club={club} />}
       {tab === 'rotazione' && <Rotazione players={players} matchStats={officialStats} />}
       {tab === 'impiego' && <Impiego players={players} club={club} />}

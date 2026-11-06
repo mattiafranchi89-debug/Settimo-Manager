@@ -9,8 +9,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { compBucket, thresholdAfter, thresholdsText } from './discipline';
 import { thresholds } from './insights';
-import { toDate, seasonStart, TZ } from './format';
+import { seasonStart, dayIso } from './format';
 import { useCollection, where } from './db';
+
+export { dayIso };
 
 export const DISCIPLINA_URL = '/data/disciplina.json';
 
@@ -78,12 +80,6 @@ export function roleFromText(s) {
 
 /** Nomi dei comunicati in maiuscolo → «Pugliese Luca». */
 const display = (name = '') => (/[a-z]/.test(name) ? name.trim() : name.trim().toLowerCase().replace(/(^|[\s'-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()));
-
-/** Giorno (YYYY-MM-DD) in Italia: le date dei comunicati sono giorni, non istanti. */
-export function dayIso(v) {
-  const d = toDate(v);
-  return d && !Number.isNaN(d.getTime()) ? new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d) : null;
-}
 
 const fmtDay = (iso = '') => iso.split('-').reverse().join('/');
 

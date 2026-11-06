@@ -241,6 +241,28 @@ segnato?» e nella cronologia), con le stesse chiavi dei gol subiti e
 l'etichetta vista da noi (es. «Palla recuperata alta»). In Andamento › Gol:
 come nascono i nostri gol e il bilancio delle palle inattive.
 
+## Disponibilità e settimana prima della gara
+
+La scheda **Disponibilità** di Andamento (solo staff; `src/lib/availability.js`,
+`src/components/Availability.jsx`) mette accanto al risultato di ogni gara
+ufficiale la settimana che la precede (dalla gara precedente, come l'avviso
+assenze della convocazione):
+
+- **presenza in settimana** della rosa disponibile (gli infortunati non
+  contano: sono già fra gli indisponibili) e dei titolari, sedute, assenze non
+  giustificate, dal riepilogo salvato su ogni seduta;
+- **indisponibili**: infortunati dalla Rosa (periodi aperti e chiusi, storico
+  compreso) o «infortunato» all'ultima seduta prima della gara; squalificati
+  rigiocando in ordine i cartellini delle schede chiuse con le regole della
+  disciplina, più le squalifiche dei comunicati confermate in Rosa. Chi era in
+  distinta conta come disponibile;
+- **diffidati** e diffidati ammoniti (squalifica alla gara dopo).
+
+Poi la tendenza (ultime 3 o 5 gare contro le precedenti), la presenza gara per
+gara in un grafico, i punti a partita con la settimana sopra o sotto la media e
+con pochi o tanti indisponibili (confronto mostrato solo con almeno 3 gare per
+parte) e le settimane senza presenze registrate.
+
 ## Risultati ufficiali delle partite
 
 All'apertura dell'app, chi gestisce il calendario completa da solo i
