@@ -2090,16 +2090,34 @@
         }
       ],
       "fetchedAt": "2026-11-05T18:40:40+00:00"
+    },
+    "33771": {
+      "id": "33771",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 46 CRL",
+      "number": 46,
+      "date": "2026-11-06",
+      "url": "https://www.crlombardia.it/documenti/33771/comunicato-ufficiale-n-46",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 46 del 06.11.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33771/6aeddd35e4439_Comunicato Ufficiale Nr. 46 del 06.11.26.pdf",
+          "pages_chars": 22815,
+          "settimo_mentions": 0,
+          "txt": "docs/33771/Comunicato_Ufficiale_Nr._46_del_06.11.26.txt"
+        }
+      ],
+      "fetchedAt": "2026-11-06T17:55:28+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-06T12:27:36+00:00",
+  "lastRun": "2026-11-06T17:55:28+00:00",
   "homepage": [
+    "33771",
     "33746",
     "33743",
     "33714",
     "33706",
-    "33673",
     "33756",
     "33741"
   ],

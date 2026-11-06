@@ -1,5 +1,9 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 46 CRL (2026-11-06)
+Pagina: https://www.crlombardia.it/documenti/33771/comunicato-ufficiale-n-46
+Nessuna menzione del Settimo Milanese.
+
 ## Programma Gare dal 05 al 09 Novembre 2026 CRL (2026-11-05)
 Pagina: https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026
 
