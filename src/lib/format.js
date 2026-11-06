@@ -50,6 +50,12 @@ export function toDate(value) {
   return new Date(value);
 }
 
+/** Giorno (YYYY-MM-DD) in Italia: le date dei comunicati sono giorni, non istanti. */
+export function dayIso(v) {
+  const d = toDate(v);
+  return d && !Number.isNaN(d.getTime()) ? new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d) : null;
+}
+
 const dt = (opts) => new Intl.DateTimeFormat('it-IT', { timeZone: TZ, ...opts });
 
 export const fmtDate = (v) => (toDate(v) ? dt({ day: '2-digit', month: '2-digit', year: 'numeric' }).format(toDate(v)) : '—');

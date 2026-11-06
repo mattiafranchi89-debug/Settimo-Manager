@@ -48,7 +48,7 @@ const onAt = (iv, min) => iv.from <= min && min < iv.to;
  * Titolari e giocatori in distinta. Le schede vecchie senza distinta dicono
  * chi è partito titolare nei totali salvati; null se la scheda non lo dice.
  */
-function lineupOf(sheet) {
+export function lineupOf(sheet) {
   if (Array.isArray(sheet?.starters) && sheet.starters.length) {
     return { starters: sheet.starters, squad: [...new Set([...sheet.starters, ...(sheet.bench || [])])] };
   }

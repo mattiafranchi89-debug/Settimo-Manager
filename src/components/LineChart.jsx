@@ -1,13 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+const has = (v) => v != null && Number.isFinite(v);
+const show = (v, unit) => (has(v) ? `${v}${unit}` : '–');
+
 /**
  * Linee nel tempo, poche serie: una in evidenza (rosso), le altre di contesto
  * (grigio). Linee da 2px, punti finali con anello, griglia a filo, etichetta a
  * fine linea solo se non si sovrappone; al tocco o con le frecce un mirino
  * mostra tutti i valori di quel punto. Sotto, gli stessi dati in tabella.
- * `series`: [{ key, label, values: [numeri], emphasis }]; `xLabels`: etichette dei punti.
+ * `series`: [{ key, label, values: [numeri], emphasis }]; `xLabels`: etichette dei punti;
+ * `xTips` (facoltativo): il nome completo di ogni punto, nel riquadro e in tabella.
+ * Un valore mancante (null) lascia un vuoto nella linea e «–» nel riquadro e in tabella.
  */
-export default function LineChart({ series = [], xLabels = [], xTitle = '', unit = '', height = 190, ariaLabel = '' }) {
+export default function LineChart({ series = [], xLabels = [], xTips = null, xTitle = '', unit = '', height = 190, ariaLabel = '' }) {
   const wrap = useRef(null);
   const [width, setWidth] = useState(320);
   const [at, setAt] = useState(null);
@@ -25,7 +30,7 @@ export default function LineChart({ series = [], xLabels = [], xTitle = '', unit
   const m = { l: 30, r: 70, t: 10, b: 26 };
   const w = width - m.l - m.r, h = height - m.t - m.b;
   const geo = useMemo(() => {
-    const max = Math.max(1, ...series.flatMap((s) => s.values));
+    const max = Math.max(1, ...series.flatMap((s) => s.values.filter(has)));
     const step = max <= 10 ? 2 : max <= 30 ? 5 : max <= 60 ? 10 : 20;
     const top = Math.ceil(max / step) * step;
     const ticks = Array.from({ length: top / step + 1 }, (_, i) => i * step);
@@ -37,7 +42,17 @@ export default function LineChart({ series = [], xLabels = [], xTitle = '', unit
   if (!n || !series.length) return null;
   const { ticks, x, y } = geo;
   // Etichetta a fine linea: si mostra solo se non si sovrappone a un'altra.
-  const ends = series.map((s) => ({ s, yEnd: y(s.values[n - 1]) }));
+  const ends = series.filter((s) => has(s.values[n - 1])).map((s) => ({ s, yEnd: y(s.values[n - 1]) }));
+  // La linea si interrompe dove manca il dato e riparte dal punto dopo.
+  const pathOf = (values) => {
+    let pen = false;
+    return values.map((v, i) => {
+      if (!has(v)) { pen = false; return ''; }
+      const c = `${pen ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
+      pen = true;
+      return c;
+    }).filter(Boolean).join(' ');
+  };
   const clash = (e) => ends.some((o) => o !== e && Math.abs(o.yEnd - e.yEnd) < 14);
   const ordered = [...series].sort((a, b) => Number(!!a.emphasis) - Number(!!b.emphasis));
   const colorOf = (s) => (s.emphasis ? 'var(--red)' : 'var(--muted)');
@@ -82,10 +97,10 @@ export default function LineChart({ series = [], xLabels = [], xTitle = '', unit
           {at != null && <line x1={x(at)} x2={x(at)} y1={m.t} y2={m.t + h} stroke="var(--line)" strokeWidth="1" />}
           {ordered.map((s) => (
             <g key={s.key}>
-              <path d={s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}
+              <path d={pathOf(s.values)}
                 fill="none" stroke={colorOf(s)} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-              <circle cx={x(n - 1)} cy={y(s.values[n - 1])} r="4" fill={colorOf(s)} stroke="var(--surface)" strokeWidth="2" />
-              {at != null && at !== n - 1 && <circle cx={x(at)} cy={y(s.values[at])} r="4" fill={colorOf(s)} stroke="var(--surface)" strokeWidth="2" />}
+              {has(s.values[n - 1]) && <circle cx={x(n - 1)} cy={y(s.values[n - 1])} r="4" fill={colorOf(s)} stroke="var(--surface)" strokeWidth="2" />}
+              {at != null && at !== n - 1 && has(s.values[at]) && <circle cx={x(at)} cy={y(s.values[at])} r="4" fill={colorOf(s)} stroke="var(--surface)" strokeWidth="2" />}
             </g>
           ))}
           {ends.filter((e) => !clash(e) || e.s.emphasis).map(({ s, yEnd }) => (
@@ -96,11 +111,11 @@ export default function LineChart({ series = [], xLabels = [], xTitle = '', unit
         </svg>
         {at != null && (
           <div style={{ position: 'absolute', top: 0, left: tipLeft, width: 150, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 8, padding: '6px 8px', boxShadow: 'var(--shadow)', fontSize: 12.5, pointerEvents: 'none' }}>
-            <div style={{ color: 'var(--muted)', marginBottom: 2 }}>{xTitle ? `${xTitle} ` : ''}{xLabels[at]}</div>
+            <div style={{ color: 'var(--muted)', marginBottom: 2 }}>{xTips?.[at] ?? `${xTitle ? `${xTitle} ` : ''}${xLabels[at]}`}</div>
             {series.map((s) => (
               <div key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <svg width="12" height="6" aria-hidden="true"><line x1="0" y1="3" x2="12" y2="3" stroke={colorOf(s)} strokeWidth="2" strokeLinecap="round" /></svg>
-                <b>{s.values[at]}{unit}</b>
+                <b>{show(s.values[at], unit)}</b>
                 <span style={{ color: 'var(--muted)' }}>{s.short || s.label}</span>
               </div>
             ))}
@@ -114,7 +129,7 @@ export default function LineChart({ series = [], xLabels = [], xTitle = '', unit
             <thead><tr><th>{xTitle || '#'}</th>{series.map((s) => <th key={s.key}>{s.short || s.label}</th>)}</tr></thead>
             <tbody>
               {xLabels.map((l, i) => (
-                <tr key={i}><td>{l}</td>{series.map((s) => <td key={s.key}>{s.values[i]}{unit}</td>)}</tr>
+                <tr key={i}><td>{xTips?.[i] ?? l}</td>{series.map((s) => <td key={s.key}>{show(s.values[i], unit)}</td>)}</tr>
               ))}
             </tbody>
           </table>

@@ -203,6 +203,8 @@ small { font-size: 12.5px; color: var(--muted); }
   display: inline-flex; align-items: center; gap: 5px;
   padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap;
 }
+/* Nei riquadri dei numeri la tendenza («▲ meglio · prima 81%») va a capo invece di uscire a 320 px. */
+.kpi .badge { white-space: normal; border-radius: 10px; }
 .badge--green { background: var(--green-bg); color: var(--green); }
 .badge--red { background: var(--red-soft); color: var(--red); }
 .badge--orange { background: var(--orange-bg); color: var(--orange); }
