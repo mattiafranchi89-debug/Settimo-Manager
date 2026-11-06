@@ -163,11 +163,14 @@ export function matchWeeks({ matches = [], trainings = [], sheets = [], players 
     .sort((a, b) => ms(a.date) - ms(b.date))
     .map((m) => ({ match: m, bucket: compBucket(m.competition || ''), res: ourResult(m) }));
   const disc = disciplineByMatch(official, sheetOf, players, club);
+  // La settimana parte dall'ultima gara giocata (con risultato o scheda chiusa):
+  // una gara rinviata rimasta in calendario non la accorcia.
+  const played = matches.filter((m) => !m.cancelled && (ourResult(m) || sheetOf.has(m.id)));
   const rows = official.map(({ match, bucket, res }) => {
     const sheet = sheetOf.get(match.id);
     const lineup = sheet ? lineupOf(sheet) : null;
     const inSheet = new Set(lineup?.squad || []);
-    const week = weekBefore(match, matches, trainings, lineup?.starters || null, now);
+    const week = weekBefore(match, played, trainings, lineup?.starters || null, now);
     const day = dayIso(match.date);
     const d = disc.get(match.id);
     // Chi era in distinta c'era: né squalificato né infortunato, qualunque cosa dicano gli altri dati.
