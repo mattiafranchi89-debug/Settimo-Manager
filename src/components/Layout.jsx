@@ -61,7 +61,8 @@ export default function Layout({ theme, toggleTheme }) {
       if (Date.now() - resultsAt.current < 5 * 60000) return;
       resultsAt.current = Date.now();
       syncResults(user, club)
-        .then((filled) => filled.forEach((f) => toast(`Risultato ufficiale CRL inserito: ${f.us}-${f.them} con ${f.opponent}`)))
+        .then((filled) => filled.forEach((f) => toast(f.provisional ? `Risultato provvisorio (Tuttocampo) inserito: ${f.us}-${f.them} con ${f.opponent}`
+          : `Risultato ufficiale CRL ${f.corrected ? 'corretto' : 'inserito'}: ${f.us}-${f.them} con ${f.opponent}`)))
         .catch((e) => console.warn('risultati CRL', e));
     };
     run();

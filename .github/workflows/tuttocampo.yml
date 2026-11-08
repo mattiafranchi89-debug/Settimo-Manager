@@ -1,0 +1,61 @@
+# Domenica sera: risultati e classifica provvisori di Prima Categoria girone A
+# dai widget ufficiali di Tuttocampo (scripts/tc_girone.py), in
+# public/data/girone.json segnati come provvisori. Quando escono i comunicati,
+# crl_girone.py (workflow «Cache comunicati CRL») li sostituisce con quelli
+# ufficiali e annota le differenze.
+name: Risultati provvisori Tuttocampo
+
+on:
+  schedule:
+    # Orari UTC, domenica: 18:00 e 19:00 coprono le 20 italiane con l'ora legale e
+    # con quella solare; GitHub può partire in ritardo, quindi un giro alle 21:30
+    # e uno il lunedì mattina recuperano i risultati arrivati tardi.
+    - cron: "0 18 * * 0"
+    - cron: "0 19 * * 0"
+    - cron: "30 20 * * 0"
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Stesso gruppo dei comunicati: le due scritture su girone.json non si accavallano.
+concurrency:
+  group: crl-cache
+  cancel-in-progress: false
+
+jobs:
+  tuttocampo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Solo dalle 20 di domenica in poi (ora italiana)
+        id: when
+        run: |
+          d=$(TZ=Europe/Rome date +%u); h=$(TZ=Europe/Rome date +%H)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$d" = "7" ] && [ "$h" -lt 20 ]; then
+            echo "Troppo presto ($h:00 in Italia): salto"; echo "go=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=yes" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.when.outputs.go == 'yes'
+        with:
+          ref: main
+
+      - name: Risultati e classifica provvisori
+        if: steps.when.outputs.go == 'yes'
+        run: |
+          set -e
+          python3 -I scripts/tc_girone.py public/data/girone.json
+          git add public/data/girone.json
+          if git diff --cached --quiet; then echo "Nessuna novità"; exit 0; fi
+          git config user.name "crl-cache bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Girone A: risultati e classifica provvisori da Tuttocampo"
+          for i in 1 2 3; do
+            git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
+            sleep 10
+          done
+          exit 1

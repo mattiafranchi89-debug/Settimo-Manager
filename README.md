@@ -272,6 +272,25 @@ data entro tre giorni; fonte e registro annotati). Un risultato diverso da
 quello ufficiale non si sovrascrive: compare in Andamento › Campionato,
 «Risultati da controllare», e si corregge con un tocco.
 
+## Risultati provvisori della domenica (Tuttocampo)
+
+Il workflow `.github/workflows/tuttocampo.yml` gira la domenica dalle 20 (ora
+italiana, con giri di recupero alle 21:30 e il lunedì mattina) e lancia
+`scripts/tc_girone.py`. Lo script legge i widget ufficiali di Tuttocampo
+(classifica e risultati della giornata in corso e di quella prima, codice in
+`TC_WIDGET_ID`, lo stesso di Impostazioni) e aggiorna `public/data/girone.json`:
+
+- i risultati delle partite non ancora nei comunicati entrano con
+  `"provisional": true` e la fonte «Tuttocampo (provvisorio)»;
+- la classifica va in `standingProvisional` se è più avanti dell'ufficiale;
+  l'app la mostra al posto di quella ufficiale, con la scritta «provvisoria»;
+- se anche una sola squadra non si abbina ai nomi dei comunicati non scrive nulla.
+
+Quando escono i comunicati, `crl_girone.py` tiene i risultati ufficiali, toglie
+i provvisori e annota in `corrections` quelli diversi (Andamento › Campionato,
+«Corretti dal comunicato»). In app un risultato inserito da un provvisorio si
+aggiorna da solo con quello ufficiale; uno scritto a mano resta da confermare.
+
 ## Disciplina dello staff
 
 Allenatori, dirigenti, preparatori, massaggiatori, medici e assistente

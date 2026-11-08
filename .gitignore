@@ -4,3 +4,4 @@ dist
 !.env.production
 serviceAccount.json
 .firebase
+__pycache__/

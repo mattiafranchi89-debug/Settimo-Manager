@@ -54,6 +54,29 @@ def iso(d, m, y):
     return f"{int(y):04d}-{int(m):02d}-{int(d):02d}"
 
 
+def same_match(a, b):
+    """Stessa partita anche con nomi scritti in modo diverso («G.S. VILLA» e «VILLA S.S.D.R.L.»)."""
+    return (a["competition"] == b["competition"] and a["girone"] == b["girone"] and a["round"] == b["round"]
+            and a["leg"] == b["leg"] and similarity(a["home"], b["home"]) >= 0.99 and similarity(a["away"], b["away"]) >= 0.99)
+
+
+def reconcile(results, corrections=()):
+    """I risultati ufficiali vincono: i provvisori (Tuttocampo) già usciti nei comunicati
+    si tolgono e, se erano diversi, si annotano in «corrections» (le ultime 20)."""
+    official = [r for r in results if not r.get("provisional")]
+    kept, notes = list(official), list(corrections)
+    for p in (r for r in results if r.get("provisional")):
+        o = next((r for r in official if same_match(r, p)), None)
+        if o is None:
+            kept.append(p)
+        elif (o["hg"], o["ag"]) != (p["hg"], p["ag"]):
+            c = {"round": o["round"], "leg": o["leg"], "date": o["date"], "home": o["home"], "away": o["away"],
+                 "provisional": f'{p["hg"]}-{p["ag"]}', "official": f'{o["hg"]}-{o["ag"]}', "source": o.get("source")}
+            if c not in notes:
+                notes.append(c)
+    return kept, notes[-20:]
+
+
 def heading_of(line):
     s = line.strip()
     if len(s) > 45 or "..." in s or not s.isupper():
@@ -146,7 +169,8 @@ def main():
 
     standing = data.get("standing")
     results = {(r["competition"], r["girone"], r["round"], r["leg"], r["home"], r["away"]): r
-               for r in data.get("results", [])}
+               for r in data.get("results", []) if not r.get("provisional")}
+    provisional = [r for r in data.get("results", []) if r.get("provisional")]
     order = sorted(docs.values(), key=lambda d: (d.get("date") or "", d.get("number") or 0))
     for doc in order:
         if doc.get("kind") != "comunicato":
@@ -179,10 +203,17 @@ def main():
     kept = [r for r in results.values()
             if (r["competition"] == COMPETITION and r["girone"] == GIRONE)
             or (r["competition"] == COPPA and (in_girone(r["home"]) or in_girone(r["away"])))]
+    kept, corrections = reconcile(kept + provisional, data.get("corrections", []))
     kept.sort(key=lambda r: (r["date"] or "", r["competition"], r["home"]))
 
     new = {"competition": f"{COMPETITION} girone {GIRONE}", "season": "2026/2027",
            "standing": standing, "results": kept}
+    # Classifica provvisoria (Tuttocampo): resta solo finché è più avanti di quella ufficiale.
+    prov = data.get("standingProvisional")
+    if prov and sum(r["g"] for r in prov["rows"]) > sum(r["g"] for r in standing["rows"]):
+        new["standingProvisional"] = prov
+    if corrections:
+        new["corrections"] = corrections
     if {k: v for k, v in data.items() if k != "generatedAt"} == new:
         print("girone.json: nessuna novità")
         return

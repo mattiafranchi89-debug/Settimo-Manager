@@ -62,6 +62,16 @@ export function CrlItem({ item, showDoc }) {
  * squadre del girone), estratti dai comunicati CRL dalla GitHub Action
  * «Cache comunicati CRL» (scripts/crl_girone.py).
  */
+/**
+ * Il girone da mostrare: se c'è una classifica provvisoria (Tuttocampo, la
+ * domenica sera) più avanti di quella ufficiale, si usa quella, segnata come
+ * provvisoria; l'ufficiale resta in `officialStanding`.
+ */
+export function withProvisional(girone) {
+  if (!girone?.standingProvisional?.rows?.length) return girone;
+  return { ...girone, standing: girone.standingProvisional, officialStanding: girone.standing };
+}
+
 export function useGirone() {
   const [state, setState] = useState({ data: null, loading: true });
   useEffect(() => {
@@ -69,7 +79,7 @@ export function useGirone() {
     fetch('/data/girone.json', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null)
-      .then((data) => alive && setState({ data, loading: false }));
+      .then((data) => alive && setState({ data: withProvisional(data), loading: false }));
     return () => { alive = false; };
   }, []);
   return state;
