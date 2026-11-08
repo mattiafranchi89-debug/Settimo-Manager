@@ -13,5 +13,4 @@ jobs:
             curl -sS -A "SettimoManager/1.0 (+https://github.com/mattiafranchi89-debug/Settimo-Manager)" \
               -o $p.html -w "$p %{http_code} %{size_download}\n" "https://www.tuttocampo.it/WidgetV2/$p/$id" || true
           done
-      - uses: actions/upload-artifact@v4
-        with: { name: widgets, path: "*.html" }
+          for p in Classifica Risultati; do echo "=====BEGIN $p"; cat $p.html; echo; echo "=====END $p"; done
