@@ -617,7 +617,7 @@ export function gironeData(girone, name = '') {
   const { pos, pts, g, v, n, p, gf, gs } = row;
   return {
     team: row.team,
-    standing: { pos, of: rows.length, pts, g, v, n, p, gf, gs, asOf: `CRL, ${girone.standing.asOf}` },
+    standing: { pos, of: rows.length, pts, g, v, n, p, gf, gs, asOf: girone.standing.provisional ? girone.standing.asOf : `CRL, ${girone.standing.asOf}` },
     results
   };
 }
@@ -691,6 +691,7 @@ export function buildSuggestions(scout = {}, { match, us = {} } = {}) {
       if (theyHome && ppg >= 2) out.push({ icon: '🏟️', title: 'Forti in casa', text: `In casa ${split.v}V ${split.n}N ${split.p}P: primo tempo ordinato, senza regalare nulla.` });
       if (theyHome && ppg <= 0.7) out.push({ icon: '🏟️', title: 'Deboli in casa', text: `In casa ${split.v}V ${split.n}N ${split.p}P: il loro campo non li aiuta, si può fare la partita.` });
       if (!theyHome && ppg <= 0.7) out.push({ icon: '🧳', title: 'Soffrono in trasferta', text: `Fuori casa ${split.v}V ${split.n}N ${split.p}P: imponi il ritmo da subito.` });
+      if (!theyHome && ppg >= 2) out.push({ icon: '🧳', title: 'Forti in trasferta', text: `Fuori casa ${split.v}V ${split.n}N ${split.p}P: non soffrono il campo altrui, servono ordine e nessuna ripartenza concessa.` });
     }
   }
 
@@ -711,6 +712,12 @@ export function buildSuggestions(scout = {}, { match, us = {} } = {}) {
   }
   const keys = (scout.players || []).filter((p) => p.key && p !== top).slice(0, 2);
   if (keys.length) out.push({ icon: '⭐', title: 'Da tenere d\'occhio', text: keys.map((p) => `${p.name}${p.note ? ` (${p.note})` : ''}`).join('; ') + '.' });
+
+  // Nessun dato estremo: almeno il profilo, così si vede che i numeri ci sono.
+  if (!out.length && g >= 2) {
+    const where = st.pos ? `${st.pos}° con ${st.pts} punti in ${g} partite` : `${g} partite`;
+    out.push({ icon: '📊', title: 'Profilo dell\'avversario', text: `${where}: segnano ${n1(gf / g)} e subiscono ${n1(gs / g)} gol a partita${f.played ? `, ultime ${f.played}: ${f.list.map(outcome).join(' ')}` : ''}. Nessun dato fuori dalla norma: partita da preparare sui nostri principi di gioco.` });
+  }
 
   // Al massimo cinque indicazioni sull'avversario, le più forti per prime;
   // poi le nostre (gli assenti avversari sono già nella scheda in alto).
