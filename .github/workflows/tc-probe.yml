@@ -1,0 +1,17 @@
+name: tc-probe
+on:
+  push:
+    branches: [claude/github-registration-issue-itrsev]
+    paths: [.github/workflows/tc-probe.yml]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          id=bc1d2cc7-2af1-4ed3-bf50-b4c12bf0afaa
+          for p in Classifica Risultati; do
+            curl -sS -A "SettimoManager/1.0 (+https://github.com/mattiafranchi89-debug/Settimo-Manager)" \
+              -o $p.html -w "$p %{http_code} %{size_download}\n" "https://www.tuttocampo.it/WidgetV2/$p/$id" || true
+          done
+      - uses: actions/upload-artifact@v4
+        with: { name: widgets, path: "*.html" }
