@@ -83,7 +83,8 @@ export async function applyOfficialResult(user, match, off) {
 export function untouchedProvisional(match) {
   const rs = match?.resultSync, mine = appScore(match);
   if (!rs?.provisional || !mine) return false;
-  return rs.us == null || (mine.us === rs.us && mine.them === rs.them);
+  // Senza il punteggio salvato (versione precedente) non si sa se è stato toccato: si chiede conferma.
+  return rs.us != null && mine.us === rs.us && mine.them === rs.them;
 }
 
 /**
