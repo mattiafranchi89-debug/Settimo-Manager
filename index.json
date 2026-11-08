@@ -413,58 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33422": {
-      "id": "33422",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 21",
-      "number": 21,
-      "date": "2026-09-08",
-      "url": "https://www.crlombardia.it/documenti/33422/comunicato-ufficiale-n-21",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d15ea9b7_Comunicato Ufficiale Nr. 21 del 08.09.2026.pdf",
-          "pages_chars": 221408,
-          "settimo_mentions": 5,
-          "txt": "docs/33422/Comunicato_Ufficiale_Nr._21_del_08.09.2026.txt",
-          "mentions": [
-            {
-              "line": 320,
-              "text": "Girone F\n\nLa Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318\n– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.\n\nJUNIORES UNDER 19 REG. ELITE\n"
-            },
-            {
-              "line": 339,
-              "text": "Girone H\n\nLa Società A.S.D. VIGHI 1967 disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c. 318\n– E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VVIGHIGNOLO -VIA PACE S.N.C.\n\nUNDER 18 REG.LE\n\nGirone C\n\nLa Società U.S. VIGHIGNOLO disputerà le gare casalinghe di campionato INDISTINTAMENTE i campi n° 1 (c.c.\n318 – E.A.) e n° 2 (c.c. 2306 – E.A.) entrambi siti in: SETTIMO MILANESE(MI) FR. VIGHIGNOLO - VIA PACE S.N.C.\n\nCOPPA LOMBARDIA PRIMA CATEGORIA\n"
-            },
-            {
-              "line": 781,
-              "text": "13/09/2026   1A   GARIBALDINA 1932         FROG MILANO                                17:00   15:30\n                                                                                                      VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT         CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.     SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
-            },
-            {
-              "line": 966,
-              "text": "                          Squadra 1                 Squadra 2                                                       Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.          POL.D. U.S. CASSOLESE                       20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.              SETTIMO MILANESE                            21:00   20:00\n\n\n"
-            },
-            {
-              "line": 1812,
-              "text": "                         Squadra 1                   Squadra 2                                                     Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n                                                                                                       C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR   SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                       SICA,14\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Regolamento competizioni provinciali SGS S.S. 26_27 (08.09.2026).pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d15e1a0c_Regolamento competizioni provinciali SGS S.S. 26_27 (08.09.2026).pdf",
-          "pages_chars": 79157,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Numerazione Fissa CU21.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33422/6aa01d161700f_Numerazione Fissa CU21.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33428": {
       "id": "33428",
       "kind": "comunicato",
@@ -2111,7 +2059,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-07T21:03:56+00:00",
+  "lastRun": "2026-11-08T05:52:44+00:00",
   "homepage": [
     "33771",
     "33746",
