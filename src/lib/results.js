@@ -72,10 +72,18 @@ export function resultChecks(girone, matches = [], clubName = '', now = new Date
 export async function applyOfficialResult(user, match, off) {
   await updateDoc(doc(db, 'events', match.id), {
     ...scorePatch(match, off),
-    resultSync: { source: off.source, url: off.url, date: off.date, provisional: !!off.provisional },
+    // Il punteggio scritto: se poi qualcuno lo cambia a mano, non è più quello automatico.
+    resultSync: { source: off.source, url: off.url, date: off.date, provisional: !!off.provisional, us: off.us, them: off.them },
     updatedAt: serverTimestamp()
   });
   await audit(user, 'match.result', match.id, { opponent: match.opponent, us: off.us, them: off.them, source: off.source, before: appScore(match) });
+}
+
+/** Risultato inserito in automatico da un dato provvisorio e non più toccato a mano. */
+export function untouchedProvisional(match) {
+  const rs = match?.resultSync, mine = appScore(match);
+  if (!rs?.provisional || !mine) return false;
+  return rs.us == null || (mine.us === rs.us && mine.them === rs.them);
 }
 
 /**
@@ -95,7 +103,7 @@ export async function syncResults(user, club) {
   for (const c of resultChecks(girone, matches, club.clubName)) {
     // Mancante, oppure inserito in automatico da un dato provvisorio: si aggiorna.
     // Un risultato scritto a mano e diverso resta da controllare con un tocco.
-    if (c.status !== 'missing' && !c.match.resultSync?.provisional) continue;
+    if (c.status !== 'missing' && !untouchedProvisional(c.match)) continue;
     await applyOfficialResult(user, c.match, c.off);
     filled.push({ id: c.match.id, opponent: c.match.opponent, corrected: c.status === 'different', ...c.off });
   }

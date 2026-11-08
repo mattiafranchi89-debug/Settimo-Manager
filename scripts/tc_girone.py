@@ -134,7 +134,10 @@ def main():
 
     now = datetime.now(timezone.utc)
     results = [r for r in data.get("results", []) if not r.get("provisional")]
-    added = []
+    # I provvisori delle giornate non rilette restano finché non esce il comunicato.
+    reread = {leg_round(rnd) for rnd, _, _ in parsed if rnd}
+    added = [r for r in data.get("results", []) if r.get("provisional") and (r["leg"], r["round"]) not in reread
+             and not any(crl.same_match(o, r) for o in results)]
     for rnd, res, _ in parsed:
         leg, n = leg_round(rnd)
         for r in res:
@@ -161,7 +164,7 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"Tuttocampo: {len(added)} risultati provvisori, classifica {'provvisoria' if 'standingProvisional' in data else 'ufficiale già aggiornata'}")
+    print(f"Tuttocampo: {len(added)} risultati provvisori in tutto, classifica {'provvisoria' if 'standingProvisional' in data else 'ufficiale già aggiornata'}")
 
 
 if __name__ == "__main__":
