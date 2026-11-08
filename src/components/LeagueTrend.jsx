@@ -87,7 +87,7 @@ export default function LeagueTrend({ club, matches = [], user, canFix = false }
   return (
     <>
       <p style={{ fontSize: 12.5, color: 'var(--muted)', margin: '0 0 8px' }}>
-        Prima Categoria girone A · dati ufficiali CRL, {league.asOf} · {ft.n} giornate su {league.total}
+        Prima Categoria girone A · {girone.standing?.provisional ? 'dati provvisori in attesa del comunicato' : 'dati ufficiali CRL'}, {league.asOf} · {ft.n} giornate su {league.total}
       </p>
 
       <Alert level="info">
@@ -205,15 +205,28 @@ export default function LeagueTrend({ club, matches = [], user, canFix = false }
                   <div style={{ fontSize: 13.5 }}>
                     <b>{c.match.opponent}</b> <span style={{ color: 'var(--muted)' }}>· {fmtShort(c.match.date)} · {c.match.competition}</span>
                     <div style={{ fontSize: 12.5, color: 'var(--muted)' }}>
-                      In app {mine ? `${mine.us}-${mine.them}` : 'nessun risultato'} · ufficiale <b style={{ color: 'var(--ink)' }}>{c.off.us}-{c.off.them}</b> ({c.off.source})
+                      In app {mine ? `${mine.us}-${mine.them}` : 'nessun risultato'} · {c.off.provisional ? 'provvisorio' : 'ufficiale'} <b style={{ color: 'var(--ink)' }}>{c.off.us}-{c.off.them}</b> ({c.off.source})
                     </div>
                   </div>
-                  {canFix && <Button size="sm" variant="secondary" disabled={fixing === c.match.id} onClick={() => fix(c)}>Usa l'ufficiale</Button>}
+                  {canFix && <Button size="sm" variant="secondary" disabled={fixing === c.match.id} onClick={() => fix(c)}>{c.off.provisional ? 'Usa questo' : "Usa l'ufficiale"}</Button>}
                 </div>
               );
             })}
           </div>
           <p><small>I risultati mancanti si completano da soli all'apertura dell'app; uno diverso da quello del comunicato si corregge solo con il tuo tocco.</small></p>
+        </Card>
+      )}
+
+      {girone.corrections?.length > 0 && (
+        <Card title="Corretti dal comunicato">
+          <div className="stack" style={{ gap: 4 }}>
+            {[...girone.corrections].reverse().slice(0, 8).map((c) => (
+              <div key={`${c.round}${c.leg}${c.home}`} style={{ fontSize: 13.5 }}>
+                {teamLabel(c.home)} – {teamLabel(c.away)} <span style={{ color: 'var(--muted)' }}>· {c.round}ª {c.leg === 'R' ? 'ritorno' : 'andata'} · Tuttocampo {c.provisional} →</span> <b>{c.official}</b>
+              </div>
+            ))}
+          </div>
+          <p><small>La domenica sera risultati e classifica arrivano provvisori da Tuttocampo; quando esce il comunicato valgono i suoi, e qui restano le differenze trovate.</small></p>
         </Card>
       )}
     </>

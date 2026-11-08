@@ -2,6 +2,8 @@
 // comunicati CRL (public/data/girone.json). Un risultato mancante in
 // calendario si completa da solo; uno diverso da quello ufficiale si
 // segnala e si corregge con un tocco: niente si sovrascrive in silenzio.
+// La domenica sera possono arrivare risultati provvisori (Tuttocampo): si
+// inseriscono come tali e il comunicato, quando esce, li sostituisce da solo.
 
 import { collection, getDocs, query, where, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
@@ -33,9 +35,10 @@ export function officialResult(girone, match, clubName) {
     const usHome = teamSimilarity(clubName, r.home) >= 0.6, usAway = teamSimilarity(clubName, r.away) >= 0.6;
     if (usHome === usAway || !sameTeam(usHome ? r.away : r.home, match.opponent)) return;
     const g = Math.abs(Date.parse(r.date) - Date.parse(day)) / DAY;
-    if (g <= 3 && g < gap) {
+    // A pari distanza vince il comunicato sul provvisorio.
+    if (g <= 3 && (g < gap || (g === gap && best?.provisional && !r.provisional))) {
       gap = g;
-      best = { us: Number(usHome ? r.hg : r.ag), them: Number(usHome ? r.ag : r.hg), usHome, date: r.date, source: r.source || 'Comunicato CRL', url: r.url || '' };
+      best = { us: Number(usHome ? r.hg : r.ag), them: Number(usHome ? r.ag : r.hg), usHome, date: r.date, source: r.source || 'Comunicato CRL', url: r.url || '', provisional: !!r.provisional };
     }
   });
   return best;
@@ -69,7 +72,7 @@ export function resultChecks(girone, matches = [], clubName = '', now = new Date
 export async function applyOfficialResult(user, match, off) {
   await updateDoc(doc(db, 'events', match.id), {
     ...scorePatch(match, off),
-    resultSync: { source: off.source, url: off.url, date: off.date },
+    resultSync: { source: off.source, url: off.url, date: off.date, provisional: !!off.provisional },
     updatedAt: serverTimestamp()
   });
   await audit(user, 'match.result', match.id, { opponent: match.opponent, us: off.us, them: off.them, source: off.source, before: appScore(match) });
@@ -90,9 +93,11 @@ export async function syncResults(user, club) {
   const matches = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   const filled = [];
   for (const c of resultChecks(girone, matches, club.clubName)) {
-    if (c.status !== 'missing') continue;
+    // Mancante, oppure inserito in automatico da un dato provvisorio: si aggiorna.
+    // Un risultato scritto a mano e diverso resta da controllare con un tocco.
+    if (c.status !== 'missing' && !c.match.resultSync?.provisional) continue;
     await applyOfficialResult(user, c.match, c.off);
-    filled.push({ id: c.match.id, opponent: c.match.opponent, ...c.off });
+    filled.push({ id: c.match.id, opponent: c.match.opponent, corrected: c.status === 'different', ...c.off });
   }
   try { localStorage.setItem(flag, '1'); } catch { /* ignorabile */ }
   return filled;
