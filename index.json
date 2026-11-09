@@ -2056,16 +2056,41 @@
         }
       ],
       "fetchedAt": "2026-11-06T17:55:28+00:00"
+    },
+    "33777": {
+      "id": "33777",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 09 al 12 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-09",
+      "url": "https://www.crlombardia.it/news/33777/programma-gare-dal-09-al-12-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_09-12_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33777/6af1d71591c09_Programma_Gare_09-12_Novembre_2026.pdf",
+          "pages_chars": 66704,
+          "settimo_mentions": 1,
+          "txt": "docs/33777/Programma_Gare_09-12_Novembre_2026.txt",
+          "mentions": [
+            {
+              "line": 594,
+              "text": "SANGIULIANO CVS A R.L.     REAL MILANO SSD A RL      C.S.COMUNALE N.1                                       11/11/26          20:30       1A SAN GIULIANO MILANESE-SESTO U.               VIA TOSCANA 1 SESTO ULTERIANO        V\nGIRONE E                                                                                                     DATA             ORA                                                                                          STATO GARA\n\nVIGHIGNOLO                 FOOTBALL CLUB SEDRIANO    C.S.VIGHIGNOLO E.A.                                    12/11/26          21:00       1A SETTIMO MILANESE FR.VIGHIGNOLO               VIA PACE S.N.C.                      V\nGIRONE F                                                                                                     DATA             ORA                                                                                          STATO GARA\n\nPOLISPORTIVA OR.PA.S.      POLISPORTIVA DI NOVA      C.S.CAMBINI-FOSSATI (E.A)                              10/11/26          19:00       1A MILANO                                       VIA PALMANOVA,47                     V"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-11-09T21:24:02+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-09T13:21:10+00:00",
+  "lastRun": "2026-11-09T21:24:02+00:00",
   "homepage": [
     "33771",
     "33746",
     "33743",
     "33714",
     "33706",
+    "33777",
     "33756",
     "33741"
   ],

@@ -1,5 +1,19 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma Gare dal 09 al 12 Novembre 2026 CRL (2026-11-09)
+Pagina: https://www.crlombardia.it/news/33777/programma-gare-dal-09-al-12-novembre-2026
+
+### Programma_Gare_09-12_Novembre_2026.pdf – riga 594
+```
+SANGIULIANO CVS A R.L.     REAL MILANO SSD A RL      C.S.COMUNALE N.1                                       11/11/26          20:30       1A SAN GIULIANO MILANESE-SESTO U.               VIA TOSCANA 1 SESTO ULTERIANO        V
+GIRONE E                                                                                                     DATA             ORA                                                                                          STATO GARA
+
+VIGHIGNOLO                 FOOTBALL CLUB SEDRIANO    C.S.VIGHIGNOLO E.A.                                    12/11/26          21:00       1A SETTIMO MILANESE FR.VIGHIGNOLO               VIA PACE S.N.C.                      V
+GIRONE F                                                                                                     DATA             ORA                                                                                          STATO GARA
+
+POLISPORTIVA OR.PA.S.      POLISPORTIVA DI NOVA      C.S.CAMBINI-FOSSATI (E.A)                              10/11/26          19:00       1A MILANO                                       VIA PALMANOVA,47                     V
+```
+
 ## COMUNICATO UFFICIALE N° 46 CRL (2026-11-06)
 Pagina: https://www.crlombardia.it/documenti/33771/comunicato-ufficiale-n-46
 Nessuna menzione del Settimo Milanese.
