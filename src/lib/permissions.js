@@ -175,7 +175,8 @@ export const SECTIONS = {
   '/statistiche': [
     { to: '/statistiche', label: 'Giocatori', perm: 'players.read' },
     { to: '/analisi', label: 'Andamento', perm: 'players.read' },
-    { to: '/report', label: 'Report', perm: 'players.read' }
+    // Il report usa presenze e schede gara: solo per chi le gestisce (come nella pagina).
+    { to: '/report', label: 'Report', anyPerm: ['attendance.write', 'matchstats.write'] }
   ],
   '/campionato': [
     { to: '/campionato', label: 'Classifica', all: true },
@@ -205,7 +206,7 @@ export function sectionOf(pathname = '/') {
 export function sectionTabs(pathname, role) {
   if (isClassicUx(role)) return [];
   const root = sectionOf(pathname);
-  const list = (SECTIONS[root] || []).filter((t) => t.all || can(role, t.perm));
+  const list = (SECTIONS[root] || []).filter((t) => t.all || (t.anyPerm ? t.anyPerm.some((p) => can(role, p)) : can(role, t.perm)));
   return list.length > 1 && list.some((t) => t.to === pathname) ? list : [];
 }
 
