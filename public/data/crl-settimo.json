@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-11-07T08:29:05+01:00",
-  "lastChecked": "2026-11-07T08:29:05+01:00",
+  "updatedAt": "2026-11-09T08:05:29+01:00",
+  "lastChecked": "2026-11-09T08:05:29+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -301,21 +301,5 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ],
-  "avversari": [
-    {
-      "squadra": "BUCCINASCO",
-      "partita": "Prima Categoria – 9ª giornata, 08/11/2026 ore 14:30, in trasferta",
-      "data": "2026-11-08",
-      "competizione": "campionato",
-      "aggiornato": "2026-11-07T08:29:05+01:00",
-      "squalificati": [],
-      "diffidati": [
-        {
-          "nome": "KOUOH WILLIAM",
-          "doc": "Comunicato Ufficiale n. 44",
-          "date": "2026-11-03"
-        }
-      ]
-    }
-  ]
+  "avversari": []
 }
