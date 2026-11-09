@@ -84,6 +84,7 @@ const NAV_STAFF = [
   { to: '/calendario', label: 'Calendario', icon: '📅', all: true, group: 'Squadra' },
   { to: '/rosa', label: 'Rosa', icon: '👥', perm: 'players.read', group: 'Squadra' },
   { to: '/campionato', label: 'Campionato', icon: '🏆', all: true, group: 'Squadra' },
+  { to: '/statistiche', label: 'Statistiche', icon: '📊', perm: 'players.read', group: 'Squadra' },
   { to: '/cassa', label: 'Cassa', icon: '💶', all: true, group: 'Società' },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write', group: 'Società' },
   { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true, group: 'Account' }
@@ -104,7 +105,8 @@ export const TABS_STAFF = [
   { to: '/', label: 'Home', icon: '🏠' },
   { to: '/calendario', label: 'Calendario', icon: '📅' },
   { to: '/rosa', label: 'Rosa', icon: '👥' },
-  { to: '/campionato', label: 'Campionato', icon: '🏆' }
+  { to: '/campionato', label: 'Campionato', icon: '🏆' },
+  { to: '/statistiche', label: 'Statistiche', icon: '📊', perm: 'players.read' }
 ];
 
 export const TABS_PLAYER = [
@@ -148,7 +150,8 @@ const TABS_CLASSIC = [
   { to: '/calendario', label: 'Calendario', icon: '📅' }
 ];
 
-export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : isClassicUx(role) ? TABS_CLASSIC : TABS_STAFF);
+export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : isClassicUx(role) ? TABS_CLASSIC : TABS_STAFF)
+  .filter((t) => !t.perm || can(role, t.perm));
 
 export const NAV = NAV_STAFF;
 
@@ -168,10 +171,11 @@ export const SECTIONS = {
     { to: '/allenamenti', label: 'Allenamenti', perm: 'players.read' },
     { to: '/convocazioni', label: 'Convocazioni', perm: 'players.read' }
   ],
-  '/rosa': [
-    { to: '/rosa', label: 'Giocatori', perm: 'players.read' },
-    { to: '/statistiche', label: 'Statistiche', perm: 'players.read' },
-    { to: '/analisi', label: 'Andamento', perm: 'players.read' }
+  // Tutte le statistiche in un posto: dei giocatori, della squadra, il report da condividere.
+  '/statistiche': [
+    { to: '/statistiche', label: 'Giocatori', perm: 'players.read' },
+    { to: '/analisi', label: 'Andamento', perm: 'players.read' },
+    { to: '/report', label: 'Report', perm: 'players.read' }
   ],
   '/campionato': [
     { to: '/campionato', label: 'Classifica', all: true },
@@ -187,7 +191,7 @@ export const SECTIONS = {
 /** La voce di menu a cui appartiene una pagina (per evidenziarla). */
 const PARENT = [
   [/^\/(partite|allenamenti|convocazioni|evento|formazioni)(\/|$)/, '/calendario'],
-  [/^\/(statistiche|analisi)(\/|$)/, '/rosa'],
+  [/^\/(statistiche|analisi|report)(\/|$)/, '/statistiche'],
   [/^\/(avversari|comunicati)(\/|$)/, '/campionato'],
   [/^\/quote(\/|$)/, '/cassa'],
   [/^\/(importa|registro|diagnostica)(\/|$)/, '/impostazioni']

@@ -155,7 +155,7 @@ export default function Layout({ theme, toggleTheme }) {
         <button className="fab" onClick={() => navigate('/convocazioni/nuova')}>＋ NUOVA CONVOCAZIONE</button>
       )}
 
-      <nav className="tabbar" aria-label="Navigazione rapida">
+      <nav className="tabbar" aria-label="Navigazione rapida" style={{ gridTemplateColumns: `repeat(${tabs.length + 1}, 1fr)` }}>
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.to === '/'} className={linkClass(t.to)}>
             <span aria-hidden="true">{t.icon}</span>{t.label}
