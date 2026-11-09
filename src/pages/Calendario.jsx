@@ -17,7 +17,9 @@ export default function Calendario() {
   const navigate = useNavigate();
   const staff = can(user?.role, 'players.read');
   const canWrite = can(user?.role, 'events.write');
-  const [showPast, setShowPast] = useState(false);
+  // Le due sezioni si aprono e chiudono; la scelta resta su questo telefono.
+  const [showNext, setShowNext] = useRemembered('sm-cal-next', true);
+  const [showPast, setShowPast] = useRemembered('sm-cal-past', false);
 
   const exportCalendar = (onlyMatches) => {
     const future = events.filter((e) => toDate(e.date) >= new Date() && (!onlyMatches || e.type === 'match'));
@@ -25,12 +27,12 @@ export default function Calendario() {
   };
 
   // In cima ciò che deve ancora succedere; il passato si apre a richiesta, dal più recente.
-  const { months, pastMonths, pastCount } = useMemo(() => {
+  const { months, pastMonths, pastCount, nextCount } = useMemo(() => {
     const now = new Date();
     const list = events.filter((e) => filter === 'tutti' || e.type === filter);
     const future = list.filter((e) => toDate(e.date) >= now);
     const past = list.filter((e) => toDate(e.date) < now).reverse();
-    return { months: byMonth(future), pastMonths: byMonth(past), pastCount: past.length };
+    return { months: byMonth(future), pastMonths: byMonth(past), pastCount: past.length, nextCount: future.length };
   }, [events, filter]);
 
   if (loading) return <Loading />;
@@ -83,8 +85,10 @@ export default function Calendario() {
         <Card><Empty title="Calendario vuoto">Aggiungi partite e allenamenti per vederli qui.</Empty></Card>
       ) : (
         <>
-          {months.length === 0 && <Card><Empty title="Nessun impegno in programma" /></Card>}
-          <Months list={months} />
+          <button className="grouphead grouphead--toggle" aria-expanded={showNext} onClick={() => setShowNext((v) => !v)}>
+            <span>{showNext ? '▾' : '▸'} In programma</span> <small>{nextCount}</small>
+          </button>
+          {showNext && (months.length === 0 ? <Card><Empty title="Nessun impegno in programma" /></Card> : <Months list={months} />)}
           {pastCount > 0 && (
             <button className="grouphead grouphead--toggle" aria-expanded={showPast} onClick={() => setShowPast((v) => !v)}>
               <span>{showPast ? '▾' : '▸'} Già svolti</span> <small>{pastCount}</small>
@@ -100,6 +104,19 @@ export default function Calendario() {
       </div>
     </>
   );
+}
+
+/** Stato aperto/chiuso ricordato sul telefono (se il browser lo permette). */
+function useRemembered(key, initial) {
+  const [value, setValue] = useState(() => {
+    try { const v = localStorage.getItem(key); return v == null ? initial : v === '1'; } catch { return initial; }
+  });
+  const update = (next) => setValue((old) => {
+    const v = typeof next === 'function' ? next(old) : next;
+    try { localStorage.setItem(key, v ? '1' : '0'); } catch { /* ignorabile */ }
+    return v;
+  });
+  return [value, update];
 }
 
 function byMonth(list) {
