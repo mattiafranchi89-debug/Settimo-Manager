@@ -413,86 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33428": {
-      "id": "33428",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 22",
-      "number": 22,
-      "date": "2026-09-10",
-      "url": "https://www.crlombardia.it/documenti/33428/comunicato-ufficiale-n-22",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b08756437_Comunicato Ufficiale Nr. 22 del 10.09.2026.pdf",
-          "pages_chars": 509143,
-          "settimo_mentions": 6,
-          "txt": "docs/33428/Comunicato_Ufficiale_Nr._22_del_10.09.2026.txt",
-          "mentions": [
-            {
-              "line": 1352,
-              "text": "13/09/2026   1A   GARIBALDINA 1932            FROG MILANO                                17:00   15:30\n                                                                                                         VIA ASSIETTA,48\n13/09/2026   1A   LEONE XIII SPORT            CENTRO SCHUSTER A.S.D.                     16:30   14:30\n19/09/2026   2A   QUINTO ROMANO A.S.D.        SETTIMO MILANESE              20/09/2026   20:30   15:30\n\n\n"
-            },
-            {
-              "line": 1612,
-              "text": "                          Squadra 1                Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00\n                                                                                                       C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                       DELLO SPORT,70\n\n"
-            },
-            {
-              "line": 1888,
-              "text": "\n                   GIRONE 15 - 1 Giornata - A                                          GIRONE 16 - 1 Giornata - A\nPOL.D. U.S. CASSOLESE       - OSSONA A.S.D.               1-1      (1) U.S. CASTELNOVETTO          - GROPELLO SAN GIORGIO        2-2\nSETTIMO MILANESE            - MARCALLESE A.S.D.           3-2      (1) - disputata il 05/09/2026\n\n\n                   GIRONE 17 - 1 Giornata - A                                          GIRONE 18 - 1 Giornata - A"
-            },
-            {
-              "line": 2057,
-              "text": "SAVI ROBERTO           (C.D.G. VENIANO)                        PREITE DANIELE          (GARIBALDINA 1932)\nFINAZZI EMANUELE       (NOVA MONTELLO)                         TRUNETTI MAURO          (OLIMPIA CALCIO CADORAGO)\nMOTTA MARCO            (PRO LISSONE CALCIO)                    DIANA GIACOMO           (REAL CERTOSA A.S.D.)\nPUGLIESE LUCA          (SETTIMO MILANESE)                      VICECONTI NICOLA        (UNION VALLEOLONA ASD)\nBAFFI GIANLUCA         (ZIBIDO S.GIACOMO A.S.D.)\n\n"
-            },
-            {
-              "line": 2254,
-              "text": "ALVES DE LIMA THIAGO\n                       (SETTALESE)                            ALZANI RICCARDO          (SETTALESE)\nOTAVIO\nFAZZARI DAVIDE         (SETTALESE)                            RUTIGLIANO MATTIA      (SETTIMO MILANESE)\nCAZZANIGA CARLO        (SIRTORESE)                            FOFANA MOUSTAPHA       (SIRTORESE)\nBADAWI EL SAYED        (SORESINESE CALCIO A.S.D.)             BENIE KOUAME MOHAMED (SORESINESE CALCIO A.S.D.)\nBELLOTTI FRANCESCO     (TALAMONESE A.S.D.)                    DOMINICI FRANCESCO     (TALAMONESE A.S.D.)"
-            },
-            {
-              "line": 4196,
-              "text": "                         Squadra 1                     Squadra 2                                                     Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n                                                                                                         C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n19/09/2026   2A   CESANO BOSCONE IDROSTAR     SETTIMO MILANESE              20/09/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                         SICA,14\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Classifiche_Coppe_CUNr22.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0878470a_Classifiche_Coppe_CUNr22.pdf",
-          "pages_chars": 182382,
-          "settimo_mentions": 1,
-          "txt": "docs/33428/Classifiche_Coppe_CUNr22.txt",
-          "mentions": [
-            {
-              "line": 559,
-              "text": "\nGIRONE 15\n                               Squadra             PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                              3    1   1   0   0   3   2    1   0\nPOL.D. U.S. CASSOLESE                              1    1   0   1   0   1   1    0   0\nA.C. OSSONA A.S.D.                                 1    1   0   1   0   1   1    0   0\nU.S. MARCALLESE A.S.D.                             0    1   0   0   1   2   3   -1   0"
-            }
-          ]
-        },
-        {
-          "name": "Maglie personalizzate CU22.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b087e23ed_Maglie personalizzate CU22.zip",
-          "skipped": "non è un PDF"
-        },
-        {
-          "name": "SGS Circolare N°1 Stagione 2026-2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0882e10f_SGS Circolare  N°1 Stagione 2026-2027.pdf",
-          "pages_chars": 4670,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b0883c62f_Circolare richiesta biglietti per le Società FINALE SERIE A WOMEN'S CUP.pdf",
-          "pages_chars": 3957,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xls",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33428/6aa2b08846e58_MODULO GRUPPI Richiesta Biglietti GRATUITI - FINALE SERIE A WOMEN'S CUP.xls",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33454": {
       "id": "33454",
       "kind": "comunicato",
@@ -2083,7 +2003,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-09T21:24:02+00:00",
+  "lastRun": "2026-11-10T00:50:30+00:00",
   "homepage": [
     "33771",
     "33746",
