@@ -2000,16 +2000,89 @@
         }
       ],
       "fetchedAt": "2026-11-09T21:24:02+00:00"
+    },
+    "33778": {
+      "id": "33778",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 47 CRL",
+      "number": 47,
+      "date": "2026-11-10",
+      "url": "https://www.crlombardia.it/documenti/33778/comunicato-ufficiale-n-47",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 47 del 10.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af32799128b4_Comunicato Ufficiale Nr. 47 del 10.11.2026.pdf",
+          "pages_chars": 152493,
+          "settimo_mentions": 0,
+          "txt": "docs/33778/Comunicato_Ufficiale_Nr._47_del_10.11.2026.txt"
+        },
+        {
+          "name": "Classifiche C5_CU47.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af327995cd07_Classifiche C5_CU47.pdf",
+          "pages_chars": 12702,
+          "settimo_mentions": 0,
+          "txt": "docs/33778/Classifiche_C5_CU47.txt"
+        },
+        {
+          "name": "01_Programma Gare Coppa Lombardia_1C_3Turno.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af327996c861_01_Programma Gare Coppa Lombardia_1C_3Turno.pdf",
+          "pages_chars": 7222,
+          "settimo_mentions": 0,
+          "txt": "docs/33778/01_Programma_Gare_Coppa_Lombardia_1C_3Turno.txt"
+        },
+        {
+          "name": "02_Coppa_SecondaCategoria_K2_Tabellone_agg10.11.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af3279972b79_02_Coppa_SecondaCategoria_K2_Tabellone_agg10.11.26.pdf",
+          "pages_chars": 26935,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Coppa_TerzaCategoria_C3_Tabellone_agg10.11.26.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af327997e2ea_03_Coppa_TerzaCategoria_C3_Tabellone_agg10.11.26.pdf",
+          "pages_chars": 24307,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Convocazione - C5 - (femminile) - (12-11-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af3279986ffd_04_Convocazione - C5 - (femminile) - (12-11-2026).pdf",
+          "pages_chars": 2576,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Convocazione - C5 - (under 19) - (17-11-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af327998e876_05_Convocazione - C5 - (under 19) - (17-11-2026).pdf",
+          "pages_chars": 2764,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Convocazione - C5 - (under 17) - (23-11-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af327999fc41_06_Convocazione - C5 - (under 17) - (23-11-2026).pdf",
+          "pages_chars": 2568,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "07_Convocazione - C5 - (under 15) - (16-11-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af32799afb99_07_Convocazione - C5 - (under 15) - (16-11-2026).pdf",
+          "pages_chars": 2760,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU47.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33778/6af32799bd24f_Maglie personalizzate CU47.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-11-10T18:38:00+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-10T12:58:19+00:00",
+  "lastRun": "2026-11-10T18:38:00+00:00",
   "homepage": [
+    "33778",
     "33771",
     "33746",
     "33743",
     "33714",
-    "33706",
     "33777",
     "33756",
     "33741"
