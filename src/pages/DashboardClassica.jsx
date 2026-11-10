@@ -7,7 +7,7 @@ import { fmtShort, fmtTime, fmtDateTime, countdown, toDate, capitalize, fmtLong,
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
-import { useStaffDiscipline, staffAlerts } from '../lib/staffDiscipline';
+import { useStaffDiscipline, staffAlerts, dayIso } from '../lib/staffDiscipline';
 import { compBucket } from '../lib/discipline';
 import { staffAlertText } from '../components/Discipline';
 
@@ -45,13 +45,17 @@ export default function DashboardClassica() {
     () => buildInsights({ players, club }),
     [players, club]
   );
-  const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
+  // Diffide e squalifiche della competizione della prossima partita: campionato e
+  // coppa non fanno cumulo, e in amichevole non contano. Senza partite in programma: tutte.
+  const nextBucket = nextMatch ? compBucket(nextMatch.competition || '') : null;
+  const alerts = useMemo(() => squadAlerts(players, insights, nextBucket), [players, insights, nextBucket]);
   useStatsUpgrade(players, user?.role, club.season);
   const staffPeople = useStaffDiscipline({ club, enabled: staff });
   // Solo le competizioni con partite in programma: dopo l'eliminazione la coppa non è un avviso.
   const staffWatch = useMemo(
-    () => staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))]),
-    [staffPeople, upcoming]
+    () => (nextMatch ? staffAlerts(staffPeople, nextBucket, dayIso(nextMatch.date))
+      : staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))])),
+    [staffPeople, upcoming, nextMatch, nextBucket]
   );
 
   // Compleanni nei prossimi sette giorni: piccola cosa, fa gruppo.
@@ -119,10 +123,10 @@ export default function DashboardClassica() {
           </div>
           {injured > 0 && <Alert level="warn">{injured} giocatori risultano infortunati: verifica prima di convocarli.</Alert>}
           {alerts.squalificati.length > 0 && (
-            <Alert level="error">Squalificati: {alerts.squalificati.map((p) => p.fullName).join(', ')}.</Alert>
+            <Alert level="error">Squalificati per la prossima partita: {alerts.squalificati.map((p) => p.fullName).join(', ')}.</Alert>
           )}
           {alerts.diffidati.length > 0 && (
-            <Alert level="warn">In diffida: {alerts.diffidati.map((p) => p.fullName).join(', ')} — alla prossima ammonizione saltano una gara.</Alert>
+            <Alert level="warn">In diffida{nextBucket === 'coppa' ? ' in Coppa' : nextBucket === 'campionato' ? ' in campionato' : ''}: {alerts.diffidati.map((p) => p.fullName).join(', ')} — alla prossima ammonizione saltano una gara.</Alert>
           )}
           {staffWatch.squalificati.length > 0 && (
             <Alert level="error">Staff squalificato: {staffAlertText(staffWatch.squalificati)}.</Alert>

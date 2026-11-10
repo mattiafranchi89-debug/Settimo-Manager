@@ -8,7 +8,7 @@ import { fmtShort, fmtTime, countdown, toDate, capitalize, fmtLong, euro } from 
 import { callupFor } from '../lib/callup';
 import { can } from '../lib/permissions';
 import { buildInsights, squadAlerts } from '../lib/insights';
-import { useStaffDiscipline, staffAlerts, ROLE_SHORT } from '../lib/staffDiscipline';
+import { useStaffDiscipline, staffAlerts, ROLE_SHORT, dayIso } from '../lib/staffDiscipline';
 import { useCrl, sortCrl, CRL_TYPES, useAutoOpponent } from '../lib/crl';
 import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
@@ -63,14 +63,18 @@ export default function Dashboard() {
     () => buildInsights({ players, club }),
     [players, club]
   );
-  const alerts = useMemo(() => squadAlerts(players, insights), [players, insights]);
+  // Diffide e squalifiche della competizione della prossima partita: campionato e
+  // coppa non fanno cumulo, e in amichevole non contano. Senza partite in programma: tutte.
+  const nextBucket = nextMatch ? compBucket(nextMatch.competition || '') : null;
+  const alerts = useMemo(() => squadAlerts(players, insights, nextBucket), [players, insights, nextBucket]);
   const injured = players.filter((p) => p.injury?.active);
   // Staff squalificato o in diffida: cartellini delle schede gara e comunicati CRL.
   const staffPeople = useStaffDiscipline({ club, enabled: staff });
   // Solo le competizioni con partite in programma: dopo l'eliminazione la coppa non è un avviso.
   const staffWatch = useMemo(
-    () => staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))]),
-    [staffPeople, upcoming]
+    () => (nextMatch ? staffAlerts(staffPeople, nextBucket, dayIso(nextMatch.date))
+      : staffAlerts(staffPeople, null, null, [...new Set(upcoming.filter((e) => e.type === 'match').map((e) => compBucket(e.competition)))])),
+    [staffPeople, upcoming, nextMatch, nextBucket]
   );
 
   // Statistiche contate con un metodo più vecchio: si ricalcolano da sole.
