@@ -1,48 +1,49 @@
 {
-  "generatedAt": "2026-10-30T08:01:00+01:00",
-  "availableFrom": "2026-10-30",
+  "generatedAt": "2026-11-10T08:00:30+01:00",
+  "availableFrom": "2026-11-10",
   "lastMatch": {
-    "date": "2026-10-28",
-    "opponent": "Vela Mesero",
-    "home": true,
+    "date": "2026-11-08",
+    "opponent": "Buccinasco",
+    "home": false,
     "score": "",
-    "competition": "Coppa Lombardia Prima Categoria – 2° turno (girone 2D), gara unica"
+    "competition": "Prima Categoria girone A – 9ª giornata"
   },
   "next": {
-    "opponent": "Polisportiva Or.Pa.S.",
-    "date": "2026-11-01",
+    "opponent": "Frog Milano",
+    "date": "2026-11-15",
     "time": "14:30",
     "home": true,
-    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo",
+    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo (da confermare)",
     "address": "Via dello Sport 1, Cornaredo",
-    "competition": "Prima Categoria girone A – 8ª giornata"
+    "competition": "Prima Categoria girone A – 10ª giornata"
   },
-  "standing": { "pos": 14, "of": 16, "pts": 5, "g": 7, "v": 1, "n": 2, "p": 4, "gf": 12, "gs": 20, "asOf": "Comunicato Ufficiale n. 43 del 29/10/2026" },
+  "standing": { "pos": 7, "of": 16, "pts": 12, "g": 8, "v": 3, "n": 3, "p": 2, "gf": 17, "gs": 13, "asOf": "Comunicato Ufficiale n. 45 del 05/11/2026" },
   "results": [
-    { "date": "2026-10-25", "home": true, "against": "Pro Peschiera Borromeo", "gf": 3, "gs": 2, "competition": "" },
-    { "date": "2026-10-18", "home": false, "against": "Partizan Bonola", "gf": 3, "gs": 3, "competition": "" },
-    { "date": "2026-10-11", "home": true, "against": "Iris 1914", "gf": 3, "gs": 5, "competition": "" },
-    { "date": "2026-10-04", "home": false, "against": "Centro Schuster", "gf": 1, "gs": 3, "competition": "" },
-    { "date": "2026-09-30", "home": false, "against": "Garibaldina 1932", "gf": 2, "gs": 3, "competition": "Coppa" },
-    { "date": "2026-09-27", "home": true, "against": "Frog Milano", "gf": 0, "gs": 2, "competition": "" },
-    { "date": "2026-09-20", "home": false, "against": "Buccinasco", "gf": 1, "gs": 4, "competition": "" },
-    { "date": "2026-09-16", "home": false, "against": "Villa", "gf": 0, "gs": 5, "competition": "Coppa" },
-    { "date": "2026-09-13", "home": true, "against": "Ausonia Academy", "gf": 1, "gs": 1, "competition": "" },
-    { "date": "2026-09-06", "home": true, "against": "Frog Milano", "gf": 1, "gs": 2, "competition": "Coppa" }
+    { "date": "2026-11-01", "home": false, "against": "Partizan Bonola", "gf": 3, "gs": 4, "competition": "" },
+    { "date": "2026-10-25", "home": true, "against": "Iris 1914", "gf": 4, "gs": 0, "competition": "" },
+    { "date": "2026-10-18", "home": false, "against": "Centro Schuster", "gf": 3, "gs": 1, "competition": "" },
+    { "date": "2026-10-11", "home": true, "against": "Ausonia Academy", "gf": 2, "gs": 5, "competition": "" },
+    { "date": "2026-10-04", "home": true, "against": "Buccinasco", "gf": 0, "gs": 0, "competition": "" },
+    { "date": "2026-09-30", "home": true, "against": "Villa", "gf": 1, "gs": 2, "competition": "Coppa" },
+    { "date": "2026-09-27", "home": false, "against": "Polisportiva Or.Pa.S.", "gf": 2, "gs": 0, "competition": "" },
+    { "date": "2026-09-20", "home": true, "against": "Polisportiva di Nova", "gf": 1, "gs": 1, "competition": "" },
+    { "date": "2026-09-16", "home": true, "against": "Garibaldina 1932", "gf": 2, "gs": 1, "competition": "Coppa" },
+    { "date": "2026-09-13", "home": false, "against": "Garibaldina 1932", "gf": 2, "gs": 2, "competition": "" }
   ],
-  "suspended": [
-    "Motta Tommaso – squalificato fino al 9/12/2026 (CU n. 41, gara del 18/10 con Partizan Bonola): salta la gara col Settimo"
-  ],
-  "notes": "Or.Pa.S. è 14ª su 16 con 5 punti, 20 gol subiti in 7 gare (2,9 a partita) e una sola vittoria, arrivata domenica scorsa (3-2 al Pro Peschiera): segna con regolarità (9 gol nelle ultime 3) ma concede tanto, ed è già eliminata dalla Coppa con tre sconfitte. Assente certo Motta Tommaso (squalifica lunga); nei comunicati non risultano diffidati attivi in campionato. Il risultato di Settimo–Vela Mesero di Coppa del 28/10 non è ancora pubblicato nella cache (atteso nel prossimo comunicato), così come il relativo Giudice Sportivo; nessuna variazione di orario o campo per domenica.",
+  "suspended": [],
+  "notes": "Frog Milano è 7ª con 12 punti (17 gol fatti, 13 subiti): in casa solida (Iris 4-0, Buccinasco 0-0) ma in trasferta ha perso 4-3 a Bonola e incassa con regolarità; dalla Coppa è uscita nel girone 21 (passa il Villa). Nei comunicati regionali non risultano squalifiche né diffide in campionato; le squalifiche di Maisto Luigi e Mauro Simone erano solo di Coppa. ATTENZIONE: il Programma gare del 15/11 non è ancora in cache, quindi avversario, casa/trasferta, orario e campo sono dedotti dal calendario del girone (le giornate 1-9 seguono esattamente lo schema Berger) e vanno confermati; mancano ancora i risultati della 9ª giornata (Buccinasco–Settimo e Frog–Pro Peschiera Borromeo).",
   "sources": [
-    { "label": "Comunicato Ufficiale n. 43 – Classifiche", "url": "https://www.crlombardia.it/storage/uploads/files/33714/6ae367d462f0b_Classifiche CU_43.pdf" },
+    { "label": "Comunicato Ufficiale n. 45 – Classifiche", "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c10a8e01_Classifiche CU_45 del 05.11.2026.pdf" },
+    { "label": "Comunicato Ufficiale n. 45", "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45" },
+    { "label": "Programma gare 5–9 novembre", "url": "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026" },
     { "label": "Comunicato Ufficiale n. 43", "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43" },
-    { "label": "Programma gare 29 ottobre – 2 novembre", "url": "https://www.crlombardia.it/news/33730/programma-gare-dal-29-ottobre-al-02-novembre-2026" },
     { "label": "Comunicato Ufficiale n. 41", "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41" },
     { "label": "Comunicato Ufficiale n. 36", "url": "https://www.crlombardia.it/documenti/33631/comunicato-ufficiale-n-36" },
     { "label": "Comunicato Ufficiale n. 34", "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34" },
-    { "label": "Comunicato Ufficiale n. 33", "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33" },
+    { "label": "Comunicato Ufficiale n. 33 (Coppa)", "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33" },
     { "label": "Comunicato Ufficiale n. 31", "url": "https://www.crlombardia.it/documenti/33551/comunicato-ufficiale-n-31" },
-    { "label": "Comunicato Ufficiale n. 27", "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27" }
+    { "label": "Comunicato Ufficiale n. 28", "url": "https://www.crlombardia.it/documenti/33510/comunicato-ufficiale-n-28" },
+    { "label": "Comunicato Ufficiale n. 27 (Coppa)", "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27" },
+    { "label": "Comunicato Ufficiale n. 25", "url": "https://www.crlombardia.it/documenti/33470/comunicato-ufficiale-n-25" }
   ]
 }
