@@ -1,23 +1,7 @@
 {
-  "generatedAt": "2026-11-05T18:41:10+00:00",
+  "generatedAt": "2026-11-11T05:59:54+00:00",
   "team": "SETTIMO MILANESE",
   "fixtures": [
-    {
-      "competition": "Prima Categoria",
-      "girone": "A",
-      "round": "5A",
-      "date": "2026-10-11",
-      "time": "14:30",
-      "home": false,
-      "opponent": "LEONE XIII SPORT",
-      "venue": "C.S.\"LEONE XIII\"- CAMPO 1(E.A",
-      "city": "MILANO",
-      "address": "VIA ROSSETTI 4",
-      "status": "",
-      "published": "2026-10-09",
-      "source": "Programma gare dal 09 al 12 Ottobre 2026 CRL",
-      "url": "https://www.crlombardia.it/news/33619/programma-gare-dal-09-al-12-ottobre-2026"
-    },
     {
       "competition": "Prima Categoria",
       "girone": "A",
