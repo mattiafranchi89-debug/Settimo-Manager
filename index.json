@@ -413,54 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33454": {
-      "id": "33454",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 23",
-      "number": 23,
-      "date": "2026-09-11",
-      "url": "https://www.crlombardia.it/documenti/33454/comunicato-ufficiale-n-23",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr.23 del 11.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1b9bc57_Comunicato Ufficiale Nr.23 del 11.09.2026.pdf",
-          "pages_chars": 20247,
-          "settimo_mentions": 0,
-          "txt": "docs/33454/Comunicato_Ufficiale_Nr.23_del_11.09.2026.txt"
-        },
-        {
-          "name": "Calendario_C5_SerieD.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1ba97a5_Calendario_C5_SerieD.pdf",
-          "pages_chars": 15378,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_C5_U19.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bb3961_Calendario_C5_U19.pdf",
-          "pages_chars": 3326,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_C5_U17.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bbd5b3_Calendario_C5_U17.pdf",
-          "pages_chars": 9076,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Campionato_C5_U15.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bc8824_Campionato_C5_U15.pdf",
-          "pages_chars": 6921,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Maglie numerazione fissa CU23.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33454/6aa41c1bd53e6_Maglie numerazione fissa CU23.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33462": {
       "id": "33462",
       "kind": "comunicato",
@@ -2076,7 +2028,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-10T22:30:28+00:00",
+  "lastRun": "2026-11-11T05:59:50+00:00",
   "homepage": [
     "33778",
     "33771",

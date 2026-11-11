@@ -1301,7 +1301,3 @@ Pagina: https://www.crlombardia.it/documenti/33462/comunicato-ufficiale-n-24
 
 
 ```
-
-## COMUNICATO UFFICIALE N° 23 (2026-09-11)
-Pagina: https://www.crlombardia.it/documenti/33454/comunicato-ufficiale-n-23
-Nessuna menzione del Settimo Milanese.
