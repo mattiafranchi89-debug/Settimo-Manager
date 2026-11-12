@@ -1,5 +1,96 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 48 CRL (2026-11-12)
+Pagina: https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 1249
+```
+Si trascrivono qui di seguito i risultati ufficiali delle gare disputate
+
+                GIRONE A - 9 Giornata - A                                          GIRONE B - 9 Giornata - A
+BUCCINASCO                  - SETTIMO MILANESE            3-3       ATLETICO SCHIAFFINO         - PRO LISSONE CALCIO          0-3
+CENTRO SCHUSTER A.S.D.      - PARTIZAN BONOLA ASD         0-1       CASSINA RIZZARDI            - LOMAZZO CALCIO A.S.D.       1-0
+FROG MILANO                 - PRO PESCHIERA BORROMEO      0-0       CASTELLO CITTA DI CANTU     - ZETA MILANO F.C. ASD        3-2
+GARIBALDINA 1932            - VILLA S.S.D.R.L.            2-2       ITALA A.S.D.                - LA DOMINANTE                2-2
+```
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 1896
+```
+                  GIRONE E - 9 Giornata - A                                                GIRONE F - 9 Giornata - A
+GSO SAN GIORGIO               - CDA E CAVALLASCA A.S.D.        1-8       (1) BUCCINASCO                  - ACCADEMIA MILANESE         0-0
+INVERIGO                      - PERTICATO XENIA ASD            2-2       FATIMATRACCIA                   - QUINTO ROMANO A.S.D.       6-0
+(1) LIBERTAS SAN BARTOLOMEO - ARDITA CITTADELLA 1934           1-3       FOOTBALL CLUB SEDRIANO          - SETTIMO MILANESE           3-0
+LUISAGO GRANDATE ASD          - ALTO LARIO CALCIO A.S.D.       4-1       ORATORIANA VITTUONE ASD         - POL.D. U.S. CASSOLESE      3-3
+(1) MONGUZZO 1997             - NOVEDRATE                      0-2       (1) ORIONE                      - ROZZANO CALCIO SRL SSD     2-1
+(1) OLIMPIA CALCIO CADORAGO - LESMO SSD ARL                    2-1       VICTORIA MMVII A.S.D.           - SUPERGA G.S. A.S.D.        5-1
+```
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 1947
+```
+
+AMMENDA
+
+Euro 140,00 SETTIMO MILANESE
+Per ripetute frasi gravemente offensive e minacciose, nei confronti dell'arbitro, al termine della gara, da parte
+di propri sostenitori.
+
+```
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 2034
+```
+SQUALIFICA PER DUE GARE EFFETTIVE
+
+PUGLIESE ANDREA            (FOOTBALL CLUB SEDRIANO)               BIBAJ FERNANDO       (GROPELLO SAN GIORGIO)
+MAZZEI GABRIELE            (SETTIMO MILANESE)
+
+
+SQUALIFICA PER UNA GARA EFFETTIVA
+```
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 2044
+```
+CAVALLARO RICCARDO         (CDA E CAVALLASCA A.S.D.)              STABILINI NICOLO     (FOOTBALL CLUB SEDRIANO)
+LUCARELLA FEDERICO         (LAINATESE A.S.D.)                     PASINI DIEGO         (POL.D. U.S. CASSOLESE)
+                                                                  CALDERON FLORIAN
+GANDOSSI FEDERICO          (SETTIMO MILANESE)                                          (VIRTUS BINASCO A.S.D.)
+                                                                  MANUEL FRANCESC
+FONTENELE PAULO
+                           (VIRTUS FERALPI LONATO)
+```
+
+### Comunicato Ufficiale Nr. 48 del 12.11.2026.pdf – riga 2082
+```
+
+                                                        33 / 48
+
+DARCANGELO FABIO           (SETTIMO MILANESE)                      AGOSTINELLI PIETRO       (UGGIATESE CALCIO)
+NYADIDI KODJO GASTON       (UGGIATESE CALCIO)
+
+
+```
+
+### 01.Classifiche_CU48.pdf – riga 256
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G   V   N   P   GF GS DR PE
+U.S. SETTIMO MILANESE                            20   9   6   2   1   23   11    12   0
+G.S. VILLA S.S.D.R.L.                            16   9   4   4   1   15   11     4   0
+A.S.D. AUSONIA ACADEMY                           16   9   4   4   1   22   13     9   0
+PARTIZAN BONOLA ASD                              16   9   4   4   1   23   20     3   0
+```
+
+### 01.Classifiche_CU48.pdf – riga 621
+```
+U.S. QUINTO ROMANO A.S.D.                     8   9   2   2   5   14   27   -13   0
+A.S.D. VIGHI 1967                             7   8   1   4   3   12   21    -9   0
+A.S.D. FATIMATRACCIA                          7   8   2   1   5   10   22   -12   0
+U.S. SETTIMO MILANESE                         7   9   2   1   6   14   31   -17   0
+SUPERGA G.S. A.S.D.                           1   9   0   1   8   11   38   -27   0
+
+
+```
+
 ## COMUNICATO UFFICIALE N° 47 CRL (2026-11-10)
 Pagina: https://www.crlombardia.it/documenti/33778/comunicato-ufficiale-n-47
 Nessuna menzione del Settimo Milanese.
