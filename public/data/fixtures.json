@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T05:59:54+00:00",
+  "generatedAt": "2026-11-13T12:36:32+00:00",
   "team": "SETTIMO MILANESE",
   "fixtures": [
     {
@@ -81,6 +81,22 @@
       "published": "2026-11-05",
       "source": "Programma Gare dal 05 al 09 Novembre 2026 CRL",
       "url": "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026"
+    },
+    {
+      "competition": "Prima Categoria",
+      "girone": "A",
+      "round": "10A",
+      "date": "2026-11-15",
+      "time": "14:30",
+      "home": true,
+      "opponent": "FROG MILANO",
+      "venue": "C.S.\"S.PERTINI\" - CAMPO N.1",
+      "city": "CORNAREDO",
+      "address": "VIA DELLO SPORT N.1",
+      "status": "",
+      "published": "2026-11-13",
+      "source": "Programma Gare dal 13 al 16 Novembre 2026 CRL",
+      "url": "https://www.crlombardia.it/news/33804/programma-gare-dal-13-al-16-novembre-2026"
     }
   ]
 }
