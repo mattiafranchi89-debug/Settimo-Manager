@@ -2175,19 +2175,75 @@
         }
       ],
       "fetchedAt": "2026-11-12T18:50:06+00:00"
+    },
+    "33804": {
+      "id": "33804",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 13 al 16 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-13",
+      "url": "https://www.crlombardia.it/news/33804/programma-gare-dal-13-al-16-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_13-16_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33804/6af6f57040892_Programma_Gare_13-16_Novembre_2026.pdf",
+          "pages_chars": 225864,
+          "settimo_mentions": 9,
+          "txt": "docs/33804/Programma_Gare_13-16_Novembre_2026.txt",
+          "mentions": [
+            {
+              "line": 119,
+              "text": "ROBBIO LIBERTAS             ACCADEMIA PAVESE                   C.S.COMUNALE N.1                              15/11/26 14:30 10A ROBBIO                                      VIA DELL'ARTIGIANATO\nUNION CALCIO BASSO PAVESE   CASTEGGIO 18 98 A.S.D.             C.S.COMUNALE \"MARIO MAIOCCHI\"                 15/11/26 14:30 10A SANTA CRISTINA E BISSONE                    VIA CADUTI LIBERTA'SNC                V\nVIGEVANO CALCIO 1921        GARLASCO 1976 ASD                  COMUNALE \"DANTE MERLO\"                        15/11/26 14:30 10A VIGEVANO                                    VIA MONTE GRAPPA, 24\nVIGHIGNOLO                  PAVIA SSD                          C.S.VIGHIGNOLO E.A.                           15/11/26 14:30 10A SETTIMO MILANESE FR.VIGHIGNOLO              VIA PACE S.N.C.\nVISCONTEA PAVESE U.S.D.     ACCADEMIA CALCIO VITTUONE          STADIO COMUNALE \"ZECCONE\"                     15/11/26 14:30 10A ZECCONE                                     VIA TORRE CIVICA,3\nGIRONE F                                                                                                      DATA      ORA                                                                                    STATO GARA\n"
+            },
+            {
+              "line": 154,
+              "text": "PRO PESCHIERA BORROMEO     CENTRO SCHUSTER A.S.D.            CAMPO COMUNALE DI LINATE                      15/11/26 14:30 10A PESCHIERA BORROMEO FRAZ.LINATE VIA PASCOLI SNC\nQUINTO ROMANO A.S.D.       POLISPORTIVA OR.PA.S.             C.S. \"QUINTO ROMANO\" N.1(E.A.                 15/11/26 14:30 10A MILANO - QUINTO ROMANO                      VIA VITTORIO DE SICA,14\nSANGIULIANO CVS A R.L.     GARIBALDINA 1932                  C.S.COMUNALE N.1                              15/11/26 14:30 10A SAN GIULIANO MILANESE-SESTO U.              VIA TOSCANA 1 SESTO ULTERIANO\nSETTIMO MILANESE           FROG MILANO                       C.S.\"S.PERTINI\" - CAMPO N.1                   15/11/26 14:30 10A CORNAREDO                                   VIA DELLO SPORT N.1\nVILLA S.S.D.R.L.           POLISPORTIVA DI NOVA              C.S.COM. \"G.MAURO\" (E.A.)                     15/11/26 15:00 10A MILANO                                      VIA USSI 18\nGIRONE B                                                                                                    DATA      ORA                                                                                      STATO GARA\n"
+            },
+            {
+              "line": 395,
+              "text": "POL.D. U.S. CASSOLESE       VICTORIA MMVII A.S.D.             CAMPO SPORTIVO COMUNALE N.1                   14/11/26 14:30 10A CASSOLNOVO                                  VIA GENOVA\nQUINTO ROMANO A.S.D.        BUCCINASCO                        C.S. \"QUINTO ROMANO\" N.1(E.A.                 14/11/26 17:30 10A MILANO - QUINTO ROMANO                      VIA VITTORIO DE SICA,14\nROZZANO CALCIO SRL SSD      ORATORIANA VITTUONE ASD           C.S.COMUNALE -CAMPO N.2 (EA-D                 14/11/26 16:45 10A ROZZANO                                     VIA MONTE AMIATA 34\nSETTIMO MILANESE            VIGHI 1967                        C.S.\"S.PERTINI\" - CAMPO N.1                   14/11/26 15:00 10A CORNAREDO                                   VIA DELLO SPORT N.1\nSUPERGA G.S. A.S.D.         FOOTBALL CLUB SEDRIANO            C.S.\"PIETRO BUSCAGLIA\" N.1                    14/11/26 15:00 10A VIGEVANO                                    VIA LONGO SNC\nGIRONE G                                                                                                     DATA      ORA                                                                                     STATO GARA\n"
+            },
+            {
+              "line": 640,
+              "text": "CENTRO GIOV. BOFFALORESE   BASE 96 SEVESO                     C.S.COMUNALE \"UMBERTO RE\" N.1                 14/11/26 15:00 10A BOFFALORA SOPRA TICINO                      VIA GIULINI S.N.C.\nFOOTBALL CLUB PARABIAGO    VIGOR F.C. A.S.D.                  C.S.\"LIBERO FERRARIO\" (E.A)                   14/11/26 18:30 10A PARABIAGO                                   VIA MARCONI ANG.VIA ALFIERI\nVELA MESERO                CASTANESE A.S.D.                   C.S.COMUNALE (E.A.)                           14/11/26 18:00 10A MESERO                                      VIA VERDI,4\nVIGHI 1967                 O.SA.F. A.S.D. G.S.O.              C.S.VIGHIGNOLO E.A.                           14/11/26 18:15 10A SETTIMO MILANESE FR.VIGHIGNOLO              VIA PACE S.N.C.\nACCADEMIA BMV              TRIESTINA 1946                     CENTRO SPORTIVO COMUNALE                      15/11/26 11:30 10A MAGNAGO                                     VIA EUGENIO MONTALE                   V\n\n"
+            },
+            {
+              "line": 742,
+              "text": "ARCA                        SETTALESE                          C.S.COMUNALE AICS OLMI-CAMPO                  15/11/26 11:00 10A MILANO                                      VIA ULIVI N. 8\nFRIGIROLA 1952              POL. SAN BIAGIO A.S.D.             C.S.COMUNALE \"FRIGIROLA\"                      15/11/26 17:00 10A PAVIA                                       VIA SCARENZIO,4\nVICTORIA MMVII A.S.D.       UNION CALCIO BASSO PAVESE          CAMPO SPORTIVO COMUNALE                       15/11/26 10:00 10A NOVIGLIO                                    VIA LEONARDO DA VINCI 2/2\nVIGHIGNOLO                  MONTANASO LOMBARDO                 C.S.VIGHIGNOLO E.A.                           15/11/26 11:00 10A SETTIMO MILANESE FR.VIGHIGNOLO              VIA PACE S.N.C.\nGIRONE D                                                                                                      DATA      ORA                                                                                      STATO GARA\n\n"
+            },
+            {
+              "line": 815,
+              "text": "\nACCADEMIA INTERNAZIONALE    SPERANZA AGRATE                     ACCAD.INTERNAZIONALE N.11(E.A                 14/11/26 15:30 10A MILANO                                      VIA CILEA,51\nLEON S.S.D A R.L.           SANT ANGELO                         C.S.COMUNALE N. 1 (E.A)                       14/11/26 18:00 10A VIMERCATE                                   VIA DEGLI ATLETI,1                    V\nSEGURO A.S.D.               ROZZANO CALCIO SRL SSD              C.S.COMUNALE (E.A)                            14/11/26 17:30 10A SETTIMO MILANESE LOC. SEGURO                VIA SANDRO PERTINI 13\nSS FRANCO SCARIONI 1925     CASATESE MERATE A.S.D.              PICCOLO STADIO SCARIONI 2(E.A                 14/11/26 17:45 10A MILANO                                      VIA TUCIDIDE 10\nACCADEMIA PAVESE            ALDINI S.S.D.AR.L.                  CAMPO COMUNALE N 1                            15/11/26 09:30 10A SANT'ALESSIO CON VIALONE                    VIA VIALONE SNC\nACCADEMY CALVAIRATE 1946    ENOTRIA 1908 SSDARL                 C.S.\"CALVAIRATE-(E.A.)                        15/11/26 09:30 10A MILANO                                      VIA VISMARA, 3 (IN DEROGA)"
+            },
+            {
+              "line": 956,
+              "text": "ENOTRIA 1908 SSDARL         CLUB MILANO S.S.D. A R.L.           CENTRO SPORTIVO ENOTRIA A                     15/11/26 10:00 10A MILANO                                      VIA C.CAZZANIGA, 26\nMAZZO 80 A.C. SSD A RL      VIGEVANO CALCIO 1921                C.S.COMUNALE E.A.                             15/11/26 11:30 10A RHO                                         VIA DE GASPERI SNC\nPAVIA CALCIO 1911           ACCADEMIA PAVESE                    C.S.SPORTIVO ARENA AZZURRA C.                 15/11/26 10:30 10A PAVIA                                       VIA ALZAIA, 137                          V\nSEGURO A.S.D.               SEDRIANO                            C.S.COMUNALE (E.A)                            15/11/26 11:00 10A SETTIMO MILANESE LOC. SEGURO                VIA SANDRO PERTINI 13\nSS FRANCO SCARIONI 1925     SANT ANGELO                         PICCOLO STADIO SCARIONI 2(E.A                 15/11/26 11:45 10A MILANO                                      VIA TUCIDIDE 10                          V\nGIRONE C                                                                                                       DATA      ORA                                                                                       STATO GARA\n"
+            },
+            {
+              "line": 1115,
+              "text": "ALDINI S.S.D.AR.L.          ACCADEMIA PAVESE                      C.S.ALDINI-RADICE(E.A)                        15/11/26 11:00 10A MILANO                                      VIA ORSINI 78/84\nENOTRIA 1908 SSDARL         AUSONIA 1931 S.C.A.R.L.               C.S.\"ENOTRIA - CAMPO B (E.A)                  15/11/26 11:00 10A MILANO                                      VIA C.CAZZANIGA 26\nRHODENSE S.S.D.A.R.L.       VIGEVANO CALCIO 1921                  COMUNALE \"PIRANDELLO\"                         15/11/26 09:30 10A RHO Q.RE STELLANDA                          VIA PIRANDELLO\nSEGURO A.S.D.               ROZZANO CALCIO SRL SSD                C.S.COMUNALE (E.A)                            15/11/26 09:30 10A SETTIMO MILANESE LOC. SEGURO                VIA SANDRO PERTINI 13\n\n\n"
+            },
+            {
+              "line": 1188,
+              "text": "\nCIRCOLO GIOVANILE BRESSO    CIMIANO CALCIO S.S.D. ARL          C.S.COMUNALE A-(E.A)                          14/11/26 14:30 10A BRESSO                                      VIA GRAZIA DELEDDA SNC\nFOOTBALL CLUB SEDRIANO      RHODENSE S.S.D.A.R.L.              CENTRO SPORTIVO COMUNALE 2 E.                 14/11/26 14:30 10A SEDRIANO                                    VIA CAMPO SPORTIVO,12\nSEGURO A.S.D.               BARANZATESE 1948 POL.D.            C.S.COMUNALE (E.A)                            14/11/26 15:00 10A SETTIMO MILANESE LOC. SEGURO                VIA SANDRO PERTINI 13\nAFFORESE G.S.D.             REAL MILANO SSD A RL               C.S.BOVISASCA-CAMPO N.1(E.A.)                 15/11/26 09:00 10A MILANO                                      VIA ASSIETTA,48\nALDINI S.S.D.AR.L.          ACCADEMIA INTERNAZIONALE           C.S.ALDINI-RADICE(E.A)                        15/11/26 09:30 10A MILANO                                      VIA ORSINI 78/84\nCENTRO SCHUSTER A.S.D.      SEMPIONE HALF 1919 SSDSRL          CENTRO SCHUSTER- CAMPO A                      15/11/26 09:45 10A MILANO                                      VIA MORELL S.J.PADRE LODOV.N.2"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-11-13T12:36:25+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-13T06:30:47+00:00",
+  "lastRun": "2026-11-13T12:36:25+00:00",
   "homepage": [
     "33781",
     "33778",
     "33771",
     "33746",
     "33743",
+    "33804",
     "33777",
-    "33756",
-    "33741"
+    "33756"
   ],
   "errors": [],
   "notRegional": [
