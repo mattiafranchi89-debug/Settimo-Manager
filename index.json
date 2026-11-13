@@ -2231,16 +2231,39 @@
         }
       ],
       "fetchedAt": "2026-11-13T12:36:25+00:00"
+    },
+    "33806": {
+      "id": "33806",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 49 CRL",
+      "number": 49,
+      "date": "2026-11-13",
+      "url": "https://www.crlombardia.it/documenti/33806/comunicato-ufficiale-n-49",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 49 del 13.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33806/6af71dfd86612_Comunicato Ufficiale Nr.  49 del 13.11.2026.pdf",
+          "pages_chars": 16130,
+          "settimo_mentions": 0,
+          "txt": "docs/33806/Comunicato_Ufficiale_Nr._49_del_13.11.2026.txt"
+        },
+        {
+          "name": "Maglie personalizzate CU49.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33806/6af71dfda2a74_Maglie personalizzate CU49.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-11-13T18:29:13+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-13T12:36:25+00:00",
+  "lastRun": "2026-11-13T18:29:13+00:00",
   "homepage": [
+    "33806",
     "33781",
     "33778",
     "33771",
     "33746",
-    "33743",
     "33804",
     "33777",
     "33756"
