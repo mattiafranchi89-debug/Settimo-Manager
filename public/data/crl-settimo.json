@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-11-11T08:03:00+01:00",
-  "lastChecked": "2026-11-11T08:03:00+01:00",
+  "updatedAt": "2026-11-13T08:00:37+01:00",
+  "lastChecked": "2026-11-13T08:00:37+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -29,9 +29,37 @@
     "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026",
     "https://www.crlombardia.it/documenti/33771/comunicato-ufficiale-n-46",
     "https://www.crlombardia.it/news/33777/programma-gare-dal-09-al-12-novembre-2026",
-    "https://www.crlombardia.it/documenti/33778/comunicato-ufficiale-n-47"
+    "https://www.crlombardia.it/documenti/33778/comunicato-ufficiale-n-47",
+    "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48"
   ],
   "items": [
+    {
+      "id": "cu48-pc-buccinasco",
+      "doc": "Comunicato Ufficiale n. 48",
+      "date": "2026-11-12",
+      "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48",
+      "category": "Prima Categoria girone A",
+      "type": "risultato",
+      "text": "9ª giornata (08/11/2026): Buccinasco – Settimo Milanese 3-3, pareggio in trasferta."
+    },
+    {
+      "id": "cu48-giudice",
+      "doc": "Comunicato Ufficiale n. 48",
+      "date": "2026-11-12",
+      "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48",
+      "category": "Giudice Sportivo",
+      "type": "sanzione",
+      "text": "Nessun provvedimento a carico del Settimo Milanese per le gare di Prima Categoria dell'8 novembre."
+    },
+    {
+      "id": "cu48-pc-classifica",
+      "doc": "Comunicato Ufficiale n. 48",
+      "date": "2026-11-12",
+      "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48",
+      "category": "Prima Categoria girone A",
+      "type": "classifica",
+      "text": "Classifica dopo la 9ª giornata: Settimo Milanese 1° con 20 punti in 9 gare (6 vinte, 2 pareggiate, 1 persa), 23 gol fatti e 11 subiti; seguono Villa, Ausonia Academy e Partizan Bonola a 16, Garibaldina 1932 a 15."
+    },
     {
       "id": "pg0511-pc-buccinasco",
       "doc": "Programma gare 05/11–09/11/2026",
@@ -303,5 +331,21 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ],
-  "avversari": []
+  "avversari": [
+    {
+      "squadra": "FROG MILANO",
+      "partita": "Prima Categoria – 10ª giornata, 15/11/2026 ore 14:30, in casa",
+      "data": "2026-11-15",
+      "competizione": "campionato",
+      "aggiornato": "2026-11-13T08:00:37+01:00",
+      "squalificati": [],
+      "diffidati": [
+        {
+          "nome": "MAISTO LUIGI",
+          "doc": "Comunicato Ufficiale n. 48",
+          "date": "2026-11-12"
+        }
+      ]
+    }
+  ]
 }
