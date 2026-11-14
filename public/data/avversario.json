@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T07:58:17+01:00",
+  "generatedAt": "2026-11-14T07:59:00+01:00",
   "availableFrom": "2026-11-10",
   "lastMatch": {
     "date": "2026-11-08",
@@ -13,8 +13,8 @@
     "date": "2026-11-15",
     "time": "14:30",
     "home": true,
-    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo (da confermare)",
-    "address": "Via dello Sport 1, Cornaredo",
+    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo",
+    "address": "Via dello Sport n. 1, Cornaredo",
     "competition": "Prima Categoria girone A – 10ª giornata"
   },
   "standing": {
@@ -122,8 +122,16 @@
   "suspended": [
     "Maisto Luigi – nessuna squalifica: diffidato (IV ammonizione, C.U. n. 48 del 12/11, gare dell'8/11); è disponibile contro di noi ma alla prossima ammonizione salta una gara"
   ],
-  "notes": "Frog Milano è 7ª con 13 punti dopo lo 0-0 casalingo con la Pro Peschiera Borromeo: 2 pareggi e 1 sconfitta nelle ultime 3, 17 gol fatti e 13 subiti, mentre il Settimo resta 1° a 20 punti dopo il 3-3 di Buccinasco. Nessun giocatore della Frog squalificato per la gara del 15/11; Maisto Luigi è diffidato. Il C.U. n. 48 non riporta variazioni per Settimo–Frog e il Programma gare della settimana 13–15 novembre non è ancora in cache: orario e campo (Pertini di Cornaredo) restano da confermare.",
+  "notes": "Frog Milano è 7ª con 13 punti (17 gol fatti, 13 subiti) e arriva da 2 pareggi e 1 sconfitta nelle ultime 3, mentre il Settimo è 1° a 20 punti dopo il 3-3 di Buccinasco. Nessun giocatore della Frog squalificato per la gara del 15/11; Maisto Luigi è diffidato (alla prossima ammonizione salta una gara). Il Programma gare 13–16 novembre conferma Settimo–Frog domenica 15/11 alle 14:30 al Pertini di Cornaredo (campo n. 1); il C.U. n. 49 del 13/11 non contiene provvedimenti né variazioni per il girone A di Prima Categoria.",
   "sources": [
+    {
+      "label": "Programma gare 13–16 novembre",
+      "url": "https://www.crlombardia.it/news/33804/programma-gare-dal-13-al-16-novembre-2026"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 49 (nessun provvedimento per il girone A)",
+      "url": "https://www.crlombardia.it/documenti/33806/comunicato-ufficiale-n-49"
+    },
     {
       "label": "Comunicato Ufficiale n. 48 – Classifiche",
       "url": "https://www.crlombardia.it/storage/uploads/files/33781/6af5ca46abdc6_01.Classifiche_CU48.pdf"
@@ -139,10 +147,6 @@
     {
       "label": "Comunicato Ufficiale n. 45",
       "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45"
-    },
-    {
-      "label": "Programma gare 5–9 novembre",
-      "url": "https://www.crlombardia.it/news/33756/programma-gare-dal-05-al-09-novembre-2026"
     },
     {
       "label": "Comunicato Ufficiale n. 43",
