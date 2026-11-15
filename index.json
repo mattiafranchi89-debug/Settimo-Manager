@@ -413,36 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33462": {
-      "id": "33462",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 24",
-      "number": 24,
-      "date": "2026-09-15",
-      "url": "https://www.crlombardia.it/documenti/33462/comunicato-ufficiale-n-24",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33462/6aa94913d6366_Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf",
-          "pages_chars": 181201,
-          "settimo_mentions": 1,
-          "txt": "docs/33462/Comunicato_Ufficiale_Nr._24_del_15.09.2026.txt",
-          "mentions": [
-            {
-              "line": 756,
-              "text": "                          Squadra 1                Squadra 2                                                       Impianto\n Gara Gior.                                                                Orig.       Var. Orig.\n16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00\n16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00\n                                                                                                       C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                       DELLO SPORT,70\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Maglie Personalizzate CU24.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33462/6aa9491424272_Maglie Personalizzate CU24.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33470": {
       "id": "33470",
       "kind": "comunicato",
@@ -2257,7 +2227,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-14T21:40:12+00:00",
+  "lastRun": "2026-11-15T06:16:14+00:00",
   "homepage": [
     "33806",
     "33781",

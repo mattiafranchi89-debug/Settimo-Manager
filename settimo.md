@@ -1482,19 +1482,3 @@ U.S. SETTIMO MILANESE                        0    1   0   0   1   1   6   -5   0
 
 
 ```
-
-## COMUNICATO UFFICIALE N° 24 (2026-09-15)
-Pagina: https://www.crlombardia.it/documenti/33462/comunicato-ufficiale-n-24
-
-### Comunicato Ufficiale Nr. 24 del 15.09.2026.pdf – riga 756
-```
-                          Squadra 1                Squadra 2                                                       Impianto
- Gara Gior.                                                                Orig.       Var. Orig.
-16/09/2026   2A   MARCALLESE A.S.D.         POL.D. U.S. CASSOLESE                      20:30   20:00
-16/09/2026   2A   OSSONA A.S.D.             SETTIMO MILANESE                           21:00   20:00
-                                                                                                       C.S."S.PERTINI" N.2 CORNAREDO VIA
-30/09/2026   3A   SETTIMO MILANESE          POL.D. U.S. CASSOLESE                      21:00   20:00
-                                                                                                       DELLO SPORT,70
-
-
-```
