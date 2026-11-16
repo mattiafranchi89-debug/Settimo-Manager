@@ -2224,19 +2224,43 @@
         }
       ],
       "fetchedAt": "2026-11-13T18:29:13+00:00"
+    },
+    "33812": {
+      "id": "33812",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 16 al 19 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-16",
+      "url": "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_16-19_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33812/6afb13ab8a4bc_Programma_Gare_16-19_Novembre_2026.pdf",
+          "pages_chars": 22673,
+          "settimo_mentions": 1,
+          "txt": "docs/33812/Programma_Gare_16-19_Novembre_2026.txt",
+          "mentions": [
+            {
+              "line": 272,
+              "text": "GIRONE F                                                                                         DATA      ORA                                                                         STATO GARA\n\n\nVIGHIGNOLO                 PREGNANESE                   C.S.VIGHIGNOLO E.A.                     19/11/26   21:00 1A SETTIMO MILANESE FR.VIGHIGNOLO          VIA PACE S.N.C.                P\nGIRONE X                                                                                         DATA      ORA                                                                         STATO GARA\n\n"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-11-16T20:57:01+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-16T13:07:38+00:00",
+  "lastRun": "2026-11-16T20:57:01+00:00",
   "homepage": [
     "33806",
     "33781",
     "33778",
     "33771",
     "33746",
+    "33812",
     "33804",
-    "33777",
-    "33756"
+    "33777"
   ],
   "errors": [],
   "notRegional": [

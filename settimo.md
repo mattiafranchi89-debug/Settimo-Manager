@@ -1,5 +1,19 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma Gare dal 16 al 19 Novembre 2026 CRL (2026-11-16)
+Pagina: https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026
+
+### Programma_Gare_16-19_Novembre_2026.pdf – riga 272
+```
+GIRONE F                                                                                         DATA      ORA                                                                         STATO GARA
+
+
+VIGHIGNOLO                 PREGNANESE                   C.S.VIGHIGNOLO E.A.                     19/11/26   21:00 1A SETTIMO MILANESE FR.VIGHIGNOLO          VIA PACE S.N.C.                P
+GIRONE X                                                                                         DATA      ORA                                                                         STATO GARA
+
+
+```
+
 ## COMUNICATO UFFICIALE N° 49 CRL (2026-11-13)
 Pagina: https://www.crlombardia.it/documenti/33806/comunicato-ufficiale-n-49
 Nessuna menzione del Settimo Milanese.
