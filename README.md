@@ -241,33 +241,6 @@ segnato?» e nella cronologia), con le stesse chiavi dei gol subiti e
 l'etichetta vista da noi (es. «Palla recuperata alta»). In Andamento › Gol:
 come nascono i nostri gol e il bilancio delle palle inattive.
 
-## Assistente (chat sui dati, solo amministratore)
-
-Il pulsante **✨ Chiedi** in basso a destra apre una chat che risponde sui dati
-della squadra: classifica e andamento, rosa e singoli giocatori, scheda di una
-partita, presenze, convocazione in corso, diffide e squalifiche (giocatori e
-staff), prossimo avversario, cassa. Si può scrivere o dettare (Web Speech API
-in italiano, dove il browser la offre; su iPhone resta il microfono della
-tastiera). Per ora informa e basta: le azioni si fanno nelle pagine.
-
-Come funziona (`worker/assistente.js`, `src/lib/assistant.js`,
-`src/components/Assistente.jsx`):
-
-- il worker (`POST /api/assistente`, solo ruolo `admin`, token Firebase
-  verificato) manda a Claude il prompt, gli **strumenti** e la conversazione, e
-  restituisce la risposta o le richieste di strumenti;
-- gli strumenti li esegue il **browser**, con i permessi Firestore
-  dell'utente e con le stesse librerie delle pagine (trend, situazioni di
-  gara, disponibilità, disciplina, scouting): i numeri coincidono con quelli
-  delle schermate e il modello vede solo ciò che gli strumenti restituiscono;
-- gli strumenti non danno mai contatti, documenti d'identità o dati sanitari;
-- modello `claude-opus-5-5` (variabile `ANTHROPIC_MODEL`), prompt e strumenti
-  in cache, modello di riserva in caso di rifiuto; la conversazione resta nel
-  telefono finché si chiude l'app o si preme «Nuova conversazione».
-
-Per attivarlo nell'altra vista (allenatore) basta estendere il controllo del
-ruolo nel worker e in `Layout.jsx`.
-
 ## Disponibilità e settimana prima della gara
 
 La scheda **Disponibilità** di Andamento (solo staff; `src/lib/availability.js`,

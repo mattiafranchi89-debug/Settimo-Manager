@@ -8,7 +8,6 @@ import { readReferto } from './referto.js';
 import { readTuttocampo } from './tuttocampo.js';
 import { readFormazione } from './formazione.js';
 import { readAvversario, SECTIONS } from './avversario.js';
-import { askAssistant, sanitizeMessages, MAX_BODY } from './assistente.js';
 
 const STAFF = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
 // Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori.
@@ -43,7 +42,6 @@ export default {
       if (url.pathname === '/api/tuttocampo' && request.method === 'POST') return await tuttocampo(request, env);
       if (url.pathname === '/api/formazione' && request.method === 'POST') return await formazione(request, env);
       if (url.pathname === '/api/avversario' && request.method === 'POST') return await avversario(request, env);
-      if (url.pathname === '/api/assistente' && request.method === 'POST') return await assistente(request, env);
       return json({ error: 'not_found' }, 404);
     } catch (e) {
       return json({ error: 'internal', message: String(e?.message || e) }, 500);
@@ -75,33 +73,6 @@ async function refertoFile(request, env) {
   const type = res.headers.get('content-type') || 'application/octet-stream';
   if (Number(res.headers.get('content-length') || 0) > 12 * 1024 * 1024) return json({ error: 'too_large' }, 413);
   return new Response(res.body, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } });
-}
-
-/**
- * L'assistente che risponde sui dati: il browser manda la conversazione (con i
- * risultati degli strumenti che ha eseguito da sé, con i suoi permessi) e
- * riceve la risposta o nuove richieste di strumenti. Per ora solo l'amministratore.
- */
-async function assistente(request, env) {
-  if (!env.ANTHROPIC_API_KEY) return json({ error: 'ai_not_configured' }, 503);
-  const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  const claims = await verifyFirebaseToken(token, env.FIREBASE_PROJECT_ID);
-  if (!claims) return json({ error: 'unauthorized' }, 401);
-  const me = await firestore(env.FIREBASE_PROJECT_ID, token).get(`users/${claims.sub}`);
-  if (!me || me.active === false || me.role !== 'admin') return json({ error: 'forbidden' }, 403);
-
-  const raw = await request.text();
-  if (raw.length > MAX_BODY) return json({ error: 'too_large' }, 413);
-  let input;
-  try { input = JSON.parse(raw); } catch { return json({ error: 'bad_json' }, 400); }
-  const messages = sanitizeMessages(input?.messages);
-  if (!messages) return json({ error: 'bad_messages' }, 400);
-  const context = { ...(input?.context && typeof input.context === 'object' ? input.context : {}), userName: me.name || '', roleLabel: 'amministratore' };
-  try {
-    return json(await askAssistant({ messages, context }, env));
-  } catch (e) {
-    return json({ error: 'ask_failed', message: String(e?.message || e) }, 502);
-  }
 }
 
 /** Foto del referto → dati strutturati. Solo per chi compila le schede gara. */

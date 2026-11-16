@@ -3,7 +3,6 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { useClub } from '../lib/db';
 import { navFor, tabsFor, ROLES, can, sectionOf, sectionTabs, isClassicUx } from '../lib/permissions';
-import Assistente from './Assistente';
 import { Sheet, Button } from './ui';
 import ErrorBoundary from './ErrorBoundary';
 import { setNotifyUser } from '../lib/notify';
@@ -155,8 +154,6 @@ export default function Layout({ theme, toggleTheme }) {
       {classic && canCallup && (
         <button className="fab" onClick={() => navigate('/convocazioni/nuova')}>＋ NUOVA CONVOCAZIONE</button>
       )}
-      {/* L'assistente sui dati: per ora solo l'amministratore; l'allenatore tiene la sua vista. */}
-      {user?.role === 'admin' && !classic && !clubLoading && <Assistente club={club} />}
 
       <nav className="tabbar" aria-label="Navigazione rapida" style={{ gridTemplateColumns: `repeat(${tabs.length + 1}, 1fr)` }}>
         {tabs.map((t) => (
