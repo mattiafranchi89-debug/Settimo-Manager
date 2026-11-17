@@ -7,6 +7,8 @@ import { fmtShort, fmtLong, capitalize, toDate } from '../lib/format';
 import { errorText } from '../pages/Rosa';
 import { can } from '../lib/permissions';
 import { RPE_VALUES, RPE_LABELS, validRpe, validMinutes, parseNum, presentIds, loadable, statusLabel } from '../lib/srpe';
+import { commonMinutes } from '../lib/srpeImport';
+import CaricoImport from './CaricoImport';
 
 const num = (v, d = 1) => (v == null ? '–' : v.toLocaleString('it-IT', { maximumFractionDigits: d }));
 const str = (v) => (v == null ? '' : String(v));
@@ -42,6 +44,8 @@ export default function CaricoSheet({ session, user, onClose }) {
   useEffect(() => { if (!touched && load !== undefined) setForm(toForm(load)); }, [load, touched]);
   const [open, setOpen] = useState({});
   const [busy, setBusy] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [imported, setImported] = useState(0);
 
   const present = useMemo(() => presentIds(session).sort((a, b) => (names[a] || '').localeCompare(names[b] || '', 'it')), [session, names]);
   const away = (session.attendanceSummary?.players || []).filter((pid) => !present.includes(pid));
@@ -70,6 +74,30 @@ export default function CaricoSheet({ session, user, onClose }) {
 
   const edit = (fn) => { setTouched(true); setForm((f) => fn(structuredClone(f))); };
   const setP = (pid, k, v) => edit((f) => { f.players[pid] = { ...(f.players[pid] || {}), [k]: v }; return f; });
+
+  /**
+   * Righe importate nel modulo. Senza durata scritta vale quella più frequente
+   * nell'elenco; i minuti propri restano solo per chi è diverso dalla durata.
+   */
+  const applyImport = (rows) => {
+    edit((f) => {
+      const common = commonMinutes(rows);
+      if (!f.minutes.trim() && common != null) f.minutes = String(common);
+      const dur = parseNum(f.minutes);
+      rows.forEach((e) => {
+        const cur = f.players[e.pid] || {};
+        f.players[e.pid] = {
+          ...cur,
+          ...(e.rpe != null ? { rpe: String(e.rpe) } : {}),
+          ...(e.minutes != null ? { minutes: e.minutes === dur ? '' : String(e.minutes) } : {}),
+          ...(e.note ? { note: e.note.slice(0, 300) } : {})
+        };
+      });
+      return f;
+    });
+    setImported(rows.length);
+    setImporting(false);
+  };
 
   const sessionMin = parseNum(form.minutes);
   const minErr = form.minutes.trim() !== '' && !validMinutes(sessionMin);
@@ -123,6 +151,18 @@ export default function CaricoSheet({ session, user, onClose }) {
         <Input inputMode="numeric" value={form.minutes} placeholder="es. 78"
           onChange={(e) => edit((f) => { f.minutes = e.target.value; return f; })} />
       </Field>
+
+      {importing ? (
+        <CaricoImport session={session} names={names} present={present} absent={away}
+          onApply={applyImport} onClose={() => setImporting(false)} />
+      ) : (
+        <div className="btnrow" style={{ marginBottom: 10 }}>
+          <Button size="sm" variant="secondary" onClick={() => setImporting(true)}>⬆ Importa elenco</Button>
+        </div>
+      )}
+      {imported > 0 && !importing && (
+        <Alert level="ok">Inseriti {imported} giocatori dall'elenco: controlla e premi Salva.</Alert>
+      )}
 
       <div className="chiprow">
         <span className={`badge badge--${votes.length === present.length ? 'green' : 'orange'}`}>Voti: {votes.length}/{present.length}</span>
