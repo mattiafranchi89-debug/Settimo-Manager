@@ -9,11 +9,15 @@ import { readTuttocampo } from './tuttocampo.js';
 import { readFormazione } from './formazione.js';
 import { readAvversario, SECTIONS } from './avversario.js';
 
-const STAFF = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
-// Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori.
+// Lo staff che lavora sui dati dei giocatori. Il preparatore atletico no: vede
+// solo sedute e carico sRPE (niente avversari, referti, convocazioni).
+const STAFF = ['admin', 'head_coach', 'assistant_coach', 'gk_coach', 'team_manager'];
+// Chi riceve cosa: «staff» è la gestione della squadra, «all» comprende i giocatori,
+// «training» (allenamenti nuovi o spostati) anche il preparatore atletico.
 const AUDIENCE = {
   staff: new Set([...STAFF, 'sporting_director']),
-  all: new Set([...STAFF, 'sporting_director', 'readonly', 'player'])
+  all: new Set([...STAFF, 'sporting_director', 'readonly', 'player']),
+  training: new Set([...STAFF, 'sporting_director', 'readonly', 'player', 'athletic_trainer'])
 };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {

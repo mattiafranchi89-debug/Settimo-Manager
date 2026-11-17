@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { ToastProvider, Loading, Alert, Card } from './components/ui';
-import { can, isPlayerView, isClassicUx } from './lib/permissions';
+import { can, isPlayerView, isClassicUx, isTrainerView, pathAllowed } from './lib/permissions';
 import { configMissing } from './lib/firebase';
 import { registerServiceWorker } from './lib/push';
 
@@ -59,6 +59,7 @@ const Evento = lazyPage(() => import('./pages/Evento'));
 const MiaPagina = lazyPage(() => import('./pages/MiaPagina'));
 const Cassa = lazyPage(() => import('./pages/Cassa'));
 const HomeGiocatore = lazyPage(() => import('./pages/HomeGiocatore'));
+const HomePreparatore = lazyPage(() => import('./pages/HomePreparatore'));
 const Squadra = lazyPage(() => import('./pages/Squadra'));
 const Statistiche = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Statistiche })));
 const Documenti = lazyPage(() => import('./pages/registri').then((m) => ({ default: m.Documenti })));
@@ -99,7 +100,10 @@ function Protected({ perm, children }) {
       </Card>
     );
   }
-  if (perm && !can(user.role, perm)) {
+  // Il preparatore atletico vede solo le sue pagine: ogni altra torna alla Home.
+  if (!pathAllowed(user.role, location.pathname)) return <Navigate to="/" replace />;
+  // Più permessi: basta averne uno.
+  if (perm && ![].concat(perm).some((p) => can(user.role, p))) {
     return <Alert level="error">Non hai i permessi per questa sezione.</Alert>;
   }
   return children;
@@ -109,6 +113,7 @@ function Protected({ perm, children }) {
 function Home() {
   const { user } = useAuth();
   if (isPlayerView(user?.role)) return <HomeGiocatore />;
+  if (isTrainerView(user?.role)) return <HomePreparatore />;
   return isClassicUx(user?.role) ? <DashboardClassica /> : <Dashboard />;
 }
 
@@ -148,7 +153,7 @@ function App() {
       <Route element={<Protected><Shell /></Protected>}>
         <Route index element={<Home />} />
         <Route path="rosa" element={<Protected perm="players.read"><Rosa /></Protected>} />
-        <Route path="allenamenti" element={<Protected perm="players.read"><Allenamenti /></Protected>} />
+        <Route path="allenamenti" element={<Protected perm={['players.read', 'load.write']}><Allenamenti /></Protected>} />
         <Route path="partite" element={<Protected perm="players.read"><Partite /></Protected>} />
         <Route path="partite/:id" element={<Protected perm="players.read"><SchedaGara /></Protected>} />
         <Route path="convocazioni" element={<Protected perm="players.read"><Convocazioni /></Protected>} />

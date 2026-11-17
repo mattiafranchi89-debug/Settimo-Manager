@@ -164,7 +164,7 @@ const r1 = (v) => (v == null ? null : Math.round(v * 10) / 10);
  * del preparatore (per continuare a usarlo con le sue formule), poi le sedute,
  * i giocatori settimana per settimana e l'andamento.
  */
-export function exportSheets(rows = []) {
+export function exportSheets(rows = [], { reasons = true } = {}) {
   const sessions = sessionStats(rows);
   const weeks = weekStats(rows);
   const players = weeks.flatMap((w) => playerWeek(rows, w.week).map((p) => ({ ...p, week: w.week })));
@@ -175,7 +175,8 @@ export function exportSheets(rows = []) {
     {
       name: 'Registro', filter: true,
       columns: [['Settimana', 10], ['Data', 12], ['Giorno', 11], ['Tipo', 13], ['Giocatore', 24], ['Presenza', 13], ['RPE (0-10)', 11], ['Minuti', 8], ['TL (RPE×min)', 13], ['Note', 40]],
-      rows: rows.map((r) => [r.week, date(r.date), r.weekday, r.type, r.name, statusLabel(r.status), r.rpe, r.minutes, r.tl, r.note || null])
+      // Senza i motivi (giustificato, infortunato) per chi non gestisce le presenze: solo Presente o Assente.
+      rows: rows.map((r) => [r.week, date(r.date), r.weekday, r.type, r.name, reasons || r.status === 'presente' ? statusLabel(r.status) : 'Assente', r.rpe, r.minutes, r.tl, r.note || null])
     },
     {
       name: 'Sedute', filter: true,

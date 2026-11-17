@@ -23,9 +23,13 @@ service cloud.firestore {
 
     function isAdmin()   { return active() && role() == 'admin'; }
     function isHead()    { return active() && role() == 'head_coach'; }
-    function isStaff()   { return active() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager']; }
+    // Lo staff che lavora sui dati dei giocatori. Il preparatore atletico ne è
+    // fuori: vede le sedute e compila il carico sRPE, nient'altro (niente
+    // convocazioni, formazioni, schede gara, presenze, avversari, documenti).
+    function isStaff()   { return active() && role() in ['admin','head_coach','assistant_coach','gk_coach','team_manager']; }
     function isCoach()   { return active() && role() in ['admin','head_coach','assistant_coach','gk_coach']; }
-    function isMedical() { return active() && role() in ['admin','head_coach','athletic_trainer']; }
+    function isMedical() { return active() && role() in ['admin','head_coach']; }
+    function isTrainer() { return active() && role() == 'athletic_trainer'; }
     // Reading the ledger: the sporting director is included.
     function isFinance() { return active() && role() in ['admin','team_manager','sporting_director']; }
     // Writing it: only who actually collects the money.
@@ -72,7 +76,7 @@ service cloud.firestore {
     // config/club holds the staff WhatsApp number and the group invite link,
     // so it is not readable by players or read-only accounts.
     match /config/{docId} {
-      allow read: if isStaff();
+      allow read: if isStaff() || isTrainer();
       allow write: if isAdmin();
     }
 
@@ -107,7 +111,7 @@ service cloud.firestore {
 
     // ---------- training attendance ----------
     match /attendance/{docId} {
-      allow read: if active();
+      allow read: if active() && !isTrainer();
       allow write: if isStaff();
     }
 
@@ -116,7 +120,7 @@ service cloud.firestore {
     // su una seduta con le presenze già registrate: contano i presenti del
     // mister. Lo leggono preparatore, allenatore e amministratore.
     match /trainingLoad/{eventId} {
-      allow read: if isMedical();
+      allow read: if isMedical() || isLoadWriter();
       allow create, update: if isLoadWriter()
                             && request.resource.data.eventId == eventId
                             && request.resource.data.players is map
@@ -127,7 +131,7 @@ service cloud.firestore {
 
     // ---------- call-ups ----------
     match /callups/{callupId} {
-      allow read: if active();
+      allow read: if active() && !isTrainer();
       allow create, update: if isCoach() || (isStaff() && role() == 'team_manager');
       allow delete: if isAdmin() || isHead();
 
@@ -137,7 +141,7 @@ service cloud.firestore {
         allow update, delete: if false; // version history is append-only
       }
       match /confirmations/{playerId} {
-        allow read: if active();
+        allow read: if active() && !isTrainer();
         allow write: if isStaff() || isSelfPlayer(playerId);
       }
     }
@@ -151,8 +155,8 @@ service cloud.firestore {
     }
 
     // ---------- lineups & match data ----------
-    match /lineups/{eventId}      { allow read: if active(); allow write: if isCoach(); }
-    match /matchStats/{eventId}   { allow read: if active(); allow write: if isCoach(); }
+    match /lineups/{eventId}      { allow read: if active() && !isTrainer(); allow write: if isCoach(); }
+    match /matchStats/{eventId}   { allow read: if active() && !isTrainer(); allow write: if isCoach(); }
 
     // ---------- scheda avversari ----------
     // Preparazione della partita: la legge anche il direttore sportivo,

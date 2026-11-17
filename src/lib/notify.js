@@ -35,7 +35,8 @@ export function describeWrite(op, path, id, data = {}) {
         return { tag: `result-${id}`, title: 'Risultato registrato', body: `Finale ${d.scoreHome}-${d.scoreAway}`, url: '/partite', audience: 'all' };
       }
       if (training || (op === 'update' && !d.opponent)) {
-        return { tag: `training-${op}`, title: op === 'add' ? 'Nuovo allenamento' : 'Allenamento aggiornato', body: [when(d.date), d.venue].filter(Boolean).join(' · ') || 'Controlla il calendario', url: '/calendario', audience: 'all',
+        // «training»: tutti, preparatore atletico compreso (gli altri avvisi non gli arrivano).
+        return { tag: `training-${op}`, title: op === 'add' ? 'Nuovo allenamento' : 'Allenamento aggiornato', body: [when(d.date), d.venue].filter(Boolean).join(' · ') || 'Controlla il calendario', url: '/calendario', audience: 'training',
           many: (n) => `${n} allenamenti ${op === 'add' ? 'aggiunti' : 'aggiornati'}` };
       }
       return { tag: `match-${id || op}`, title: op === 'add' ? 'Nuova partita in calendario' : 'Partita aggiornata',

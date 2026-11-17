@@ -66,10 +66,12 @@ Scelte da conoscere:
 | Giocatore / Sola lettura | vista dedicata: home con la propria convocazione, calendario, squadra, campionato, profilo personale e cassa. Nessuna sezione di gestione |
 | Dirigente accompagnatore | logistica, contatti, documenti, quote e multe, condivisione convocazioni |
 | Preparatore portieri | note e presenze dei portieri, valutazioni |
-| Preparatore atletico | infortuni, recuperi, idoneità fisica; **carico interno (sRPE)** dopo le presenze del mister ed export Excel |
+| Preparatore atletico | **vista dedicata**: solo allenamenti e **carico interno (sRPE)** dopo le presenze del mister, con export Excel. Non vede rosa, convocazioni, avversari, partite, statistiche di presenze e minutaggio, documenti; dei giocatori solo i nomi dei presenti da compilare |
 | Vice allenatore | presenze, proposte di convocazione e formazione |
 | Allenatore | **pubblica** le convocazioni, forza gli avvisi, formazione e voti |
 | Amministratore | configurazione società, utenti e ruoli, archiviazione giocatori, log |
+
+Il preparatore atletico è fuori da questa scala: ha una vista a parte (Home, Allenamenti, Carico) e ogni altra pagina riporta alla Home; le regole Firestore e Storage gli negano convocazioni, formazioni, schede gara, presenze, avversari, distinte, documenti e utenti, e le notifiche gli arrivano solo per gli allenamenti. Le schede dei giocatori (`players`) restano leggibili a ogni account attivo, come per i giocatori: per i nomi servono, e l'app non gli mostra il resto.
 
 Due regole non negoziabili: i dati sanitari sono visibili solo a chi è autorizzato (`medical.read`), e la responsabilità finale della lista resta dell'allenatore — l'app avvisa, non decide.
 

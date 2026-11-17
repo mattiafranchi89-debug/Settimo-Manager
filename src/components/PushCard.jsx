@@ -10,11 +10,15 @@ const HINT = {
   denied: 'Le notifiche sono bloccate per questo sito: riattivale dalle impostazioni del browser o del telefono, poi ricarica la pagina.'
 };
 
+/** Il preparatore riceve solo gli avvisi sugli allenamenti. */
+export const TRAINER_PUSH = 'Ricevi un avviso quando un allenamento viene aggiunto, spostato o annullato.';
+
 /**
  * Attivazione delle notifiche sul telefono. `compact` è il richiamo in home,
  * che si nasconde una volta attivate o se l'utente lo chiude.
+ * `text` sostituisce la descrizione di cosa arriva.
  */
-export default function PushCard({ compact = false, staff = true }) {
+export default function PushCard({ compact = false, staff = true, text = '' }) {
   const toast = useToast();
   const [status, setStatus] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -34,9 +38,9 @@ export default function PushCard({ compact = false, staff = true }) {
   };
 
   if (!status) return null;
-  const what = staff
+  const what = text || (staff
     ? 'Ricevi un avviso quando qualcuno dello staff salva convocazioni, partite, presenze, formazioni, schede e multe.'
-    : 'Ricevi un avviso per convocazioni, partite, risultati e allenamenti.';
+    : 'Ricevi un avviso per convocazioni, partite, risultati e allenamenti.');
 
   if (compact) {
     if (dismissed || status === 'on' || status === 'unsupported' || status === 'denied') return null;

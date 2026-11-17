@@ -8,8 +8,9 @@ service firebase.storage {
     function role() { return profile().role; }
     // Come in firestore.rules: un account disattivato non conta più, qualunque ruolo avesse.
     function active() { return signedIn() && profile().get('active', true) != false; }
+    // Come in firestore.rules: il preparatore atletico non vede referti, distinte e documenti.
     function isStaff() {
-      return active() && role() in ['admin','head_coach','assistant_coach','athletic_trainer','gk_coach','team_manager'];
+      return active() && role() in ['admin','head_coach','assistant_coach','gk_coach','team_manager'];
     }
     function validImage() {
       return request.resource.size < 3 * 1024 * 1024

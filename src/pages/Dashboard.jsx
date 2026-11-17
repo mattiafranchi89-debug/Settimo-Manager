@@ -14,7 +14,6 @@ import { autoVisible, formOf, outcome, sameTeam } from '../lib/scouting';
 import PushCard from '../components/PushCard';
 import { useStatsUpgrade } from '../lib/useStatsUpgrade';
 import { suspendedIn, COMPS, suspensionProposals, compBucket } from '../lib/discipline';
-import { loadable, presentIds } from '../lib/srpe';
 
 const DAY = 86400000;
 const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -54,11 +53,6 @@ export default function Dashboard() {
   const attQ = useMemo(() => [where('eventId', '==', lastTraining?.id || '-'), limit(1)], [lastTraining?.id]);
   const canAttend = can(role, 'attendance.write');
   const { data: lastAttendance, loading: attLoading } = useCollection('attendance', attQ, canAttend && !!lastTraining);
-
-  // Il preparatore atletico: sedute dell'ultima settimana con le presenze ma senza tutti i voti RPE.
-  const isTrainer = role === 'athletic_trainer';
-  const loadQ = useMemo(() => [where('date', '>=', new Date(nowTs.getTime() - 7 * DAY))], [nowTs]);
-  const { data: recentLoads, loading: loadsLoading } = useCollection('trainingLoad', loadQ, isTrainer);
 
   const seesFinance = can(role, 'finance.read');
   const openQ = useMemo(() => [where('status', '==', 'aperto')], []);
@@ -140,14 +134,6 @@ export default function Dashboard() {
     if (lastTraining && canAttend && !attLoading && lastAttendance.length === 0 && now - toDate(lastTraining.date).getTime() < 7 * DAY) {
       out.push({ icon: '🏃', text: 'Presenze da registrare', meta: `allenamento di ${fmtShort(lastTraining.date)}`, to: `/evento/${lastTraining.id}` });
     }
-    if (isTrainer && !loadsLoading) {
-      const loadOf = new Map(recentLoads.map((l) => [l.eventId || l.id, l]));
-      const missing = pastEvents.filter((e) => loadable(e) && now - toDate(e.date).getTime() < 7 * DAY)
-        .filter((e) => presentIds(e).some((pid) => loadOf.get(e.id)?.players?.[pid]?.rpe == null));
-      if (missing.length) {
-        out.push({ icon: '📈', text: 'RPE da compilare', meta: `${missing.length === 1 ? 'allenamento' : `${missing.length} allenamenti, l'ultimo`} di ${fmtShort(missing[0].date)}`, to: '/carico' });
-      }
-    }
     if (seesFinance && (openPayments.length || openFines.length)) {
       const total = [...openPayments, ...openFines].reduce((s, x) => s + (x.amount || 0), 0);
       const parts = [
@@ -157,7 +143,7 @@ export default function Dashboard() {
       out.push({ icon: '💶', text: `${parts.join(' e ')} da incassare`, meta: euro(total), to: '/quote' });
     }
     return out;
-  }, [lastMatch, lastStats, nextMatch, callup, lastTraining, lastAttendance, attLoading, openPayments, openFines, role, canAttend, seesFinance, now, isTrainer, recentLoads, loadsLoading, pastEvents]);
+  }, [lastMatch, lastStats, nextMatch, callup, lastTraining, lastAttendance, attLoading, openPayments, openFines, role, canAttend, seesFinance, now]);
 
   /* ---------- novità: massimo quattro righe ---------- */
   const news = useMemo(() => {
