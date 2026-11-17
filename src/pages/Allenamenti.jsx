@@ -34,7 +34,8 @@ export default function Allenamenti() {
   const q = useMemo(() => [where('date', '>=', seasonStart(club.season)), orderBy('date', 'desc'), limit(500)], [club.season]);
   const { data: events, loading, error } = useCollection('events', q);
   const sessions = useMemo(() => events.filter((e) => e.type === 'training'), [events]);
-  const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []));
+  // La rosa serve solo a chi registra le presenze (il preparatore no).
+  const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []), canAttend);
   // Le sedute registrate prima del riepilogo lo ricevono una volta sola.
   useEffect(() => {
     if (!canAttend || loading) return;
@@ -133,7 +134,7 @@ export default function Allenamenti() {
       {openPast && (
         <div className="plist">
           {past.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past
-            onLoad={canLoad && loadable(s) ? () => setLoadFor(s) : null} load={votesOf.get(s.id)} />)}
+            onLoad={canLoad && loadable(s) ? () => setLoadFor(s) : null} load={votesOf.get(s.id)} counts={canAttend || canWrite} waiting={canLoad && !canAttend && !loadable(s)} />)}
         </div>
       )}
 
@@ -144,7 +145,7 @@ export default function Allenamenti() {
       )}
       {openUpcoming && (
         <div className="plist">
-          {upcoming.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} />)}
+          {upcoming.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} onAnnounce={canWrite ? () => announce(s) : null} counts={canAttend || canWrite} />)}
         </div>
       )}
 
@@ -176,7 +177,9 @@ export default function Allenamenti() {
   );
 }
 
-const SessionRow = ({ s, onAttend, onDelete, onAnnounce, onLoad, load, past }) => {
+// `counts`: presenti e assenti della seduta (non per il preparatore, che vede solo il carico);
+// `waiting`: seduta passata ancora senza presenze del mister.
+const SessionRow = ({ s, onAttend, onDelete, onAnnounce, onLoad, load, past, counts = true, waiting = false }) => {
   const sum = s.attendanceSummary;
   const recorded = (sum?.total || 0) > 0;
   const absent = recorded ? sum.total - sum.present : 0;
@@ -185,17 +188,18 @@ const SessionRow = ({ s, onAttend, onDelete, onAnnounce, onLoad, load, past }) =
   return (
     <div className="prow">
       <span className="prow__num">{recorded ? '✓' : past ? '!' : '🏃'}</span>
-      <span className="prow__body" onClick={onAttend || undefined} style={onAttend ? { cursor: 'pointer' } : undefined}>
+      <span className="prow__body" onClick={onAttend || onLoad || undefined} style={onAttend || onLoad ? { cursor: 'pointer' } : undefined}>
         <span className="prow__name">{capitalize(fmtShort(s.date))} · {fmtTime(s.date)}</span>
         <span className="prow__meta">
           <span>{s.venue}</span>
           {s.focus && <span>🎯 {s.focus}</span>}
-          {recorded && <span>{sum.present} presenti · {absent} assenti</span>}
+          {recorded && counts && <span>{sum.present} presenti · {absent} assenti</span>}
         </span>
       </span>
       {onAnnounce && !past && <button className="iconbtn" aria-label="Avvisa il gruppo" title="Avvisa il gruppo" onClick={onAnnounce}>💬</button>}
       {s.cancelled ? <Badge tone="red">Annullata</Badge>
-        : onAttend && <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>}
+        : onAttend ? <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>
+          : waiting && <span title="In attesa delle presenze del mister"><Badge tone="grey">In attesa</Badge></span>}
       {onLoad && (
         <button className={`badge badge--${votes >= sum.present ? 'green' : votes ? 'orange' : 'red'}`}
           style={{ border: 0, cursor: 'pointer', minHeight: 32 }} aria-label={`Carico RPE: ${votes} voti su ${sum.present}`} onClick={onLoad}>

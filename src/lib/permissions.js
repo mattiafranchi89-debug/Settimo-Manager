@@ -15,6 +15,9 @@ export const ROLES = {
 };
 
 export const STAFF_ROLES = ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach', 'team_manager'];
+// Chi lavora sui dati dei giocatori (rosa, presenze, minutaggio, convocazioni,
+// avversari). Il preparatore atletico no: vede solo le sedute e il carico sRPE.
+const TEAM_ROLES = STAFF_ROLES.filter((r) => r !== 'athletic_trainer');
 
 // permission -> roles allowed
 const MATRIX = {
@@ -23,7 +26,7 @@ const MATRIX = {
   'audit.read': ['admin', 'head_coach'],
 
   // La rosa completa, con infortuni e scadenze, resta allo staff.
-  'players.read': [...STAFF_ROLES, 'sporting_director'],
+  'players.read': [...TEAM_ROLES, 'sporting_director'],
   'players.write': ['admin', 'head_coach', 'team_manager'],
   // Nuovi giocatori: firestore.rules consente di crearli solo all'amministratore.
   'players.create': ['admin'],
@@ -34,14 +37,14 @@ const MATRIX = {
   'documents.delete': ['admin', 'team_manager'],
   'players.contacts': ['admin', 'head_coach', 'team_manager'],
 
-  'medical.read': ['admin', 'head_coach', 'athletic_trainer'],
-  'medical.write': ['admin', 'athletic_trainer'],
+  'medical.read': ['admin', 'head_coach'],
+  'medical.write': ['admin'],
 
-  'events.write': ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'team_manager'],
-  'attendance.write': ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach'],
+  'events.write': ['admin', 'head_coach', 'assistant_coach', 'team_manager'],
+  'attendance.write': ['admin', 'head_coach', 'assistant_coach', 'gk_coach'],
 
   // Carico interno (sRPE): lo compila il preparatore atletico dopo le presenze
-  // del mister; lo leggono anche allenatore e amministratore, come i dati medici.
+  // del mister; lo leggono anche allenatore e amministratore.
   'load.read': ['admin', 'head_coach', 'athletic_trainer'],
   'load.write': ['admin', 'athletic_trainer'],
 
@@ -54,8 +57,8 @@ const MATRIX = {
   'matchstats.write': ['admin', 'head_coach', 'assistant_coach'],
 
   // Scheda avversari: preparazione della partita, resta allo staff.
-  'scouting.read': [...STAFF_ROLES, 'sporting_director'],
-  'scouting.write': STAFF_ROLES,
+  'scouting.read': [...TEAM_ROLES, 'sporting_director'],
+  'scouting.write': TEAM_ROLES,
 
   'documents.write': ['admin', 'team_manager'],
   'finance.read': ['admin', 'team_manager', 'sporting_director'],
@@ -80,6 +83,17 @@ const PLAYER_VIEW_ROLES = ['player', 'readonly'];
 export const isPlayerView = (role) => PLAYER_VIEW_ROLES.includes(role);
 
 /**
+ * Vista del preparatore atletico: le sedute e il carico sRPE, nient'altro.
+ * Niente rosa, convocazioni, avversari, partite, statistiche di presenze e
+ * minutaggio: dei giocatori vede solo i nomi dei presenti da compilare.
+ * Le pagine fuori elenco riportano alla Home (vedi main.jsx).
+ */
+const TRAINER_VIEW_ROLES = ['athletic_trainer'];
+export const isTrainerView = (role) => TRAINER_VIEW_ROLES.includes(role);
+const TRAINER_PATHS = ['/', '/allenamenti', '/carico', '/impostazioni'];
+export const pathAllowed = (role, pathname = '/') => !isTrainerView(role) || TRAINER_PATHS.includes(pathname.replace(/\/+$/, '') || '/');
+
+/**
  * Menu dello staff a gruppi: poche voci, ognuna una sezione con le sue
  * schede interne (vedi SECTIONS). Le pagine «figlie» (partite, statistiche,
  * comunicati…) restano raggiungibili dalle schede e dai link diretti.
@@ -93,6 +107,13 @@ const NAV_STAFF = [
   { to: '/cassa', label: 'Cassa', icon: '💶', all: true, group: 'Società' },
   { to: '/documenti', label: 'Documenti', icon: '📁', perm: 'documents.write', group: 'Società' },
   { to: '/impostazioni', label: 'Impostazioni', icon: '⚙️', all: true, group: 'Account' }
+];
+
+const NAV_TRAINER = [
+  { to: '/', label: 'Home', icon: '🏠', all: true },
+  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃', all: true },
+  { to: '/carico', label: 'Carico', icon: '📈', all: true },
+  { to: '/impostazioni', label: 'Il mio account', icon: '⚙️', all: true }
 ];
 
 const NAV_PLAYER = [
@@ -112,6 +133,12 @@ export const TABS_STAFF = [
   { to: '/rosa', label: 'Rosa', icon: '👥' },
   { to: '/campionato', label: 'Campionato', icon: '🏆' },
   { to: '/statistiche', label: 'Statistiche', icon: '📊', perm: 'players.read' }
+];
+
+const TABS_TRAINER = [
+  { to: '/', label: 'Home', icon: '🏠' },
+  { to: '/allenamenti', label: 'Allenamenti', icon: '🏃' },
+  { to: '/carico', label: 'Carico', icon: '📈' }
 ];
 
 export const TABS_PLAYER = [
@@ -155,13 +182,13 @@ const TABS_CLASSIC = [
   { to: '/calendario', label: 'Calendario', icon: '📅' }
 ];
 
-export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : isClassicUx(role) ? TABS_CLASSIC : TABS_STAFF)
+export const tabsFor = (role) => (isPlayerView(role) ? TABS_PLAYER : isTrainerView(role) ? TABS_TRAINER : isClassicUx(role) ? TABS_CLASSIC : TABS_STAFF)
   .filter((t) => !t.perm || can(role, t.perm));
 
 export const NAV = NAV_STAFF;
 
 export function navFor(role, user) {
-  const list = isPlayerView(role) ? NAV_PLAYER : isClassicUx(role) ? NAV_CLASSIC : NAV_STAFF;
+  const list = isPlayerView(role) ? NAV_PLAYER : isTrainerView(role) ? NAV_TRAINER : isClassicUx(role) ? NAV_CLASSIC : NAV_STAFF;
   return list.filter((i) => (i.linked ? !!user?.playerId : i.all || can(role, i.perm)));
 }
 
@@ -210,7 +237,7 @@ export function sectionOf(pathname = '/') {
 
 /** Schede visibili per la pagina corrente, solo se sono almeno due. */
 export function sectionTabs(pathname, role) {
-  if (isClassicUx(role)) return [];
+  if (isClassicUx(role) || isTrainerView(role)) return [];
   const root = sectionOf(pathname);
   const list = (SECTIONS[root] || []).filter((t) => t.all || (t.anyPerm ? t.anyPerm.some((p) => can(role, p)) : can(role, t.perm)));
   return list.length > 1 && list.some((t) => t.to === pathname) ? list : [];

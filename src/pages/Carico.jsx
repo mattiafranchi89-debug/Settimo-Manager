@@ -60,7 +60,7 @@ export default function Carico() {
 
   const download = () => {
     const day = new Date().toISOString().slice(0, 10);
-    downloadXlsx(`carico-srpe-${String(club.season || 'stagione').replace(/\W+/g, '-')}-${day}.xlsx`, exportSheets(rows));
+    downloadXlsx(`carico-srpe-${String(club.season || 'stagione').replace(/\W+/g, '-')}-${day}.xlsx`, exportSheets(rows, { reasons: canAttend }));
     audit(user, 'load.export', 'trainingLoad', { righe: rows.length }).catch(() => {});
   };
 

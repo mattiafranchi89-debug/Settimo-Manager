@@ -5,6 +5,7 @@ import { useClub, useCollection, audit } from '../lib/db';
 import { Sheet, Button, Field, Input, Alert, Loading, useToast } from './ui';
 import { fmtShort, fmtLong, capitalize, toDate } from '../lib/format';
 import { errorText } from '../pages/Rosa';
+import { can } from '../lib/permissions';
 import { RPE_VALUES, RPE_LABELS, validRpe, validMinutes, parseNum, presentIds, loadable, statusLabel } from '../lib/srpe';
 
 const num = (v, d = 1) => (v == null ? '–' : v.toLocaleString('it-IT', { maximumFractionDigits: d }));
@@ -171,7 +172,8 @@ export default function CaricoSheet({ session, user, onClose }) {
 
       {away.length > 0 && (
         <p style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 10 }}>
-          Non presenti: {away.map((pid) => `${names[pid] || 'giocatore non più in rosa'} (${statusLabel(session.attendanceSummary.absent?.[pid]).toLowerCase()})`).join(', ')}.
+          {/* Il motivo dell'assenza (giustificato, infortunato) solo a chi gestisce le presenze. */}
+          Non presenti: {away.map((pid) => `${names[pid] || 'giocatore non più in rosa'}${can(user.role, 'attendance.write') ? ` (${statusLabel(session.attendanceSummary.absent?.[pid]).toLowerCase()})` : ''}`).join(', ')}.
           Se qualcuno manca o è di troppo, va corretto nelle presenze.
         </p>
       )}

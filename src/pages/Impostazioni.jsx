@@ -14,8 +14,8 @@ import { errorText } from './Rosa';
 import { storage } from '../lib/firebase';
 import { useAuth } from '../lib/auth';
 import { useClub, useCollection, setDocument, updateDocument, serverTimestamp, audit, DEFAULT_CLUB } from '../lib/db';
-import PushCard from '../components/PushCard';
-import { isStaff, TOOLS, can as canDo, isClassicUx } from '../lib/permissions';
+import PushCard, { TRAINER_PUSH } from '../components/PushCard';
+import { isStaff, TOOLS, can as canDo, isClassicUx, isTrainerView } from '../lib/permissions';
 import { useNavigate as useNav } from 'react-router-dom';
 import { Card, Button, Field, Input, Select, Badge, Alert, Loading, useToast } from '../components/ui';
 import { ROLES } from '../lib/permissions';
@@ -180,7 +180,9 @@ export default function Impostazioni() {
           </table>
           <Button variant="ghost" onClick={logout} style={{ marginTop: 12 }}>Esci</Button>
         </Card>
-        <PushCard staff={isStaff(user.role)} />
+        {isTrainerView(user.role)
+          ? <PushCard staff={false} text={TRAINER_PUSH} />
+          : <PushCard staff={isStaff(user.role)} />}
         <ToolsCard role={user.role} />
         <Alert level="info">Solo un amministratore può modificare la configurazione della società.</Alert>
       </>
