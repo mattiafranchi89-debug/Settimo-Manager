@@ -1,188 +1,57 @@
 {
-  "generatedAt": "2026-11-14T07:59:00+01:00",
-  "availableFrom": "2026-11-10",
+  "generatedAt": "2026-11-17T08:00:00+01:00",
+  "availableFrom": "2026-11-17",
   "lastMatch": {
-    "date": "2026-11-08",
-    "opponent": "Buccinasco",
-    "home": false,
-    "score": "3-3",
-    "competition": "Prima Categoria girone A – 9ª giornata"
-  },
-  "next": {
-    "opponent": "Frog Milano",
     "date": "2026-11-15",
-    "time": "14:30",
+    "opponent": "Frog Milano",
     "home": true,
-    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo",
-    "address": "Via dello Sport n. 1, Cornaredo",
+    "score": "",
     "competition": "Prima Categoria girone A – 10ª giornata"
   },
+  "next": {
+    "opponent": "Centro Schuster",
+    "date": "2026-11-22",
+    "time": "14:30",
+    "home": false,
+    "venue": "Centro Schuster – Campo A, Milano (da confermare)",
+    "address": "Via Morell S.J. Padre Lodovico n. 2, Milano",
+    "competition": "Prima Categoria girone A – 11ª giornata"
+  },
   "standing": {
-    "pos": 7,
+    "pos": 11,
     "of": 16,
-    "pts": 13,
+    "pts": 9,
     "g": 9,
-    "v": 3,
-    "n": 4,
-    "p": 2,
-    "gf": 17,
-    "gs": 13,
+    "v": 2,
+    "n": 3,
+    "p": 4,
+    "gf": 15,
+    "gs": 18,
     "asOf": "Comunicato Ufficiale n. 48 del 12/11/2026"
   },
   "results": [
-    {
-      "date": "2026-11-08",
-      "home": true,
-      "against": "Pro Peschiera Borromeo",
-      "gf": 0,
-      "gs": 0,
-      "competition": ""
-    },
-    {
-      "date": "2026-11-01",
-      "home": false,
-      "against": "Partizan Bonola",
-      "gf": 3,
-      "gs": 4,
-      "competition": ""
-    },
-    {
-      "date": "2026-10-25",
-      "home": true,
-      "against": "Iris 1914",
-      "gf": 4,
-      "gs": 0,
-      "competition": ""
-    },
-    {
-      "date": "2026-10-18",
-      "home": false,
-      "against": "Centro Schuster",
-      "gf": 3,
-      "gs": 1,
-      "competition": ""
-    },
-    {
-      "date": "2026-10-11",
-      "home": true,
-      "against": "Ausonia Academy",
-      "gf": 2,
-      "gs": 5,
-      "competition": ""
-    },
-    {
-      "date": "2026-10-04",
-      "home": true,
-      "against": "Buccinasco",
-      "gf": 0,
-      "gs": 0,
-      "competition": ""
-    },
-    {
-      "date": "2026-09-30",
-      "home": true,
-      "against": "Villa",
-      "gf": 1,
-      "gs": 2,
-      "competition": "Coppa"
-    },
-    {
-      "date": "2026-09-27",
-      "home": false,
-      "against": "Polisportiva Or.Pa.S.",
-      "gf": 2,
-      "gs": 0,
-      "competition": ""
-    },
-    {
-      "date": "2026-09-20",
-      "home": true,
-      "against": "Polisportiva di Nova",
-      "gf": 1,
-      "gs": 1,
-      "competition": ""
-    },
-    {
-      "date": "2026-09-16",
-      "home": true,
-      "against": "Garibaldina 1932",
-      "gf": 2,
-      "gs": 1,
-      "competition": "Coppa"
-    },
-    {
-      "date": "2026-09-13",
-      "home": false,
-      "against": "Garibaldina 1932",
-      "gf": 2,
-      "gs": 2,
-      "competition": ""
-    }
+    { "date": "2026-11-08", "home": true, "against": "Partizan Bonola", "gf": 0, "gs": 1, "competition": "" },
+    { "date": "2026-11-01", "home": false, "against": "Iris 1914", "gf": 2, "gs": 1, "competition": "" },
+    { "date": "2026-10-29", "home": true, "against": "Libertas Casiratese", "gf": 2, "gs": 3, "competition": "Coppa" },
+    { "date": "2026-10-25", "home": true, "against": "Ausonia Academy", "gf": 1, "gs": 1, "competition": "" },
+    { "date": "2026-10-18", "home": true, "against": "Frog Milano", "gf": 1, "gs": 3, "competition": "" },
+    { "date": "2026-10-11", "home": false, "against": "Buccinasco", "gf": 2, "gs": 2, "competition": "" },
+    { "date": "2026-10-04", "home": true, "against": "Polisportiva Or.Pa.S.", "gf": 3, "gs": 1, "competition": "" },
+    { "date": "2026-09-27", "home": false, "against": "Polisportiva di Nova", "gf": 2, "gs": 3, "competition": "" },
+    { "date": "2026-09-20", "home": true, "against": "Garibaldina 1932", "gf": 3, "gs": 5, "competition": "" }
   ],
   "suspended": [
-    "Maisto Luigi – nessuna squalifica: diffidato (IV ammonizione, C.U. n. 48 del 12/11, gare dell'8/11); è disponibile contro di noi ma alla prossima ammonizione salta una gara"
+    "Boni Gianluca – squalifica per 5 gare effettive (C.U. n. 43 del 29/10, gara del 25/10 con l'Ausonia): scontate 8/11 e, se disputata, 15/11; resta fuori contro di noi (gara della squalifica n. 4 su 5)"
   ],
-  "notes": "Frog Milano è 7ª con 13 punti (17 gol fatti, 13 subiti) e arriva da 2 pareggi e 1 sconfitta nelle ultime 3, mentre il Settimo è 1° a 20 punti dopo il 3-3 di Buccinasco. Nessun giocatore della Frog squalificato per la gara del 15/11; Maisto Luigi è diffidato (alla prossima ammonizione salta una gara). Il Programma gare 13–16 novembre conferma Settimo–Frog domenica 15/11 alle 14:30 al Pertini di Cornaredo (campo n. 1); il C.U. n. 49 del 13/11 non contiene provvedimenti né variazioni per il girone A di Prima Categoria.",
+  "notes": "Il Centro Schuster è 11° con 9 punti (15 gol fatti, 18 subiti) e in casa ha vinto solo con l'Or.Pa.S.; nelle ultime 3 di campionato 1 vittoria, 1 pareggio e 1 sconfitta, ed è uscito dalla Coppa Lombardia (2-3 con la Libertas Casiratese). Avversario, data e trasferta sono dedotti dal calendario Berger del girone (confermato fino alla 10ª giornata): il Programma gare del 20–23/11 non è ancora in cache, quindi orario e campo (Campo A di via Padre Lodovico Morell, Milano) vanno confermati. Mancano ancora i risultati, la classifica e il Giudice Sportivo della 10ª giornata (Settimo–Frog e Centro Schuster del 15/11, C.U. atteso giovedì); nei comunicati non risultano diffidati dello Schuster in campionato.",
   "sources": [
-    {
-      "label": "Programma gare 13–16 novembre",
-      "url": "https://www.crlombardia.it/news/33804/programma-gare-dal-13-al-16-novembre-2026"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 49 (nessun provvedimento per il girone A)",
-      "url": "https://www.crlombardia.it/documenti/33806/comunicato-ufficiale-n-49"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 48 – Classifiche",
-      "url": "https://www.crlombardia.it/storage/uploads/files/33781/6af5ca46abdc6_01.Classifiche_CU48.pdf"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 48 (risultati 9ª giornata e Giudice Sportivo)",
-      "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 45 – Classifiche",
-      "url": "https://www.crlombardia.it/storage/uploads/files/33746/6aec8c10a8e01_Classifiche CU_45 del 05.11.2026.pdf"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 45",
-      "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 43",
-      "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 41",
-      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 36",
-      "url": "https://www.crlombardia.it/documenti/33631/comunicato-ufficiale-n-36"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 34",
-      "url": "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 33 (Coppa)",
-      "url": "https://www.crlombardia.it/documenti/33590/comunicato-ufficiale-n-33"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 31",
-      "url": "https://www.crlombardia.it/documenti/33551/comunicato-ufficiale-n-31"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 28",
-      "url": "https://www.crlombardia.it/documenti/33510/comunicato-ufficiale-n-28"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 27 (Coppa)",
-      "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 25",
-      "url": "https://www.crlombardia.it/documenti/33470/comunicato-ufficiale-n-25"
-    }
+    { "label": "Comunicato Ufficiale n. 48 – Classifiche", "url": "https://www.crlombardia.it/storage/uploads/files/33781/6af5ca46abdc6_01.Classifiche_CU48.pdf" },
+    { "label": "Comunicato Ufficiale n. 48 (risultati 9ª giornata)", "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48" },
+    { "label": "Comunicato Ufficiale n. 45 (risultati 8ª giornata)", "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45" },
+    { "label": "Comunicato Ufficiale n. 44 (Coppa Lombardia: Centro Schuster–Libertas Casiratese 2-3)", "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44" },
+    { "label": "Comunicato Ufficiale n. 43 (7ª giornata e squalifica Boni)", "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43" },
+    { "label": "Comunicato Ufficiale n. 41 (6ª giornata)", "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41" },
+    { "label": "Programma gare 22–26 ottobre (campo del Centro Schuster)", "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026" },
+    { "label": "Programma gare 16–19 novembre (nessuna gara del Settimo)", "url": "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026" }
   ]
 }
