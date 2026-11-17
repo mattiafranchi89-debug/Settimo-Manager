@@ -31,7 +31,9 @@ export default function LineChart({ series = [], xLabels = [], xTips = null, xTi
   const w = width - m.l - m.r, h = height - m.t - m.b;
   const geo = useMemo(() => {
     const max = Math.max(1, ...series.flatMap((s) => s.values.filter(has)));
-    const step = max <= 10 ? 2 : max <= 30 ? 5 : max <= 60 ? 10 : 20;
+    // Oltre 100 (carichi da centinaia) un passo «tondo» da circa cinque linee.
+    const p10 = 10 ** Math.floor(Math.log10(max / 5));
+    const step = max <= 10 ? 2 : max <= 30 ? 5 : max <= 60 ? 10 : max <= 100 ? 20 : [1, 2, 5, 10].map((k) => k * p10).find((k) => max / k <= 5);
     const top = Math.ceil(max / step) * step;
     const ticks = Array.from({ length: top / step + 1 }, (_, i) => i * step);
     const x = (i) => m.l + (n > 1 ? (i / (n - 1)) * w : w / 2);

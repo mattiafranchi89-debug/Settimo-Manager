@@ -19,6 +19,9 @@ const idsWhere = async (col, field, value) =>
 // amministratore e allenatore; formazione e scheda gara solo gli allenatori.
 const CALLUP_DELETE = ['admin', 'head_coach'];
 const COACHES = ['admin', 'head_coach', 'assistant_coach', 'gk_coach'];
+// Il carico (sRPE) lo leggono e lo eliminano solo amministratore e preparatore:
+// per gli altri resta, e senza la seduta non compare più da nessuna parte.
+const LOAD_WRITERS = ['admin', 'athletic_trainer'];
 
 /**
  * Removes a match or training together with everything hanging off it:
@@ -40,13 +43,17 @@ export async function deleteEventCascade(eventId, { role, season } = {}) {
 
   // Anche eliminare un documento che non esiste passa dalle regole: si tocca
   // solo ciò che c'è.
-  const [lineup, stats] = await Promise.all([getDoc(doc(db, 'lineups', eventId)), getDoc(doc(db, 'matchStats', eventId))]);
+  const [lineup, stats, load] = await Promise.all([
+    getDoc(doc(db, 'lineups', eventId)), getDoc(doc(db, 'matchStats', eventId)),
+    LOAD_WRITERS.includes(role) ? getDoc(doc(db, 'trainingLoad', eventId)) : null
+  ]);
   if ((lineup.exists() || stats.exists()) && !COACHES.includes(role)) {
     throw new Error('Questa partita ha già formazione o scheda gara: può eliminarla solo l\'allenatore o l\'amministratore.');
   }
   const closedSheet = stats.exists() && !!stats.data()?.closed;
   if (lineup.exists()) refs.push(lineup.ref);
   if (stats.exists()) refs.push(stats.ref);
+  if (load?.exists()) refs.push(load.ref);
   refs.push(doc(db, 'events', eventId));
   const n = await deleteRefs(refs, updates);
 

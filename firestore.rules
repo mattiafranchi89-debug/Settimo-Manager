@@ -30,6 +30,8 @@ service cloud.firestore {
     function isFinance() { return active() && role() in ['admin','team_manager','sporting_director']; }
     // Writing it: only who actually collects the money.
     function isTreasurer() { return active() && role() in ['admin','team_manager']; }
+    // Carico interno (sRPE): lo compila il preparatore atletico.
+    function isLoadWriter() { return active() && role() in ['admin','athletic_trainer']; }
 
     // uid of the player record linked to the signed-in user, if any
     function myPlayerId() { return signedIn() ? profile().playerId : null; }
@@ -107,6 +109,20 @@ service cloud.firestore {
     match /attendance/{docId} {
       allow read: if active();
       allow write: if isStaff();
+    }
+
+    // ---------- carico interno (sRPE) ----------
+    // RPE e minuti di ogni presente, un documento per seduta. Si compila solo
+    // su una seduta con le presenze già registrate: contano i presenti del
+    // mister. Lo leggono preparatore, allenatore e amministratore.
+    match /trainingLoad/{eventId} {
+      allow read: if isMedical();
+      allow create, update: if isLoadWriter()
+                            && request.resource.data.eventId == eventId
+                            && request.resource.data.players is map
+                            && get(/databases/$(database)/documents/events/$(eventId)).data
+                                 .get('attendanceSummary', {}).get('total', 0) > 0;
+      allow delete: if isLoadWriter();
     }
 
     // ---------- call-ups ----------

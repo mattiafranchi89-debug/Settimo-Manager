@@ -8,6 +8,8 @@ import { can } from '../lib/permissions';
 import { callupFor } from '../lib/callup';
 import { ResultForm } from './Partite';
 import { Attendance } from './Allenamenti';
+import CaricoSheet from '../components/CaricoSheet';
+import { loadable } from '../lib/srpe';
 import { errorText } from './Rosa';
 
 const PUBLISHED = ['pubblicata', 'condivisa', 'parzialmente_confermata', 'completamente_confermata', 'chiusa'];
@@ -150,6 +152,7 @@ function Training({ ev }) {
   const toast = useToast();
   const role = user?.role;
   const [attending, setAttending] = useState(false);
+  const [loadOpen, setLoadOpen] = useState(false);
   const [moving, setMoving] = useState(false);
   const [newDate, setNewDate] = useState(toInputValue(ev.date));
   const canEdit = can(role, 'events.write');
@@ -164,6 +167,12 @@ function Training({ ev }) {
   const { data: rows } = useCollection('attendance', attQ);
   const { data: players } = useCollection('players', useMemo(() => [where('active', '==', true)], []), canAttend);
   const present = rows.filter((r) => r.status === 'presente').length;
+  // Carico (sRPE): dopo le presenze, per chi lo compila (la vista del mister non cambia).
+  const seesLoad = can(role, 'load.write');
+  const { data: load } = useDoc('trainingLoad', ev.id, seesLoad);
+  const ready = loadable(ev);
+  const presentNow = ready ? ev.attendanceSummary.total - Object.keys(ev.attendanceSummary.absent || {}).length : 0;
+  const votes = ready ? Object.entries(load?.players || {}).filter(([pid, e]) => e.rpe != null && !ev.attendanceSummary.absent?.[pid] && ev.attendanceSummary.players.includes(pid)).length : 0;
   const date = toDate(ev.date);
   const started = date && date.getTime() - Date.now() < 2 * 3600000;
 
@@ -205,9 +214,17 @@ function Training({ ev }) {
           tone={rows.length ? 'green' : started ? 'orange' : 'grey'}
           meta={rows.length ? `${rows.length - present} assenti` : 'Tutti presenti salvo chi segni assente'}
           onClick={canAttend ? () => setAttending(true) : null} />
+        {seesLoad && (
+          <Step icon="📈" title="Carico (RPE)"
+            status={!ready ? 'Dopo le presenze' : `${votes}/${presentNow} voti`}
+            tone={!ready ? 'grey' : votes >= presentNow ? 'green' : votes ? 'orange' : 'red'}
+            meta={!ready ? 'Si compila sui presenti segnati dal mister' : 'RPE da 0 a 10 e minuti di ogni presente'}
+            onClick={() => setLoadOpen(true)} disabled={!ready} />
+        )}
       </div>}
 
       {attending && <Attendance session={ev} players={players} user={user} onClose={() => setAttending(false)} />}
+      {loadOpen && <CaricoSheet session={ev} user={user} onClose={() => setLoadOpen(false)} />}
     </>
   );
 }

@@ -40,6 +40,11 @@ const MATRIX = {
   'events.write': ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'team_manager'],
   'attendance.write': ['admin', 'head_coach', 'assistant_coach', 'athletic_trainer', 'gk_coach'],
 
+  // Carico interno (sRPE): lo compila il preparatore atletico dopo le presenze
+  // del mister; lo leggono anche allenatore e amministratore, come i dati medici.
+  'load.read': ['admin', 'head_coach', 'athletic_trainer'],
+  'load.write': ['admin', 'athletic_trainer'],
+
   'callup.draft': ['admin', 'head_coach', 'assistant_coach', 'gk_coach', 'team_manager'],
   'callup.publish': ['admin', 'head_coach'],
   'callup.override': ['admin', 'head_coach'],
@@ -176,7 +181,8 @@ export const SECTIONS = {
     { to: '/statistiche', label: 'Giocatori', perm: 'players.read' },
     { to: '/analisi', label: 'Andamento', perm: 'players.read' },
     // Il report usa presenze e schede gara: solo per chi le gestisce (come nella pagina).
-    { to: '/report', label: 'Report', anyPerm: ['attendance.write', 'matchstats.write'] }
+    { to: '/report', label: 'Report', anyPerm: ['attendance.write', 'matchstats.write'] },
+    { to: '/carico', label: 'Carico', perm: 'load.read' }
   ],
   '/campionato': [
     { to: '/campionato', label: 'Classifica', all: true },
@@ -192,7 +198,7 @@ export const SECTIONS = {
 /** La voce di menu a cui appartiene una pagina (per evidenziarla). */
 const PARENT = [
   [/^\/(partite|allenamenti|convocazioni|evento|formazioni)(\/|$)/, '/calendario'],
-  [/^\/(statistiche|analisi|report)(\/|$)/, '/statistiche'],
+  [/^\/(statistiche|analisi|report|carico)(\/|$)/, '/statistiche'],
   [/^\/(avversari|comunicati)(\/|$)/, '/campionato'],
   [/^\/quote(\/|$)/, '/cassa'],
   [/^\/(importa|registro|diagnostica)(\/|$)/, '/impostazioni']
