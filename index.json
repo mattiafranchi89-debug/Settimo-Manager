@@ -2142,16 +2142,82 @@
         }
       ],
       "fetchedAt": "2026-11-16T20:57:01+00:00"
+    },
+    "33813": {
+      "id": "33813",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 50 CRL",
+      "number": 50,
+      "date": "2026-11-17",
+      "url": "https://www.crlombardia.it/documenti/33813/comunicato-ufficiale-n-50",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 50 del 17.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698a23e44_Comunicato Ufficiale Nr. 50 del 17.11.2026.pdf",
+          "pages_chars": 138848,
+          "settimo_mentions": 0,
+          "txt": "docs/33813/Comunicato_Ufficiale_Nr._50_del_17.11.2026.txt"
+        },
+        {
+          "name": "01_Classifiche C5_CU50.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698a361cd_01_Classifiche C5_CU50.pdf",
+          "pages_chars": 12742,
+          "settimo_mentions": 0,
+          "txt": "docs/33813/01_Classifiche_C5_CU50.txt"
+        },
+        {
+          "name": "02_Coppa_U19_Regionale_CB_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698ae902a_02_Coppa_U19_Regionale_CB_Tabellone.171126.pdf",
+          "pages_chars": 11117,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Coppa_U19_Provinciale_CA_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b04e94_03_Coppa_U19_Provinciale_CA_Tabellone.171126.pdf",
+          "pages_chars": 20649,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Coppa_U17_Elite_UV_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b14dc7_04_Coppa_U17_Elite_UV_Tabellone.171126.pdf",
+          "pages_chars": 2109,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Coppa_U17_Regionale_CL_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b1fbb7_05_Coppa_U17_Regionale_CL_Tabellone.171126.pdf",
+          "pages_chars": 8515,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Coppa_U15_Elite_UW_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b324dd_06_Coppa_U15_Elite_UW_Tabellone.171126.pdf",
+          "pages_chars": 2029,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "07_Coppa_U15_Regionale_DL_Tabellone.171126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b3b75d_07_Coppa_U15_Regionale_DL_Tabellone.171126.pdf",
+          "pages_chars": 8911,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU50.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33813/6afc698b3cf68_Maglie personalizzate CU50.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-11-17T19:45:59+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-17T13:49:55+00:00",
+  "lastRun": "2026-11-17T19:45:59+00:00",
   "homepage": [
+    "33813",
     "33806",
     "33781",
     "33778",
     "33771",
-    "33746",
     "33812",
     "33804",
     "33777"
