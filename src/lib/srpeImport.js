@@ -4,8 +4,9 @@
 // dal Registro si prendono le righe del giorno della seduta.
 // Nulla si salva da qui: le righe riempiono il modulo, poi si controlla e si salva.
 
-import { parseNum, validRpe, validMinutes } from './srpe';
-import { isoOfSerial } from './xlsxRead';
+import { parseNum, validRpe, validMinutes, loadable, presentIds } from './srpe';
+import { isoOfSerial, readXlsx } from './xlsxRead';
+import { dayIso } from './format';
 
 const norm = (s = '') => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 const words = (s) => norm(s).split(' ').filter(Boolean);
@@ -55,13 +56,26 @@ export function rowsFromText(text = '') {
   return lines.map(smartSplit);
 }
 
+/** Un file scelto dal telefono → celle: .xlsx (il foglio «Registro» o il primo), altrimenti testo (.csv, .txt). */
+export async function rowsFromFile(file) {
+  if (/\.xlsx$/i.test(file.name)) {
+    const sheets = await readXlsx(await file.arrayBuffer());
+    const sheet = sheets.find((sh) => /registro/i.test(sh.name))
+      || sheets.find((sh) => sh.rows.slice(0, 20).some((r) => (r || []).some((c) => /^(giocatore|nome|atleta)$/i.test(String(c ?? '').trim()))))
+      || sheets[0];
+    return sheet?.rows || [];
+  }
+  return rowsFromText(await file.text());
+}
+
 const HEAD = {
   name: /^(giocatore|nome|atleta|calciatore|nominativo|cognome e nome|nome e cognome)$/,
   surname: /^cognome$/,
   rpe: /^rpe\b|^voto\b|^rpe$/,
   minutes: /^minut|^durata|^min\b/,
   note: /^note?$|^nota\b|^commento/,
-  date: /^data$/,
+  // «Data» nel foglio nuovo, «Giorno» (con la data) in quello vecchio; «Giorno sett.» no.
+  date: /^(data|giorno|data seduta|data allenamento)$/,
   presence: /^presenz/
 };
 
@@ -85,7 +99,8 @@ export function isoOfCell(v) {
  * Restituisce { entries: [{ line, name, rpe, minutes, note, error }], dates, skipped (assenti), empty (senza dati) }.
  */
 export function entriesFromRows(rows = [], { date = null } = {}) {
-  const at = rows.slice(0, 6).findIndex((r) => {
+  // L'intestazione può non essere in cima (tabelle con un titolo o righe vuote sopra).
+  const at = rows.slice(0, 20).findIndex((r) => {
     const cells = (r || []).map((c) => norm(c ?? ''));
     return cells.some((c) => HEAD.name.test(c) || HEAD.surname.test(c)) && cells.some((c) => HEAD.rpe.test(c));
   });
@@ -93,12 +108,21 @@ export function entriesFromRows(rows = [], { date = null } = {}) {
   const find = (re, not) => (head ? head.findIndex((c) => re.test(c) && !(not && not.test(c))) : -1);
   const col = head ? {
     name: find(HEAD.name), surname: find(HEAD.surname), rpe: find(HEAD.rpe, /medio|media/),
-    minutes: find(HEAD.minutes), note: find(HEAD.note), date: find(HEAD.date), presence: find(HEAD.presence)
+    minutes: find(HEAD.minutes), note: find(HEAD.note), date: -1, presence: find(HEAD.presence)
   } : { name: 0, surname: -1, rpe: 1, minutes: 2, note: 3, date: -1, presence: -1 };
+  // La colonna della data è quella, fra «Data» e «Giorno», con più date vere
+  // (nel foglio nuovo «Giorno» contiene «martedì», in quello vecchio la data).
+  if (head) {
+    let best = 0;
+    head.forEach((h, i) => {
+      if (!HEAD.date.test(h)) return;
+      const n = rows.slice(at + 1).filter((r) => isoOfCell((r || [])[i])).length;
+      if (n > best) { best = n; col.date = i; }
+    });
+  }
   // «Cognome» e «Nome» in due colonne: si uniscono.
   const firstName = head && col.surname >= 0 ? head.findIndex((c, i) => i !== col.surname && /^nome$/.test(c)) : -1;
   const cell = (r, i) => (i >= 0 ? r[i] ?? null : null);
-  // La colonna della data conta solo se contiene date vere («Giorno» con «martedì» no).
   const body = rows.slice(at + 1).map((r, k) => ({ r: r || [], line: at + 2 + k, d: col.date >= 0 ? isoOfCell(cell(r || [], col.date)) : null }));
   const dates = new Set(body.map((b) => b.d).filter(Boolean));
   let skipped = 0, empty = 0;
@@ -118,7 +142,7 @@ export function entriesFromRows(rows = [], { date = null } = {}) {
     if (rpe != null && !validRpe(rpe)) error = `RPE «${rawRpe}» non valido (da 0 a 10, a mezzi punti)`;
     else if (minutes != null && !validMinutes(minutes)) error = `minuti «${rawMin}» non validi`;
     else if (rpe == null && minutes == null && !note) { empty += 1; return; } // senza dati (es. «da verificare» vuota)
-    entries.push({ line, name, rpe: error ? null : rpe, minutes: error ? null : minutes, note, error });
+    entries.push({ line, date: d, name, rpe: error ? null : rpe, minutes: error ? null : minutes, note, error });
   });
   return { entries, dates: [...dates].sort(), skipped, empty, header: !!head };
 }
@@ -170,4 +194,51 @@ export function commonMinutes(entries = []) {
   const count = new Map();
   entries.forEach((e) => { if (e.minutes != null) count.set(e.minutes, (count.get(e.minutes) || 0) + 1); });
   return [...count].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0]?.[0] ?? null;
+}
+
+/**
+ * Uno storico intero (il foglio del preparatore con più giorni) diviso per
+ * seduta: per ogni data del file la seduta di quel giorno, i voti abbinati ai
+ * presenti e il documento del carico da salvare, unito a quello già salvato
+ * (i giocatori del file si aggiornano, gli altri restano).
+ * `status`: ready, noattendance (presenze non registrate), nosession, many
+ * (più sedute quel giorno), nomatch (nessun nome abbinato), novotes.
+ */
+export function planHistory(entries = [], { sessions = [], loads = [], names = {} } = {}) {
+  const byDate = new Map();
+  entries.filter((e) => e.date).forEach((e) => byDate.set(e.date, [...(byDate.get(e.date) || []), e]));
+  const loadOf = new Map(loads.map((l) => [l.eventId || l.id, l]));
+  return [...byDate.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([date, list]) => {
+    const base = { date, rows: list.length, votes: list.filter((e) => e.rpe != null).length };
+    if (!base.votes) return { ...base, status: 'novotes' };
+    const same = sessions.filter((s) => s.type === 'training' && !s.cancelled && dayIso(s.date) === date);
+    if (!same.length) return { ...base, status: 'nosession' };
+    if (same.length > 1) return { ...base, status: 'many' };
+    const session = same[0];
+    if (!loadable(session)) return { ...base, session, status: 'noattendance' };
+    const present = presentIds(session);
+    const absent = session.attendanceSummary.players.filter((pid) => !present.includes(pid));
+    const matched = matchEntries(list, { present, absent, names });
+    const ok = matched.filter((e) => e.status === 'ok');
+    const cur = loadOf.get(session.id) || {};
+    const minutes = validMinutes(cur.minutes) ? cur.minutes : commonMinutes(ok);
+    const players = Object.fromEntries(Object.entries(cur.players || {}).map(([pid, x]) => [pid, { ...x }]));
+    ok.forEach((e) => {
+      const x = players[e.pid] || {};
+      if (e.rpe != null) x.rpe = e.rpe;
+      if (e.minutes != null) { if (e.minutes === minutes) delete x.minutes; else x.minutes = e.minutes; }
+      if (e.note) x.note = e.note.slice(0, 300);
+      // Una riga con la sola durata della seduta non aggiunge nulla.
+      if (Object.keys(x).length) players[e.pid] = x; else delete players[e.pid];
+    });
+    return {
+      ...base, session, status: ok.some((e) => e.rpe != null) ? 'ready' : 'nomatch',
+      ok: ok.filter((e) => e.rpe != null).length,
+      replaced: ok.filter((e) => e.rpe != null && cur.players?.[e.pid]?.rpe != null && cur.players[e.pid].rpe !== e.rpe).length,
+      unmatched: matched.filter((e) => ['unknown', 'ambiguous'].includes(e.status) && e.rpe != null).map((e) => e.name),
+      absentRows: matched.filter((e) => e.status === 'absent' && e.rpe != null).map((e) => e.name),
+      errors: matched.filter((e) => e.status === 'error').map((e) => `${e.name}: ${e.error}`),
+      doc: { minutes: minutes ?? null, players }
+    };
+  });
 }

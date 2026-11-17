@@ -118,9 +118,11 @@ export function weekStats(rows = []) {
     const present = list.filter((r) => r.status === 'presente');
     const votes = present.filter((r) => r.rpe != null).length;
     const typical = votes ? sum(ss.filter((s) => s.votes > 0).map((s) => s.tlAvg || 0)) : null;
+    // «TL settimanale medio» del vecchio foglio: la media dei carichi della settimana dei giocatori con almeno un carico.
+    const perPlayer = [...groupBy(list.filter((r) => r.tl != null), 'playerId').values()].map((l) => sum(nums(l, 'tl')));
     return {
       week, monday: list[0].monday, sunday: isoOf(utc(list[0].monday) + 6 * DAY),
-      sessions: ss.length, votes, missing: present.length - votes, tlAvg: avg(nums(list, 'tl')), typical
+      sessions: ss.length, votes, missing: present.length - votes, tlAvg: avg(nums(list, 'tl')), typical, playerAvg: avg(perPlayer)
     };
   });
   out.forEach((w) => {
@@ -190,8 +192,8 @@ export function exportSheets(rows = [], { reasons = true } = {}) {
     },
     {
       name: 'Andamento',
-      columns: [['Settimana', 10], ['Dal', 12], ['Al', 12], ['Sedute', 8], ['Voti RPE', 9], ['Voti mancanti', 13], ['TL medio seduta', 15], ['Carico settimana tipo', 20], ['Variazione', 11]],
-      rows: weeks.map((w) => [w.week, date(w.monday), date(w.sunday), w.sessions, w.votes, w.missing, dec(w.tlAvg), dec(r1(w.typical)), pct(w.change)])
+      columns: [['Settimana', 10], ['Dal', 12], ['Al', 12], ['Sedute', 8], ['Voti RPE', 9], ['Voti mancanti', 13], ['TL medio seduta', 15], ['Carico settimana tipo', 20], ['Variazione', 11], ['TL settimanale medio (giocatore)', 30]],
+      rows: weeks.map((w) => [w.week, date(w.monday), date(w.sunday), w.sessions, w.votes, w.missing, dec(w.tlAvg), dec(r1(w.typical)), pct(w.change), dec(w.playerAvg)])
     }
   ];
 }

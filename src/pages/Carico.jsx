@@ -4,6 +4,7 @@ import { useCollection, useClub, where, orderBy, limit, audit } from '../lib/db'
 import { Card, Button, Select, Badge, Alert, Empty, Loading, Kpi } from '../components/ui';
 import LineChart from '../components/LineChart';
 import CaricoSheet from '../components/CaricoSheet';
+import CaricoStorico from '../components/CaricoStorico';
 import { can } from '../lib/permissions';
 import { fmtShort, capitalize, seasonStart, toDate, dayIso } from '../lib/format';
 import { ensureAttendanceSummaries } from '../lib/trainings';
@@ -45,6 +46,7 @@ export default function Carico() {
   const weeks = useMemo(() => weekStats(rows), [rows]);
   const [pick, setPick] = useState(null);
   const [editing, setEditing] = useState(null);
+  const [history, setHistory] = useState(false);
   const week = weeks.find((w) => w.week === pick) || weeks[weeks.length - 1];
   const first = useMemo(() => sessions.filter((s) => !s.cancelled).map((s) => dayIso(s.date)).filter(Boolean).sort()[0], [sessions]);
 
@@ -75,6 +77,7 @@ export default function Carico() {
       <div className="pagehead">
         <div><h1>Carico</h1><p>sRPE · RPE × minuti di ogni seduta</p></div>
         <div className="btnrow">
+          {canWrite && <Button size="sm" variant="secondary" onClick={() => setHistory(true)}>⬆ Importa</Button>}
           <Button size="sm" variant="secondary" disabled={!rows.length} onClick={download}>⬇ Excel</Button>
         </div>
       </div>
@@ -118,6 +121,7 @@ export default function Carico() {
         <Card>
           <Empty title="Ancora nessun dato">
             Il carico si compila per ogni seduta con le presenze registrate: da qui, da Allenamenti o dalla pagina della seduta.
+            Uno storico già raccolto in Excel si carica con «⬆ Importa».
           </Empty>
         </Card>
       ) : (
@@ -179,12 +183,12 @@ export default function Carico() {
               series={[{ key: 'typ', label: 'Settimana tipo (somma dei TL medi)', short: 'Tipo', emphasis: true, values: span.map((n) => (byWeek.get(n)?.typical != null ? Math.round(byWeek.get(n).typical) : null)) }]} />
             <div className="tablewrap" style={{ marginTop: 10 }}>
               <table className="data">
-                <thead><tr><th>Sett.</th><th>Sedute</th><th>Voti</th><th>Manc.</th><th>TL medio</th><th>Sett. tipo</th><th>Var.</th></tr></thead>
+                <thead><tr><th>Sett.</th><th>Sedute</th><th>Voti</th><th>Manc.</th><th>TL medio</th><th>Sett. tipo</th><th>Var.</th><th>Media gioc.</th></tr></thead>
                 <tbody>
                   {[...weeks].reverse().map((w) => (
                     <tr key={w.week}>
                       <td>{w.week} <small style={{ color: 'var(--muted)' }}>{weekRange(w.monday, w.sunday)}</small></td>
-                      <td>{w.sessions}</td><td>{w.votes}</td><td>{w.missing}</td><td>{num(w.tlAvg)}</td><td><b>{num(w.typical)}</b></td><td>{pct(w.change)}</td>
+                      <td>{w.sessions}</td><td>{w.votes}</td><td>{w.missing}</td><td>{num(w.tlAvg)}</td><td><b>{num(w.typical)}</b></td><td>{pct(w.change)}</td><td>{num(w.playerAvg)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -193,13 +197,15 @@ export default function Carico() {
           </Card>
 
           <p style={{ fontSize: 12, color: 'var(--muted)' }}>
-            TL = RPE × minuti. Settimana tipo = somma dei TL medi delle sedute della settimana. Contano i presenti segnati dal mister:
+            TL = RPE × minuti. Settimana tipo = somma dei TL medi delle sedute della settimana; media giocatori = TL della settimana
+            medio per giocatore (il «TL settimanale medio» del vecchio foglio). Contano i presenti segnati dal mister:
             un presente senza RPE è un voto mancante. La settimana 1 è quella della prima seduta in calendario{first ? ` (${fmtShort(first)})` : ''}.
             Il file Excel contiene il registro completo (stesse colonne del foglio del preparatore), sedute, giocatori e andamento.
           </p>
         </>
       )}
 
+      {history && <CaricoStorico sessions={sessions} loads={loads} names={names} user={user} club={club} onClose={() => setHistory(false)} />}
       {editing && <CaricoSheet session={sessions.find((s) => s.id === editing.id) || editing} user={user} onClose={() => setEditing(null)} />}
     </>
   );
