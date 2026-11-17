@@ -66,7 +66,7 @@ Scelte da conoscere:
 | Giocatore / Sola lettura | vista dedicata: home con la propria convocazione, calendario, squadra, campionato, profilo personale e cassa. Nessuna sezione di gestione |
 | Dirigente accompagnatore | logistica, contatti, documenti, quote e multe, condivisione convocazioni |
 | Preparatore portieri | note e presenze dei portieri, valutazioni |
-| Preparatore atletico | infortuni, recuperi, idoneità fisica |
+| Preparatore atletico | infortuni, recuperi, idoneità fisica; **carico interno (sRPE)** dopo le presenze del mister ed export Excel |
 | Vice allenatore | presenze, proposte di convocazione e formazione |
 | Allenatore | **pubblica** le convocazioni, forza gli avvisi, formazione e voti |
 | Amministratore | configurazione società, utenti e ruoli, archiviazione giocatori, log |
@@ -80,7 +80,8 @@ Due regole non negoziabili: i dati sanitari sono visibili solo a chi è autorizz
 1. **Convocazione (il flusso centrale).** Partita → logistica precompilata dalla gara → selezione per reparto con la disponibilità accanto a ogni nome → controlli sulla lista → messaggio WhatsApp → pubblicazione → conferme.
 2. **Disponibilità senza account.** Lo staff genera un link personale, lo manda su WhatsApp, il giocatore risponde in due tap. Le risposte rientrano nella dashboard con «Importa risposte dai link».
 3. **Allenamento.** Crea la seduta → «Segna tutti presenti» → correggi le eccezioni. Tre tap per una seduta.
-4. **Giorno gara.** Formazione sul campo verticale → messaggio con i titolari per chi compila la distinta → scheda gara con gol, cartellini e cambi in tempo reale → «Chiudi gara» → statistiche aggiornate. I minuti si calcolano da soli: i titolari giocano fino al cambio, all'espulsione (anche per doppia ammonizione) o al fischio finale; chi entra conta dal minuto del cambio.
+4. **Carico interno (sRPE).** Il mister salva le presenze → il preparatore atletico apre la seduta (Allenamenti, chip «RPE», o Statistiche → Carico) → durata della seduta e RPE 0–10 di ogni presente, minuti propri per chi è entrato tardi o uscito prima → TL = RPE × minuti. Si può salvare a metà: chi non ha risposto resta «voto mancante», e la Home del preparatore lo ricorda. In Carico: settimana per seduta e per giocatore, andamento della «settimana tipo» e il file Excel con registro (stesse colonne del foglio del preparatore), sedute, giocatori e andamento. Dati in `trainingLoad/{eventId}`: li scrivono solo preparatore e amministratore, e solo su sedute con le presenze registrate; li legge anche l'allenatore.
+5. **Giorno gara.** Formazione sul campo verticale → messaggio con i titolari per chi compila la distinta → scheda gara con gol, cartellini e cambi in tempo reale → «Chiudi gara» → statistiche aggiornate. I minuti si calcolano da soli: i titolari giocano fino al cambio, all'espulsione (anche per doppia ammonizione) o al fischio finale; chi entra conta dal minuto del cambio.
 
 ---
 

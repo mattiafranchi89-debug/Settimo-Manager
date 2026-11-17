@@ -14,6 +14,8 @@ import { errorText } from './Rosa';
 import { buildTrainingMessage, copyText } from '../lib/callup';
 import { attendanceSummary, ensureAttendanceSummaries } from '../lib/trainings';
 import { collection, setDoc, serverTimestamp as ts } from 'firebase/firestore';
+import CaricoSheet from '../components/CaricoSheet';
+import { loadable } from '../lib/srpe';
 
 const MOTIVI = { assente: 'Assente', giustificato: 'Giustificato', infortunato: 'Infortunato' };
 
@@ -24,6 +26,8 @@ export default function Allenamenti() {
   const navigate = useNavigate();
   const canWrite = can(user?.role, 'events.write');
   const canAttend = can(user?.role, 'attendance.write');
+  // Il preparatore compila il carico (sRPE) delle sedute con le presenze.
+  const canLoad = can(user?.role, 'load.write');
 
   // Gli eventi della stagione in ordine di data: con il solo filtro per tipo e
   // un limite, oltre le 200 sedute Firestore ne avrebbe restituite 200 a caso.
@@ -40,9 +44,13 @@ export default function Allenamenti() {
   // Serve al generatore per sapere quali settimane hanno una gara.
   const matchesQ = useMemo(() => [where('type', '==', 'match'), limit(120)], []);
   const { data: matches } = useCollection('events', matchesQ, canWrite);
+  const loadQ = useMemo(() => [where('date', '>=', seasonStart(club.season))], [club.season]);
+  const { data: loads } = useCollection('trainingLoad', loadQ, canLoad);
+  const votesOf = useMemo(() => new Map(loads.map((l) => [l.eventId || l.id, l])), [loads]);
 
   const [creating, setCreating] = useState(false);
   const [attendFor, setAttendFor] = useState(null);
+  const [loadFor, setLoadFor] = useState(null);
   const [removing, setRemoving] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [openPast, setOpenPast] = useState(true);
@@ -124,7 +132,8 @@ export default function Allenamenti() {
       )}
       {openPast && (
         <div className="plist">
-          {past.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past />)}
+          {past.map((s) => <SessionRow key={s.id} s={s} onAttend={canAttend ? () => setAttendFor(s) : null} onDelete={canDelete ? () => setRemoving(s) : null} past
+            onLoad={canLoad && loadable(s) ? () => setLoadFor(s) : null} load={votesOf.get(s.id)} />)}
         </div>
       )}
 
@@ -162,14 +171,17 @@ export default function Allenamenti() {
 
       {creating && <SessionForm club={club} onSave={create} onClose={() => setCreating(false)} />}
       {attendFor && <Attendance session={attendFor} players={players} user={user} onClose={() => setAttendFor(null)} />}
+      {loadFor && <CaricoSheet session={sessions.find((x) => x.id === loadFor.id) || loadFor} user={user} onClose={() => setLoadFor(null)} />}
     </>
   );
 }
 
-const SessionRow = ({ s, onAttend, onDelete, onAnnounce, past }) => {
+const SessionRow = ({ s, onAttend, onDelete, onAnnounce, onLoad, load, past }) => {
   const sum = s.attendanceSummary;
   const recorded = (sum?.total || 0) > 0;
   const absent = recorded ? sum.total - sum.present : 0;
+  // Voti RPE dei presenti di oggi (chi è stato poi segnato assente non conta).
+  const votes = onLoad ? Object.entries(load?.players || {}).filter(([pid, e]) => e.rpe != null && sum.players.includes(pid) && !sum.absent?.[pid]).length : 0;
   return (
     <div className="prow">
       <span className="prow__num">{recorded ? '✓' : past ? '!' : '🏃'}</span>
@@ -184,6 +196,12 @@ const SessionRow = ({ s, onAttend, onDelete, onAnnounce, past }) => {
       {onAnnounce && !past && <button className="iconbtn" aria-label="Avvisa il gruppo" title="Avvisa il gruppo" onClick={onAnnounce}>💬</button>}
       {s.cancelled ? <Badge tone="red">Annullata</Badge>
         : onAttend && <Badge tone={recorded ? 'green' : past ? 'orange' : 'red'}>{recorded ? 'Modifica' : past ? 'Da fare' : 'Presenze'}</Badge>}
+      {onLoad && (
+        <button className={`badge badge--${votes >= sum.present ? 'green' : votes ? 'orange' : 'red'}`}
+          style={{ border: 0, cursor: 'pointer', minHeight: 32 }} aria-label={`Carico RPE: ${votes} voti su ${sum.present}`} onClick={onLoad}>
+          RPE {votes}/{sum.present}
+        </button>
+      )}
       {onDelete && <button className="iconbtn" aria-label="Elimina seduta" onClick={onDelete}>🗑</button>}
     </div>
   );
