@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Button, Textarea, Alert, Badge } from './ui';
 import { fmtShort, dayIso } from '../lib/format';
 import { RPE_LABELS } from '../lib/srpe';
-import { rowsFromText, entriesFromRows, matchEntries } from '../lib/srpeImport';
-import { readXlsx } from '../lib/xlsxRead';
+import { rowsFromText, rowsFromFile, entriesFromRows, matchEntries } from '../lib/srpeImport';
 
 const num = (v) => (v == null ? '' : v.toLocaleString('it-IT', { maximumFractionDigits: 1 }));
 const STATUS = {
@@ -41,11 +40,7 @@ export default function CaricoImport({ session, names, present, absent, onApply,
     try {
       if (f) {
         setFile(f.name);
-        if (/\.xlsx$/i.test(f.name)) {
-          const sheets = await readXlsx(await f.arrayBuffer());
-          const sheet = sheets.find((s) => /registro/i.test(s.name)) || sheets[0];
-          setRows(sheet?.rows || []);
-        } else setRows(rowsFromText(await f.text()));
+        setRows(await rowsFromFile(f));
       } else {
         setFile(null);
         setRows(rowsFromText(text));
