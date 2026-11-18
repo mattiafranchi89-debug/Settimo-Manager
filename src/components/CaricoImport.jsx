@@ -9,7 +9,7 @@ const STATUS = {
   absent: 'assente per il mister: non conta',
   unknown: 'nome non trovato fra le presenze',
   ambiguous: 'più giocatori con questo nome',
-  duplicate: 'già presente più sopra: vale la prima riga',
+  duplicate: 'ripetuto più sotto: vale l\'ultima riga',
   error: ''
 };
 
@@ -72,7 +72,7 @@ export default function CaricoImport({ session, names, present, absent, onApply,
             <Button size="sm" disabled={busy || !text.trim()} onClick={() => read(null)}>Leggi l'elenco</Button>
             <label className="btn btn--secondary btn--sm" style={{ cursor: 'pointer' }}>
               📄 Scegli file (.xlsx, .csv)
-              <input type="file" accept=".xlsx,.csv,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden
+              <input type="file" hidden
                 onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) read(f); }} />
             </label>
           </div>
