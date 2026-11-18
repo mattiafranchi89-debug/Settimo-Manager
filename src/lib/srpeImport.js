@@ -56,26 +56,42 @@ export function rowsFromText(text = '') {
   return lines.map(smartSplit);
 }
 
-/** Un file scelto dal telefono → celle: .xlsx (il foglio «Registro» o il primo), altrimenti testo (.csv, .txt). */
+/** Testo di un file: UTF-8, oppure Windows-1252 (i CSV salvati da Excel in italiano). */
+function decodeText(buf) {
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch { return new TextDecoder('windows-1252').decode(buf); }
+}
+
+/**
+ * Un file scelto dal telefono → celle. Il tipo si riconosce dal contenuto, non
+ * dal nome (un file scaricato può non avere l'estensione): un .xlsx è uno zip.
+ * Dal file Excel si prende il foglio «Registro», o il primo con la colonna
+ * dei giocatori (non quelli di analisi), o il primo.
+ */
 export async function rowsFromFile(file) {
-  if (/\.xlsx$/i.test(file.name)) {
-    const sheets = await readXlsx(await file.arrayBuffer());
+  const buf = await file.arrayBuffer();
+  const b = new Uint8Array(buf, 0, Math.min(8, buf.byteLength));
+  if (b[0] === 0x50 && b[1] === 0x4b && b[2] === 3 && b[3] === 4) {
+    const sheets = await readXlsx(buf);
     const sheet = sheets.find((sh) => /registro/i.test(sh.name))
-      || sheets.find((sh) => sh.rows.slice(0, 20).some((r) => (r || []).some((c) => /^(giocatore|nome|atleta)$/i.test(String(c ?? '').trim()))))
+      || sheets.find((sh) => sh.rows.slice(0, 20).some((r) => (r || []).some((c) => HEAD.name.test(norm(c ?? '')))))
       || sheets[0];
     return sheet?.rows || [];
   }
-  return rowsFromText(await file.text());
+  if (b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0) {
+    throw new Error('È un file Excel del vecchio formato (.xls): aprilo e salvalo come .xlsx o CSV, poi riprova.');
+  }
+  return rowsFromText(decodeText(buf));
 }
 
 const HEAD = {
-  name: /^(giocatore|nome|atleta|calciatore|nominativo|cognome e nome|nome e cognome)$/,
+  // Anche le intestazioni di un modulo (Google Moduli): «Cognome Nome», «Valore RPE», «Giorno allenamento».
+  name: /^(giocatore|nome|atleta|calciatore|nominativo|cognome e nome|nome e cognome|cognome nome|nome cognome)$/,
   surname: /^cognome$/,
-  rpe: /^rpe\b|^voto\b|^rpe$/,
+  rpe: /(^|\s)rpe(\s|$)|^voto\b/,
   minutes: /^minut|^durata|^min\b/,
   note: /^note?$|^nota\b|^commento/,
   // «Data» nel foglio nuovo, «Giorno» (con la data) in quello vecchio; «Giorno sett.» no.
-  date: /^(data|giorno|data seduta|data allenamento)$/,
+  date: /^(data|giorno|data seduta|data allenamento|giorno allenamento|giorno seduta)$/,
   presence: /^presenz/
 };
 
@@ -107,7 +123,7 @@ export function entriesFromRows(rows = [], { date = null } = {}) {
   const head = at >= 0 ? rows[at].map((c) => norm(c ?? '')) : null;
   const find = (re, not) => (head ? head.findIndex((c) => re.test(c) && !(not && not.test(c))) : -1);
   const col = head ? {
-    name: find(HEAD.name), surname: find(HEAD.surname), rpe: find(HEAD.rpe, /medio|media/),
+    name: find(HEAD.name), surname: find(HEAD.surname), rpe: find(HEAD.rpe, /medio|media|^tl\b/),
     minutes: find(HEAD.minutes), note: find(HEAD.note), date: -1, presence: find(HEAD.presence)
   } : { name: 0, surname: -1, rpe: 1, minutes: 2, note: 3, date: -1, presence: -1 };
   // La colonna della data è quella, fra «Data» e «Giorno», con più date vere
@@ -173,20 +189,21 @@ export function matchName(name, candidates = []) {
 /**
  * Ogni riga abbinata ai giocatori delle presenze: `ok` (presente), `absent`
  * (segnato assente dal mister: non conta), `ambiguous`, `unknown`, `duplicate`
- * (lo stesso giocatore due volte: vale la prima), `error` (valori non validi).
+ * (lo stesso giocatore ripetuto più sotto: vale l'ultima riga), `error` (valori non validi).
  */
 export function matchEntries(entries = [], { present = [], absent = [], names = {} } = {}) {
   const candidates = [...present, ...absent].map((id) => ({ id, name: names[id] || '' }));
-  const seen = new Set();
-  return entries.map((e) => {
+  const out = entries.map((e) => {
     if (e.error) return { ...e, status: 'error' };
     const m = matchName(e.name, candidates);
     if (m.ambiguous) return { ...e, status: 'ambiguous', options: m.ambiguous };
     if (!m.id) return { ...e, status: 'unknown' };
-    if (seen.has(m.id)) return { ...e, pid: m.id, status: 'duplicate' };
-    seen.add(m.id);
     return { ...e, pid: m.id, status: present.includes(m.id) ? 'ok' : 'absent' };
   });
+  // Lo stesso giocatore più volte (chi ricompila il modulo per correggersi): vale l'ultima riga.
+  const last = new Map();
+  out.forEach((e, i) => { if (e.pid) last.set(e.pid, i); });
+  return out.map((e, i) => (e.pid && last.get(e.pid) !== i ? { ...e, status: 'duplicate' } : e));
 }
 
 /** La durata più frequente fra le righe importate (la durata della seduta), o null. */

@@ -76,7 +76,7 @@ export default function CaricoStorico({ sessions, loads, names, user, club, onCl
       </p>
       <label className="btn btn--secondary" style={{ cursor: 'pointer' }}>
         📄 {file ? 'Scegli un altro file' : 'Scegli il file'}
-        <input type="file" hidden accept=".xlsx,.csv,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        <input type="file" hidden
           onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) read(f); }} />
       </label>
       {file && <p style={{ fontSize: 13, color: 'var(--muted)' }}>📄 {file}</p>}
