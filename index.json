@@ -413,54 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33496": {
-      "id": "33496",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 26",
-      "number": 26,
-      "date": "2026-09-18",
-      "url": "https://www.crlombardia.it/documenti/33496/comunicato-ufficiale-n-26",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 26 del 18.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db05a3e7_Comunicato Ufficiale Nr. 26 del 18.09.2026.pdf",
-          "pages_chars": 29615,
-          "settimo_mentions": 0,
-          "txt": "docs/33496/Comunicato_Ufficiale_Nr._26_del_18.09.2026.txt"
-        },
-        {
-          "name": "Calendari_SGS_U13Pro agg.180926.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db0695ca_Calendari_SGS_U13Pro agg.180926.pdf",
-          "pages_chars": 13502,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_AllieveReg.li.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db071df6_Calendario_AllieveReg.li.pdf",
-          "pages_chars": 39849,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_GiovanissimeReg.li.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db081cea_Calendario_GiovanissimeReg.li.pdf",
-          "pages_chars": 49901,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "SGS Circolare N°3 Stagione 2026-2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db09b254_SGS Circolare  N°3 Stagione 2026-2027.pdf",
-          "pages_chars": 2435,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Maglie Personalizzate_CU26.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33496/6aad4db0aa423_Maglie Personalizzate_CU26.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33505": {
       "id": "33505",
       "kind": "comunicato",
@@ -2211,7 +2163,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-17T23:57:34+00:00",
+  "lastRun": "2026-11-18T07:14:50+00:00",
   "homepage": [
     "33813",
     "33806",

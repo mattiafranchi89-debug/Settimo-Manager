@@ -1427,7 +1427,3 @@ U.S. MARCALLESE A.S.D.                            3    2   1   0   1   3   3    
 A.C. OSSONA A.S.D.                                2    2   0   2   0   3   3     0   0
 POL.D. U.S. CASSOLESE                             1    2   0   1   1   1   2    -1   0
 ```
-
-## COMUNICATO UFFICIALE N° 26 (2026-09-18)
-Pagina: https://www.crlombardia.it/documenti/33496/comunicato-ufficiale-n-26
-Nessuna menzione del Settimo Milanese.
