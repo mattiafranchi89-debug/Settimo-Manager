@@ -1,23 +1,7 @@
 {
-  "generatedAt": "2026-11-13T12:36:32+00:00",
+  "generatedAt": "2026-11-18T07:14:53+00:00",
   "team": "SETTIMO MILANESE",
   "fixtures": [
-    {
-      "competition": "Prima Categoria",
-      "girone": "A",
-      "round": "6A",
-      "date": "2026-10-18",
-      "time": "15:30",
-      "home": true,
-      "opponent": "GARIBALDINA 1932",
-      "venue": "C.S.\"S.PERTINI\" - CAMPO N.1",
-      "city": "CORNAREDO",
-      "address": "VIA DELLO SPORT N.1",
-      "status": "",
-      "published": "2026-10-16",
-      "source": "Programma gare dal 16 al 19 Ottobre 2026 CRL",
-      "url": "https://www.crlombardia.it/news/33653/programma-gare-dal-16-al-19-ottobre-2026"
-    },
     {
       "competition": "Prima Categoria",
       "girone": "A",
