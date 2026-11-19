@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T17:20:29+00:00",
+  "generatedAt": "2026-11-19T19:28:21+00:00",
   "team": "SETTIMO MILANESE",
   "provvedimenti": [
     {
@@ -119,6 +119,40 @@
       "gare": null,
       "fino": null,
       "infrazione": 1,
+      "diffida": true
+    },
+    {
+      "id": "cu51-campionato-2026-11-15-calciatore-corazza-alessio-ammonizione4",
+      "doc": "Comunicato Ufficiale n. 51",
+      "numero": 51,
+      "pubblicato": "2026-11-19",
+      "url": "https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51",
+      "competizione": "campionato",
+      "gara": "2026-11-15",
+      "nome": "CORAZZA ALESSIO",
+      "ruolo": "calciatore",
+      "titolo": "AMMONIZIONE CON DIFFIDA (IV INFR)",
+      "tipo": "ammonizione",
+      "gare": null,
+      "fino": null,
+      "infrazione": 4,
+      "diffida": true
+    },
+    {
+      "id": "cu51-campionato-2026-11-15-calciatore-lamonaca-jacopo-ammonizione4",
+      "doc": "Comunicato Ufficiale n. 51",
+      "numero": 51,
+      "pubblicato": "2026-11-19",
+      "url": "https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51",
+      "competizione": "campionato",
+      "gara": "2026-11-15",
+      "nome": "LAMONACA JACOPO",
+      "ruolo": "calciatore",
+      "titolo": "AMMONIZIONE CON DIFFIDA (IV INFR)",
+      "tipo": "ammonizione",
+      "gare": null,
+      "fino": null,
+      "infrazione": 4,
       "diffida": true
     }
   ]
