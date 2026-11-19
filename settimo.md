@@ -1,5 +1,118 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 51 CRL (2026-11-19)
+Pagina: https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 1396
+```
+PRO PESCHIERA BORROMEO          - CENTRO SCHUSTER A.S.D.      0-4      LEO TEAM                        - CASTELLO CITTA DI CANTU     2-4
+QUINTO ROMANO A.S.D.            - POLISPORTIVA OR.PA.S.       5-0      LOMAZZO CALCIO A.S.D.           - TRIUGGESE                   0-1
+SANGIULIANO CVS A R.L.          - GARIBALDINA 1932            1-1      MONTESOLARO G.S. A.S.D.         - ATLETICO SCHIAFFINO         1-3
+SETTIMO MILANESE                - FROG MILANO                 1-1      PRO LISSONE CALCIO              - CASSINA RIZZARDI            5-2
+VILLA S.S.D.R.L.                - POLISPORTIVA DI NOVA        2-2      ZETA MILANO F.C. ASD            - VIRTUS CALCIO CERMENATE     1-3
+                                                                       (1) - disputata il 14/11/2026
+
+```
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 1745
+```
+IACONO MATTEO             (QUINTO ROMANO A.S.D.)                 PIRONA LUCA              (REAL MELEGNANO 1928)
+CAGNETTI MATTIA           (RIOZZESE A R.L.)                      CARMINATI PAOLO          (ROMANENGO ASD)
+MAESTRI MARCO             (ROZZANO CALCIO SRL SSD)               BIANCU LORIS             (SESTO 2012 SSD A R.L.)
+CORAZZA ALESSIO           (SETTIMO MILANESE)                     LAMONACA JACOPO          (SETTIMO MILANESE)
+                                                                                          (UNION TEAM MARMIROLO
+BOVOLENTA RICCARDO        (TRADATE A.S.D.)                       LJUTFIU MERGIM           ASD)
+BARBIERI PIETRO           (VOLUNTAS ASD)                         DIANA ERICK              (ZETA MILANO F.C. ASD)
+```
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 2047
+```
+ Gara Gior.                                                                      Orig.       Var. Orig.
+21/11/2026   11 A   ROZZANO CALCIO SRL SSD      POL.D. U.S. CASSOLESE           22/11/2026   16:15   16:45
+22/11/2026   11 A   VIGHI 1967                  SUPERGA G.S. A.S.D.                          16:45   17:30
+28/11/2026   12 A   SETTIMO MILANESE            BUCCINASCO                      29/11/2026   14:30   15:00
+
+
+
+```
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 2136
+```
+(1) CDA E CAVALLASCA A.S.D.        - INVERIGO                       1-0          POL.D. U.S. CASSOLESE             - VICTORIA MMVII A.S.D.          8-1
+(1) LESMO SSD ARL                  - GSO SAN GIORGIO               13 - 0        QUINTO ROMANO A.S.D.              - BUCCINASCO                     3-2
+PERTICATO XENIA ASD                - LIBERTAS SAN BARTOLOMEO        2-1          ROZZANO CALCIO SRL SSD            - ORATORIANA VITTUONE ASD        3-0
+SIRTORESE                          - OLIMPIA CALCIO CADORAGO        3-1          SETTIMO MILANESE                  - VIGHI 1967                     1-1
+(1) - disputata il 15/11/2026                                                    SUPERGA G.S. A.S.D.               - FOOTBALL CLUB SEDRIANO         2-5
+
+
+```
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 2237
+```
+Euro 150,00 VALTENESI
+Vedi deliberazione.
+
+Euro 60,00 SETTIMO MILANESE
+per recinzione rotta
+
+Euro 50,00 POZZO CALCIO
+```
+
+### Comunicato Ufficiale Nr. 51 del 19.11.26.pdf – riga 2294
+```
+                         (BREMBATE SOPRA C.1947                 DIOMANDE DROH
+FROSIO TOMMASO                                                                          (NUOVA LODI)
+                         ASD)                                   ALEXANDRE
+BIANCHI BOSISIO TIAGO    (SETTIMO MILANESE)                     TROMBETTA FRANCESCO     (VIGHI 1967)
+
+
+SQUALIFICA PER UNA GARA EFFETTIVA
+```
+
+### Classifiche CU51 del 19.11.2026.pdf – riga 254
+```
+                                  PRIMA CATEGORIA
+GIRONE A
+                         Squadra                 PT   G    V   N   P    GF GS DR PE
+U.S. SETTIMO MILANESE                            21   10   6   3   1    24   12    12   0
+A.S.D. AUSONIA ACADEMY                           19   10   5   4   1    25   14    11   0
+PARTIZAN BONOLA ASD                              19   10   5   4   1    26   21     5   0
+POL. BUCCINASCO                                  17   10   4   5   1    17   11     6   0
+```
+
+### Classifiche CU51 del 19.11.2026.pdf – riga 616
+```
+A.C.D. FROG MILANO                           13   10   4   1   5   26   21     5   0
+U.S. QUINTO ROMANO A.S.D.                    11   10   3   2   5   17   29   -12   0
+A.S.D. VIGHI 1967                             8    9   1   5   3   13   22    -9   0
+U.S. SETTIMO MILANESE                         8   10   2   2   6   15   32   -17   0
+POL. BUCCINASCO                               8    9   2   2   5   12   20    -8   0
+A.S.D. FATIMATRACCIA                          7    9   2   1   6   10   24   -14   0
+SUPERGA G.S. A.S.D.                           1   10   0   1   9   13   43   -30   0
+```
+
+### 03_Programma Gare Coppe_Sorteggi171126.pdf – riga 350
+```
+
+
+
+VIGHIGNOLO                               POLISPORTIVA DI NOVA                   C.S.VIGHIGNOLO E.A.                               03/12/2026 20:00 1A SETTIMO MILANESE FR.VIGHIGNOLO
+                                                                                                                                                                                 VIA PACE S.N.C.
+GIRONE 3D                                                                                                                     DATA             ORA                                                                                       STATO GARA
+
+```
+
+### 02_Incontri informativi.pdf – riga 305
+```
+                                                                         L'Utilizzo dei social tra i giovani calciatori.      Avv. Simona Cardillo -      Tecnici/Istruttori,
+                                              Via Pace snc - 20019 -
+23/11/2026   20:00       VIGHIGNOLO                                       Conoscere le opportunità e gli svantaggi           Safeguarding Vighignolo      Atleti/e, Dirigenti,
+                                              Settimo milanese (MI)
+                                                                                        sul loro utilizzo.                              Calcio                 Famiglie
+                                              C.S. "G. ARVEDI" - Largo                                                     Paolo Mondini - Responsabile
+                                                                          Dal calcio a 5 al calcio a 7. Le partite a
+```
+
 ## COMUNICATO UFFICIALE N° 50 CRL (2026-11-17)
 Pagina: https://www.crlombardia.it/documenti/33813/comunicato-ufficiale-n-50
 Nessuna menzione del Settimo Milanese.
