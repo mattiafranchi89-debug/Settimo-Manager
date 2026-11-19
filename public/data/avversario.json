@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T08:00:00+01:00",
+  "generatedAt": "2026-11-19T22:21:51+01:00",
   "availableFrom": "2026-11-17",
   "lastMatch": {
     "date": "2026-11-15",
     "opponent": "Frog Milano",
     "home": true,
-    "score": "",
+    "score": "1-1",
     "competition": "Prima Categoria girone A – 10ª giornata"
   },
   "next": {
@@ -20,38 +20,141 @@
   "standing": {
     "pos": 11,
     "of": 16,
-    "pts": 9,
-    "g": 9,
-    "v": 2,
+    "pts": 12,
+    "g": 10,
+    "v": 3,
     "n": 3,
     "p": 4,
-    "gf": 15,
+    "gf": 19,
     "gs": 18,
-    "asOf": "Comunicato Ufficiale n. 48 del 12/11/2026"
+    "asOf": "Comunicato Ufficiale n. 51 del 19/11/2026"
   },
   "results": [
-    { "date": "2026-11-08", "home": true, "against": "Partizan Bonola", "gf": 0, "gs": 1, "competition": "" },
-    { "date": "2026-11-01", "home": false, "against": "Iris 1914", "gf": 2, "gs": 1, "competition": "" },
-    { "date": "2026-10-29", "home": true, "against": "Libertas Casiratese", "gf": 2, "gs": 3, "competition": "Coppa" },
-    { "date": "2026-10-25", "home": true, "against": "Ausonia Academy", "gf": 1, "gs": 1, "competition": "" },
-    { "date": "2026-10-18", "home": true, "against": "Frog Milano", "gf": 1, "gs": 3, "competition": "" },
-    { "date": "2026-10-11", "home": false, "against": "Buccinasco", "gf": 2, "gs": 2, "competition": "" },
-    { "date": "2026-10-04", "home": true, "against": "Polisportiva Or.Pa.S.", "gf": 3, "gs": 1, "competition": "" },
-    { "date": "2026-09-27", "home": false, "against": "Polisportiva di Nova", "gf": 2, "gs": 3, "competition": "" },
-    { "date": "2026-09-20", "home": true, "against": "Garibaldina 1932", "gf": 3, "gs": 5, "competition": "" }
+    {
+      "date": "2026-11-15",
+      "home": false,
+      "against": "Pro Peschiera Borromeo",
+      "gf": 4,
+      "gs": 0,
+      "competition": ""
+    },
+    {
+      "date": "2026-11-08",
+      "home": true,
+      "against": "Partizan Bonola",
+      "gf": 0,
+      "gs": 1,
+      "competition": ""
+    },
+    {
+      "date": "2026-11-01",
+      "home": false,
+      "against": "Iris 1914",
+      "gf": 2,
+      "gs": 1,
+      "competition": ""
+    },
+    {
+      "date": "2026-10-29",
+      "home": true,
+      "against": "Libertas Casiratese",
+      "gf": 2,
+      "gs": 3,
+      "competition": "Coppa"
+    },
+    {
+      "date": "2026-10-25",
+      "home": true,
+      "against": "Ausonia Academy",
+      "gf": 1,
+      "gs": 1,
+      "competition": ""
+    },
+    {
+      "date": "2026-10-18",
+      "home": true,
+      "against": "Frog Milano",
+      "gf": 1,
+      "gs": 3,
+      "competition": ""
+    },
+    {
+      "date": "2026-10-11",
+      "home": false,
+      "against": "Buccinasco",
+      "gf": 2,
+      "gs": 2,
+      "competition": ""
+    },
+    {
+      "date": "2026-10-04",
+      "home": true,
+      "against": "Polisportiva Or.Pa.S.",
+      "gf": 3,
+      "gs": 1,
+      "competition": ""
+    },
+    {
+      "date": "2026-09-27",
+      "home": false,
+      "against": "Polisportiva di Nova",
+      "gf": 2,
+      "gs": 3,
+      "competition": ""
+    },
+    {
+      "date": "2026-09-20",
+      "home": true,
+      "against": "Garibaldina 1932",
+      "gf": 3,
+      "gs": 5,
+      "competition": ""
+    }
   ],
   "suspended": [
-    "Boni Gianluca – squalifica per 5 gare effettive (C.U. n. 43 del 29/10, gara del 25/10 con l'Ausonia): scontate 8/11 e, se disputata, 15/11; resta fuori contro di noi (gara della squalifica n. 4 su 5)"
+    "Boni Gianluca – squalifica per 5 gare effettive (C.U. n. 43 del 29/10, gara del 25/10 con l'Ausonia), confermata dalla Corte Sportiva d'Appello che ha respinto il reclamo (C.U. n. 51 del 19/11): scontate 1/11, 8/11 e 15/11, resta fuori contro di noi (4ª giornata di squalifica su 5)"
   ],
-  "notes": "Il Centro Schuster è 11° con 9 punti (15 gol fatti, 18 subiti) e in casa ha vinto solo con l'Or.Pa.S.; nelle ultime 3 di campionato 1 vittoria, 1 pareggio e 1 sconfitta, ed è uscito dalla Coppa Lombardia (2-3 con la Libertas Casiratese). Avversario, data e trasferta sono dedotti dal calendario Berger del girone (confermato fino alla 10ª giornata): il Programma gare del 20–23/11 non è ancora in cache, quindi orario e campo (Campo A di via Padre Lodovico Morell, Milano) vanno confermati. Mancano ancora i risultati, la classifica e il Giudice Sportivo della 10ª giornata (Settimo–Frog e Centro Schuster del 15/11, C.U. atteso giovedì); nei comunicati non risultano diffidati dello Schuster in campionato.",
+  "notes": "Il Centro Schuster arriva da un netto 4-0 sul campo della Pro Peschiera Borromeo ed è 11° con 12 punti (a pari punti con Quinto Romano e Nevada), 19 gol fatti e 18 subiti: nelle ultime 3 di campionato 2 vittorie e 1 sconfitta, mentre è già fuori dalla Coppa Lombardia. Nel C.U. n. 51 nessun nuovo provvedimento né diffida per giocatori dello Schuster; Boni resta squalificato dopo il rigetto del reclamo. Attenzione in casa nostra: Corazza Alessio e Lamonaca Jacopo sono stati diffidati (IV ammonizione) dopo Settimo–Frog 1-1. Orario e campo (Campo A di via Padre Lodovico Morell, Milano) non risultano variati nel C.U. n. 51 ma vanno confermati con il Programma gare del 20–23/11, non ancora in cache.",
   "sources": [
-    { "label": "Comunicato Ufficiale n. 48 – Classifiche", "url": "https://www.crlombardia.it/storage/uploads/files/33781/6af5ca46abdc6_01.Classifiche_CU48.pdf" },
-    { "label": "Comunicato Ufficiale n. 48 (risultati 9ª giornata)", "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48" },
-    { "label": "Comunicato Ufficiale n. 45 (risultati 8ª giornata)", "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45" },
-    { "label": "Comunicato Ufficiale n. 44 (Coppa Lombardia: Centro Schuster–Libertas Casiratese 2-3)", "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44" },
-    { "label": "Comunicato Ufficiale n. 43 (7ª giornata e squalifica Boni)", "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43" },
-    { "label": "Comunicato Ufficiale n. 41 (6ª giornata)", "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41" },
-    { "label": "Programma gare 22–26 ottobre (campo del Centro Schuster)", "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026" },
-    { "label": "Programma gare 16–19 novembre (nessuna gara del Settimo)", "url": "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026" }
+    {
+      "label": "Comunicato Ufficiale n. 51 – Classifiche",
+      "url": "https://www.crlombardia.it/storage/uploads/files/33819/6aff0a3ddaf58_Classifiche CU51 del 19.11.2026.pdf"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 51 (risultati 10ª giornata, Giudice Sportivo, reclamo Boni respinto)",
+      "url": "https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 50 (nessuna novità sul Centro Schuster)",
+      "url": "https://www.crlombardia.it/documenti/33813/comunicato-ufficiale-n-50"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 48 (risultati 9ª giornata)",
+      "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 45 (risultati 8ª giornata)",
+      "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 44 (Coppa Lombardia: Centro Schuster–Libertas Casiratese 2-3)",
+      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 43 (7ª giornata e squalifica Boni)",
+      "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 41 (6ª giornata)",
+      "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41"
+    },
+    {
+      "label": "Programma gare 22–26 ottobre (campo del Centro Schuster)",
+      "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026"
+    },
+    {
+      "label": "Programma gare 16–19 novembre (nessuna gara del Settimo)",
+      "url": "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026"
+    }
   ]
 }
