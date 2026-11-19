@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-11-17T07:59:02+01:00",
-  "lastChecked": "2026-11-17T07:59:02+01:00",
+  "updatedAt": "2026-11-19T07:59:53+01:00",
+  "lastChecked": "2026-11-19T07:59:53+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -33,7 +33,8 @@
     "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48",
     "https://www.crlombardia.it/news/33804/programma-gare-dal-13-al-16-novembre-2026",
     "https://www.crlombardia.it/documenti/33806/comunicato-ufficiale-n-49",
-    "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026"
+    "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026",
+    "https://www.crlombardia.it/documenti/33813/comunicato-ufficiale-n-50"
   ],
   "items": [
     {
@@ -343,5 +344,25 @@
       "text": "Nessun provvedimento a carico del Settimo Milanese nelle decisioni sulle gare di Coppa Lombardia del 30/09 e 01/10 (la gara del Settimo era stata rinviata)."
     }
   ],
-  "avversari": []
+  "avversari": [
+    {
+      "squadra": "CENTRO SCHUSTER A.S.D.",
+      "partita": "Prima Categoria – 11ª giornata, 22/11/2026 ore 14:30, in trasferta",
+      "data": "2026-11-22",
+      "competizione": "campionato",
+      "aggiornato": "2026-11-19T07:59:53+01:00",
+      "squalificati": [
+        {
+          "nome": "BONI GIANLUCA",
+          "ruolo": "calciatore",
+          "sanzione": "5 gare effettive",
+          "competizione": "campionato",
+          "doc": "Comunicato Ufficiale n. 43",
+          "date": "2026-10-29",
+          "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
+        }
+      ],
+      "diffidati": []
+    }
+  ]
 }
