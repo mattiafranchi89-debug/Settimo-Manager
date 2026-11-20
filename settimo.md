@@ -1,5 +1,51 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 52 CRL (2026-11-20)
+Pagina: https://www.crlombardia.it/documenti/33840/comunicato-ufficiale-n-52
+Nessuna menzione del Settimo Milanese.
+
+## Programma Gare dal 20 al 23 Novembre 2026 CRL (2026-11-20)
+Pagina: https://www.crlombardia.it/news/33839/programma-gare-dal-20-al-23-novembre-2026
+
+### Programma_Gare_20-23_Novembre_2026.pdf – riga 148
+```
+GIRONE A                                                                                                    DATA          ORA                                                                                      STATO GARA
+
+BUCCINASCO                  QUINTO ROMANO A.S.D.              C.S."GAETANO SCIREA"N.1 (E.A)                22/11/26       14:30    11A BUCCINASCO                              VIA GRAMSCI SNC
+CENTRO SCHUSTER A.S.D.      SETTIMO MILANESE                  CENTRO SCHUSTER- CAMPO A                     22/11/26       14:30    11A MILANO                                  VIA MORELL S.J.PADRE LODOV.N.2
+FROG MILANO                 NEVADA CALCIO                     C.S. COMUNALE - CAMPO N.1                    22/11/26       14:30    11A MILANO                                  VIA TERESA NOCE,5
+GARIBALDINA 1932            LEONE XIII SPORT                  CAMPO "G.MASSOLA"N.1                         22/11/26       14:30    11A MILANO                                  VIA DON MINZONI 4
+IRIS 1914                   PRO PESCHIERA BORROMEO            COMUNALE"FRANCO BETTINELLI"E.                22/11/26       14:30    11A MILANO                                  VIA FARADAY,15
+```
+
+### Programma_Gare_20-23_Novembre_2026.pdf – riga 362
+```
+PONTELAMBRESE A.S.D.        ALTO LARIO CALCIO A.S.D.           C.S.COMUNALE"C.TAVECCHIO" E.A                22/11/26       18:00    11A PONTE LAMBRO                            VIA GERETT AL LAMBRO,7
+GIRONE F                                                                                                     DATA          ORA                                                                                  STATO GARA
+
+FATIMATRACCIA               SETTIMO MILANESE                   COMUNALE "FATIMATRACCIA"(E.A)                21/11/26       18:00    11A MILANO                                  VIA CHOPIN 81
+FOOTBALL CLUB SEDRIANO      VICTORIA MMVII A.S.D.              C.S.COMUNALE"L.MAGISTRELLI"N.                21/11/26       15:00    11A BAREGGIO                                VIA GIACOMO MATTEOTTI, 39
+ORATORIANA VITTUONE ASD     CESANO BOSCONE IDROSTAR            ORATORIO SAN LUIGI -CAMPO N.1                21/11/26       17:30    11A VITTUONE                                VIA BIXIO,17
+ROZZANO CALCIO SRL SSD      POL.D. U.S. CASSOLESE              C.S.COMUNALE -CAMPO N.2 (EA-D                21/11/26       16:15    11A ROZZANO                                 VIA MONTE AMIATA 34                 V
+BUCCINASCO                  FROG MILANO                        C.S."GAETANO SCIREA"N.1 (E.A)                22/11/26       16:45    11A BUCCINASCO                              VIA GRAMSCI SNC
+ORIONE                      ACCADEMIA MILANESE                 C.S.PARROCCHIALE (E.A.)                      22/11/26       15:00    11A MILANO                                  VIA STROZZI 1
+VIGHI 1967                  SUPERGA G.S. A.S.D.                C.S.VIGHIGNOLO E.A.                          22/11/26       16:45    11A SETTIMO MILANESE FR.VIGHIGNOLO          VIA PACE S.N.C.                     V
+GIRONE G                                                                                                     DATA          ORA                                                                                  STATO GARA
+
+RONDO DINAMO                CASSINA NUOVA ASD                  C.S."F.ACQUAVIVA" LEGA GIOVAN                21/11/26       15:00    11A SESTO SAN GIOVANNI                      VIA C.MARX 660
+```
+
+### Programma_Gare_20-23_Novembre_2026.pdf – riga 1341
+```
+                                                                                CAMPIONATO RF ALLIEVE REG.LI UNDER 17 FEMM.
+GIRONE A                                                                                                     DATA          ORA                                                                                    STATO GARA
+
+ALCIONE MILANO SSD A RL     BORGARELLO                         C.S.COMUNALE (E.A)                           21/11/26       18:00     9A SETTIMO MILANESE LOC. SEGURO            VIA SANDRO PERTINI 13
+ARSAGHESE        SQ.B       ROMANO BANCO C.S. ASD              C.S. COMUNALE "C.SPERONI" N.1                22/11/26       09:30     9A ARSAGO SEPRIO                           VIA GABRIELE D'ANNUNZIO, 52
+AUSONIA 1931 S.C.A.R.L.     FOOTBALL CLUB SEDRIANO             C.S."FORZA E CORAGGIO"                       22/11/26       11:30     9A MILANO                                  VIA GALLURA 8
+BRESSO CALCIO S.R.L.        TEAMSPORT SRL                      C. S. COMUNALE "G" E.A.                      22/11/26       14:30     9A BRESSO                                  VIA G.DELEDDA SNC
+```
+
 ## COMUNICATO UFFICIALE N° 51 CRL (2026-11-19)
 Pagina: https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51
 

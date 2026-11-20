@@ -2306,19 +2306,69 @@
         }
       ],
       "fetchedAt": "2026-11-19T19:28:05+00:00"
+    },
+    "33840": {
+      "id": "33840",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 52 CRL",
+      "number": 52,
+      "date": "2026-11-20",
+      "url": "https://www.crlombardia.it/documenti/33840/comunicato-ufficiale-n-52",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 52 del 20.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33840/6b00338facbdf_Comunicato Ufficiale Nr. 52 del 20.11.2026.pdf",
+          "pages_chars": 12425,
+          "settimo_mentions": 0,
+          "txt": "docs/33840/Comunicato_Ufficiale_Nr._52_del_20.11.2026.txt"
+        }
+      ],
+      "fetchedAt": "2026-11-20T13:35:45+00:00"
+    },
+    "33839": {
+      "id": "33839",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 20 al 23 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-20",
+      "url": "https://www.crlombardia.it/news/33839/programma-gare-dal-20-al-23-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_20-23_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33839/6b0031a33f070_Programma_Gare_20-23_Novembre_2026.pdf",
+          "pages_chars": 225955,
+          "settimo_mentions": 3,
+          "txt": "docs/33839/Programma_Gare_20-23_Novembre_2026.txt",
+          "mentions": [
+            {
+              "line": 148,
+              "text": "GIRONE A                                                                                                    DATA          ORA                                                                                      STATO GARA\n\nBUCCINASCO                  QUINTO ROMANO A.S.D.              C.S.\"GAETANO SCIREA\"N.1 (E.A)                22/11/26       14:30    11A BUCCINASCO                              VIA GRAMSCI SNC\nCENTRO SCHUSTER A.S.D.      SETTIMO MILANESE                  CENTRO SCHUSTER- CAMPO A                     22/11/26       14:30    11A MILANO                                  VIA MORELL S.J.PADRE LODOV.N.2\nFROG MILANO                 NEVADA CALCIO                     C.S. COMUNALE - CAMPO N.1                    22/11/26       14:30    11A MILANO                                  VIA TERESA NOCE,5\nGARIBALDINA 1932            LEONE XIII SPORT                  CAMPO \"G.MASSOLA\"N.1                         22/11/26       14:30    11A MILANO                                  VIA DON MINZONI 4\nIRIS 1914                   PRO PESCHIERA BORROMEO            COMUNALE\"FRANCO BETTINELLI\"E.                22/11/26       14:30    11A MILANO                                  VIA FARADAY,15"
+            },
+            {
+              "line": 362,
+              "text": "PONTELAMBRESE A.S.D.        ALTO LARIO CALCIO A.S.D.           C.S.COMUNALE\"C.TAVECCHIO\" E.A                22/11/26       18:00    11A PONTE LAMBRO                            VIA GERETT AL LAMBRO,7\nGIRONE F                                                                                                     DATA          ORA                                                                                  STATO GARA\n\nFATIMATRACCIA               SETTIMO MILANESE                   COMUNALE \"FATIMATRACCIA\"(E.A)                21/11/26       18:00    11A MILANO                                  VIA CHOPIN 81\nFOOTBALL CLUB SEDRIANO      VICTORIA MMVII A.S.D.              C.S.COMUNALE\"L.MAGISTRELLI\"N.                21/11/26       15:00    11A BAREGGIO                                VIA GIACOMO MATTEOTTI, 39\nORATORIANA VITTUONE ASD     CESANO BOSCONE IDROSTAR            ORATORIO SAN LUIGI -CAMPO N.1                21/11/26       17:30    11A VITTUONE                                VIA BIXIO,17\nROZZANO CALCIO SRL SSD      POL.D. U.S. CASSOLESE              C.S.COMUNALE -CAMPO N.2 (EA-D                21/11/26       16:15    11A ROZZANO                                 VIA MONTE AMIATA 34                 V\nBUCCINASCO                  FROG MILANO                        C.S.\"GAETANO SCIREA\"N.1 (E.A)                22/11/26       16:45    11A BUCCINASCO                              VIA GRAMSCI SNC\nORIONE                      ACCADEMIA MILANESE                 C.S.PARROCCHIALE (E.A.)                      22/11/26       15:00    11A MILANO                                  VIA STROZZI 1\nVIGHI 1967                  SUPERGA G.S. A.S.D.                C.S.VIGHIGNOLO E.A.                          22/11/26       16:45    11A SETTIMO MILANESE FR.VIGHIGNOLO          VIA PACE S.N.C.                     V\nGIRONE G                                                                                                     DATA          ORA                                                                                  STATO GARA\n\nRONDO DINAMO                CASSINA NUOVA ASD                  C.S.\"F.ACQUAVIVA\" LEGA GIOVAN                21/11/26       15:00    11A SESTO SAN GIOVANNI                      VIA C.MARX 660"
+            },
+            {
+              "line": 1341,
+              "text": "                                                                                CAMPIONATO RF ALLIEVE REG.LI UNDER 17 FEMM.\nGIRONE A                                                                                                     DATA          ORA                                                                                    STATO GARA\n\nALCIONE MILANO SSD A RL     BORGARELLO                         C.S.COMUNALE (E.A)                           21/11/26       18:00     9A SETTIMO MILANESE LOC. SEGURO            VIA SANDRO PERTINI 13\nARSAGHESE        SQ.B       ROMANO BANCO C.S. ASD              C.S. COMUNALE \"C.SPERONI\" N.1                22/11/26       09:30     9A ARSAGO SEPRIO                           VIA GABRIELE D'ANNUNZIO, 52\nAUSONIA 1931 S.C.A.R.L.     FOOTBALL CLUB SEDRIANO             C.S.\"FORZA E CORAGGIO\"                       22/11/26       11:30     9A MILANO                                  VIA GALLURA 8\nBRESSO CALCIO S.R.L.        TEAMSPORT SRL                      C. S. COMUNALE \"G\" E.A.                      22/11/26       14:30     9A BRESSO                                  VIA G.DELEDDA SNC"
+            }
+          ]
+        }
+      ],
+      "fetchedAt": "2026-11-20T13:35:45+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-20T07:02:19+00:00",
+  "lastRun": "2026-11-20T13:35:45+00:00",
   "homepage": [
+    "33840",
     "33819",
     "33813",
     "33806",
     "33781",
-    "33778",
+    "33839",
     "33812",
-    "33804",
-    "33777"
+    "33804"
   ],
   "errors": [],
   "notRegional": [
