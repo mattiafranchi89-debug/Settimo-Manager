@@ -413,71 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33505": {
-      "id": "33505",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 27",
-      "number": 27,
-      "date": "2026-09-22",
-      "url": "https://www.crlombardia.it/documenti/33505/comunicato-ufficiale-n-27",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr.27 del 22.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ace0e21e6225_Comunicato Ufficiale Nr.27 del 22.09.2026.pdf",
-          "pages_chars": 325105,
-          "settimo_mentions": 5,
-          "txt": "docs/33505/Comunicato_Ufficiale_Nr.27_del_22.09.2026.txt",
-          "mentions": [
-            {
-              "line": 807,
-              "text": "                          Squadra 1                   Squadra 2                                                      Impianto\n Gara Gior.                                                                  Orig.       Var. Orig.\n                                                                                                         C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE           POL.D. U.S. CASSOLESE                       21:00   20:00\n                                                                                                         DELLO SPORT,70\n\n"
-            },
-            {
-              "line": 995,
-              "text": "\n                   GIRONE 15 - 2 Giornata - A                                                  GIRONE 16 - 2 Giornata - A\nMARCALLESE A.S.D.                 - POL.D. U.S. CASSOLESE         1-0        GROPELLO SAN GIORGIO         - VELA MESERO                   0-3\nOSSONA A.S.D.                     - SETTIMO MILANESE              2-2\n\n\n"
-            },
-            {
-              "line": 1166,
-              "text": "\nSQUALIFICA FINO AL 21/10/2026\n\nMUGNAINI ROBERTO          (SETTIMO MILANESE)\n\nAl termine della gara colpiva con l'asta della bandierina alcuni calciatori avversari,senza conseguenze.\n"
-            },
-            {
-              "line": 1248,
-              "text": "BUONAIUTO ANTONIO       (RAPID OLIMPIA)                        CANGEMI THOMAS            (REAL MELEGNANO 1928)\nPIRONA LUCA             (REAL MELEGNANO 1928)                  CAPOBIANCO MAURO          (REAL TREZZANO)\nPERSICO FILIPPO         (ROMANENGO ASD)                        GAFFURI LUCA              (SALVIROLA A.S.D.)\nRUTIGLIANO MATTIA       (SETTIMO MILANESE)                     CATTANEO SAMUELE          (TICINIA ROBECCHETTO)\n                                                               MARQUEZ CORNEJO\nROSSI TOMMASO           (U.S.O. ZANICA ASD)                                              (VALCUVIANA A.S.D.)\n                                                               MATTIAS RAUL"
-            },
-            {
-              "line": 1455,
-              "text": "POZZI DARIO            (SAN GIORGIO)                          PLACIDO GIOVANNI      (SAN MICHELE CALCIO)\nCAPISANI DAVIDE        (SERENISSIMA 1918)                     PAPINI ANDREA         (SERGNANESE A.S.D.)\nTASSONCINI FEDERICO    (SESTO 2012 SSD A R.L.)                LOCATELLI RICCARDO    (SETTALESE)\nRIZZO DANIEL           (SETTIMO MILANESE)                     BRUSADELLI PIETRO     (SIRTORESE)\nGIOVANESSI MATTIA      (SIRTORESE)                            CANIGIULA JACOPO      (SORESINESE CALCIO A.S.D.)\nMAZZUCCHELLI LUCA      (TICINIA ROBECCHETTO)                  PISONI DIEGO GIACOMO  (TICINIA ROBECCHETTO)\nESSAN KOUA LEOPAUL     (TRADATE A.S.D.)                       MALFARA RICCARDO      (TRADATE A.S.D.)"
-            }
-          ]
-        },
-        {
-          "name": "Classifiche Coppe CU27.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3f76346_Classifiche Coppe CU27.pdf",
-          "pages_chars": 91284,
-          "settimo_mentions": 1,
-          "txt": "docs/33505/Classifiche_Coppe_CU27.txt",
-          "mentions": [
-            {
-              "line": 299,
-              "text": "\nGIRONE 15\n                               Squadra            PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                             4    2   1   1   0   5   4     1   0\nU.S. MARCALLESE A.S.D.                            3    2   1   0   1   3   3     0   0\nA.C. OSSONA A.S.D.                                2    2   0   2   0   3   3     0   0\nPOL.D. U.S. CASSOLESE                             1    2   0   1   1   1   2    -1   0"
-            }
-          ]
-        },
-        {
-          "name": "Calendario_GiovanissimeReg.Gir.G agg.19.19.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3fcfe2c_Calendario_GiovanissimeReg.Gir.G agg.19.19.2026.pdf",
-          "pages_chars": 8331,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Maglie personalizzate CU27.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33505/6ab29f3fdd05a_Maglie personalizzate CU27.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33510": {
       "id": "33510",
       "kind": "comunicato",
@@ -2359,7 +2294,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-21T22:18:33+00:00",
+  "lastRun": "2026-11-22T06:34:57+00:00",
   "homepage": [
     "33840",
     "33819",
