@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-11-21T07:59:10+01:00",
-  "lastChecked": "2026-11-21T07:59:10+01:00",
+  "updatedAt": "2026-11-23T08:02:00+01:00",
+  "lastChecked": "2026-11-23T08:02:00+01:00",
   "source": "https://www.crlombardia.it/",
   "checkedDocs": [
     "https://www.crlombardia.it/documenti/33598/comunicato-ufficiale-n-34",
@@ -383,25 +383,5 @@
       "text": "Classifica dopo la 10ª giornata: Settimo Milanese 1° con 21 punti in 10 gare (6 vinte, 3 pareggiate, 1 persa), 24 gol fatti e 12 subiti; seguono Ausonia Academy e Partizan Bonola a 19, Buccinasco e Villa a 17."
     }
   ],
-  "avversari": [
-    {
-      "squadra": "CENTRO SCHUSTER A.S.D.",
-      "partita": "Prima Categoria – 11ª giornata, 22/11/2026 ore 14:30, in trasferta",
-      "data": "2026-11-22",
-      "competizione": "campionato",
-      "aggiornato": "2026-11-21T07:59:10+01:00",
-      "squalificati": [
-        {
-          "nome": "BONI GIANLUCA",
-          "ruolo": "calciatore",
-          "sanzione": "5 gare effettive",
-          "competizione": "campionato",
-          "doc": "Comunicato Ufficiale n. 43",
-          "date": "2026-10-29",
-          "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
-        }
-      ],
-      "diffidati": []
-    }
-  ]
+  "avversari": []
 }
