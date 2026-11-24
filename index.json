@@ -2176,16 +2176,89 @@
         }
       ],
       "fetchedAt": "2026-11-20T13:35:45+00:00"
+    },
+    "33850": {
+      "id": "33850",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 53 CRL",
+      "number": 53,
+      "date": "2026-11-24",
+      "url": "https://www.crlombardia.it/documenti/33850/comunicato-ufficiale-n-53",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 53 del 24.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b0598112432c_Comunicato Ufficiale Nr. 53 del 24.11.2026.pdf",
+          "pages_chars": 85562,
+          "settimo_mentions": 0,
+          "txt": "docs/33850/Comunicato_Ufficiale_Nr._53_del_24.11.2026.txt"
+        },
+        {
+          "name": "01_Classifiche C5 CU Nr 53.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b05981145c99_01_Classifiche C5 CU Nr 53.pdf",
+          "pages_chars": 12787,
+          "settimo_mentions": 0,
+          "txt": "docs/33850/01_Classifiche_C5_CU_Nr_53.txt"
+        },
+        {
+          "name": "02_Convocazione - C5 - (femminile) - (02-12-2026).docx.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b05981152e1c_02_Convocazione - C5 - (femminile) - (02-12-2026).docx.pdf",
+          "pages_chars": 3057,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "03_Convocazione - C5 - (under 19) - (01-12-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b05981159260_03_Convocazione - C5 - (under 19) - (01-12-2026).pdf",
+          "pages_chars": 2759,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_Convocazione - C5 - (under 17) - (01-12-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b059811675a7_04_Convocazione - C5 - (under 17) - (01-12-2026).pdf",
+          "pages_chars": 2476,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Convocazione - C5 - (under 15) - (02-12-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b05981171506_05_Convocazione - C5 - (under 15) - (02-12-2026).pdf",
+          "pages_chars": 2759,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "Maglie personalizzate CU53.zip",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33850/6b0598117a48f_Maglie personalizzate CU53.zip",
+          "skipped": "non è un PDF"
+        }
+      ],
+      "fetchedAt": "2026-11-24T15:15:43+00:00"
+    },
+    "33851": {
+      "id": "33851",
+      "kind": "programma-gare",
+      "title": "Programma Gare dal 24 al 26 Novembre 2026 CRL",
+      "number": null,
+      "date": "2026-11-24",
+      "url": "https://www.crlombardia.it/news/33851/programma-gare-dal-24-al-26-novembre-2026",
+      "files": [
+        {
+          "name": "Programma_Gare_24-26_Novembre_2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33851/6b059b38f0e47_Programma_Gare_24-26_Novembre_2026.pdf",
+          "pages_chars": 17311,
+          "settimo_mentions": 0,
+          "txt": "docs/33851/Programma_Gare_24-26_Novembre_2026.txt"
+        }
+      ],
+      "fetchedAt": "2026-11-24T15:15:43+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-24T09:44:49+00:00",
+  "lastRun": "2026-11-24T15:15:43+00:00",
   "homepage": [
+    "33850",
     "33840",
     "33819",
     "33813",
     "33806",
-    "33781",
+    "33851",
     "33839",
     "33812",
     "33804"
