@@ -413,121 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33510": {
-      "id": "33510",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 28",
-      "number": 28,
-      "date": "2026-09-24",
-      "url": "https://www.crlombardia.it/documenti/33510/comunicato-ufficiale-n-28",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f7c9279_Comunicato Ufficiale Nr. 28 del 24.09.2026.pdf",
-          "pages_chars": 383141,
-          "settimo_mentions": 3,
-          "txt": "docs/33510/Comunicato_Ufficiale_Nr._28_del_24.09.2026.txt",
-          "mentions": [
-            {
-              "line": 1305,
-              "text": "IRIS 1914                         - LEONE XIII SPORT            1-0       LA DOMINANTE                      - MONTESOLARO G.S. A.S.D.     0-1\nPARTIZAN BONOLA ASD               - SANGIULIANO CVS A R.L.      3-3       OLIMPIA CALCIO CADORAGO           - LUISAGO GRANDATE ASD        4-2\nPRO PESCHIERA BORROMEO            - VILLA S.S.D.R.L.            1-1       VIRTUS CALCIO CERMENATE           - CASSINA RIZZARDI            3-1\n(1) QUINTO ROMANO A.S.D.          - SETTIMO MILANESE            0-4       ZETA MILANO F.C. ASD              - LOMAZZO CALCIO A.S.D.       2-2\n(1) - disputata il 19/09/2026                                             (1) - disputata il 19/09/2026\n\n"
-            },
-            {
-              "line": 1593,
-              "text": " Gara Gior.                                                               Orig.       Var. Orig.\n30/09/2026   3A   OSSONA A.S.D.            MARCALLESE A.S.D.                          20:45   20:00\n                                                                                                      C.S.\"S.PERTINI\" N.2 CORNAREDO VIA\n30/09/2026   3A   SETTIMO MILANESE         POL.D. U.S. CASSOLESE                      21:00   20:00\n                                                                                                      DELLO SPORT,70\n\n"
-            },
-            {
-              "line": 1933,
-              "text": "                  GIRONE E - 2 Giornata - A                                                   GIRONE F - 2 Giornata - A\n(1) LESMO SSD ARL               - ALTO LARIO CALCIO A.S.D.      3-1         (1) ACCADEMIA MILANESE          - FROG MILANO                 2-1\nLUISAGO GRANDATE ASD            - LIBERTAS SAN BARTOLOMEO       4-1         (1) BUCCINASCO                  - FATIMATRACCIA               3-0\n(1) MONGUZZO 1997               - INVERIGO                      2-1         CESANO BOSCONE IDROSTAR         - SETTIMO MILANESE            4-1\n(1) NOVEDRATE                   - ARDITA CITTADELLA 1934        3-8         ORATORIANA VITTUONE ASD         - VICTORIA MMVII A.S.D.       1-3\n(1) OLIMPIA CALCIO CADORAGO     - CDA E CAVALLASCA A.S.D.       0-2         (1) ORIONE                      - FOOTBALL CLUB SEDRIANO      4-3\nPERTICATO XENIA ASD             - SIRTORESE                     0-5         POL.D. U.S. CASSOLESE           - QUINTO ROMANO A.S.D.        2-1"
-            }
-          ]
-        },
-        {
-          "name": "Regolamento Under15 e Under17 Femminile.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f856040_Regolamento Under15 e Under17 Femminile.pdf",
-          "pages_chars": 18768,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Classifiche CU_28.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f86c60e_Classifiche CU_28.pdf",
-          "pages_chars": 133639,
-          "settimo_mentions": 2,
-          "txt": "docs/33510/Classifiche_CU_28.txt",
-          "mentions": [
-            {
-              "line": 279,
-              "text": "                                  PRIMA CATEGORIA\nGIRONE A\n                         Squadra                 PT   G   V   N   P   GF GS DR PE\nU.S. SETTIMO MILANESE                            6    2   2   0   0   6   1    5   0\nA.S.D. IRIS 1914                                 6    2   2   0   0   3   0    3   0\nA.S.D. PRO PESCHIERA BORROMEO                    4    2   1   1   0   4   2    2   0\nG.S. VILLA S.S.D.R.L.                            4    2   1   1   0   3   2    1   0"
-            },
-            {
-              "line": 643,
-              "text": "SUPERGA G.S. A.S.D.                          1    2   0   1   1    2    6   -4   0\nA.S.D. FOOTBALL CLUB SEDRIANO                0    1   0   0   1    3    4   -1   0\nA.C.D. FROG MILANO                           0    2   0   0   2    3    5   -2   0\nU.S. SETTIMO MILANESE                        0    2   0   0   2    2   10   -8   0\n\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Convocazione 30 Settembre2026 Rappresentativa FEMMINILE.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8e3ba8_Convocazione 30  Settembre2026 Rappresentativa FEMMINILE.pdf",
-          "pages_chars": 4314,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_U13Interpovinciale_FaseAutunnale.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8e8827_Calendario_U13Interpovinciale_FaseAutunnale.pdf",
-          "pages_chars": 8376,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_Allieve_GirA agg.24-09-2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8f103f_Calendario_Allieve_GirA agg.24-09-2026.pdf",
-          "pages_chars": 10260,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Maglie personalizzate CU28.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f8f3d3e_Maglie personalizzate CU28.zip",
-          "skipped": "non è un PDF"
-        },
-        {
-          "name": "1_SGS Circolare N°4 Stagione 2026-2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f904e1d_1_SGS Circolare  N°4 Stagione 2026-2027.pdf",
-          "pages_chars": 2926,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "2_CU_N_006_SGS_U12_Femminile_Regolamento_2026_2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f90ae26_2_CU_N_006_SGS_U12_Femminile_Regolamento_2026_2027.pdf",
-          "pages_chars": 20801,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "3_CU_N_007_SGS_U13_Fair Play_Regolamento_Stagione_2026_2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f910c23_3_CU_N_007_SGS_U13_Fair Play_Regolamento_Stagione_2026_2027.pdf",
-          "pages_chars": 22086,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "4_CU_N_008_SGS_Regolamento_U13_Futsal_2026_2027.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f916262_4_CU_N_008_SGS_Regolamento_U13_Futsal_2026_2027.pdf",
-          "pages_chars": 20726,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "5_BANDO CORSO GRASSROOTS LIV.E per Dirigenti Attività di Base.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f91e84a_5_BANDO CORSO GRASSROOTS LIV.E per Dirigenti Attività di Base.pdf",
-          "pages_chars": 12467,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "6_BANDO CORSO GRASSROOTS LIV.E per Istruttori Attività di Base BERGAMO.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33510/6ab532f9209a7_6_BANDO CORSO GRASSROOTS LIV.E per Istruttori Attività di Base BERGAMO.pdf",
-          "pages_chars": 13355,
-          "settimo_mentions": 0
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33531": {
       "id": "33531",
       "kind": "comunicato",
@@ -2294,7 +2179,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-23T22:34:44+00:00",
+  "lastRun": "2026-11-24T03:27:40+00:00",
   "homepage": [
     "33840",
     "33819",
