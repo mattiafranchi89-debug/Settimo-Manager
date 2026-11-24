@@ -1,160 +1,118 @@
 {
-  "generatedAt": "2026-11-19T22:21:51+01:00",
-  "availableFrom": "2026-11-17",
+  "generatedAt": "2026-11-24T08:00:00+01:00",
+  "availableFrom": "2026-11-24",
   "lastMatch": {
-    "date": "2026-11-15",
-    "opponent": "Frog Milano",
-    "home": true,
-    "score": "1-1",
-    "competition": "Prima Categoria girone A – 10ª giornata"
-  },
-  "next": {
-    "opponent": "Centro Schuster",
     "date": "2026-11-22",
-    "time": "14:30",
+    "opponent": "Centro Schuster",
     "home": false,
-    "venue": "Centro Schuster – Campo A, Milano (da confermare)",
-    "address": "Via Morell S.J. Padre Lodovico n. 2, Milano",
+    "score": "",
     "competition": "Prima Categoria girone A – 11ª giornata"
   },
+  "next": {
+    "opponent": "Iris 1914",
+    "date": "2026-11-29",
+    "time": "14:30",
+    "home": true,
+    "venue": "C.S. \"S. Pertini\" – Campo n. 1, Cornaredo (da confermare)",
+    "address": "Via dello Sport 1, Cornaredo",
+    "competition": "Prima Categoria girone A – 12ª giornata"
+  },
   "standing": {
-    "pos": 11,
+    "pos": 13,
     "of": 16,
-    "pts": 12,
+    "pts": 9,
     "g": 10,
     "v": 3,
-    "n": 3,
-    "p": 4,
-    "gf": 19,
-    "gs": 18,
+    "n": 0,
+    "p": 7,
+    "gf": 11,
+    "gs": 21,
     "asOf": "Comunicato Ufficiale n. 51 del 19/11/2026"
   },
   "results": [
     {
       "date": "2026-11-15",
       "home": false,
-      "against": "Pro Peschiera Borromeo",
-      "gf": 4,
-      "gs": 0,
+      "against": "Partizan Bonola",
+      "gf": 1,
+      "gs": 3,
       "competition": ""
     },
     {
       "date": "2026-11-08",
       "home": true,
-      "against": "Partizan Bonola",
+      "against": "Ausonia Academy",
       "gf": 0,
       "gs": 1,
       "competition": ""
     },
     {
       "date": "2026-11-01",
-      "home": false,
-      "against": "Iris 1914",
-      "gf": 2,
-      "gs": 1,
+      "home": true,
+      "against": "Centro Schuster",
+      "gf": 1,
+      "gs": 2,
       "competition": ""
     },
     {
-      "date": "2026-10-29",
-      "home": true,
-      "against": "Libertas Casiratese",
-      "gf": 2,
-      "gs": 3,
-      "competition": "Coppa"
-    },
-    {
       "date": "2026-10-25",
-      "home": true,
-      "against": "Ausonia Academy",
-      "gf": 1,
-      "gs": 1,
+      "home": false,
+      "against": "Frog Milano",
+      "gf": 0,
+      "gs": 4,
       "competition": ""
     },
     {
       "date": "2026-10-18",
       "home": true,
-      "against": "Frog Milano",
+      "against": "Buccinasco",
       "gf": 1,
-      "gs": 3,
+      "gs": 2,
       "competition": ""
     },
     {
       "date": "2026-10-11",
       "home": false,
-      "against": "Buccinasco",
-      "gf": 2,
-      "gs": 2,
-      "competition": ""
-    },
-    {
-      "date": "2026-10-04",
-      "home": true,
       "against": "Polisportiva Or.Pa.S.",
-      "gf": 3,
-      "gs": 1,
-      "competition": ""
-    },
-    {
-      "date": "2026-09-27",
-      "home": false,
-      "against": "Polisportiva di Nova",
-      "gf": 2,
+      "gf": 5,
       "gs": 3,
-      "competition": ""
-    },
-    {
-      "date": "2026-09-20",
-      "home": true,
-      "against": "Garibaldina 1932",
-      "gf": 3,
-      "gs": 5,
       "competition": ""
     }
   ],
-  "suspended": [
-    "Boni Gianluca – squalifica per 5 gare effettive (C.U. n. 43 del 29/10, gara del 25/10 con l'Ausonia), confermata dalla Corte Sportiva d'Appello che ha respinto il reclamo (C.U. n. 51 del 19/11): scontate 1/11, 8/11 e 15/11, resta fuori contro di noi (4ª giornata di squalifica su 5)"
-  ],
-  "notes": "Il Centro Schuster arriva da un netto 4-0 sul campo della Pro Peschiera Borromeo ed è 11° con 12 punti (a pari punti con Quinto Romano e Nevada), 19 gol fatti e 18 subiti: nelle ultime 3 di campionato 2 vittorie e 1 sconfitta, mentre è già fuori dalla Coppa Lombardia. Nel C.U. n. 51 nessun nuovo provvedimento né diffida per giocatori dello Schuster; Boni resta squalificato dopo il rigetto del reclamo. Attenzione in casa nostra: Corazza Alessio e Lamonaca Jacopo sono stati diffidati (IV ammonizione) dopo Settimo–Frog 1-1. Orario e campo (Campo A di via Padre Lodovico Morell, Milano) non risultano variati nel C.U. n. 51 ma vanno confermati con il Programma gare del 20–23/11, non ancora in cache.",
+  "suspended": [],
+  "notes": "L'Iris 1914 è 13° con 9 punti e la seconda peggior differenza reti del girone (11 fatti, 21 subiti): arriva da 5 sconfitte consecutive in campionato (fino al 15/11) (ultima vittoria 5-3 sul campo dell'Or.Pa.S. l'11/10) e ha segnato appena 3 gol nelle ultime 5. Nei comunicati CRL fino al n. 52 non risultano squalifiche pendenti per l'Iris in Prima Categoria (Ferri Matteo, Monterosso Francesco e Loja Cabezas Ronny Daniel hanno già scontato una giornata ciascuno), ma mancano ancora il risultato ufficiale della nostra gara con lo Schuster, quello di Iris–Pro Peschiera Borromeo del 22/11 e il Giudice Sportivo dell'11ª giornata: attenzione ai nostri diffidati Corazza e Lamonaca. Avversario, data e campo sono ricavati dalla struttura del calendario (12ª giornata, Settimo in casa) perché il Programma gare del 27–30/11 non è ancora in cache: orario 14:30 al Pertini da confermare.",
   "sources": [
     {
       "label": "Comunicato Ufficiale n. 51 – Classifiche",
       "url": "https://www.crlombardia.it/storage/uploads/files/33819/6aff0a3ddaf58_Classifiche CU51 del 19.11.2026.pdf"
     },
     {
-      "label": "Comunicato Ufficiale n. 51 (risultati 10ª giornata, Giudice Sportivo, reclamo Boni respinto)",
+      "label": "Comunicato Ufficiale n. 51 (Partizan Bonola–Iris 1914 3-1)",
       "url": "https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51"
     },
     {
-      "label": "Comunicato Ufficiale n. 50 (nessuna novità sul Centro Schuster)",
-      "url": "https://www.crlombardia.it/documenti/33813/comunicato-ufficiale-n-50"
+      "label": "Comunicato Ufficiale n. 52 (nessuna novità sull'Iris 1914)",
+      "url": "https://www.crlombardia.it/documenti/33840/comunicato-ufficiale-n-52"
     },
     {
-      "label": "Comunicato Ufficiale n. 48 (risultati 9ª giornata)",
+      "label": "Comunicato Ufficiale n. 48 (Iris 1914–Ausonia Academy 0-1)",
       "url": "https://www.crlombardia.it/documenti/33781/comunicato-ufficiale-n-48"
     },
     {
-      "label": "Comunicato Ufficiale n. 45 (risultati 8ª giornata)",
+      "label": "Comunicato Ufficiale n. 45 (Iris 1914–Centro Schuster 1-2, squalifica Loja Cabezas)",
       "url": "https://www.crlombardia.it/documenti/33746/comunicato-ufficiale-n-45"
     },
     {
-      "label": "Comunicato Ufficiale n. 44 (Coppa Lombardia: Centro Schuster–Libertas Casiratese 2-3)",
-      "url": "https://www.crlombardia.it/documenti/33743/comunicato-ufficiale-n-44"
-    },
-    {
-      "label": "Comunicato Ufficiale n. 43 (7ª giornata e squalifica Boni)",
+      "label": "Comunicato Ufficiale n. 43 (Frog Milano–Iris 1914 4-0, squalifica Monterosso)",
       "url": "https://www.crlombardia.it/documenti/33714/comunicato-ufficiale-n-43"
     },
     {
-      "label": "Comunicato Ufficiale n. 41 (6ª giornata)",
+      "label": "Comunicato Ufficiale n. 41 (Iris 1914–Buccinasco 1-2, diffida Loja Cabezas)",
       "url": "https://www.crlombardia.it/documenti/33673/comunicato-ufficiale-n-41"
     },
     {
-      "label": "Programma gare 22–26 ottobre (campo del Centro Schuster)",
-      "url": "https://www.crlombardia.it/news/33690/programma-gare-dal-22-al-26-ottobre-2026"
-    },
-    {
-      "label": "Programma gare 16–19 novembre (nessuna gara del Settimo)",
-      "url": "https://www.crlombardia.it/news/33812/programma-gare-dal-16-al-19-novembre-2026"
+      "label": "Programma gare 20–23 novembre (Iris 1914–Pro Peschiera Borromeo, 11ª giornata)",
+      "url": "https://www.crlombardia.it/news/33839/programma-gare-dal-20-al-23-novembre-2026"
     }
   ]
 }
