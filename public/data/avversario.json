@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-24T08:00:00+01:00",
+  "generatedAt": "2026-11-25T08:00:00+01:00",
   "availableFrom": "2026-11-24",
   "lastMatch": {
     "date": "2026-11-22",
@@ -80,7 +80,7 @@
     }
   ],
   "suspended": [],
-  "notes": "L'Iris 1914 è 13° con 9 punti e la seconda peggior differenza reti del girone (11 fatti, 21 subiti): arriva da 5 sconfitte consecutive in campionato (fino al 15/11) (ultima vittoria 5-3 sul campo dell'Or.Pa.S. l'11/10) e ha segnato appena 3 gol nelle ultime 5. Nei comunicati CRL fino al n. 52 non risultano squalifiche pendenti per l'Iris in Prima Categoria (Ferri Matteo, Monterosso Francesco e Loja Cabezas Ronny Daniel hanno già scontato una giornata ciascuno), ma mancano ancora il risultato ufficiale della nostra gara con lo Schuster, quello di Iris–Pro Peschiera Borromeo del 22/11 e il Giudice Sportivo dell'11ª giornata: attenzione ai nostri diffidati Corazza e Lamonaca. Avversario, data e campo sono ricavati dalla struttura del calendario (12ª giornata, Settimo in casa) perché il Programma gare del 27–30/11 non è ancora in cache: orario 14:30 al Pertini da confermare.",
+  "notes": "L'Iris 1914 è 13° con 9 punti e la seconda peggior differenza reti del girone (11 fatti, 21 subiti): arriva da 5 sconfitte consecutive in campionato (fino al 15/11) (ultima vittoria 5-3 sul campo dell'Or.Pa.S. l'11/10) e ha segnato appena 3 gol nelle ultime 5. Nei comunicati CRL fino al n. 53 (24/11) non risultano squalifiche pendenti per l'Iris in Prima Categoria (Ferri Matteo, Monterosso Francesco e Loja Cabezas Ronny Daniel hanno già scontato una giornata ciascuno), ma mancano ancora (il CU 53 del 24/11 non riporta Prima Categoria girone A) il risultato ufficiale della nostra gara con lo Schuster, quello di Iris–Pro Peschiera Borromeo del 22/11 e il Giudice Sportivo dell'11ª giornata: attenzione ai nostri diffidati Corazza e Lamonaca. Avversario, data e campo sono ricavati dalla struttura del calendario (12ª giornata, Settimo in casa) perché il Programma gare del 27–30/11 non è ancora in cache: orario 14:30 al Pertini da confermare.",
   "sources": [
     {
       "label": "Comunicato Ufficiale n. 51 – Classifiche",
@@ -89,6 +89,10 @@
     {
       "label": "Comunicato Ufficiale n. 51 (Partizan Bonola–Iris 1914 3-1)",
       "url": "https://www.crlombardia.it/documenti/33819/comunicato-ufficiale-n-51"
+    },
+    {
+      "label": "Comunicato Ufficiale n. 53 del 24/11/2026 (nessuna novità sull'Iris 1914 in Prima Categoria)",
+      "url": "https://www.crlombardia.it/documenti/33850/comunicato-ufficiale-n-53"
     },
     {
       "label": "Comunicato Ufficiale n. 52 (nessuna novità sull'Iris 1914)",
