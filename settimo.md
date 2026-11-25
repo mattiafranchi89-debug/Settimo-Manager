@@ -1453,17 +1453,3 @@ Pagina: https://www.crlombardia.it/documenti/33544/comunicato-ufficiale-n-30
 
 
 ```
-
-## COMUNICATO UFFICIALE N° 29 (2026-09-25)
-Pagina: https://www.crlombardia.it/documenti/33531/comunicato-ufficiale-n-29
-
-### Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf – riga 250
-```
-                         Squadra 1                 Squadra 2                                                     Impianto
- Gara Gior.                                                              Orig.       Var. Orig.
-                                                                                                     C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
-04/10/2026   4A   SETTIMO MILANESE         SANGIULIANO CVS A R.L.                    19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE
-                                                                                                     SICA,14
-
-
-```

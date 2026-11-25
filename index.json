@@ -413,54 +413,6 @@
       ],
       "fetchedAt": "2026-10-17T07:46:35+00:00"
     },
-    "33531": {
-      "id": "33531",
-      "kind": "comunicato",
-      "title": "COMUNICATO UFFICIALE N° 29",
-      "number": 29,
-      "date": "2026-09-25",
-      "url": "https://www.crlombardia.it/documenti/33531/comunicato-ufficiale-n-29",
-      "backfill": true,
-      "files": [
-        {
-          "name": "Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b005f9_Comunicato Ufficiale Nr. 29 del 25.09.2026.pdf",
-          "pages_chars": 38946,
-          "settimo_mentions": 1,
-          "txt": "docs/33531/Comunicato_Ufficiale_Nr._29_del_25.09.2026.txt",
-          "mentions": [
-            {
-              "line": 250,
-              "text": "                         Squadra 1                 Squadra 2                                                     Impianto\n Gara Gior.                                                              Orig.       Var. Orig.\n                                                                                                     C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n04/10/2026   4A   SETTIMO MILANESE         SANGIULIANO CVS A R.L.                    19:30   15:30   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                     SICA,14\n\n"
-            }
-          ]
-        },
-        {
-          "name": "Calendario_EsordientiMiste_Femm_Aut.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b193e1_Calendario_EsordientiMiste_Femm_Aut.pdf",
-          "pages_chars": 21810,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Calendario_PulcineMiste_Femm_Aut.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b2b92b_Calendario_PulcineMiste_Femm_Aut.pdf",
-          "pages_chars": 11373,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "U15F_Referto_Gara.pdf",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b3b03c_U15F_Referto_Gara.pdf",
-          "pages_chars": 5196,
-          "settimo_mentions": 0
-        },
-        {
-          "name": "Maglia personalizzate CU29.zip",
-          "url": "https://www.crlombardia.it/storage/uploads/files/33531/6ab6746b48d20_Maglia personalizzate CU29.zip",
-          "skipped": "non è un PDF"
-        }
-      ],
-      "fetchedAt": "2026-10-17T08:13:59+00:00"
-    },
     "33544": {
       "id": "33544",
       "kind": "comunicato",
@@ -2251,7 +2203,7 @@
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-24T21:05:41+00:00",
+  "lastRun": "2026-11-25T01:33:41+00:00",
   "homepage": [
     "33850",
     "33840",
