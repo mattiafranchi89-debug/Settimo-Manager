@@ -2200,16 +2200,164 @@
         }
       ],
       "fetchedAt": "2026-11-24T15:15:43+00:00"
+    },
+    "33855": {
+      "id": "33855",
+      "kind": "comunicato",
+      "title": "COMUNICATO UFFICIALE N° 54 CRL",
+      "number": 54,
+      "date": "2026-11-26",
+      "url": "https://www.crlombardia.it/documenti/33855/comunicato-ufficiale-n-54",
+      "files": [
+        {
+          "name": "Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d0c9ba9_Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf",
+          "pages_chars": 408006,
+          "settimo_mentions": 4,
+          "txt": "docs/33855/Comunicato_Ufficiale_Nr._54_del_26.11.2026.txt",
+          "mentions": [
+            {
+              "line": 1426,
+              "text": "                           Squadra 1                    Squadra 2                                                     Impianto\n Gara Gior.                                                                   Orig.       Var. Orig.\n                                                                                                          C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n29/11/2026   12 A   SETTIMO MILANESE            IRIS 1914                                 16:30   14:30   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                          SICA,14\n\n"
+            },
+            {
+              "line": 1539,
+              "text": "\n              GIRONE A - 11 Giornata - A                                          GIRONE B - 11 Giornata - A\nBUCCINASCO                  - QUINTO ROMANO A.S.D.        3-1       ATLETICO SCHIAFFINO         - LUISAGO GRANDATE ASD        0-1\nCENTRO SCHUSTER A.S.D.      - SETTIMO MILANESE            2-1       CASSINA RIZZARDI            - MONTESOLARO G.S. A.S.D.     1-1\nFROG MILANO                 - NEVADA CALCIO               2-0       CASTELLO CITTA DI CANTU     - LOMAZZO CALCIO A.S.D.       1-1\nGARIBALDINA 1932            - LEONE XIII SPORT            3-1       ITALA A.S.D.                - ZETA MILANO F.C. ASD        1-0\nIRIS 1914                   - PRO PESCHIERA BORROMEO      2-2       LA DOMINANTE                - BRIANTEA CALCIO A.S.D.      4-1"
+            },
+            {
+              "line": 2255,
+              "text": "                                                                                                             C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n28/11/2026   12 A   CESANO BOSCONE IDROSTAR      ROZZANO CALCIO SRL SSD         29/11/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                             SICA,14\n28/11/2026   12 A   SETTIMO MILANESE             BUCCINASCO                     29/11/2026   14:30   15:00\n                                                                                                             C.S. \"QUINTO ROMANO\" N.1(E.A.) MILANO\n05/12/2026   13 A   CESANO BOSCONE IDROSTAR      POL.D. U.S. CASSOLESE          06/12/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE\n                                                                                                             SICA,14"
+            },
+            {
+              "line": 2337,
+              "text": "\n                    GIRONE E - 11 Giornata - A                                              GIRONE F - 11 Giornata - A\nINVERIGO                      - GSO SAN GIORGIO               2-3       (1) BUCCINASCO                  - FROG MILANO                  4-5\n(1) LIBERTAS SAN BARTOLOMEO - CDA E CAVALLASCA A.S.D.         0-3       FATIMATRACCIA                   - SETTIMO MILANESE             5-0\nLUISAGO GRANDATE ASD          - PERTICATO XENIA ASD           3-0       FOOTBALL CLUB SEDRIANO          - VICTORIA MMVII A.S.D.        0-2\n(1) MONGUZZO 1997             - ARDITA CITTADELLA 1934        0-5       ORATORIANA VITTUONE ASD         - CESANO BOSCONE IDROSTAR      3-2\n(1) OLIMPIA CALCIO CADORAGO - NOVEDRATE                       4-1       (1) ORIONE                      - ACCADEMIA MILANESE           2-1"
+            }
+          ]
+        },
+        {
+          "name": "02_Classifiche CU54 del 26.11.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d1758dc_02_Classifiche CU54 del 26.11.2026.pdf",
+          "pages_chars": 152479,
+          "settimo_mentions": 2,
+          "txt": "docs/33855/02_Classifiche_CU54_del_26.11.2026.txt",
+          "mentions": [
+            {
+              "line": 255,
+              "text": "GIRONE A\n                         Squadra                 PT   G    V   N   P    GF GS DR PE\nA.S.D. AUSONIA ACADEMY                           22   11   6   4   1    27   15    12   0\nU.S. SETTIMO MILANESE                            21   11   6   3   2    25   14    11   0\nPOL. BUCCINASCO                                  20   11   5   5   1    20   12     8   0\nG.S. VILLA S.S.D.R.L.                            20   11   5   5   1    20   15     5   0\nPARTIZAN BONOLA ASD                              19   11   5   4   2    27   23     4   0"
+            },
+            {
+              "line": 618,
+              "text": "U.S. QUINTO ROMANO A.S.D.                    11   10   3    2    5   17   29   -12   0\nA.S.D. FATIMATRACCIA                         10   10   3    1    6   15   24    -9   0\nPOL. BUCCINASCO                               8   10   2    2    6   16   25    -9   0\nU.S. SETTIMO MILANESE                         8   11   2    2    7   15   37   -22   0\nSUPERGA G.S. A.S.D.                           1   11   0    1   10   14   54   -40   0\n\n"
+            }
+          ]
+        },
+        {
+          "name": "03_Graduatoria_Unica_U18_Elite_agg261126.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d1b911b_03_Graduatoria_Unica_U18_Elite_agg261126.pdf",
+          "pages_chars": 14162,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_LND RappNazionali_Convocati U15_Lombardia.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d1d3b56_04_LND RappNazionali_Convocati U15_Lombardia.pdf",
+          "pages_chars": 6995,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_ConvocazioneC11_ U19_3 dicembre 2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d1e8163_05_ConvocazioneC11_ U19_3 dicembre 2026.pdf",
+          "pages_chars": 2994,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Convocazione Rappresentativa C11 U17 del 2 dicembre amichevole U17 Albinoleffe.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d1efd1b_06_Convocazione Rappresentativa C11 U17 del 2 dicembre amichevole U17 Albinoleffe.pdf",
+          "pages_chars": 3077,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "07_Convocazione Rappresentativa C11_U15 del 1 dicembre amichevole U15 Brusaporto U16.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d2023a6_07_Convocazione Rappresentativa C11_U15 del 1 dicembre amichevole U15 Brusaporto U16.pdf",
+          "pages_chars": 3204,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "08_Convocazione - C5 - (under 15) - (03-12-2026).pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d210547_08_Convocazione - C5 - (under 15) - (03-12-2026).pdf",
+          "pages_chars": 2759,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "01_SGS Circolare N°13 Stagione 2026-2027.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d213bf4_01_SGS Circolare  N°13 Stagione 2026-2027.pdf",
+          "pages_chars": 2898,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "02_Incontri informativi.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d224c6e_02_Incontri informativi.pdf",
+          "pages_chars": 76308,
+          "settimo_mentions": 2,
+          "txt": "docs/33855/02_Incontri_informativi.txt",
+          "mentions": [
+            {
+              "line": 68,
+              "text": "             17:30   FC CINISELLO            VIA CILEA CINISELLO B      AUTOARBITRAGGIO                                   AGONISTICA                     Dirigenti\n                                                                        L'Utilizzo dei social tra i giovani calciatori.   Avv. Simona Cardillo -         Tecnici/Istruttori,\n23/11/2026                                   Via Pace snc - 20019 -     Conoscere le opportunità e gli svantaggi          Safeguarding Vighignolo        Atleti/e, Dirigenti,\n             20:00   VIGHIGNOLO              Settimo milanese (MI)      sul loro utilizzo.                                Calcio                         Famiglie\n                                             C.S. \"G. ARVEDI\" - Largo                                                     Paolo Mondini - Responsabile\n23/11/2026           U.S. CREMONESE          degli Sportivi, 18 -       Dal calcio a 5 al calcio a 7. Le partite a        Attività di Base U.S.\n             18:30   S.P.A.                  Cremona (CR)               tema come mezzo d’allenamento                     Cremonese                      Tecnici/Istruttori"
+            },
+            {
+              "line": 540,
+              "text": "14/12/2026           AURORA PRO PATRIA      Speroni - Via Ca' Bianca                                                 Augusto Splendore\n             18:30   1919 S.S.D. A R.L.     42 - Busto Arsizio         Intensità nella fasi di gioco nell'agonistica (Responsabile S.G. Pro Patria)   Tecnici/Istruttori\n                                            VIA PACE SNC - 20019 -                                                                                    Tecnici/Istruttori,\n14/12/2026                                  SETTIMO MILANESE           NUTRIZIONE E PERFORMANCE NEL                  DAVIDE SERPE e CRISTIAN          Atleti/e, Dirigenti,\n             20:00   VIGHIGNOLO             (MI)                       CALCIO GIOVANILE                              BORGHI                           Famiglie\n                                                                                                                                                      Tecnici/Istruttori,\n14/12/2026           FORZA E COSTANZA       Oratorio San Luigi                                                       Dott Jessica Marttinelli         Atleti/e, Dirigenti,"
+            }
+          ]
+        },
+        {
+          "name": "03_30.11.2026_Convocazioni SFT Montichiari.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d232437_03_30.11.2026_Convocazioni SFT Montichiari.pdf",
+          "pages_chars": 5069,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "04_30.11.2026_Convocazioni SFT Trezzano.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d240232_04_30.11.2026_Convocazioni SFT Trezzano.pdf",
+          "pages_chars": 5016,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "05_Convocazione Raduno Longobarda 03 DICEMBRE 2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d24ef2d_05_Convocazione Raduno Longobarda 03 DICEMBRE 2026.pdf",
+          "pages_chars": 3424,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "06_Attivita S.G.S. dal 30.11.2026 al 06.12.2026.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d25f94c_06_Attivita S.G.S. dal 30.11.2026 al 06.12.2026.pdf",
+          "pages_chars": 5166,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "1C_PSA BRESSANA 1918 PAVIA_CU54.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d267127_1C_PSA BRESSANA 1918 PAVIA_CU54.pdf",
+          "pages_chars": 1,
+          "settimo_mentions": 0
+        },
+        {
+          "name": "2C_PONTE TRESA_CU54.pdf",
+          "url": "https://www.crlombardia.it/storage/uploads/files/33855/6b0847d26c7a5_2C_PONTE TRESA_CU54.pdf",
+          "pages_chars": 2,
+          "settimo_mentions": 0
+        }
+      ],
+      "fetchedAt": "2026-11-26T20:06:17+00:00"
     }
   },
   "source": "https://www.crlombardia.it/",
-  "lastRun": "2026-11-26T14:25:32+00:00",
+  "lastRun": "2026-11-26T20:06:17+00:00",
   "homepage": [
+    "33855",
     "33850",
     "33840",
     "33819",
     "33813",
-    "33806",
     "33851",
     "33839",
     "33812",

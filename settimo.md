@@ -1,5 +1,96 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## COMUNICATO UFFICIALE N° 54 CRL (2026-11-26)
+Pagina: https://www.crlombardia.it/documenti/33855/comunicato-ufficiale-n-54
+
+### Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf – riga 1426
+```
+                           Squadra 1                    Squadra 2                                                     Impianto
+ Gara Gior.                                                                   Orig.       Var. Orig.
+                                                                                                          C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+29/11/2026   12 A   SETTIMO MILANESE            IRIS 1914                                 16:30   14:30   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                          SICA,14
+
+
+```
+
+### Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf – riga 1539
+```
+
+              GIRONE A - 11 Giornata - A                                          GIRONE B - 11 Giornata - A
+BUCCINASCO                  - QUINTO ROMANO A.S.D.        3-1       ATLETICO SCHIAFFINO         - LUISAGO GRANDATE ASD        0-1
+CENTRO SCHUSTER A.S.D.      - SETTIMO MILANESE            2-1       CASSINA RIZZARDI            - MONTESOLARO G.S. A.S.D.     1-1
+FROG MILANO                 - NEVADA CALCIO               2-0       CASTELLO CITTA DI CANTU     - LOMAZZO CALCIO A.S.D.       1-1
+GARIBALDINA 1932            - LEONE XIII SPORT            3-1       ITALA A.S.D.                - ZETA MILANO F.C. ASD        1-0
+IRIS 1914                   - PRO PESCHIERA BORROMEO      2-2       LA DOMINANTE                - BRIANTEA CALCIO A.S.D.      4-1
+```
+
+### Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf – riga 2255
+```
+                                                                                                             C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+28/11/2026   12 A   CESANO BOSCONE IDROSTAR      ROZZANO CALCIO SRL SSD         29/11/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                             SICA,14
+28/11/2026   12 A   SETTIMO MILANESE             BUCCINASCO                     29/11/2026   14:30   15:00
+                                                                                                             C.S. "QUINTO ROMANO" N.1(E.A.) MILANO
+05/12/2026   13 A   CESANO BOSCONE IDROSTAR      POL.D. U.S. CASSOLESE          06/12/2026   15:30   16:00   - QUINTO ROMANO VIA VITTORIO DE
+                                                                                                             SICA,14
+```
+
+### Comunicato Ufficiale Nr. 54 del 26.11.2026.pdf – riga 2337
+```
+
+                    GIRONE E - 11 Giornata - A                                              GIRONE F - 11 Giornata - A
+INVERIGO                      - GSO SAN GIORGIO               2-3       (1) BUCCINASCO                  - FROG MILANO                  4-5
+(1) LIBERTAS SAN BARTOLOMEO - CDA E CAVALLASCA A.S.D.         0-3       FATIMATRACCIA                   - SETTIMO MILANESE             5-0
+LUISAGO GRANDATE ASD          - PERTICATO XENIA ASD           3-0       FOOTBALL CLUB SEDRIANO          - VICTORIA MMVII A.S.D.        0-2
+(1) MONGUZZO 1997             - ARDITA CITTADELLA 1934        0-5       ORATORIANA VITTUONE ASD         - CESANO BOSCONE IDROSTAR      3-2
+(1) OLIMPIA CALCIO CADORAGO - NOVEDRATE                       4-1       (1) ORIONE                      - ACCADEMIA MILANESE           2-1
+```
+
+### 02_Classifiche CU54 del 26.11.2026.pdf – riga 255
+```
+GIRONE A
+                         Squadra                 PT   G    V   N   P    GF GS DR PE
+A.S.D. AUSONIA ACADEMY                           22   11   6   4   1    27   15    12   0
+U.S. SETTIMO MILANESE                            21   11   6   3   2    25   14    11   0
+POL. BUCCINASCO                                  20   11   5   5   1    20   12     8   0
+G.S. VILLA S.S.D.R.L.                            20   11   5   5   1    20   15     5   0
+PARTIZAN BONOLA ASD                              19   11   5   4   2    27   23     4   0
+```
+
+### 02_Classifiche CU54 del 26.11.2026.pdf – riga 618
+```
+U.S. QUINTO ROMANO A.S.D.                    11   10   3    2    5   17   29   -12   0
+A.S.D. FATIMATRACCIA                         10   10   3    1    6   15   24    -9   0
+POL. BUCCINASCO                               8   10   2    2    6   16   25    -9   0
+U.S. SETTIMO MILANESE                         8   11   2    2    7   15   37   -22   0
+SUPERGA G.S. A.S.D.                           1   11   0    1   10   14   54   -40   0
+
+
+```
+
+### 02_Incontri informativi.pdf – riga 68
+```
+             17:30   FC CINISELLO            VIA CILEA CINISELLO B      AUTOARBITRAGGIO                                   AGONISTICA                     Dirigenti
+                                                                        L'Utilizzo dei social tra i giovani calciatori.   Avv. Simona Cardillo -         Tecnici/Istruttori,
+23/11/2026                                   Via Pace snc - 20019 -     Conoscere le opportunità e gli svantaggi          Safeguarding Vighignolo        Atleti/e, Dirigenti,
+             20:00   VIGHIGNOLO              Settimo milanese (MI)      sul loro utilizzo.                                Calcio                         Famiglie
+                                             C.S. "G. ARVEDI" - Largo                                                     Paolo Mondini - Responsabile
+23/11/2026           U.S. CREMONESE          degli Sportivi, 18 -       Dal calcio a 5 al calcio a 7. Le partite a        Attività di Base U.S.
+             18:30   S.P.A.                  Cremona (CR)               tema come mezzo d’allenamento                     Cremonese                      Tecnici/Istruttori
+```
+
+### 02_Incontri informativi.pdf – riga 540
+```
+14/12/2026           AURORA PRO PATRIA      Speroni - Via Ca' Bianca                                                 Augusto Splendore
+             18:30   1919 S.S.D. A R.L.     42 - Busto Arsizio         Intensità nella fasi di gioco nell'agonistica (Responsabile S.G. Pro Patria)   Tecnici/Istruttori
+                                            VIA PACE SNC - 20019 -                                                                                    Tecnici/Istruttori,
+14/12/2026                                  SETTIMO MILANESE           NUTRIZIONE E PERFORMANCE NEL                  DAVIDE SERPE e CRISTIAN          Atleti/e, Dirigenti,
+             20:00   VIGHIGNOLO             (MI)                       CALCIO GIOVANILE                              BORGHI                           Famiglie
+                                                                                                                                                      Tecnici/Istruttori,
+14/12/2026           FORZA E COSTANZA       Oratorio San Luigi                                                       Dott Jessica Marttinelli         Atleti/e, Dirigenti,
+```
+
 ## Programma Gare dal 24 al 26 Novembre 2026 CRL (2026-11-24)
 Pagina: https://www.crlombardia.it/news/33851/programma-gare-dal-24-al-26-novembre-2026
 Nessuna menzione del Settimo Milanese.
