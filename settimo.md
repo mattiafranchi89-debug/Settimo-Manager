@@ -1,5 +1,107 @@
 # Menzioni di SETTIMO MILANESE nei documenti CRL in cache
 
+## Programma gare dal 27 al 30 Novembre 2026 CRL (2026-11-27)
+Pagina: https://www.crlombardia.it/news/33876/programma-gare-dal-27-al-30-novembre-2026
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 116
+```
+PONTEVECCHIO               SIZIANO LANTERNA                 C.S. COMUNALE "FAUSTO ROLLA"                     29/11/26     14:30    12A MAGENTA LOC.PONTEVECCHIO                      VIA ISONZO
+ROBBIO LIBERTAS            ARCA                             C.S.COMUNALE N.1                                 29/11/26     14:30    12A ROBBIO                                        VIA DELL'ARTIGIANATO
+VIGEVANO CALCIO 1921       PAVIA SSD                        COMUNALE "DANTE MERLO"                           29/11/26     14:30    12A VIGEVANO                                      VIA MONTE GRAPPA, 24
+VIGHIGNOLO                 ACCADEMIA PAVESE                 C.S.VIGHIGNOLO E.A.                              29/11/26     14:30    12A SETTIMO MILANESE FR.VIGHIGNOLO                VIA PACE S.N.C.
+VISCONTEA PAVESE U.S.D.    ROSATESE                         STADIO COMUNALE "ZECCONE"                        29/11/26     14:30    12A ZECCONE                                       VIA TORRE CIVICA,3
+GIRONE F                                                                                                      DATA        ORA                                                                                           STATO GARA
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 150
+```
+PRO PESCHIERA BORROMEO     PARTIZAN BONOLA ASD              CAMPO COMUNALE DI LINATE                         29/11/26     14:30    12A PESCHIERA BORROMEO FRAZ.LINATE                VIA PASCOLI SNC
+QUINTO ROMANO A.S.D.       FROG MILANO                      C.S. "QUINTO ROMANO" N.1(E.A.                    29/11/26     14:30    12A MILANO - QUINTO ROMANO                        VIA VITTORIO DE SICA,14
+SANGIULIANO CVS A R.L.     POLISPORTIVA OR.PA.S.            C.S.COMUNALE N.1                                 29/11/26     14:30    12A SAN GIULIANO MILANESE-SESTO U.                VIA TOSCANA 1 SESTO ULTERIANO
+SETTIMO MILANESE           IRIS 1914                        C.S. "QUINTO ROMANO" N.1(E.A.                    29/11/26     16:30    12A MILANO - QUINTO ROMANO                        VIA VITTORIO DE SICA,14                 V
+VILLA S.S.D.R.L.           BUCCINASCO                       C.S.COM. "G.MAURO" (E.A.)                        29/11/26     15:00    12A MILANO                                        VIA USSI 18
+GIRONE B                                                                                                      DATA        ORA                                                                                             STATO GARA
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 385
+```
+CESANO BOSCONE IDROSTAR    ROZZANO CALCIO SRL SSD           C.S. "QUINTO ROMANO" N.1(E.A.                    28/11/26     15:30    12A MILANO - QUINTO ROMANO                        VIA VITTORIO DE SICA,14                V
+POL.D. U.S. CASSOLESE      FOOTBALL CLUB SEDRIANO           CAMPO SPORTIVO COMUNALE N.1                      28/11/26     14:30    12A CASSOLNOVO                                    VIA GENOVA
+QUINTO ROMANO A.S.D.       ORIONE                           C.S. "QUINTO ROMANO" N.1(E.A.                    28/11/26     17:30    12A MILANO - QUINTO ROMANO                        VIA VITTORIO DE SICA,14
+SETTIMO MILANESE           BUCCINASCO                       C.S."S.PERTINI" - CAMPO N.1                      28/11/26     14:30    12A CORNAREDO                                     VIA DELLO SPORT N.1                    V
+SUPERGA G.S. A.S.D.        FATIMATRACCIA                    C.S."PIETRO BUSCAGLIA" N.1                       28/11/26     15:00    12A VIGEVANO                                      VIA LONGO SNC
+VICTORIA MMVII A.S.D.      VIGHI 1967                       CAMPO SPORTIVO COMUNALE                          28/11/26     15:00    12A NOVIGLIO                                      VIA LEONARDO DA VINCI 2/2
+ACCADEMIA MILANESE         ORATORIANA VITTUONE ASD          C.S.COMUNALE A.MORATTI N.1                       29/11/26     14:30    12A VERMEZZO CON ZELO                             VIA ADA NEGRI, 9
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 628
+```
+CENTRO GIOV. BOFFALORESE   FOOTBALL CLUB PARABIAGO         C.S.COMUNALE "UMBERTO RE" N.1                    28/11/26     15:00    12A BOFFALORA SOPRA TICINO                        VIA GIULINI S.N.C.
+TRIESTINA 1946             SOLESE A.S.D.                   CAMPO U.S.TRIESTINA 1946 N.1                     28/11/26     18:15    12A MILANO                                        VIA FLEMING 13 (E.A.)
+VELA MESERO                OSL CALCIO GARBAGNATE ASD       C.S.COMUNALE (E.A.)                              28/11/26     18:00    12A MESERO                                        VIA VERDI,4
+VIGHI 1967                 BASE 96 SEVESO                  C.S.VIGHIGNOLO E.A.                              28/11/26     18:15    12A SETTIMO MILANESE FR.VIGHIGNOLO                VIA PACE S.N.C.
+
+
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 720
+```
+ARCA                        POL. SAN BIAGIO A.S.D.           C.S.COMUNALE AICS OLMI-CAMPO                     29/11/26     11:00    12A MILANO                                        VIA ULIVI N. 8
+UNION CALCIO BASSO PAVESE   VIGE MILANO A.S.D.               C.S.COMUNALE "MARIO MAIOCCHI"                    29/11/26     15:00    12A SANTA CRISTINA E BISSONE                      VIA CADUTI LIBERTA'SNC
+VICTORIA MMVII A.S.D.       FOLGORE U.S.D.                   CAMPO SPORTIVO COMUNALE                          29/11/26     10:00    12A NOVIGLIO                                      VIA LEONARDO DA VINCI 2/2
+VIGHIGNOLO                  FRIGIROLA 1952                   C.S.VIGHIGNOLO E.A.                              29/11/26     11:00    12A SETTIMO MILANESE FR.VIGHIGNOLO                VIA PACE S.N.C.
+GIRONE D                                                                                                       DATA        ORA                                                                                             STATO GARA
+
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 789
+```
+
+ACCADEMIA INTERNAZIONALE    ROZZANO CALCIO SRL SSD           ACCAD.INTERNAZIONALE N.11(E.A                    28/11/26     15:30    12A MILANO                                        VIA CILEA,51
+LEON S.S.D A R.L.           ENOTRIA 1908 SSDARL              C.S.COMUNALE N. 1 (E.A)                          28/11/26     18:00    12A VIMERCATE                                     VIA DEGLI ATLETI,1
+SEGURO A.S.D.               CASATESE MERATE A.S.D.           C.S.COMUNALE (E.A)                               28/11/26     17:30    12A SETTIMO MILANESE LOC. SEGURO                  VIA SANDRO PERTINI 13
+SS FRANCO SCARIONI 1925     ALDINI S.S.D.AR.L.               PICCOLO STADIO SCARIONI 2(E.A                    28/11/26     17:45    12A MILANO                                        VIA TUCIDIDE 10
+ACCADEMIA PAVESE            AUSONIA 1931 S.C.A.R.L.          CAMPO COMUNALE N 1                               29/11/26    09:30     12A SANT'ALESSIO CON VIALONE                      VIA VIALONE SNC
+ACCADEMY CALVAIRATE 1946    VILLA S.S.D.R.L.                 C.S."CALVAIRATE-(E.A.)                           29/11/26    09:30     12A MILANO                                        VIA VISMARA, 3 (IN DEROGA)
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 926
+```
+CIMIANO CALCIO S.S.D. ARL   MAZZO 80 A.C. SSD A RL           CAMPO "M.CASADEI" CAMPO "A"                      29/11/26     11:30    12A MILANO                                        VIA DON CALABRIA 16
+ENOTRIA 1908 SSDARL         SANT ANGELO                      CENTRO SPORTIVO ENOTRIA A                        29/11/26     10:00    12A MILANO                                        VIA C.CAZZANIGA, 26
+PRO SESTO 1913 SSD S.R.L.   CLUB MILANO S.S.D. A R.L.        CAMPO "BREDA"B-(E.A)                             29/11/26    09:30     12A SESTO SAN GIOVANNI/PARCO NORD                 VIA XX SETTEMBRE, 162(DEROGA)
+SEGURO A.S.D.               ACCADEMIA PAVESE                 C.S.COMUNALE (E.A)                               29/11/26     11:00    12A SETTIMO MILANESE LOC. SEGURO                  VIA SANDRO PERTINI 13
+SS FRANCO SCARIONI 1925     SANGIULIANO CVS A R.L.           PICCOLO STADIO SCARIONI 2(E.A                    29/11/26     11:45    12A MILANO                                        VIA TUCIDIDE 10                          V
+GIRONE C                                                                                                       DATA        ORA                                                                                              STATO GARA
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 1093
+```
+ALDINI S.S.D.AR.L.          CLUB MILANO S.S.D. A R.L.        C.S.ALDINI-RADICE(E.A)                           29/11/26     11:00    12A MILANO                                        VIA ORSINI 78/84
+ENOTRIA 1908 SSDARL         CENTRO SCHUSTER A.S.D.           C.S."ENOTRIA - CAMPO B (E.A)                     29/11/26     11:00    12A MILANO                                        VIA C.CAZZANIGA 26
+RHODENSE S.S.D.A.R.L.       PAVIA CALCIO 1911                COMUNALE "PIRANDELLO"                            29/11/26    09:30     12A RHO Q.RE STELLANDA                            VIA PIRANDELLO
+SEGURO A.S.D.               ACCADEMIA PAVESE                 C.S.COMUNALE (E.A)                               29/11/26    09:30     12A SETTIMO MILANESE LOC. SEGURO                  VIA SANDRO PERTINI 13
+
+
+
+```
+
+### Programma_Gare_27-30_Novembre_2026.pdf – riga 1176
+```
+
+CIRCOLO GIOVANILE BRESSO    REAL MILANO SSD A RL             C.S.COMUNALE A-(E.A)                             28/11/26     14:30    12A BRESSO                                        VIA GRAZIA DELEDDA SNC
+FOOTBALL CLUB SEDRIANO      BARANZATESE 1948 POL.D.          CENTRO SPORTIVO COMUNALE 2 E.                    28/11/26     14:30    12A SEDRIANO                                      VIA CAMPO SPORTIVO,12
+SEGURO A.S.D.               ACCADEMIA INTERNAZIONALE         C.S.COMUNALE (E.A)                               28/11/26     15:00    12A SETTIMO MILANESE LOC. SEGURO                  VIA SANDRO PERTINI 13
+AFFORESE G.S.D.             MAZZO 80 A.C. SSD A RL           C.S.BOVISASCA-CAMPO N.1(E.A.)                    29/11/26    09:00     12A MILANO                                        VIA ASSIETTA,48
+ALDINI S.S.D.AR.L.          SEMPIONE HALF 1919 SSDSRL        C.S.ALDINI-RADICE(E.A)                           29/11/26    09:30     12A MILANO                                        VIA ORSINI 78/84
+CENTRO SCHUSTER A.S.D.      PRO SESTO 1913 SSD S.R.L.        CENTRO SCHUSTER- CAMPO A                         29/11/26    09:45     12A MILANO                                        VIA MORELL S.J.PADRE LODOV.N.2
+```
+
 ## COMUNICATO UFFICIALE N° 54 CRL (2026-11-26)
 Pagina: https://www.crlombardia.it/documenti/33855/comunicato-ufficiale-n-54
 
