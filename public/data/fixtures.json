@@ -1,23 +1,7 @@
 {
-  "generatedAt": "2026-11-27T14:19:12+00:00",
+  "generatedAt": "2026-11-28T00:40:27+00:00",
   "team": "SETTIMO MILANESE",
   "fixtures": [
-    {
-      "competition": "Coppa Lombardia",
-      "girone": "2D",
-      "round": "1A",
-      "date": "2026-10-28",
-      "time": "20:00",
-      "home": true,
-      "opponent": "VELA MESERO",
-      "venue": "COMUNALE-CAMPO N.1",
-      "city": "CUSAGO",
-      "address": "VIA IV NOVEMBRE 9",
-      "status": "V",
-      "published": "2026-10-26",
-      "source": "Programma Gare dal 26 al 29 Ottobre 2026 CRL",
-      "url": "https://www.crlombardia.it/news/33703/programma-gare-dal-26-al-29-ottobre-2026"
-    },
     {
       "competition": "Prima Categoria",
       "girone": "A",
